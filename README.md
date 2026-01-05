@@ -6,7 +6,7 @@ Please find more details about the dataset (download, schema, etc.) in [docs/dat
 
 
 ## 📏 Evaluation Metrics
-RAG systems are evaluated using a scoring method that measures response quality to questions in the evaluation set. Responses are rated as perfect, acceptable, missing, or incorrect:
+M3 systems are evaluated using a scoring method that measures response quality to questions in the evaluation set. Responses are rated as perfect, acceptable, missing, or incorrect:
 
 - Perfect: The response correctly answers the user question and contains no hallucinated content.
 
