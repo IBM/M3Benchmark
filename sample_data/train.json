@@ -1,7 +1,7 @@
 [
         {
         "sample_id": "91_sc_ONLY_API_OUT_DOMAIN",
-        "dataset_name": "olympics",
+        "domain": "olympics",
         "turns": [
             {
                 "query": "Which Summer Olympics did the competitor who has won the most medals win four gold and two silver medals?",

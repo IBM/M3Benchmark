@@ -1,0 +1,108 @@
+[
+    {
+        "sample_id": "91_sc_ONLY_API_OUT_DOMAIN",
+        "domain": "olympics",
+        "results": [
+            {
+                "query": "Which Summer Olympics did the competitor who has won the most medals win four gold and two silver medals?",
+                "answer": "2012 Summer",
+                "type": "(API-RAG)",
+                "gold_sequence": [
+                    {
+                        "db_id": "olympics",
+                        "question": "What is the name of the competitor who has won the most medals?",
+                        "answer": [
+                            [
+                                "Michael Fred Phelps, II"
+                            ]
+                        ],
+                        "output": [
+                            {
+                                "name": "get_athlete_most_medals_excluding_v1_olympics_athlete_most_medals_excluding_get",
+                                "arguments": {
+                                    "medal_id": "4"
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "question": "\nWhich Summer Olympics did Michael Fred Phelps, II win four gold and two silver medals?",
+                        "answer": "2012 Summer",
+                        "rag_doc": [
+                            "\nMichael Fred Phelps II (born June 30, 1985) is an American former competitive swimmer. He is the most successful and most decorated Olympian of all time with a total of 28 medals. Phelps also holds the all-time records for Olympic gold medals (23), Olympic gold medals in individual events (13), and Olympic medals in individual events (16). At the 2004 Summer Olympics in Athens, Phelps tied the record of eight medals of any color at a single Games, held by gymnast Alexander Dityatin, by winning six gold and two bronze medals. Four years later, when he won eight gold medals at the 2008 Beijing Games, he broke fellow American swimmer Mark Spitz's 1972 record of seven first-place finishes at any single Olympic Games. At the 2012 Summer Olympics in London, Phelps won four gold and two silver medals, and at the 2016 Summer Olympics in Rio de Janeiro, he won five gold medals and one silver. This made him the most successful athlete of the Games for the fourth Olympics in a row.\nPhelps is a former long course world record holder in the 200-meter freestyle, 100-meter butterfly, 200-meter butterfly, 200-meter individual medley, and 400-meter individual medley. He has won 82 medals in major international long course competitions, of which 65 were gold, 14 silver, and three bronze, spanning the Olympics, the World Championships, and the Pan Pacific Championships. Phelps's international titles and record-breaking performances have earned him the World Swimmer of the Year Award eight times and American Swimmer of the Year Award eleven times, as well as the FINA Swimmer of the Year Award in 2012 and 2016. Phelps earned Sports Illustrated magazine's Sportsman of the Year award due to his unprecedented Olympic success in the 2008 Games.\nAfter the 2008 Summer Olympics, Phelps started the Michael Phelps Foundation, which focuses on growing the sport of swimming and promoting healthier lifestyles. Phelps retired following the 2012 Olympics, but he made a comeback in April 2014. At the 2016 Summer Olympics in Rio de Janeiro, his fifth Olympics, he was selected by his team to be the flag bearer of the United States at the 2016 Summer Olympics Parade of Nations. He announced his second retirement on August 12, 2016, having won more medals than 161 countries. He won the Laureus World Comeback of the Year Award in 2017. He is widely regarded as the greatest swimmer of all time and is often considered to be one of the greatest athletes of all time.\n=== 2012 Summer Olympics ===\n==== Trials ====\nFor the 2012 Summer Olympics in London, Phelps originally stated he would never do eight events again, and would instead try new events. Phelps said, \"I keep saying I want to go down and start sprinting, but Bob [Bowman, Phelps's coach] really isn't so keen on that ... I don't think that's going to happen ... Over the next four years, I'd like to try some different events, maybe not do some of the events I did here.\" However, at the 2012 United States Olympic Trials, the qualifying meet for the 2012 Summer Olympics, Phelps qualified in the same eight events that he swam in Beijing in 2008. He later dropped the 200-meter freestyle from his program, as he stated he wanted to focus on the 4\u00d7100-meter freestyle relay. During the trials, Phelps finished first in the 200-meter freestyle, 100-meter butterfly, 200-meter butterfly, 200-meter individual medley, and second in the 400-meter individual medley. In making his fourth Olympic team, Phelps holds the record for men for the most Olympic appearances in swimming representing the United States.\nAfter the 2008 Olympics, Phelps used his $1 million Speedo bonus to set up the Michael Phelps Foundation. His foundation focuses on growing the sport of swimming and promoting healthier lifestyles.\nIn 2010, the Michael Phelps Foundation, the Michael Phelps Swim School and KidsHealth.org developed and nationally piloted the \"im\" program for Boys & Girls Club members. The im program teaches children the importance of being active and healthy, with a focus on the sport of swimming. It also promotes the value of planning and goal-setting. im is offered through the Boys & Girls Clubs of America and through Special Olympics International. The Foundation has since developed two other programs, Level Field Fund-Swimming and Caps-for-a-Cause.\nThe Foundation's largest event is its annual fundraiser, the Michael Phelps Foundation Golf Classic. Phelps stated he hoped to work with his Foundation more after retirement from competition following the 2012 Summer Olympics in London.\nIn 2017, Phelps joined the board of Medibio, a company focused on diagnosis of mental health disorders.",
+                            ""
+                        ],
+                        "question_type": "RAG",
+                        "db_id": "olympics",
+                        "output": [
+                            {
+                                "name": "retriever_clapnq_olympics",
+                                "arguments": {
+                                    "query": "\nWhich Summer Olympics did Michael Fred Phelps, II win four gold and two silver medals?"
+                                }
+                            }
+                        ],
+                        "chunk_info": {
+                            "chunks": [
+                                {
+                                    "text": "Michael Fred Phelps II (born June 30, 1985) is an American former competitive swimmer. He is the most successful and most decorated Olympian of all time with a total of 28 medals. Phelps also holds the all-time records for Olympic gold medals (23), Olympic gold medals in individual events (13), and Olympic medals in individual events (16). At the 2004 Summer Olympics in Athens, Phelps tied the record of eight medals of any color at a single Games, held by gymnast Alexander Dityatin, by winning six gold and two bronze medals. Four years later, when he won eight gold medals at the 2008 Beijing Games, he broke fellow American swimmer Mark Spitz's 1972 record of seven first-place finishes at any single Olympic Games. At the 2012 Summer Olympics in London, Phelps won four gold and two silver medals, and at the 2016 Summer Olympics in Rio de Janeiro, he won five gold medals and one silver. This made him the most successful athlete of the Games for the fourth Olympics in a row.",
+                                    "gold_chunk": true
+                                },
+                                {
+                                    "text": "At the 2012 Summer Olympics in London, Phelps won four gold and two silver medals, and at the 2016 Summer Olympics in Rio de Janeiro, he won five gold medals and one silver. This made him the most successful athlete of the Games for the fourth Olympics in a row.\nPhelps is a former long course world record holder in the 200-meter freestyle, 100-meter butterfly, 200-meter butterfly, 200-meter individual medley, and 400-meter individual medley. He has won 82 medals in major international long course competitions, of which 65 were gold, 14 silver, and three bronze, spanning the Olympics, the World Championships, and the Pan Pacific Championships. Phelps's international titles and record-breaking performances have earned him the World Swimmer of the Year Award eight times and American Swimmer of the Year Award eleven times, as well as the FINA Swimmer of the Year Award in 2012 and 2016. Phelps earned Sports Illustrated magazine's Sportsman of the Year award due to his unprecedented Olympic success in the 2008 Games.\nAfter the 2008 Summer Olympics, Phelps started the Michael Phelps Foundation, which focuses on growing the sport of swimming and promoting healthier lifestyles.",
+                                    "gold_chunk": true
+                                },
+                                {
+                                    "text": "Phelps earned Sports Illustrated magazine's Sportsman of the Year award due to his unprecedented Olympic success in the 2008 Games.\nAfter the 2008 Summer Olympics, Phelps started the Michael Phelps Foundation, which focuses on growing the sport of swimming and promoting healthier lifestyles. Phelps retired following the 2012 Olympics, but he made a comeback in April 2014. At the 2016 Summer Olympics in Rio de Janeiro, his fifth Olympics, he was selected by his team to be the flag bearer of the United States at the 2016 Summer Olympics Parade of Nations. He announced his second retirement on August 12, 2016, having won more medals than 161 countries. He won the Laureus World Comeback of the Year Award in 2017. He is widely regarded as the greatest swimmer of all time and is often considered to be one of the greatest athletes of all time.\n=== 2012 Summer Olympics ===\n==== Trials ====\nFor the 2012 Summer Olympics in London, Phelps originally stated he would never do eight events again, and would instead try new events.",
+                                    "gold_chunk": false
+                                },
+                                {
+                                    "text": "He is widely regarded as the greatest swimmer of all time and is often considered to be one of the greatest athletes of all time.\n=== 2012 Summer Olympics ===\n==== Trials ====\nFor the 2012 Summer Olympics in London, Phelps originally stated he would never do eight events again, and would instead try new events. Phelps said, \"I keep saying I want to go down and start sprinting, but Bob [Bowman, Phelps's coach] really isn't so keen on that ... I don't think that's going to happen ... Over the next four years, I'd like to try some different events, maybe not do some of the events I did here.\" However, at the 2012 United States Olympic Trials, the qualifying meet for the 2012 Summer Olympics, Phelps qualified in the same eight events that he swam in Beijing in 2008. He later dropped the 200-meter freestyle from his program, as he stated he wanted to focus on the 4\u00d7100-meter freestyle relay.",
+                                    "gold_chunk": false
+                                },
+                                {
+                                    "text": "However, at the 2012 United States Olympic Trials, the qualifying meet for the 2012 Summer Olympics, Phelps qualified in the same eight events that he swam in Beijing in 2008. He later dropped the 200-meter freestyle from his program, as he stated he wanted to focus on the 4\u00d7100-meter freestyle relay. During the trials, Phelps finished first in the 200-meter freestyle, 100-meter butterfly, 200-meter butterfly, 200-meter individual medley, and second in the 400-meter individual medley. In making his fourth Olympic team, Phelps holds the record for men for the most Olympic appearances in swimming representing the United States.\nAfter the 2008 Olympics, Phelps used his $1 million Speedo bonus to set up the Michael Phelps Foundation. His foundation focuses on growing the sport of swimming and promoting healthier lifestyles.\nIn 2010, the Michael Phelps Foundation, the Michael Phelps Swim School and KidsHealth.org developed and nationally piloted the \"im\" program for Boys & Girls Club members. The im program teaches children the importance of being active and healthy, with a focus on the sport of swimming. It also promotes the value of planning and goal-setting.",
+                                    "gold_chunk": false
+                                },
+                                {
+                                    "text": "In 2010, the Michael Phelps Foundation, the Michael Phelps Swim School and KidsHealth.org developed and nationally piloted the \"im\" program for Boys & Girls Club members. The im program teaches children the importance of being active and healthy, with a focus on the sport of swimming. It also promotes the value of planning and goal-setting. im is offered through the Boys & Girls Clubs of America and through Special Olympics International. The Foundation has since developed two other programs, Level Field Fund-Swimming and Caps-for-a-Cause.\nThe Foundation's largest event is its annual fundraiser, the Michael Phelps Foundation Golf Classic. Phelps stated he hoped to work with his Foundation more after retirement from competition following the 2012 Summer Olympics in London.\nIn 2017, Phelps joined the board of Medibio, a company focused on diagnosis of mental health disorders.",
+                                    "gold_chunk": false
+                                }
+                            ],
+                            "chunks_error": false
+                        }
+                    }
+                ]                
+            },
+            {
+                "query": "What is the ratio of male to female athletes in these?",
+                "answer": [
+                    [
+                        1.2587021916630856
+                    ]
+                ],
+                "type": "(API)",
+                "gold_sequence": [
+                    {
+                        "db_id": "olympics",
+                        "question": "What is the ratio male to female athletes in the 2012 Summer Olympic?",
+                        "answer": [
+                            [
+                                1.2587021916630856
+                            ]
+                        ],
+                        "question_type": "API",
+                        "output": [
+                            {
+                                "name": "get_male_to_female_ratio_by_game_v1_olympics_male_to_female_ratio_by_game_get",
+                                "arguments": {
+                                    "games_name": "2012 Summer"
+                                }
+                            }
+                        ]
+                    }
+                ]                
+            }
+        ]
+    }
+]
