@@ -1,9 +1,25 @@
 # M3Benchmark
 
-## 📊 Dataset and REST APIs
+## 📊 Dataset
 
 Please find more details about the dataset (download, schema, etc.) in [docs/dataset.md](docs/dataset.md) and APIs in [apis](apis).
 
+## Download Data
+
+- **Task #1:** [Simple](https://github.com/)
+- **Task #2:** [MultiTurn](https://github.com/)
+
+## Data Schema
+
+| Field Name             | Type          | Description                                                                                                                                                           |
+|------------------------|---------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `sample_id`       | string        | A unique identifier for each dialogue. |
+| `domain`          | string        | Domain label for the dialogue. Possible values: "finance", "music", "movie3", "sports" ...... |
+| `num_turns`       | int           | Number of turns in the dialogue |
+| `turns`           | list          | List of dictionaries containing the question for each turn, answer, and API call|
+| `tool_list`       | list          | List of available tools for answering questions within the dialogue.|
+| `alt_ans`         | list          | Other valid gold standard answers to the question.|
+| `scenarios`       | dict          | Description present in [docs/scenarios.md](docs/dataset.md)|
 
 ## 📏 Evaluation Metrics
 M3 systems are evaluated using a scoring method that measures response quality to questions in the evaluation set. Responses are rated as perfect, acceptable, missing, or incorrect:
