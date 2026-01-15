@@ -6,57 +6,15 @@
             {
                 "query": "Which Summer Olympics did the competitor who has won the most medals win four gold and two silver medals?",
                 "answer": "2012 Summer",
-                "type": "(API-RAG)",
+                "type": "(API-RAG)", // include
                 "gold_sequence": [
                     {
                         "db_id": "olympics",
                         "question": "What is the name of the competitor who has won the most medals?",
-                        "evidence": "name of the competitor refers to full_name; won the most medals refer to MAX(COUNT(medal_id));",
-                        "SQL": "SELECT T1.full_name FROM person AS T1 INNER JOIN games_competitor AS T2 ON T1.id = T2.person_id INNER JOIN competitor_event AS T3 ON T2.id = T3.competitor_id INNER JOIN medal AS T4 ON T3.medal_id = T4.id WHERE T4.id != 4 GROUP BY T1.full_name ORDER BY COUNT(T4.id) DESC LIMIT 1",
                         "answer": [
                             [
                                 "Michael Fred Phelps, II"
                             ]
-                        ],
-                        "parameters": [],
-                        "links": {
-                            "Michael Fred Phelps, II": [
-                                [
-                                    "participant in",
-                                    "2012 Summer",
-                                    [
-                                        68,
-                                        113,
-                                        146
-                                    ]
-                                ],
-                                [
-                                    "participant in",
-                                    "2008 Summer",
-                                    [
-                                        71
-                                    ]
-                                ],
-                                [
-                                    "participant in",
-                                    "2004 Summer",
-                                    [
-                                        160
-                                    ]
-                                ],
-                                [
-                                    "participant in",
-                                    "2000 Summer",
-                                    [
-                                        114,
-                                        153
-                                    ]
-                                ]
-                            ]
-                        },
-                        "direct_links": [
-                            40,
-                            75
                         ],
                         "question_type": "API",
                         "OUTPUT_AFTER_EXECUTING_API": "{'full_name': 'Michael Fred Phelps, II'}",
@@ -68,9 +26,7 @@
                                     "medal_id": "4"
                                 }
                             }
-                        ],
-                        "ignore": false,
-                        "parameterized_query": "SELECT T1.full_name FROM person AS T1 INNER JOIN games_competitor AS T2 ON T1.id = T2.person_id INNER JOIN competitor_event AS T3 ON T2.id = T3.competitor_id INNER JOIN medal AS T4 ON T3.medal_id = T4.id WHERE T4.id != ? GROUP BY T1.full_name ORDER BY COUNT(T4.id) DESC LIMIT 1"
+                        ]
                     },
                     {
                         "question": "\nWhich Summer Olympics did Michael Fred Phelps, II win four gold and two silver medals?",
@@ -2111,11 +2067,6 @@
                 }
             }
         ],
-        "scenarios": {
-            "tool_use_policy": "ONLY_API",
-            "policy_domain": "OUT_DOMAIN:Retail, Sales & Commerce, which is/are about Topics related to retail operations, customer purchases, inventory, and product ordering..",
-            "missing_api": null,
-            "tool_availability": null
-        }
+        "additional_instructions": "Only use retrivers for Retail, Sales & Commerce, which is/are about Topics related to retail operations, customer purchases, inventory, and product ordering related questions."
     }
 ]

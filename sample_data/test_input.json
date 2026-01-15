@@ -1927,12 +1927,6 @@
                 }
             }
         ],
-        // Add a one line description of scenarios.
-        "scenarios": {
-            "tool_use_policy": "ONLY_API",
-            "policy_domain": "OUT_DOMAIN:Retail, Sales & Commerce, which is/are about Topics related to retail operations, customer purchases, inventory, and product ordering..",
-            "missing_api": null,
-            "tool_availability": null
-        }
+        "additional_instructions": "Only use retrivers for Retail, Sales & Commerce, which is/are about Topics related to retail operations, customer purchases, inventory, and product ordering related questions."
     }
 ]

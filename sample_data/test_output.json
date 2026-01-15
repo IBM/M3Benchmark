@@ -2,7 +2,7 @@
     {
         "sample_id": "91_sc_ONLY_API_OUT_DOMAIN",
         "domain": "olympics",
-        "results": [
+        "ground_truth": [
             {
                 "query": "Which Summer Olympics did the competitor who has won the most medals win four gold and two silver medals?",
                 "answer": ["2012 Summer"],
