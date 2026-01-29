@@ -1,0 +1,38 @@
+# FastAPI Server
+fastapi==0.109.0
+uvicorn[standard]
+starlette
+pydantic
+prometheus-fastapi-instrumentator
+
+# MCP Server
+mcp>=0.9.0
+httpx>=0.25.0
+
+# LangChain Agent Examples
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-openai>=0.0.5
+langchain-anthropic>=0.1.0
+langchain-community>=0.0.10
+langchain-ollama
+langgraph>=0.2.0
+
+# IBM WatsonX (optional)
+langchain-ibm
+ibm-cloud-sdk-core
+ibm-cos-sdk
+ibm_watsonx_ai
+ibm-generative-ai
+
+# RAG / Embeddings
+chromadb
+sentence-transformers
+
+# Utilities
+pandas
+python-dotenv
+jsonref
+tqdm
+openai>=1.0.0
+urllib3>=2.0.0

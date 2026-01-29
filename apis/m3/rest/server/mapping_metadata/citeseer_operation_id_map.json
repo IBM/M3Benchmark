@@ -1,0 +1,25 @@
+{
+  "file": "citeseer.py",
+  "mappings": {
+    "get_percentage_papers_by_class_label_v1_citeseer_percentage_papers_by_class_label_get": "get_percentage_papers_by_class_label",
+    "get_most_frequently_cited_word_v1_citeseer_most_frequently_cited_word_get": "get_most_frequently_cited_word",
+    "get_count_distinct_cited_words_by_class_label_v1_citeseer_count_distinct_cited_words_by_class_label_get": "get_count_distinct_cited_words_by_class_label",
+    "get_class_label_and_cited_word_by_paper_id_v1_citeseer_class_label_and_cited_word_by_paper_id_get": "get_class_label_and_cited_word_by_paper_id",
+    "get_most_frequently_cited_word_by_class_label_v1_citeseer_most_frequently_cited_word_by_class_label_get": "get_most_frequently_cited_word_by_class_label",
+    "get_percentage_distinct_cited_words_by_class_label_v1_citeseer_percentage_distinct_cited_words_by_class_label_get": "get_percentage_distinct_cited_words_by_class_label",
+    "get_paper_with_highest_cited_words_v1_citeseer_paper_with_highest_cited_words_get": "get_paper_with_highest_cited_words",
+    "get_paper_and_class_label_by_cited_word_v1_citeseer_paper_and_class_label_by_cited_word_get": "get_paper_and_class_label_by_cited_word",
+    "get_distinct_cited_words_by_class_label_v1_citeseer_distinct_cited_words_by_class_label_get": "get_distinct_cited_words_by_class_label",
+    "get_count_cited_words_by_class_label_and_paper_id_v1_citeseer_count_cited_words_by_class_label_and_paper_id_get": "get_count_cited_words_by_class_label_and_paper_id",
+    "get_distinct_paper_class_label_v1_citeseer_distinct_paper_class_label_by_word_cited_count_get": "get_distinct_paper_class_label",
+    "get_distinct_word_cited_ids_v1_citeseer_distinct_word_cited_ids_by_class_labels_get": "get_distinct_word_cited_ids",
+    "get_most_cited_paper_v1_citeseer_most_cited_paper_get": "get_most_cited_paper",
+    "get_proportion_of_papers_v1_citeseer_proportion_of_papers_by_class_label_get": "get_proportion_of_papers",
+    "get_distinct_word_cited_ids_by_citing_paper_v1_citeseer_distinct_word_cited_ids_by_citing_paper_get": "get_distinct_word_cited_ids_by_citing_paper",
+    "get_count_papers_by_citing_paper_and_word_cited_v1_citeseer_count_papers_by_citing_paper_and_word_cited_get": "get_count_papers_by_citing_paper_and_word_cited",
+    "get_distinct_class_labels_by_word_cited_v1_citeseer_distinct_class_labels_by_word_cited_get": "get_distinct_class_labels_by_word_cited",
+    "get_top_paper_by_class_label_v1_citeseer_top_paper_by_class_label_get": "get_top_paper_by_class_label",
+    "get_count_papers_by_class_label_and_cited_paper_v1_citeseer_count_papers_by_class_label_and_cited_paper_get": "get_count_papers_by_class_label_and_cited_paper"
+  },
+  "count": 19
+}

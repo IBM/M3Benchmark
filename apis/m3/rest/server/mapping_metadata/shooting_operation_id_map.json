@@ -1,0 +1,32 @@
+{
+  "file": "shooting.py",
+  "mappings": {
+    "get_percentage_officers_race_gender_v1_shooting_percentage_officers_race_gender_get": "get_percentage_officers_race_gender",
+    "get_percentage_incidents_officer_count_date_range_v1_shooting_percentage_incidents_officer_count_date_range_get": "get_percentage_incidents_officer_count_date_range",
+    "get_year_highest_incidents_subject_weapon_v1_shooting_year_highest_incidents_subject_weapon_get": "get_year_highest_incidents_subject_weapon",
+    "get_percentage_incidents_subject_status_grand_jury_disposition_v1_shooting_percentage_incidents_subject_status_grand_jury_disposition_get": "get_percentage_incidents_subject_status_grand_jury_disposition",
+    "get_difference_incidents_subject_weapon_years_v1_shooting_difference_incidents_subject_weapon_years_get": "get_difference_incidents_subject_weapon_years",
+    "get_percentage_incidents_subject_status_subject_weapon_v1_shooting_percentage_incidents_subject_status_subject_weapon_get": "get_percentage_incidents_subject_status_subject_weapon",
+    "get_officers_last_name_gender_grand_jury_disposition_v1_shooting_officers_last_name_gender_grand_jury_disposition_get": "get_officers_last_name_gender_grand_jury_disposition",
+    "get_incidents_subject_gender_v1_shooting_incidents_subject_gender_get": "get_incidents_subject_gender",
+    "get_incidents_location_subject_gender_v1_shooting_incidents_location_subject_gender_get": "get_incidents_location_subject_gender",
+    "get_incidents_officer_name_v1_shooting_incidents_officer_name_get": "get_incidents_officer_name",
+    "get_officer_details_by_case_number_v1_shooting_officer_details_by_case_number_get": "get_officer_details_by_case_number",
+    "get_subject_details_by_status_v1_shooting_subject_details_by_status_get": "get_subject_details_by_status",
+    "get_percentage_weapon_gender_v1_shooting_percentage_weapon_gender_get": "get_percentage_weapon_gender",
+    "get_percentage_weapon_comparison_v1_shooting_percentage_weapon_comparison_get": "get_percentage_weapon_comparison",
+    "get_case_numbers_by_year_status_v1_shooting_case_numbers_by_year_status_get": "get_case_numbers_by_year_status",
+    "get_count_incidents_weapon_officer_gender_v1_shooting_count_incidents_weapon_officer_gender_get": "get_count_incidents_weapon_officer_gender",
+    "get_count_incidents_subject_gender_status_v1_shooting_count_incidents_subject_gender_status_get": "get_count_incidents_subject_gender_status",
+    "get_count_incidents_officer_race_date_range_v1_shooting_count_incidents_officer_race_date_range_get": "get_count_incidents_officer_race_date_range",
+    "get_count_incidents_date_range_v1_shooting_count_incidents_date_range_get": "get_count_incidents_date_range",
+    "get_incident_count_v1_shooting_incident_count_by_weapon_status_date_get": "get_incident_count",
+    "get_most_common_weapon_v1_shooting_most_common_weapon_deceased_get": "get_most_common_weapon",
+    "get_male_to_female_ratio_v1_shooting_male_to_female_ratio_by_race_get": "get_male_to_female_ratio",
+    "get_race_difference_v1_shooting_race_difference_by_gender_get": "get_race_difference",
+    "get_subject_details_v1_shooting_subject_details_by_case_number_get": "get_subject_details",
+    "get_case_details_v1_shooting_case_details_by_officer_name_get": "get_case_details",
+    "get_percentage_male_officers_v1_shooting_percentage_male_officers_by_subject_status_get": "get_percentage_male_officers"
+  },
+  "count": 26
+}

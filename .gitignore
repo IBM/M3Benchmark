@@ -1,0 +1,21 @@
+# Database files
+apis/m3/rest/db/
+db/
+
+# Python
+*.pyc
+__pycache__/
+.venv/
+*.venv/
+venv/
+
+# Environment
+.env
+
+# OS
+.DS_Store
+
+# Large binaries
+*.dylib
+*.so
+*.sqlite

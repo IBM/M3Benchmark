@@ -1,0 +1,12 @@
+{
+  "file": "craftbeer.py",
+  "mappings": {
+    "get_distinct_states_min_ibu_v1_craftbeer_distinct_states_min_ibu_get": "get_distinct_states_min_ibu",
+    "get_highest_ibu_brewery_by_state_v1_craftbeer_highest_ibu_brewery_by_state_get": "get_highest_ibu_brewery_by_state",
+    "get_avg_abv_by_brewery_and_ounces_v1_craftbeer_avg_abv_by_brewery_and_ounces_get": "get_avg_abv_by_brewery_and_ounces",
+    "get_percentage_beer_style_by_brewery_v1_craftbeer_percentage_beer_style_by_brewery_get": "get_percentage_beer_style_by_brewery",
+    "get_breweries_with_max_min_ibu_v1_craftbeer_breweries_with_max_min_ibu_get": "get_breweries_with_max_min_ibu",
+    "get_percentage_beer_state_by_style_v1_craftbeer_percentage_beer_state_by_style_get": "get_percentage_beer_state_by_style"
+  },
+  "count": 6
+}
