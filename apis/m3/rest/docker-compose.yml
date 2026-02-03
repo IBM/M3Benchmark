@@ -1,36 +1,19 @@
-version: '3.8'
-
 services:
   fastapi-mcp:
-    build:
-      context: .
-      dockerfile: Dockerfile.mcp
+    build: .
     container_name: fastapi-mcp-server
+    command: >
+      bash -c "
+        uvicorn app:app --host 0.0.0.0 --port 8000 &
+        echo 'Waiting for FastAPI...' &&
+        until curl -sf http://localhost:8000/health > /dev/null 2>&1; do sleep 1; done &&
+        echo 'FastAPI is up, starting MCP server...' &&
+        python mcp_server.py
+      "
     ports:
-      - "8000:8000"  # FastAPI server
-      - "8001:8001"  # MCP server (for external connections)
+      - "8000:8000"
     environment:
       - FASTAPI_BASE_URL=http://localhost:8000
-    volumes:
-      - ./db:/app/db:ro  # Mount database directory as read-only
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-    restart: unless-stopped
-    stdin_open: true  # Keep stdin open for MCP stdio communication
-    tty: true         # Allocate a pseudo-TTY
-
-  # Optional: Separate FastAPI service (if you want them separate)
-  fastapi-only:
-    build:
-      context: .
-      dockerfile: Dockerfile.mcp
-    container_name: fastapi-only
-    command: uvicorn app:app --host 0.0.0.0 --port 8000
-    ports:
-      - "8002:8000"  # Different port to avoid conflict
     volumes:
       - ./db:/app/db:ro
     healthcheck:
@@ -39,5 +22,5 @@ services:
       timeout: 5s
       retries: 5
     restart: unless-stopped
-    profiles:
-      - separate  # Only start with --profile separate
+    stdin_open: true
+    tty: true

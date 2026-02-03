@@ -1,0 +1,642 @@
+[
+  {
+    "domain": "address",
+    "question": "Which state has the most zip codes?"
+  },
+  {
+    "domain": "address",
+    "question": "How many distinct countries are in the address database?"
+  },
+  {
+    "domain": "airline",
+    "question": "Which airline has the most routes?"
+  },
+  {
+    "domain": "airline",
+    "question": "How many airports are in the United States?"
+  },
+  {
+    "domain": "app_store",
+    "question": "Which app category has the highest average user rating on the Play Store?"
+  },
+  {
+    "domain": "app_store",
+    "question": "How many apps have more negative reviews than positive reviews?"
+  },
+  {
+    "domain": "authors",
+    "question": "Which author has the most papers published across all conferences?"
+  },
+  {
+    "domain": "authors",
+    "question": "Which conference has the most papers submitted?"
+  },
+  {
+    "domain": "beer_factory",
+    "question": "Which root beer brand has the highest average review rating?"
+  },
+  {
+    "domain": "beer_factory",
+    "question": "Which customer location has the most root beer transactions?"
+  },
+  {
+    "domain": "bike_share_1",
+    "question": "Which station has the most trip starts?"
+  },
+  {
+    "domain": "bike_share_1",
+    "question": "What is the average trip duration on rainy days versus sunny days?"
+  },
+  {
+    "domain": "book_publishing_company",
+    "question": "Which publisher has the most titles?"
+  },
+  {
+    "domain": "book_publishing_company",
+    "question": "Which author earns the highest royalty percentage?"
+  },
+  {
+    "domain": "books",
+    "question": "Which publisher has the most books in the database?"
+  },
+  {
+    "domain": "books",
+    "question": "Which shipping method is used most often for book orders?"
+  },
+  {
+    "domain": "california_schools",
+    "question": "Which school has the highest SAT score?"
+  },
+  {
+    "domain": "california_schools",
+    "question": "What is the average free and reduced price meal eligibility rate across all schools?"
+  },
+  {
+    "domain": "car_retails",
+    "question": "Which product line generates the most total revenue from orders?"
+  },
+  {
+    "domain": "car_retails",
+    "question": "Which office has the most customers?"
+  },
+  {
+    "domain": "card_games",
+    "question": "Which card set has the most cards?"
+  },
+  {
+    "domain": "card_games",
+    "question": "How many cards have rulings associated with them?"
+  },
+  {
+    "domain": "cars",
+    "question": "Which country produces the most cars?"
+  },
+  {
+    "domain": "cars",
+    "question": "What is the average price of cars by production year?"
+  },
+  {
+    "domain": "chicago_crime",
+    "question": "Which IUCR code is the most frequently reported crime type?"
+  },
+  {
+    "domain": "chicago_crime",
+    "question": "Which ward has the highest number of crimes?"
+  },
+  {
+    "domain": "citeseer",
+    "question": "Which paper has the most citations?"
+  },
+  {
+    "domain": "citeseer",
+    "question": "How many papers are in the citeseer database?"
+  },
+  {
+    "domain": "codebase_comments",
+    "question": "Which repository has the most methods?"
+  },
+  {
+    "domain": "codebase_comments",
+    "question": "What is the average number of parameters per method?"
+  },
+  {
+    "domain": "codebase_community",
+    "question": "Which user has the highest reputation score?"
+  },
+  {
+    "domain": "codebase_community",
+    "question": "How many posts have an accepted answer?"
+  },
+  {
+    "domain": "coinmarketcap",
+    "question": "Which coin has the highest historical market cap?"
+  },
+  {
+    "domain": "coinmarketcap",
+    "question": "How many coins are tracked in the database?"
+  },
+  {
+    "domain": "college_completion",
+    "question": "Which institution has the highest graduation rate?"
+  },
+  {
+    "domain": "college_completion",
+    "question": "What is the average graduation rate by state sector?"
+  },
+  {
+    "domain": "computer_student",
+    "question": "Which professor has the most students they advise?"
+  },
+  {
+    "domain": "computer_student",
+    "question": "Which course is taught by the most professors?"
+  },
+  {
+    "domain": "cookbook",
+    "question": "Which ingredient appears in the most recipes?"
+  },
+  {
+    "domain": "cookbook",
+    "question": "Which recipe has the highest total nutrition value?"
+  },
+  {
+    "domain": "craftbeer",
+    "question": "Which brewery produces the most different beers?"
+  },
+  {
+    "domain": "craftbeer",
+    "question": "What is the average ABV across all craft beers?"
+  },
+  {
+    "domain": "cs_semester",
+    "question": "Which professor teaches the most courses?"
+  },
+  {
+    "domain": "cs_semester",
+    "question": "How many students are registered as research assistants?"
+  },
+  {
+    "domain": "debit_card_specializing",
+    "question": "Which gas station has the most transactions?"
+  },
+  {
+    "domain": "debit_card_specializing",
+    "question": "What is the most purchased product by transaction count?"
+  },
+  {
+    "domain": "disney",
+    "question": "Which Disney movie has the highest total gross?"
+  },
+  {
+    "domain": "disney",
+    "question": "Which voice actor has appeared in the most Disney movies?"
+  },
+  {
+    "domain": "donor",
+    "question": "Which project has received the most donations?"
+  },
+  {
+    "domain": "donor",
+    "question": "What is the most common resource type requested by projects?"
+  },
+  {
+    "domain": "european_football_1",
+    "question": "Which division has the most recorded matches?"
+  },
+  {
+    "domain": "european_football_1",
+    "question": "Which team has won the most home matches?"
+  },
+  {
+    "domain": "european_football_2",
+    "question": "Which player has the highest overall rating in player attributes?"
+  },
+  {
+    "domain": "european_football_2",
+    "question": "Which league has the most teams?"
+  },
+  {
+    "domain": "financial",
+    "question": "Which district has the most accounts?"
+  },
+  {
+    "domain": "financial",
+    "question": "How many loans are currently in default?"
+  },
+  {
+    "domain": "food_inspection",
+    "question": "Which business has the most violations?"
+  },
+  {
+    "domain": "food_inspection",
+    "question": "What percentage of inspections result in a violation?"
+  },
+  {
+    "domain": "food_inspection_2",
+    "question": "Which establishment has the most inspection points?"
+  },
+  {
+    "domain": "food_inspection_2",
+    "question": "How many employees are listed as inspectors?"
+  },
+  {
+    "domain": "formula_1",
+    "question": "Which driver has the most race wins?"
+  },
+  {
+    "domain": "formula_1",
+    "question": "Which constructor has the most podium finishes?"
+  },
+  {
+    "domain": "genes",
+    "question": "Which gene classification has the most genes?"
+  },
+  {
+    "domain": "genes",
+    "question": "Which gene has the most interactions?"
+  },
+  {
+    "domain": "hockey",
+    "question": "Who is the most recently born hockey player in the Master table?"
+  },
+  {
+    "domain": "hockey",
+    "question": "Which team has won the most Stanley Cup series?"
+  },
+  {
+    "domain": "human_resources",
+    "question": "Which position has the highest average salary?"
+  },
+  {
+    "domain": "human_resources",
+    "question": "Which location has the most employees?"
+  },
+  {
+    "domain": "ice_hockey_draft",
+    "question": "Which height range is the most common among drafted players?"
+  },
+  {
+    "domain": "ice_hockey_draft",
+    "question": "What is the average weight of players by season status?"
+  },
+  {
+    "domain": "image_and_language",
+    "question": "Which object class appears most frequently in images?"
+  },
+  {
+    "domain": "image_and_language",
+    "question": "How many images have object-attribute annotations?"
+  },
+  {
+    "domain": "language_corpus",
+    "question": "Which language has the most words in the corpus?"
+  },
+  {
+    "domain": "language_corpus",
+    "question": "How many pages are in the language corpus?"
+  },
+  {
+    "domain": "law_episode",
+    "question": "Which person has won the most awards on Law and Order?"
+  },
+  {
+    "domain": "law_episode",
+    "question": "Which episode has the highest vote count?"
+  },
+  {
+    "domain": "legislator",
+    "question": "Which state has the most current legislators?"
+  },
+  {
+    "domain": "legislator",
+    "question": "How many historical legislators served more than 3 terms?"
+  },
+  {
+    "domain": "mental_health_survey",
+    "question": "What is the most common answer to survey questions?"
+  },
+  {
+    "domain": "mental_health_survey",
+    "question": "How many distinct surveys are in the database?"
+  },
+  {
+    "domain": "menu",
+    "question": "Which menu has the most menu items?"
+  },
+  {
+    "domain": "menu",
+    "question": "Which dish appears on the most different menus?"
+  },
+  {
+    "domain": "mondial_geo",
+    "question": "Which country has the most bordering countries?"
+  },
+  {
+    "domain": "mondial_geo",
+    "question": "What is the longest river in the database?"
+  },
+  {
+    "domain": "movie",
+    "question": "Which actor has appeared in the most movies?"
+  },
+  {
+    "domain": "movie",
+    "question": "Which movie has the most characters?"
+  },
+  {
+    "domain": "movie_3",
+    "question": "Which film category has the most films?"
+  },
+  {
+    "domain": "movie_3",
+    "question": "Which store has the most rentals?"
+  },
+  {
+    "domain": "movie_platform",
+    "question": "Which movie has the highest average user rating?"
+  },
+  {
+    "domain": "movie_platform",
+    "question": "Which user has submitted the most ratings?"
+  },
+  {
+    "domain": "movies_4",
+    "question": "Which person is credited in the most movie crews?"
+  },
+  {
+    "domain": "movies_4",
+    "question": "Which production company has produced the most movies?"
+  },
+  {
+    "domain": "movielens",
+    "question": "Which movie has the most user ratings?"
+  },
+  {
+    "domain": "movielens",
+    "question": "Which director has directed the most movies?"
+  },
+  {
+    "domain": "music_platform_2",
+    "question": "Which podcast category has the most podcasts?"
+  },
+  {
+    "domain": "music_platform_2",
+    "question": "Which podcast has the most reviews?"
+  },
+  {
+    "domain": "music_tracker",
+    "question": "Which torrent has the most tags?"
+  },
+  {
+    "domain": "music_tracker",
+    "question": "How many distinct tags are in the music tracker?"
+  },
+  {
+    "domain": "olympics",
+    "question": "Which region has won the most gold medals?"
+  },
+  {
+    "domain": "olympics",
+    "question": "Which sport has the most events?"
+  },
+  {
+    "domain": "professional_basketball",
+    "question": "Which player has won the most awards?"
+  },
+  {
+    "domain": "professional_basketball",
+    "question": "Which team has the most draft picks?"
+  },
+  {
+    "domain": "public_review_platform",
+    "question": "Which business has the most reviews?"
+  },
+  {
+    "domain": "public_review_platform",
+    "question": "Which user has the most compliments?"
+  },
+  {
+    "domain": "regional_sales",
+    "question": "Which region has the highest total sales?"
+  },
+  {
+    "domain": "regional_sales",
+    "question": "Which product has the most orders?"
+  },
+  {
+    "domain": "restaurant",
+    "question": "Which city has the most restaurants?"
+  },
+  {
+    "domain": "restaurant",
+    "question": "What is the most common food type in the restaurant database?"
+  },
+  {
+    "domain": "retail_complains",
+    "question": "Which district has the most call center logs?"
+  },
+  {
+    "domain": "retail_complains",
+    "question": "What is the most common event type in retail complaints?"
+  },
+  {
+    "domain": "retail_world",
+    "question": "Which category has the most products?"
+  },
+  {
+    "domain": "retail_world",
+    "question": "Which shipper handles the most orders?"
+  },
+  {
+    "domain": "retails",
+    "question": "Which nation has the most customers?"
+  },
+  {
+    "domain": "retails",
+    "question": "Which supplier provides the most parts?"
+  },
+  {
+    "domain": "sales",
+    "question": "Which employee has the highest total sales?"
+  },
+  {
+    "domain": "sales",
+    "question": "Which product is the best seller by quantity?"
+  },
+  {
+    "domain": "sales_in_weather",
+    "question": "Which weather condition is associated with the highest sales?"
+  },
+  {
+    "domain": "sales_in_weather",
+    "question": "How many distinct weather stations are tracked in the sales data?"
+  },
+  {
+    "domain": "shakespeare",
+    "question": "Which Shakespeare work has the most chapters?"
+  },
+  {
+    "domain": "shakespeare",
+    "question": "Which character has the most paragraphs of dialogue?"
+  },
+  {
+    "domain": "shipping",
+    "question": "Which driver has completed the most shipments?"
+  },
+  {
+    "domain": "shipping",
+    "question": "Which city is the most common shipment destination?"
+  },
+  {
+    "domain": "shooting",
+    "question": "How many shooting incidents involved officers?"
+  },
+  {
+    "domain": "shooting",
+    "question": "What is the most common subject status in shooting incidents?"
+  },
+  {
+    "domain": "simpson_episodes",
+    "question": "Which person has won the most awards for The Simpsons?"
+  },
+  {
+    "domain": "simpson_episodes",
+    "question": "Which episode has the highest vote score?"
+  },
+  {
+    "domain": "soccer_2016",
+    "question": "Which team scored the most runs in the 2016 season?"
+  },
+  {
+    "domain": "soccer_2016",
+    "question": "Which venue hosted the most matches?"
+  },
+  {
+    "domain": "social_media",
+    "question": "Which user has the most tweets?"
+  },
+  {
+    "domain": "social_media",
+    "question": "Which location has the most social media users?"
+  },
+  {
+    "domain": "software_company",
+    "question": "Which customer demographic has the highest sales?"
+  },
+  {
+    "domain": "software_company",
+    "question": "How many customers received all three rounds of mailings?"
+  },
+  {
+    "domain": "student_club",
+    "question": "Which event has the highest attendance?"
+  },
+  {
+    "domain": "student_club",
+    "question": "Which major has the most club members?"
+  },
+  {
+    "domain": "student_loan",
+    "question": "How many people have filed for bankruptcy?"
+  },
+  {
+    "domain": "student_loan",
+    "question": "What percentage of people are enrolled and have no payment due?"
+  },
+  {
+    "domain": "superhero",
+    "question": "Which publisher has the most superheroes?"
+  },
+  {
+    "domain": "superhero",
+    "question": "Which superpower is the most common?"
+  },
+  {
+    "domain": "superstore",
+    "question": "Which product sub-category has the highest total sales in the central region?"
+  },
+  {
+    "domain": "superstore",
+    "question": "Which person in the people table is associated with the most orders?"
+  },
+  {
+    "domain": "synthea",
+    "question": "What is the most commonly diagnosed condition?"
+  },
+  {
+    "domain": "synthea",
+    "question": "Which medication is prescribed the most?"
+  },
+  {
+    "domain": "talkingdata",
+    "question": "Which phone brand has the most devices?"
+  },
+  {
+    "domain": "talkingdata",
+    "question": "Which app label category has the most apps?"
+  },
+  {
+    "domain": "thrombosis_prediction",
+    "question": "What is the most common laboratory test performed?"
+  },
+  {
+    "domain": "thrombosis_prediction",
+    "question": "How many patients have abnormal examination results?"
+  },
+  {
+    "domain": "toxicology",
+    "question": "Which molecule has the most atoms?"
+  },
+  {
+    "domain": "toxicology",
+    "question": "What is the most common bond type between connected atoms?"
+  },
+  {
+    "domain": "trains",
+    "question": "Which train has the most cars?"
+  },
+  {
+    "domain": "trains",
+    "question": "How many distinct trains are in the database?"
+  },
+  {
+    "domain": "university",
+    "question": "Which university has the highest ranking score?"
+  },
+  {
+    "domain": "university",
+    "question": "Which country has the most universities in the ranking?"
+  },
+  {
+    "domain": "video_games",
+    "question": "Which game has the highest global sales?"
+  },
+  {
+    "domain": "video_games",
+    "question": "Which genre has the most games?"
+  },
+  {
+    "domain": "works_cycles",
+    "question": "Which product category has the highest total sales?"
+  },
+  {
+    "domain": "works_cycles",
+    "question": "Which salesperson has the most sales orders?"
+  },
+  {
+    "domain": "world",
+    "question": "Which country has the highest population?"
+  },
+  {
+    "domain": "world",
+    "question": "What is the most spoken language in the world?"
+  },
+  {
+    "domain": "world_development_indicators",
+    "question": "Which country has the highest GDP indicator value?"
+  },
+  {
+    "domain": "world_development_indicators",
+    "question": "How many distinct indicator series are tracked?"
+  }
+]

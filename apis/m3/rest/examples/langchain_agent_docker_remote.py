@@ -1,17 +1,84 @@
 """
-LangChain ReAct Agent using MCP Server (Docker Remote)
-This example connects to an MCP server running inside a Docker container
-The agent runs locally with Ollama, connecting to Dockerized MCP+FastAPI
+LangChain ReAct Agent using MCP Server (Docker)
+
+Connects to the MCP server running inside the single Docker container.
+The agent runs locally; the MCP server + FastAPI run in Docker.
+
+Usage:
+    # Start the container first
+    docker-compose up -d
+
+    # Run agent scoped to a single domain
+    MCP_DOMAINS="hockey" python examples/langchain_agent_docker_remote.py
+
+    # Run agent scoped to multiple domains
+    MCP_DOMAINS="hockey,superhero" python examples/langchain_agent_docker_remote.py
+
+    # Run agent with all domains
+    python examples/langchain_agent_docker_remote.py
 """
 import asyncio
 import os
-from typing import Any, Dict, List
+import time
+from typing import Any, Dict, List, Optional
 
 from langchain_core.tools import StructuredTool
 from langchain_anthropic import ChatAnthropic
 from langgraph.prebuilt import create_react_agent
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
+
+
+class ProfileStats:
+    """Collects timing data across the run."""
+
+    def __init__(self):
+        self.mcp_init_s: float = 0
+        self.tool_discovery_s: float = 0
+        self.agent_creation_s: float = 0
+        self.queries: List[Dict] = []  # {query, total_s, tool_calls, error}
+        self.tool_calls: List[Dict] = []  # {tool_name, duration_s, query_index}
+
+    def print_summary(self):
+        print("\n" + "=" * 80)
+        print("PROFILING SUMMARY")
+        print("=" * 80)
+
+        print(f"\n  MCP session init:    {self.mcp_init_s:8.3f}s")
+        print(f"  Tool discovery:      {self.tool_discovery_s:8.3f}s")
+        print(f"  Agent creation:      {self.agent_creation_s:8.3f}s")
+
+        total_query_time = sum(q["total_s"] for q in self.queries)
+        print(f"\n  Queries: {len(self.queries)}   Total query time: {total_query_time:.3f}s")
+        print(f"  {'#':<4} {'Time':>8}  {'Tools':>5}  Query")
+        print(f"  {'─'*4} {'─'*8}  {'─'*5}  {'─'*50}")
+        for i, q in enumerate(self.queries):
+            print(f"  {i+1:<4} {q['total_s']:7.3f}s  {q['tool_calls']:5d}  {q['query'][:50]}")
+            if q.get("error"):
+                print(f"       ERROR: {q['error']}")
+
+        if self.tool_calls:
+            print(f"\n  Individual tool calls: {len(self.tool_calls)}")
+            total_tool_time = sum(tc["duration_s"] for tc in self.tool_calls)
+            print(f"  Total tool execution time: {total_tool_time:.3f}s")
+            print(f"  Avg tool call: {total_tool_time / len(self.tool_calls):.3f}s")
+            print(f"\n  {'Tool Name':<45} {'Time':>8}  {'Query #':>7}")
+            print(f"  {'─'*45} {'─'*8}  {'─'*7}")
+            for tc in self.tool_calls:
+                print(f"  {tc['tool_name'][:45]:<45} {tc['duration_s']:7.3f}s  {tc['query_index']+1:>7}")
+
+        overhead = total_query_time - sum(tc["duration_s"] for tc in self.tool_calls)
+        print(f"\n  LLM reasoning overhead: {overhead:.3f}s "
+              f"({overhead / total_query_time * 100:.1f}% of query time)" if total_query_time > 0 else "")
+
+        grand_total = self.mcp_init_s + self.tool_discovery_s + self.agent_creation_s + total_query_time
+        print(f"\n  Grand total: {grand_total:.3f}s")
+        print("=" * 80)
+
+
+# Global stats instance — set per run
+_stats: Optional[ProfileStats] = None
+_current_query_index: int = 0
 
 
 class MCPToolWrapper:
@@ -25,44 +92,37 @@ class MCPToolWrapper:
     async def get_tools(self) -> List[StructuredTool]:
         """Fetch tools from MCP server and convert to LangChain tools"""
         if self.tools_cache is None:
-            # List tools from MCP server
             response = await self.session.list_tools()
             mcp_tools = response.tools
-
-            langchain_tools = []
-            for mcp_tool in mcp_tools:
-                # Create a LangChain tool for each MCP tool
-                tool = self._create_langchain_tool(mcp_tool)
-                langchain_tools.append(tool)
-
-            self.tools_cache = langchain_tools
-
+            self.tools_cache = [self._create_langchain_tool(t) for t in mcp_tools]
         return self.tools_cache
 
     def _create_langchain_tool(self, mcp_tool) -> StructuredTool:
         """Convert a single MCP tool to a LangChain StructuredTool"""
 
         async def tool_func(**kwargs) -> str:
-            """Execute the MCP tool"""
+            global _stats, _current_query_index
+            t0 = time.perf_counter()
             result = await self.session.call_tool(mcp_tool.name, kwargs)
-            # Extract text content from result
+            duration = time.perf_counter() - t0
+            if _stats is not None:
+                _stats.tool_calls.append({
+                    "tool_name": mcp_tool.name,
+                    "duration_s": duration,
+                    "query_index": _current_query_index,
+                })
+            print(f"  [tool] {mcp_tool.name} -> {duration:.3f}s")
             if result.content:
                 return result.content[0].text
             return "No result"
 
         tool_name = mcp_tool.name
 
-        # Apply OpenAI-specific restrictions only when using OpenAI
         if self.use_openai:
-            # OpenAI requires tool names to match ^[a-zA-Z0-9_-]+$ and be max 64 chars
             import re
             tool_name = re.sub(r'[^a-zA-Z0-9_-]', '_', tool_name)
-
-            # Shorten if needed
             if len(tool_name) > 64:
-                # Try to shorten by removing common prefixes
                 tool_name = tool_name.replace("get_", "").replace("_by_", "_").replace("_with_", "_")
-                # If still too long, truncate
                 if len(tool_name) > 64:
                     tool_name = tool_name[:64]
 
@@ -71,202 +131,189 @@ class MCPToolWrapper:
             description=mcp_tool.description or f"Tool: {mcp_tool.name}",
             func=lambda **kwargs: asyncio.run(tool_func(**kwargs)),
             coroutine=tool_func,
-            args_schema=None,  # We'll let LangChain infer from the function signature
+            args_schema=None,
         )
+
+
+def create_llm():
+    """Initialize LLM based on available API keys / env vars.
+
+    Priority: Ollama > Claude > OpenAI
+    Returns (llm, use_openai, max_tools)
+    """
+    skip_claude = os.getenv("SKIP_CLAUDE") or os.getenv("USE_OLLAMA")
+
+    if os.getenv("USE_OLLAMA") or (not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY")):
+        try:
+            from langchain_ollama import ChatOllama as OllamaTool
+            ollama_model = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
+            llm = OllamaTool(model=ollama_model, temperature=0, num_ctx=65536)
+            print(f"Using Ollama with {ollama_model} (supports 200+ tools with 65K context)")
+            return llm, False, 205
+        except ImportError:
+            print("langchain-ollama not installed. Run: pip install langchain-ollama")
+            if not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+                exit(1)
+        except Exception as e:
+            print(f"Ollama error: {e}")
+            print("Make sure Ollama is running: ollama serve")
+            if not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY"):
+                exit(1)
+
+    if os.getenv("ANTHROPIC_API_KEY") and not skip_claude:
+        llm = ChatAnthropic(
+            model="claude-3-5-sonnet-20241022",
+            temperature=0,
+            api_key=os.getenv("ANTHROPIC_API_KEY"),
+        )
+        print("Using Claude 3.5 Sonnet (supports 1000+ tools)")
+        return llm, False, 1024
+
+    from langchain_openai import ChatOpenAI
+    llm = ChatOpenAI(
+        model="gpt-4",
+        temperature=0,
+        api_key=os.getenv("OPENAI_API_KEY"),
+    )
+    print("Using OpenAI GPT-4 (limited to 50 tools)")
+    return llm, True, 50
 
 
 async def main():
     """Main function to run the LangChain agent"""
+    global _stats, _current_query_index
 
-    # Initialize LLM - Priority: USE_OLLAMA env var > Claude > OpenAI
-    use_openai = False
-    max_tools = 205  # Default for Ollama and Claude
+    _stats = ProfileStats()
+    llm, use_openai, max_tools = create_llm()
 
-    # Check if we should use Ollama (prioritize USE_OLLAMA env var)
-    skip_claude = os.getenv("SKIP_CLAUDE") or os.getenv("USE_OLLAMA")
-
-    if os.getenv("USE_OLLAMA") or (not os.getenv("ANTHROPIC_API_KEY") and not os.getenv("OPENAI_API_KEY")):
-        # Option 1: Ollama with tool-calling models (local, free)
-        try:
-            from langchain_ollama import ChatOllama as OllamaTool
-
-            ollama_model = os.getenv("OLLAMA_MODEL", "llama3.1:8b")
-            print(f"Using Ollama with {ollama_model} (local, FREE, supports 200+ tools)")
-
-            llm = OllamaTool(
-                model=ollama_model,
-                temperature=0,
-                num_ctx=65536,  # Large context window for 200+ tools
-            )
-            max_tools = 205
-            print(f"✅ Ollama configured with 65K context for ALL {max_tools} tools")
-
-        except ImportError:
-            print("❌ langchain-ollama not installed")
-            print("Install with: pip install langchain-ollama")
-            print("Then run: ollama pull llama3.1:8b")
-            exit(1)
-        except Exception as e:
-            print(f"❌ Ollama error: {e}")
-            print("Make sure Ollama is running: ollama serve")
-            print("And model is available: ollama pull llama3.1:8b")
-            exit(1)
-
-    elif os.getenv("ANTHROPIC_API_KEY") and not skip_claude:
-        # Option 2: Claude (best for large tool sets)
-        llm = ChatAnthropic(
-            model="claude-3-5-sonnet-20241022",
-            temperature=0,
-            api_key=os.getenv("ANTHROPIC_API_KEY")
-        )
-        max_tools = 1024
-        print("Using Claude 3.5 Sonnet (supports 1000+ tools)")
-
-    else:
-        # Option 3: OpenAI (limited by context)
-        from langchain_openai import ChatOpenAI
-        llm = ChatOpenAI(
-            model="gpt-4",
-            temperature=0,
-            api_key=os.getenv("OPENAI_API_KEY")
-        )
-        use_openai = True
-        max_tools = 50
-        print("Using OpenAI GPT-4 (limited to 50 tools)")
-
-    # Connect to MCP server running in Docker/Podman via exec
+    # Domain filtering: passed as env var to docker exec.
+    domains = os.getenv("MCP_DOMAINS", "")
     container_name = os.getenv("MCP_CONTAINER_NAME", "fastapi-mcp-server")
-    container_runtime = os.getenv("CONTAINER_RUNTIME", "docker")  # docker or podman
+    container_runtime = os.getenv("CONTAINER_RUNTIME", "docker")
 
-    print(f"\n🐳 Connecting to MCP server in {container_runtime} container: {container_name}")
-    print(f"   Architecture: Agent (local) → MCP Server ({container_runtime}) → FastAPI ({container_runtime})")
+    # Build docker exec command with optional MCP_DOMAINS
+    exec_args = ["exec", "-i"]
+    if domains:
+        exec_args += ["-e", f"MCP_DOMAINS={domains}"]
+        print(f"\nDomains: {domains}")
+    else:
+        print("\nDomains: ALL (no MCP_DOMAINS set)")
+    exec_args += [container_name, "python", "mcp_server.py"]
+
+    print(f"Connecting to MCP server in {container_runtime} container: {container_name}")
+    print(f"Architecture: Agent (local) -> MCP Server ({container_runtime}) -> FastAPI ({container_runtime})")
 
     server_params = StdioServerParameters(
         command=container_runtime,
-        args=[
-            "exec",
-            "-i",
-            container_name,
-            "python",
-            "mcp_server.py"
-        ],
-        env=None  # The container already has FASTAPI_BASE_URL set
+        args=exec_args,
+        env=None,
     )
 
     try:
         async with stdio_client(server_params) as (read, write):
             async with ClientSession(read, write) as session:
-                # Initialize the session
+                # --- MCP init ---
+                t0 = time.perf_counter()
                 await session.initialize()
+                _stats.mcp_init_s = time.perf_counter() - t0
+                print(f"MCP session initialized in {_stats.mcp_init_s:.3f}s")
 
-                # Get tools from MCP server
+                # --- Tool discovery ---
+                t0 = time.perf_counter()
                 mcp_wrapper = MCPToolWrapper(session, use_openai=use_openai)
                 all_tools = await mcp_wrapper.get_tools()
+                _stats.tool_discovery_s = time.perf_counter() - t0
+                print(f"Loaded {len(all_tools)} tools in {_stats.tool_discovery_s:.3f}s")
 
-                print(f"✅ Loaded {len(all_tools)} tools from MCP server in Docker")
-
-                # Filter tools based on model capabilities
+                # Limit tools if the model can't handle them all
                 if len(all_tools) > max_tools:
-                    print(f"⚠️  Filtering to top {max_tools} most relevant tools...")
-                    priority_keywords = ['hockey', 'player', 'retails', 'customer', 'nation', 'superhero', 'power', 'hall_of_fame', 'alive', 'born']
-
-                    # Sort tools: priority keywords first, then others
-                    priority_tools = [t for t in all_tools if any(kw in t.name.lower() for kw in priority_keywords)]
-                    other_tools = [t for t in all_tools if not any(kw in t.name.lower() for kw in priority_keywords)]
-
-                    tools = (priority_tools + other_tools)[:max_tools]
-                    print(f"   Selected {len(tools)} tools ({len(priority_tools)} priority, {len(tools) - len(priority_tools)} others)")
+                    print(f"Limiting to {max_tools} tools (model constraint)")
+                    tools = all_tools[:max_tools]
                 else:
                     tools = all_tools
-                    print(f"✅ Using ALL {len(tools)} tools!")
 
-                print("\n📋 Sample tools available:")
-                for tool in tools[:5]:  # Show first 5 tools
-                    print(tool)
-                    print(f"   • {tool.name}: {tool.description[:60]}...")
+                print("\nSample tools:")
+                for tool in tools[:5]:
+                    print(f"  - {tool.name}: {tool.description[:80]}")
                 if len(tools) > 5:
-                    print(f"   ... and {len(tools) - 5} more tools\n")
+                    print(f"  ... and {len(tools) - 5} more")
 
-                print("Tool!!!")
-                # Create ReAct agent using LangGraph
+                # --- Agent creation ---
+                t0 = time.perf_counter()
                 agent_executor = create_react_agent(llm, tools)
+                _stats.agent_creation_s = time.perf_counter() - t0
+                print(f"Agent created in {_stats.agent_creation_s:.3f}s")
 
-                # Example queries - using endpoints that exist and work well
-                # These queries match actual API endpoints with no/simple parameters
                 queries = [
-                    # Hockey - no params needed (get_most_recently_born_alive_player)
                     "Who is the most recently born hockey player that is still alive?",
-
-                    # Hockey - no params needed (get_players_not_in_hall_of_fame)
-                    "List hockey players who are not in the Hall of Fame",
-
-                    # Retails - no params needed (get_customer_name_by_max_totalprice)
                     "Which customer has the highest total order price?",
-
-                    # Retails - no params needed (get_nation_with_most_customers)
                     "Which nation has the most customers?",
-
-                    # Superhero - simple param (get_power_names_by_superhero)
                     "What powers does Batman have?",
                 ]
 
-                for query in queries:
+                for i, query in enumerate(queries):
+                    _current_query_index = i
                     print(f"\n{'=' * 80}")
-                    print(f"🔍 Query: {query}")
-                    print('=' * 80)
+                    print(f"Query {i+1}/{len(queries)}: {query}")
+                    print("=" * 80)
 
+                    query_record = {"query": query, "total_s": 0, "tool_calls": 0, "error": None}
+
+                    t0 = time.perf_counter()
                     try:
                         result = await agent_executor.ainvoke({"messages": [("user", query)]})
-                        # Extract the final answer from the messages
+                        query_record["total_s"] = time.perf_counter() - t0
+
                         if result and "messages" in result:
-                            # Check if any tools were called
-                            tool_messages = [m for m in result["messages"] if hasattr(m, '__class__') and m.__class__.__name__ == 'ToolMessage']
+                            tool_messages = [
+                                m for m in result["messages"]
+                                if getattr(m, "__class__", None) and m.__class__.__name__ == "ToolMessage"
+                            ]
+                            query_record["tool_calls"] = len(tool_messages)
+
                             if tool_messages:
-                                print(f"\n✅ Tools called: {(tool_messages)}")
-
+                                print(f"\n[Tools called: {len(tool_messages)}]")
                             final_message = result["messages"][-1]
-                            print(f"\n💡 Final Answer:\n{final_message.content}")
+                            print(f"\nAnswer: {final_message.content}")
                         else:
-                            print(f"\n💡 Result: {result}")
+                            print(f"\nResult: {result}")
                     except Exception as e:
-                        print(f"\n❌ Error: {e}")
+                        query_record["total_s"] = time.perf_counter() - t0
+                        query_record["error"] = str(e)
+                        print(f"Error: {e}")
 
-                    print()
+                    print(f"\n[Query time: {query_record['total_s']:.3f}s]")
+                    _stats.queries.append(query_record)
+
+                _stats.print_summary()
 
     except Exception as e:
-        print(f"\n❌ Failed to connect to Docker container: {e}")
+        print(f"\nFailed to connect to Docker container: {e}")
         print(f"\nTroubleshooting:")
-        print(f"1. Make sure the Docker container is running:")
-        print(f"   docker ps | grep {container_name}")
-        print(f"2. Start the container if needed:")
-        print(f"   docker-compose up -d")
-        print(f"3. Check container logs:")
-        print(f"   docker logs {container_name}")
+        print(f"  1. Check container is running: docker ps | grep {container_name}")
+        print(f"  2. Start it: docker-compose up -d")
+        print(f"  3. Check logs: docker logs {container_name}")
         exit(1)
 
 
 if __name__ == "__main__":
-    # Check for Ollama, API keys
     has_anthropic = os.getenv("ANTHROPIC_API_KEY") is not None
     has_openai = os.getenv("OPENAI_API_KEY") is not None
     use_ollama = os.getenv("USE_OLLAMA") is not None
 
     if not has_anthropic and not has_openai and not use_ollama:
-        print("❌ Error: Set an API key or use Ollama")
-        print("\n🎉 RECOMMENDED - Ollama (local, FREE, handles ALL 205 tools!):")
-        print("  1. Install Ollama: https://ollama.ai")
-        print("  2. Pull model: ollama pull llama3.1:8b")
-        print("  3. Set variable: export USE_OLLAMA=true")
-        print("  4. Run this script!")
-        print("\n📌 Option 2 - Claude (best quality for 200+ tools):")
+        print("Error: Set an API key or use Ollama")
+        print("\nOption 1 - Ollama (local, free):")
+        print("  ollama pull llama3.1:8b")
+        print("  export USE_OLLAMA=true")
+        print("\nOption 2 - Claude:")
         print("  export ANTHROPIC_API_KEY=your-key-here")
-        print("\n📌 Option 3 - OpenAI (limited to 50 tools):")
+        print("\nOption 3 - OpenAI:")
         print("  export OPENAI_API_KEY=your-key-here")
         exit(1)
 
     print("=" * 80)
-    print("🚀 LangChain Agent with Dockerized MCP Server")
+    print("LangChain Agent with Dockerized MCP Server")
     print("=" * 80)
 
-    # Run the agent
     asyncio.run(main())
