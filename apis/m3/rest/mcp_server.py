@@ -1,6 +1,9 @@
 """
 MCP Server Wrapper for FastAPI Server
-Dynamically discovers FastAPI endpoints and exposes them as MCP tools
+Dynamically discovers FastAPI endpoints and exposes them as MCP tools.
+
+Supports filtering by domain name (e.g., MCP_DOMAINS="hockey" only exposes /v1/hockey/* endpoints).
+If no domains are specified, all endpoints are exposed.
 """
 import asyncio
 import json
@@ -19,13 +22,27 @@ logger = logging.getLogger(__name__)
 
 
 class FastAPIMCPServer:
-    """MCP Server that wraps a FastAPI server dynamically"""
+    """MCP Server that wraps a FastAPI server dynamically.
 
-    def __init__(self, fastapi_base_url: str = "http://localhost:8000"):
+    Args:
+        fastapi_base_url: Base URL of the FastAPI server.
+        server_name: Name for this MCP server instance.
+        domains: List of domain names to include (e.g., ["hockey", "movie"]).
+                 Each domain maps to /v1/{domain}/* path prefix.
+                 If None, all endpoints are exposed.
+    """
+
+    def __init__(
+        self,
+        fastapi_base_url: str = "http://localhost:8000",
+        server_name: str = "fastapi-mcp-wrapper",
+        domains: Optional[List[str]] = None,
+    ):
         self.fastapi_base_url = fastapi_base_url
-        self.server = Server("fastapi-mcp-wrapper")
+        self.server = Server(server_name)
         self.tools_cache: List[Tool] = []
         self.openapi_spec: Optional[Dict] = None
+        self.domains = domains
 
         # Register handlers
         self.server.list_tools()(self.list_tools)
@@ -42,8 +59,14 @@ class FastAPIMCPServer:
             logger.error(f"Failed to fetch OpenAPI spec: {e}")
             raise
 
+    def _should_include_endpoint(self, path: str) -> bool:
+        """Check if an endpoint should be included based on domain filter."""
+        if not self.domains:
+            return True
+        return any(path.startswith(f"/v1/{domain}") for domain in self.domains)
+
     def convert_openapi_to_mcp_tools(self, openapi_spec: Dict) -> List[Tool]:
-        """Convert OpenAPI spec to MCP tools"""
+        """Convert OpenAPI spec to MCP tools (respecting domain filter)"""
         tools = []
         paths = openapi_spec.get("paths", {})
 
@@ -52,12 +75,14 @@ class FastAPIMCPServer:
                 if method.lower() not in ["get", "post", "put", "delete", "patch"]:
                     continue
 
+                if not self._should_include_endpoint(path):
+                    continue
+
                 # Create tool name from operationId or path
                 operation_id = operation.get("operationId")
                 if operation_id:
                     tool_name = operation_id
                 else:
-                    # Generate name from path
                     tool_name = path.replace("/", "_").replace("{", "").replace("}", "").strip("_")
 
                 # Get description
@@ -119,6 +144,9 @@ class FastAPIMCPServer:
     async def initialize(self):
         """Initialize the server by discovering FastAPI endpoints"""
         logger.info(f"Discovering FastAPI endpoints from {self.fastapi_base_url}")
+        if self.domains:
+            logger.info(f"Filtering to domains: {self.domains}")
+
         self.openapi_spec = await self.discover_fastapi_endpoints()
         self.tools_cache = self.convert_openapi_to_mcp_tools(self.openapi_spec)
         logger.info(f"Discovered {len(self.tools_cache)} tools")
@@ -218,17 +246,38 @@ class FastAPIMCPServer:
             )
 
 
-async def main():
-    """Main entry point"""
-    import sys
-
-    # Get FastAPI URL from environment or use default
+def parse_list_env(env_var: str) -> Optional[List[str]]:
+    """Parse comma-separated environment variable into list"""
     import os
+    value = os.getenv(env_var, "")
+    if not value:
+        return None
+    return [item.strip() for item in value.split(",") if item.strip()]
+
+
+async def main():
+    """Main entry point
+
+    Environment variables:
+    - FASTAPI_BASE_URL: Base URL of the FastAPI server (default: http://localhost:8000)
+    - MCP_SERVER_NAME: Name for this MCP server instance (default: fastapi-mcp-wrapper)
+    - MCP_DOMAINS: Comma-separated list of domains to include (e.g., "hockey,movie").
+                   Each domain maps to /v1/{domain}/* endpoints.
+                   If not set, all endpoints are exposed.
+    """
+    import os
+
     fastapi_url = os.getenv("FASTAPI_BASE_URL", "http://localhost:8000")
+    server_name = os.getenv("MCP_SERVER_NAME", "fastapi-mcp-wrapper")
+    domains = parse_list_env("MCP_DOMAINS")
 
-    logger.info(f"Starting MCP server wrapping FastAPI at {fastapi_url}")
+    logger.info(f"Starting MCP server '{server_name}' wrapping FastAPI at {fastapi_url}")
 
-    server = FastAPIMCPServer(fastapi_base_url=fastapi_url)
+    server = FastAPIMCPServer(
+        fastapi_base_url=fastapi_url,
+        server_name=server_name,
+        domains=domains,
+    )
     await server.run()
 
 

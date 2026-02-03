@@ -1,0 +1,142 @@
+"""
+Benchmark: Loop through questions, spin up the correct local MCP server per domain,
+and print how many tools are loaded.
+
+Usage:
+    # Start FastAPI first
+    uvicorn app:app --port 8000
+
+    # Run benchmark
+    python examples/benchmark_local.py
+"""
+import asyncio
+import json
+import os
+import time
+from pathlib import Path
+
+from mcp import ClientSession, StdioServerParameters
+from mcp.client.stdio import stdio_client
+
+
+QUESTIONS_FILE = Path(__file__).parent / "benchmark_questions.json"
+
+
+def load_questions():
+    with open(QUESTIONS_FILE) as f:
+        return json.load(f)
+
+
+async def load_tools_for_domain(domain: str, fastapi_url: str):
+    """Spawn a local MCP server for the given domain and return tool count + timing."""
+    env = {
+        "FASTAPI_BASE_URL": fastapi_url,
+        "MCP_DOMAINS": domain,
+    }
+
+    server_params = StdioServerParameters(
+        command="python",
+        args=["mcp_server.py"],
+        env=env,
+    )
+
+    t0 = time.perf_counter()
+    async with stdio_client(server_params) as (read, write):
+        async with ClientSession(read, write) as session:
+            await session.initialize()
+            init_time = time.perf_counter() - t0
+
+            t1 = time.perf_counter()
+            response = await session.list_tools()
+            discovery_time = time.perf_counter() - t1
+
+            tool_count = len(response.tools)
+            total_time = time.perf_counter() - t0
+
+    return tool_count, init_time, discovery_time, total_time
+
+
+async def main():
+    fastapi_url = os.getenv("FASTAPI_BASE_URL", "http://localhost:8000")
+    questions = load_questions()
+
+    print("=" * 90)
+    print("BENCHMARK: Local MCP Server")
+    print(f"FastAPI URL: {fastapi_url}")
+    print(f"Questions:   {len(questions)}")
+    print("=" * 90)
+
+    results = []
+
+    for i, item in enumerate(questions):
+        domain = item["domain"]
+        question = item["question"]
+
+        print(f"\n[{i+1}/{len(questions)}] Domain: {domain}")
+        print(f"  Q: {question}")
+
+        try:
+            tool_count, init_time, discovery_time, total_time = await load_tools_for_domain(
+                domain, fastapi_url
+            )
+
+            # TODO: Load the tools from the retriever as well
+            
+            print(f"  Tools loaded: {tool_count}")
+            print(f"  MCP init: {init_time:.3f}s | Discovery: {discovery_time:.3f}s | Total: {total_time:.3f}s")
+
+            results.append({
+                "index": i + 1,
+                "domain": domain,
+                "question": question,
+                "tool_count": tool_count,
+                "init_s": init_time,
+                "discovery_s": discovery_time,
+                "total_s": total_time,
+                "error": None,
+            })
+        except Exception as e:
+            print(f"  ERROR: {e}")
+            results.append({
+                "index": i + 1,
+                "domain": domain,
+                "question": question,
+                "tool_count": 0,
+                "init_s": 0,
+                "discovery_s": 0,
+                "total_s": 0,
+                "error": str(e),
+            })
+
+    # Summary
+    print("\n" + "=" * 90)
+    print("SUMMARY")
+    print("=" * 90)
+    print(f"\n  {'#':<4} {'Domain':<25} {'Tools':>6} {'Init':>8} {'Disc':>8} {'Total':>8}  Status")
+    print(f"  {'─'*4} {'─'*25} {'─'*6} {'─'*8} {'─'*8} {'─'*8}  {'─'*6}")
+
+    for r in results:
+        status = "OK" if not r["error"] else "ERR"
+        print(
+            f"  {r['index']:<4} {r['domain']:<25} {r['tool_count']:>6} "
+            f"{r['init_s']:>7.3f}s {r['discovery_s']:>7.3f}s {r['total_s']:>7.3f}s  {status}"
+        )
+
+    successful = [r for r in results if not r["error"]]
+    if successful:
+        total_tools = sum(r["tool_count"] for r in successful)
+        avg_total = sum(r["total_s"] for r in successful) / len(successful)
+        total_time = sum(r["total_s"] for r in successful)
+        unique_domains = len(set(r["domain"] for r in successful))
+
+        print(f"\n  Unique domains queried: {unique_domains}")
+        print(f"  Total tools loaded (across all questions): {total_tools}")
+        print(f"  Avg time per question: {avg_total:.3f}s")
+        print(f"  Total benchmark time: {total_time:.3f}s")
+        print(f"  Errors: {len(results) - len(successful)}/{len(results)}")
+
+    print("=" * 90)
+
+
+if __name__ == "__main__":
+    asyncio.run(main())

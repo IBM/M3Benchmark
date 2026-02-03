@@ -1,6 +1,7 @@
 # Database files
-apis/m3/rest/db/
-db/
+# apis/m3/rest/db/
+*.sqlite*
+*.csv
 
 # Python
 *.pyc
@@ -19,3 +20,6 @@ venv/
 *.dylib
 *.so
 *.sqlite
+
+train_chunked/
+train/

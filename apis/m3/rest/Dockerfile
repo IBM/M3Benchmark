@@ -1,22 +1,13 @@
-#!/bin/bash
+FROM python:3.11-slim
 
-FROM python:3.11
-# ARG ARTIFACTORY_USERNAME
-# ARG ARTIFACTORY_API_KEY
-# ARG PIP_EXTRA_INDEX_URL
+WORKDIR /app
 
-# ENV PYTHONPATH=$PYTHONPATH:.
-# ENV ARTIFACTORY_USERNAME=$ARTIFACTORY_USERNAME
-# ENV ARTIFACTORY_API_KEY=$ARTIFACTORY_API_KEY
-# ENV PIP_EXTRA_INDEX_URL=$PIP_EXTRA_INDEX_URL
-
-WORKDIR /rest
+RUN apt-get update && apt-get install -y gcc curl && rm -rf /var/lib/apt/lists/*
 
 COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir mcp httpx uvicorn[standard]
 
-RUN pip install -r requirements.txt
 COPY . .
-ENV PYTHONPATH "${PYTHONPATH}:."
-EXPOSE 8003
 
-ENTRYPOINT ["uvicorn", "app:app", "--reload"]
+EXPOSE 8000
