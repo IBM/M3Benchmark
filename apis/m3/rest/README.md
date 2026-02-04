@@ -444,7 +444,9 @@ Example: TASK_2_DIR=“/Users/anu/Documents/GitHub/routing/EnterpriseBenchmark/t
 ```
 cd .
 ```
-
+```
+pip install -r requirements_benchmark.txt
+```
 Make sure you have ollama set up in your machine.
 
 ```bash
