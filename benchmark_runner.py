@@ -19,6 +19,10 @@ Usage:
     # Run benchmark with agent on all domains
     python benchmark_runner.py --task_id 2 --run-agent
 
+    # Run benchmark on specific domain(s) only
+    python benchmark_runner.py --task_id 2 --run-agent --domain hockey
+    python benchmark_runner.py --task_id 2 --run-agent --domain hockey --domain address
+
     # Limit samples per domain (e.g., 5 samples from each domain file)
     python benchmark_runner.py --task_id 2 --run-agent --max-samples-per-domain 5
 
@@ -433,7 +437,7 @@ async def run_benchmark_for_domain(
     agent: AgentInterface,
     max_samples: Optional[int] = None,
 ) -> List[BenchmarkResult]:
-    """Run benchmark for a single domain."""
+    """Run benchmark for a single domain - starts MCP server once for all items."""
     import time
 
     # Limit samples if requested
@@ -446,36 +450,74 @@ async def run_benchmark_for_domain(
 
     results: List[BenchmarkResult] = []
 
-    for i, item in enumerate(items):
-        print(f"\n  [{i+1}/{len(items)}] Query: {item.query[:80]}{'...' if len(item.query) > 80 else ''}")
+    # Start MCP server ONCE for this domain
+    exec_args = [
+        "exec", "-i",
+        "-e", f"MCP_DOMAINS={domain}",
+        container_name,
+        "python", "mcp_server.py"
+    ]
+    print(f"  Starting MCP server: {container_runtime} {' '.join(exec_args)}")
 
-        result = BenchmarkResult(
-            uuid=item.uuid,
-            domain=domain,  # Use domain from filename, not item
-            query=item.query,
-        )
+    server_params = StdioServerParameters(
+        command=container_runtime,
+        args=exec_args,
+        env=None,
+    )
 
-        start_time = time.perf_counter()
+    try:
+        async with stdio_client(server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
 
-        try:
-            response = await run_agent_with_query(
-                domain=domain,  # Domain from filename
-                query=item.query,
-                container_runtime=container_runtime,
-                container_name=container_name,
-                agent=agent,
-            )
-            result.answer = response.content
-            result.tool_calls = response.tool_calls
-            result.status = "success"
-            print(f"    Status: success | Tools: {len(result.tool_calls)} | Time: {time.perf_counter() - start_time:.2f}s")
-        except Exception as e:
-            result.status = "error"
-            result.error = str(e)
-            print(f"    Status: error | {str(e)[:50]}")
+                # Get tools ONCE for this domain
+                wrapper = MCPToolWrapper(session)
+                tools = await wrapper.get_tools()
+                print(f"  Loaded {len(tools)} tools for domain '{domain}'")
 
-        result.duration_s = time.perf_counter() - start_time
-        results.append(result)
+                # Run all queries for this domain
+                for i, item in enumerate(items):
+                    print(f"\n  [{i+1}/{len(items)}] Query: {item.query[:80]}{'...' if len(item.query) > 80 else ''}")
+
+                    result = BenchmarkResult(
+                        uuid=item.uuid,
+                        domain=domain,
+                        query=item.query,
+                    )
+
+                    start_time = time.perf_counter()
+
+                    try:
+                        # Run agent with timeout
+                        response = await asyncio.wait_for(
+                            agent.run(item.query, tools),
+                            timeout=AGENT_TIMEOUT_SECONDS
+                        )
+                        result.answer = response.content
+                        result.tool_calls = response.tool_calls
+                        result.status = "success"
+                        print(f"    Status: success | Tools: {len(result.tool_calls)} | Time: {time.perf_counter() - start_time:.2f}s")
+                    except asyncio.TimeoutError:
+                        result.status = "error"
+                        result.error = f"Agent timed out after {AGENT_TIMEOUT_SECONDS} seconds"
+                        print(f"    Status: timeout after {AGENT_TIMEOUT_SECONDS}s")
+                    except Exception as e:
+                        result.status = "error"
+                        result.error = str(e)
+                        print(f"    Status: error | {str(e)[:50]}")
+
+                    result.duration_s = time.perf_counter() - start_time
+                    results.append(result)
+
+        print(f"\n  Server stopped for domain '{domain}'")
+    except ExceptionGroup as eg:
+        print(f"  Warning: Cleanup error (ignored): {eg}")
+    except Exception as e:
+        if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
+            print(f"  Warning: Cleanup error (ignored): {e}")
+        else:
+            stop_mcp_server(container_runtime, container_name)
+            raise
 
     return results
 
@@ -489,6 +531,7 @@ async def run_task(
     model: Optional[str] = None,
     max_samples_per_domain: Optional[int] = None,
     output_file: Optional[str] = None,
+    domains: Optional[List[str]] = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -510,11 +553,25 @@ async def run_task(
         print(f"Error: No JSON files found in {input_path}")
         sys.exit(1)
 
+    # Filter to specific domains if provided
+    if domains:
+        filtered_files = []
+        for json_file in json_files:
+            if json_file.stem in domains:
+                filtered_files.append(json_file)
+        if not filtered_files:
+            available = [f.stem for f in json_files]
+            print(f"Error: None of the specified domains found: {domains}")
+            print(f"Available domains: {available[:10]}{'...' if len(available) > 10 else ''}")
+            sys.exit(1)
+        json_files = filtered_files
+        print(f"Filtered to {len(json_files)} domains: {[f.stem for f in json_files]}")
+
     print(f"Task ID: {task_id}")
     print(f"Input path: {input_path}")
     print(f"Container runtime: {container_runtime}")
     print(f"Container name: {container_name}")
-    print(f"Found {len(json_files)} domain files")
+    print(f"Processing {len(json_files)} domain files")
 
     if not run_agent:
         # Just list tools for each domain (original behavior)
@@ -631,6 +688,13 @@ def main():
         help=f"Container name (default: {DEFAULT_CONTAINER_NAME})"
     )
     parser.add_argument(
+        "--domain",
+        type=str,
+        action="append",
+        default=None,
+        help="Domain(s) to process (can specify multiple times, default: all domains)"
+    )
+    parser.add_argument(
         "--run-agent",
         action="store_true",
         help="Run the agent on benchmark queries (default: just list tools)"
@@ -676,6 +740,7 @@ def main():
         model=args.model,
         max_samples_per_domain=args.max_samples_per_domain,
         output_file=args.output,
+        domains=args.domain,
     ))
 
 

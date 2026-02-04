@@ -19,6 +19,19 @@ Usage:
     ]
     response = await agent.run(messages, tools=my_tools)
 """
+"""
+# Process all domains
+python benchmark_runner.py --task_id 2 --run-agent
+
+# Process only hockey domain
+python benchmark_runner.py --task_id 2 --run-agent --domain hockey
+
+# Process hockey and address domains
+python benchmark_runner.py --task_id 2 --run-agent --domain hockey --domain address
+
+# Combine with other options
+python benchmark_runner.py --task_id 2 --run-agent --domain hockey --max-samples-per-domain 5
+"""
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
@@ -153,6 +166,9 @@ class LangGraphReActAgent(AgentInterface):
         tool_calls = []
         final_content = ""
 
+        # Track tool calls with their arguments
+        tool_call_args = {}  # Map tool_call_id to args
+
         if result and "messages" in result:
             for msg in result["messages"]:
                 msg_class = msg.__class__.__name__
@@ -162,10 +178,20 @@ class LangGraphReActAgent(AgentInterface):
                 elif msg_class == "AIMessage":
                     response_messages.append(Message(role="assistant", content=msg.content))
                     final_content = msg.content  # Last AI message is the answer
+                    # Capture tool call arguments from AIMessage
+                    if hasattr(msg, "tool_calls") and msg.tool_calls:
+                        for tc in msg.tool_calls:
+                            tool_call_args[tc.get("id", "")] = {
+                                "name": tc.get("name", "unknown"),
+                                "args": tc.get("args", {}),
+                            }
                 elif msg_class == "ToolMessage":
+                    tool_call_id = getattr(msg, "tool_call_id", "")
+                    tool_info = tool_call_args.get(tool_call_id, {})
                     tool_calls.append({
-                        "tool_name": getattr(msg, "name", "unknown"),
-                        "content": msg.content,
+                        "tool_name": getattr(msg, "name", tool_info.get("name", "unknown")),
+                        "arguments": tool_info.get("args", {}),
+                        "result": msg.content,
                     })
 
         return AgentResponse(
