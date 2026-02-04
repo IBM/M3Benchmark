@@ -170,20 +170,25 @@ class LangGraphReActAgent(AgentInterface):
                 if msg_class == "HumanMessage":
                     response_messages.append(Message(role="user", content=msg.content))
                 elif msg_class == "AIMessage":
-                    response_messages.append(Message(role="assistant", content=msg.content))
-                    final_content = msg.content  # Last AI message is the answer
+                    if msg.content:
+                        final_content = msg.content
+                    response_messages.append(Message(role="assistant", content=msg.content or ""))
+
                     # Capture tool call arguments from AIMessage
                     if hasattr(msg, "tool_calls") and msg.tool_calls:
                         for tc in msg.tool_calls:
-                            tool_call_args[tc.get("id", "")] = {
+                            tc_id = tc.get("id", "") or tc.get("tool_call_id", "")
+                            tool_call_args[tc_id] = {
                                 "name": tc.get("name", "unknown"),
                                 "args": tc.get("args", {}),
                             }
+
                 elif msg_class == "ToolMessage":
                     tool_call_id = getattr(msg, "tool_call_id", "")
                     tool_info = tool_call_args.get(tool_call_id, {})
+                    tool_name = getattr(msg, "name", None) or tool_info.get("name", "unknown")
                     tool_calls.append({
-                        "tool_name": getattr(msg, "name", tool_info.get("name", "unknown")),
+                        "tool_name": tool_name,
                         "arguments": tool_info.get("args", {}),
                         "result": msg.content,
                     })
@@ -214,7 +219,7 @@ def create_agent(
     """
     default_models = {
         "anthropic": "claude-3-5-sonnet-20241022",
-        "openai": "gpt-4",
+        "openai": "gpt-4.1",
         "ollama": "llama3.1:8b",
     }
 
