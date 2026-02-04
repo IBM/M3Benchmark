@@ -399,7 +399,7 @@ lsof -i :8000
 kill -9 <PID>
 ```
 
-Download train and dev set from https://bird-bench.github.io/ 
+Download train and dev set from https://bird-bench.github.io/ - Unzip train and dev and inside the unzipped version, you will find a databases.zip file. That needs to be unzipped too. Copy the contents of databases (from both train and dev and place them under /db)
 
 Copy the databases from the train and dev set into m3/rest/db. The folder structure should look like the below
 
@@ -417,6 +417,7 @@ alias docker=podman
 ```
 
 ```bash
+cd ./apis/m3/rest/
 docker rm -f fastapi-mcp-server
 docker run -d -p 8000:8000 \
   -v ./db:/app/db:ro \
@@ -431,8 +432,21 @@ docker run -d -p 8000:8000 \
 docker ps
 curl http://localhost:8000/docs
 ```
+### Step 4 — Run the benchmark runner which points to a LangGraph agent
 
-### Step 4 — Run the agent
+```
+cd .
+```
+
+Make sure you have ollama set up in your machine.
+
+```bash
+python benchmark_runner.py --task_id 2 --run-agent --provider ollama --model qwen2.5-coder:7b --max-samples-per-domain 5 --domain airline
+```
+
+One could also use OPEN AI or ANTHROPIC models - refer to the USAGE block in benchmark_runner.py
+
+### Step 5 — Run a different agent
 
 ```
 cd ./apis/m3/rest
@@ -446,16 +460,7 @@ export OPENAI_API_KEY=your-key-here
 MCP_DOMAINS="airline" python examples/langchain_agent_docker_remote.py
 ```
 
-### Step 4 — Run the benchmark runner
 
-```
-cd .
-```
-
-```bash
-export OPENAI_API_KEY=your-key-here
-python benchmark_runner.py --task_id 2 --run-agent --provider ollama --model qwen2.5-coder:7b --max-samples-per-domain 5 --domain airline
-```
 ### Step 5 — Steps to start MCP servers alone
 
 ```
