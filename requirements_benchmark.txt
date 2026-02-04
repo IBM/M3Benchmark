@@ -1,0 +1,77 @@
+# ============================================================================
+# Requirements for Enterprise Benchmark Runner
+# ============================================================================
+# This file contains all Python dependencies needed to run:
+#   - benchmark_runner.py
+#   - agent_interface.py
+#
+# Installation:
+#   pip install -r requirements_benchmark.txt
+#
+# Or for development with editable install:
+#   pip install -e . -r requirements_benchmark.txt
+# ============================================================================
+
+# ----------------------------------------------------------------------------
+# Core MCP Dependencies
+# ----------------------------------------------------------------------------
+# Model Context Protocol - for connecting to MCP servers via stdio
+mcp>=1.0.0
+
+# ----------------------------------------------------------------------------
+# LangChain Core Framework
+# ----------------------------------------------------------------------------
+# Core LangChain functionality and abstractions
+langchain-core>=0.3.0
+langchain>=0.3.0
+
+# ----------------------------------------------------------------------------
+# LangGraph - Agent Framework
+# ----------------------------------------------------------------------------
+# Required for ReAct agent implementation (create_react_agent)
+langgraph>=0.2.0
+
+# ----------------------------------------------------------------------------
+# LLM Provider Integrations
+# ----------------------------------------------------------------------------
+# Install ALL providers to support switching between them at runtime
+# Users can comment out providers they don't need
+
+# Anthropic Claude models
+langchain-anthropic>=0.3.0
+
+# OpenAI GPT models
+langchain-openai>=0.2.0
+
+# Ollama local models
+langchain-ollama>=0.2.0
+
+# ----------------------------------------------------------------------------
+# Optional: Development and Testing Dependencies
+# ----------------------------------------------------------------------------
+# Uncomment these if you need them for development
+
+# pytest>=7.0.0              # For running tests
+# pytest-asyncio>=0.21.0     # For async test support
+# black>=23.0.0              # Code formatting
+# ruff>=0.1.0                # Fast linter
+# mypy>=1.0.0                # Type checking
+
+# ----------------------------------------------------------------------------
+# Notes
+# ----------------------------------------------------------------------------
+# Python Version: Requires Python 3.10+
+# 
+# Environment Variables Required:
+#   - TASK_2_DIR: Path to task_2 input directory (or modify TASK_PATHS in code)
+#   - ANTHROPIC_API_KEY: If using --provider anthropic
+#   - OPENAI_API_KEY: If using --provider openai
+#
+# Container Requirements:
+#   - Docker or Podman with MCP server container running
+#   - Default container name: fastapi-mcp-server
+#
+# Usage Examples:
+#   python benchmark_runner.py --task_id 2 --run-agent
+#   python benchmark_runner.py --task_id 2 --run-agent --provider anthropic
+#   python benchmark_runner.py --task_id 2 --run-agent --domain hockey
