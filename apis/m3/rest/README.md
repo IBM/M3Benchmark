@@ -434,6 +434,13 @@ curl http://localhost:8000/docs
 ```
 ### Step 4 — Run the benchmark runner which points to a LangGraph agent
 
+Download the “benchmark files” from https://ibm.ent.box.com/folder/364205927270 
+
+export TASK_2_DIR=<point to the above directory in your disk>
+Example: TASK_2_DIR=“/Users/anu/Documents/GitHub/routing/EnterpriseBenchmark/task_2" which holds two files
+
+
+
 ```
 cd .
 ```
