@@ -201,7 +201,7 @@ The MCP server inside the container communicates over stdio. To scope it to a sp
 ```yaml
 environment:
   - FASTAPI_BASE_URL=http://localhost:8000
-  - MCP_DOMAINS=hockey        # only expose /v1/hockey/* tools
+  - MCP_DOMAINS=airline        # only expose /v1/airline/* tools
 ```
 
 Then restart:
@@ -392,14 +392,29 @@ curl http://localhost:8000/metrics
 
 Run the Docker image from Docker Hub and test with a LangChain agent.
 
-### Step 1 — Free port 8000 (if in use)
+### Step 1 — Free port 8000 (if in use) and copy db files from Bird Bench
 
 ```bash
 lsof -i :8000
 kill -9 <PID>
 ```
 
+Download train and dev set from https://bird-bench.github.io/ 
+
+Copy the databases from the train and dev set into m3/rest/db. The folder structure should look like the below
+
+<img width="307" alt="image" src="https://github.ibm.com/user-attachments/assets/47d8f55b-0d00-406f-bde9-7fa494817c34" />
+
+
 ### Step 2 — Start the container
+
+```
+podman init
+podman machine init
+podman machine start
+podman ps
+alias docker=podman
+```
 
 ```bash
 docker rm -f fastapi-mcp-server
@@ -428,8 +443,26 @@ pip install -r requirements.txt
 
 ```bash
 export OPENAI_API_KEY=your-key-here
-MCP_DOMAINS="hockey" python examples/langchain_agent_docker_remote.py
+MCP_DOMAINS="airline" python examples/langchain_agent_docker_remote.py
 ```
+
+### Step 4 — Run the benchmark runner
+
+```
+cd .
+```
+
+```bash
+export OPENAI_API_KEY=your-key-here
+python benchmark_runner.py --task_id 2 --run-agent --provider ollama --model qwen2.5-coder:7b --max-samples-per-domain 5 --domain airline
+```
+### Step 5 — Steps to start MCP servers alone
+
+```
+docker exec -i  -e MCP_DOMAINS=hockey fastapi-mcp-server python mcp_server.py
+```
+
+Note, it is key to pass the MCP_DOMAINS variable when starting the mcp server. MCP_DOMAINS points to the db - address vs bike_share vs airline etc
 
 ---
 
