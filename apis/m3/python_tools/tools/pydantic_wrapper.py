@@ -131,10 +131,15 @@ def wrap_with_models(
             else:
                 # Old format or scalar output - validate directly
                 validated_result = output_model.model_validate(result)
-        # 3. Primitive → single-field BaseModel
+        # 3. Primitive → single-field BaseModel or RootModel
         elif len(output_model.model_fields) == 1:
             field_name = next(iter(output_model.model_fields))
-            validated_result = output_model.model_validate({field_name: result})
+            # If the model is a RootModel, field_name will be 'root'.
+            # RootModels MUST be validated with the RAW result, not a dict.
+            if field_name == "root":
+                validated_result = output_model.model_validate(result)
+            else:
+                validated_result = output_model.model_validate({field_name: result})
         # 4. Otherwise, this is a contract error
         else:
             raise TypeError(
@@ -146,12 +151,15 @@ def wrap_with_models(
         if hasattr(validated_result, 'model_dump'):
             # Convert BaseModel to dict
             result_dict = validated_result.model_dump()
-
-            # If new format with 'data' field, extract the data dict (which includes _dtypes)
-            if 'data' in result_dict and isinstance(result_dict['data'], dict):
-                return result_dict['data']  # Return the data dict with _dtypes inside
-            else:
+            # 1. If it's a dictionary (Standard BaseModel)
+            if isinstance(result_dict, dict):
+                # 2. If your server-side logic wrapped it in 'data', unwrap it
+                if 'data' in result_dict:
+                    return result_dict['data']
                 return result_dict
+            
+            # 3. If it's a primitive return it directly
+            return result_dict
         else:
             return validated_result
 

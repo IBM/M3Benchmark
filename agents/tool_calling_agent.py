@@ -53,6 +53,7 @@ class ToolCallingAgent:
 
         return f"""
 You are a helpful data analysis assistant. Use the available tools and data to answer queries.
+Think step by step and provide reasoning for the action that you are planning to take.
 
 IMPORTANT - Tool Result Handles:
 - Tool results are returned as handles/references, not full data
@@ -64,6 +65,7 @@ IMPORTANT - Tool Result Handles:
 - Scalar results include both handle and value: {{"handle": "count_1", "type": "scalar", "value": 42}}
 - Always use handles to reference previous results in tool chains
 - Make at most a single tool call per iteration. Once you have the information necessary to answer the query, return the answer with no additional tool calls.
+- If you receive an error from the tool, reason over why your previous action resulted in that error and make the appropriate fix. 
 
 INITIAL DATA:
 - The initial dataset for this task is available as handle: "{self._initial_data_handle}"{initial_data_info}
