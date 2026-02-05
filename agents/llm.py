@@ -6,7 +6,7 @@ import asyncio
 from langchain.tools import BaseTool
 from typing import List, Optional
 
-from langchain_core.messages import BaseMessage, AIMessage, HumanMessage, SystemMessage
+from langchain_core.messages import BaseMessage, AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.outputs.chat_result import ChatResult
 from langchain_core.outputs.chat_generation import ChatGeneration
 import httpx
@@ -17,91 +17,34 @@ from pydantic import Field
 class MCPToolWrapper(BaseTool):
     """Wraps an MCPTool to make it compatible with LangChain ChatModels."""
 
-    name: str = Field(default="unnamed_tool")
-    description: str = Field(default="No description provided")
-    _tool: object  # the wrapped tool
-    args_schema: Any = Field(default=None)  # Tool input schema
+    name: str
+    description: str
+    _tool: Any = None
+    _fields: Dict[str, Any] = {}
 
-    def __init__(self, tool, **kwargs):
-        # Extract schema from the MCP tool if available
-        schema = None
-        if hasattr(tool, "inputSchema"):
-            # Convert MCP inputSchema to a Pydantic model dynamically
-            from pydantic import create_model
-            from typing import Optional
-            input_schema = tool.inputSchema
-
-            # Build field definitions from the schema
-            if isinstance(input_schema, dict) and "properties" in input_schema:
-                fields = {}
-                properties = input_schema.get("properties", {})
-                required = input_schema.get("required", [])
-
-                for prop_name, prop_info in properties.items():
-                    # Handle different type formats
-                    if "anyOf" in prop_info:
-                        # Union type - just use Any for simplicity
-                        python_type = Any
-                    elif "enum" in prop_info:
-                        # Enum type - use str with enum values
-                        python_type = str
-                    elif "type" in prop_info:
-                        # Standard type
-                        prop_type = prop_info.get("type")
-                        if isinstance(prop_type, list):
-                            # Multiple types (e.g., ["string", "array"])
-                            python_type = Any
-                        else:
-                            type_map = {
-                                "string": str,
-                                "integer": int,
-                                "number": float,
-                                "boolean": bool,
-                                "array": list,
-                                "object": dict,
-                            }
-                            python_type = type_map.get(prop_type, Any)
-                    else:
-                        python_type = Any
-
-                    # Create field with description and enum values if present
-                    field_desc = prop_info.get("description", "")
-                    enum_values = prop_info.get("enum")
-                    if enum_values:
-                        field_desc = f"{field_desc} Allowed values: {', '.join(map(str, enum_values))}"
-
-                    if prop_name in required:
-                        fields[prop_name] = (python_type, Field(..., description=field_desc))
-                    else:
-                        default = prop_info.get("default", None)
-                        fields[prop_name] = (Optional[python_type], Field(default=default, description=field_desc))
-
-                # Create the Pydantic model
-                if fields:
-                    schema = create_model(f"{tool.name}Input", **fields)
-
-                    # DEBUG LOGGING: Capture reconstructed schema for retrieve_data
-                    if tool.name == "retrieve_data":
-                        print(f"\n{'='*80}")
-                        print(f"MCPToolWrapper: Reconstructed schema for retrieve_data")
-                        print(f"{'='*80}")
-                        print(f"Field names from MCP inputSchema properties: {list(properties.keys())}")
-                        print(f"Created Pydantic model fields: {list(fields.keys())}")
-                        if hasattr(schema, 'model_json_schema'):
-                            import json
-                            reconstructed = schema.model_json_schema()
-                            print(f"\nReconstructed JSON schema properties:")
-                            print(json.dumps(list(reconstructed.get('properties', {}).keys()), indent=2))
-                        print(f"{'='*80}\n")
-
-        # initialize Pydantic fields first
+    def __init__(self, tool: Any, **kwargs):
+        mcp_schema = getattr(tool, "args_schema", {})
+        properties = mcp_schema.get("properties", {})
+        
+        # Initialize the tool
+        # set args_schema to None because args are handled manually
         super().__init__(
-            name=getattr(tool, "name", "unnamed_tool"),
-            description=getattr(tool, "description", "No description provided"),
-            args_schema=schema,
+            name=tool.name,
+            description=tool.description,
+            args_schema=None, 
             **kwargs
         )
         self._tool = tool
+        self._fields = properties
+
+    @property
+    def args(self) -> dict:
+        """
+        Returns the parameters (data, key_name, etc.) directly.
+        Overrides defaulting to empty pydantics base.
+        Note: Removing this will lead to empty arguments for the tools.
+        """
+        return self._fields
 
     def _run(self, **kwargs):
         # MCP tools expect a dict of arguments
@@ -151,15 +94,31 @@ class RITSChatModel(BaseChatModel):
         # Convert LangChain messages to simple dicts
         msgs = []
         for m in messages:
-            if isinstance(m, HumanMessage):
-                role = "user"
+            if isinstance(m, SystemMessage):
+                msgs.append({"role": "system", "content": m.content})
+
+            elif isinstance(m, HumanMessage):
+                msgs.append({"role": "user", "content": m.content})
+
             elif isinstance(m, AIMessage):
-                role = "assistant"
-            elif isinstance(m, SystemMessage):
-                role = "system"
+                msg_dict = {"role": "assistant", "content": m.content}
+                if m.tool_calls:
+                    msg_dict["tool_calls"] = m.additional_kwargs.get("tool_calls")
+                if "reasoning" in m.additional_kwargs:
+                    msg_dict["reasoning"] = m.additional_kwargs["reasoning"]
+
+                msgs.append(msg_dict)
+
+            elif isinstance(m, ToolMessage):
+                msgs.append({
+                    "role": "tool",
+                    "tool_call_id": m.tool_call_id,
+                    "content": m.content
+                })
+            
             else:
-                role = "user"
-            msgs.append({"role": role, "content": m.content})
+                # Fallback for unexpected types
+                msgs.append({"role": "user", "content": m.content})
 
         # Use short name for endpoint URL
         url = f"{self.base_url}/{self.model_name}/v1/chat/completions"
@@ -201,6 +160,8 @@ class RITSChatModel(BaseChatModel):
         additional_kwargs = {}
         if "tool_calls" in msg_data:
             additional_kwargs["tool_calls"] = msg_data["tool_calls"]
+        if "reasoning" in msg_data and msg_data["reasoning"]:
+            additional_kwargs["reasoning"] = msg_data["reasoning"]
 
         message = AIMessage(
             content=content, additional_kwargs=additional_kwargs
@@ -245,17 +206,33 @@ class RITSChatModel(BaseChatModel):
 
         tool_defs = []
         for tool in tools:
-            try:
-                # Try LangChain's standard conversion
-                tool_defs.append(convert_to_openai_tool(tool))
-            except Exception as e:
-                # Fallback: if tool has schema/dict representation
-                if isinstance(tool, dict):
-                    tool_defs.append(tool)
-                else:
-                    raise ValueError(
-                        f"Unable to convert tool {tool} to OpenAI format: {e}"
-                    )
+            if hasattr(tool, "name") and hasattr(tool, "args"):
+                # Build the tool definition manually 
+                tool_def = {
+                    "type": "function",
+                    "function": {
+                        "name": tool.name,
+                        "description": tool.description,
+                        "parameters": {
+                            "type": "object",
+                            "properties": tool.args,
+                            "required": list(tool.args.keys())
+                        }
+                    }
+                }
+                tool_defs.append(tool_def)
+            else:
+                try:
+                    # Try LangChain's standard conversion
+                    tool_defs.append(convert_to_openai_tool(tool))
+                except Exception as e:
+                    # Fallback: if tool has schema/dict representation
+                    if isinstance(tool, dict):
+                        tool_defs.append(tool)
+                    else:
+                        raise ValueError(
+                            f"Unable to convert tool {tool} to OpenAI format: {e}"
+                        )
 
         # Create new instance with tools bound
         return self.model_copy(
