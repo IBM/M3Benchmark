@@ -59,7 +59,7 @@ async def run_single_server_with_instances(
 
     Args:
         llm: The language model instance
-        instances: Dict mapping instance_id -> {query, init_args, answer}
+        instances: Dict mapping instance_id -> {query, init_args}
         llm_type: LLM provider type ("openai" or "ollama")
         mode: Connection mode ("stdio" or "websocket")
         server_url: WebSocket URL (required for websocket mode)
