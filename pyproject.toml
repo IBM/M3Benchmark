@@ -1,0 +1,123 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "enterprise-benchmark"
+version = "1.0"
+description = "Tool-Calling Agent Benchmark"
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = ""}
+authors = [
+    {name = "NA"}
+]
+
+# Core dependencies required for basic tool calling functionality
+dependencies = [
+    "pandas",
+    "numpy",
+    "sqlglot",
+    "pydantic",
+    "jinja2",
+    "dotenv"
+]
+
+[project.optional-dependencies]
+# REST API server dependencies
+rest = [
+    "fastapi",
+    "uvicorn",
+]
+
+# RAG
+rag = [
+    "chromadb", 
+    "sentence-transformers"
+]
+
+# LLM agent functionality
+agents = [
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.5",
+    "httpx",
+]
+
+# MCP server functionality (includes agents)
+mcp = [
+    "mcp>=1.0.0",
+    "langchain-mcp>=0.1.0",
+    "langchain>=0.1.0",
+    "langchain-openai>=0.0.5",
+    "httpx",
+    # WebSocket server dependencies
+    "fastapi>=0.100.0",
+    "uvicorn[standard]>=0.23.0",
+    "websockets>=11.0",
+]
+
+# Legacy dependencies (historically included but not actively used)
+legacy = [
+    "ibm-generative-ai",
+]
+
+# All optional dependencies combined
+all = [
+    "enterprise-benchmark[rest]",
+    "enterprise-benchmark[agents]",
+    "enterprise-benchmark[mcp]",
+    "enterprise-benchmark[legacy]",
+]
+
+# Development dependencies
+dev = [
+    "black",
+    "flake8",
+    "gitpython",
+    "jupyter",
+    "pre-commit",
+    "pytest",
+    "pytest-cov",
+    "pytest-pep8",
+]
+
+[project.scripts]
+slot-filling-mcp = "apis.m3.python_tools.mcp.cli:main"
+
+[tool.setuptools.packages.find]
+exclude = ["tests*"]
+
+# Optional: Black configuration
+[tool.black]
+line-length = 88
+target-version = ["py311"]
+
+# Optional: Pytest configuration
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Optional: Coverage configuration
+[tool.coverage.run]
+source = ["apis"]
+omit = ["*/tests/*", "*/test_*.py"]
+
+# MCP Server configuration
+[tool.mcp.server]
+name = "slot-filling-mcp"
+description = "MCP Server for slot-filling data manipulation tools"
+version = "1.0.0"
+command = "slot-filling-mcp"
+
+# Environment variables configuration for MCP server
+[tool.mcp.server.env]
+SLOT_FILLING_MCP_DATABASE = { description = "Path to SQLite database file", required = true }
+SLOT_FILLING_MCP_CACHE_DIR = { description = "Cache directory for IO operations", default = "./mcp_cache" }
+SLOT_FILLING_MCP_TABLES = { description = "Comma-separated list of tables to load", required = false }
+SLOT_FILLING_MCP_TOOL_UNIVERSE_ID = { description = "Unique ID for this server instance", required = false }
+SLOT_FILLING_MCP_SERVER_TYPE = { description = "Server mode: slot_filling or selection", default = "slot_filling" }
+SLOT_FILLING_MCP_TRANSPORT = { description = "Transport protocol: stdio or websocket", default = "stdio" }
+SLOT_FILLING_MCP_HOST = { description = "Host to bind WebSocket server", default = "127.0.0.1" }
+SLOT_FILLING_MCP_PORT = { description = "Port for WebSocket server", default = "8000" }

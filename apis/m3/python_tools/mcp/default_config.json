@@ -1,0 +1,8 @@
+{
+    "database_path": "db/dev_databases/superhero/superhero.sqlite",
+    "tables": null,
+    "cache_dir": "./mcp_cache",
+    "use_io_wrappers": false,
+    "use_pydantic_signatures": true,
+    "server_name": "slot-filling-mcp-server"
+}
