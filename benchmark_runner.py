@@ -737,51 +737,38 @@ async def list_tools_for_domains(
 ):
     """List all available tools for specified domains using MCP protocol with detailed parameters."""
     
-    if task_id not in TASK_PATHS:
-        print(f"Error: Unknown task_id {task_id}")
-        print(f"Available task_ids: {list(TASK_PATHS.keys())}")
-        sys.exit(1)
-
-    input_path = Path(TASK_PATHS[task_id])
-
-    if not input_path.exists():
-        print(f"Error: Input path does not exist: {input_path}")
-        sys.exit(1)
-
-    # Get all JSON files - each file represents a domain
-    json_files = sorted(input_path.glob("*.json"))
-
-    if not json_files:
-        print(f"Error: No JSON files found in {input_path}")
-        sys.exit(1)
-
-    # Filter to specific domains if provided
-    if domains:
-        filtered_files = []
-        for json_file in json_files:
-            if json_file.stem in domains:
-                filtered_files.append(json_file)
-        if not filtered_files:
-            available = [f.stem for f in json_files]
-            print(f"Error: None of the specified domains found: {domains}")
-            print(f"Available domains: {available[:10]}{'...' if len(available) > 10 else ''}")
-            sys.exit(1)
-        json_files = filtered_files
-        print(f"Listing tools for {len(json_files)} domain(s): {[f.stem for f in json_files]}")
-    else:
-        print(f"Listing tools for all {len(json_files)} domains")
-
-    print(f"\nTask ID: {task_id}")
-    print(f"Input path: {input_path}")
+    print(f"Task ID: {task_id}")
     print(f"Container runtime: {container_runtime}")
     print(f"Container name: {container_name}\n")
+
+    # If domains are specified, use them directly
+    # Otherwise, try to discover from JSON files in task directory
+    domains_to_process = []
+    
+    if domains:
+        # Use specified domains directly
+        domains_to_process = domains
+        print(f"Listing tools for {len(domains)} specified domain(s): {domains}")
+    else:
+        # Try to discover domains from task directory
+        if task_id in TASK_PATHS:
+            input_path = Path(TASK_PATHS[task_id])
+            if input_path.exists():
+                json_files = sorted(input_path.glob("*.json"))
+                if json_files:
+                    domains_to_process = [f.stem for f in json_files]
+                    print(f"Discovered {len(domains_to_process)} domains from task directory")
+        
+        if not domains_to_process:
+            print("Error: No domains specified and could not discover from task directory")
+            print("Please specify domains using --domain flag")
+            sys.exit(1)
 
     # Collect all tools for OpenAPI spec
     all_tools_by_domain = {}
 
     # Process each domain
-    for json_file in json_files:
-        domain = json_file.stem
+    for domain in domains_to_process:
         
         print(f"\n{'='*60}")
         print(f"Domain: {domain}")
@@ -819,7 +806,18 @@ async def list_tools_for_domains(
 
     # Save as OpenAPI-like spec
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    output_file = Path(f"tools_spec_{timestamp}.json")
+    
+    # Include domain names in filename if specified
+    if domains and len(domains) <= 3:
+        # For 1-3 domains, include them in the filename
+        domain_str = "_".join(domains)
+        output_file = Path(f"tools_spec_{domain_str}_{timestamp}.json")
+    elif domains and len(domains) > 3:
+        # For more than 3 domains, just indicate "multiple"
+        output_file = Path(f"tools_spec_multiple_domains_{timestamp}.json")
+    else:
+        # No specific domains (all domains)
+        output_file = Path(f"tools_spec_all_{timestamp}.json")
     
     openapi_spec = {
         "openapi": "3.0.0",
