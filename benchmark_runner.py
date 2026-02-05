@@ -157,11 +157,31 @@ def save_results_by_domain(results: List[BenchmarkResult], output_dir: Path):
 AGENT_TIMEOUT_SECONDS = 120
 
 
-
-
 # Default settings
 DEFAULT_CONTAINER_NAME = "fastapi-mcp-server"
 DEFAULT_CONTAINER_RUNTIME = "podman"
+
+
+def detect_container_runtime() -> str:
+    """
+    Detect available container runtime (podman or docker).
+    Returns 'podman' if available, otherwise 'docker'.
+    """
+    import shutil
+    
+    # Check if podman is available
+    if shutil.which("podman"):
+        return "podman"
+    
+    # Fall back to docker
+    if shutil.which("docker"):
+        print("  Note: podman not found, using docker instead")
+        return "docker"
+    
+    # Neither found
+    raise RuntimeError("Neither podman nor docker found in PATH. Please install one of them.")
+
+
 
 
 def stop_mcp_server(container_runtime: str, container_name: str):
@@ -273,6 +293,51 @@ async def connect_and_list_tools(domain: str, container_runtime: str, container_
             raise
 
     return tool_names
+
+
+async def connect_and_get_tools_detailed(domain: str, container_runtime: str, container_name: str) -> List[Dict[str, Any]]:
+    """Connect to MCP server and get detailed tool information including parameters."""
+    exec_args = [
+        "exec", "-i",
+        "-e", f"MCP_DOMAINS={domain}",
+        container_name,
+        "python", "mcp_server.py"
+    ]
+    print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
+
+    server_params = StdioServerParameters(
+        command=container_runtime,
+        args=exec_args,
+        env=None,
+    )
+
+    tools_detailed = []
+
+    try:
+        async with stdio_client(server_params) as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                response = await session.list_tools()
+                
+                for tool in response.tools:
+                    tool_info = {
+                        "name": tool.name,
+                        "description": tool.description or "",
+                        "inputSchema": tool.inputSchema if hasattr(tool, 'inputSchema') else {}
+                    }
+                    tools_detailed.append(tool_info)
+        
+        print("  Server stopped.")
+    except ExceptionGroup as eg:
+        print(f"  Warning: Cleanup error (ignored): {eg}")
+    except Exception as e:
+        if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
+            print(f"  Warning: Cleanup error (ignored): {e}")
+        else:
+            stop_mcp_server(container_runtime, container_name)
+            raise
+
+    return tools_detailed
 
 
 async def run_agent_with_query(
@@ -664,52 +729,151 @@ async def run_task(
     print(f"  Successful: {len(successful)}")
     print(f"  Failed: {len(failed)}")
 
-    if successful:
-        total_time = sum(r.duration_s for r in successful)
-        avg_time = total_time / len(successful)
-        print(f"  Total time: {total_time:.2f}s")
-        print(f"  Avg time per item: {avg_time:.2f}s")
+async def list_tools_for_domains(
+    task_id: int,
+    container_runtime: str,
+    container_name: str,
+    domains: Optional[List[str]] = None,
+):
+    """List all available tools for specified domains using MCP protocol with detailed parameters."""
+    
+    if task_id not in TASK_PATHS:
+        print(f"Error: Unknown task_id {task_id}")
+        print(f"Available task_ids: {list(TASK_PATHS.keys())}")
+        sys.exit(1)
 
-    if failed:
-        print(f"\n  Failed items:")
-        for r in failed[:10]:  # Show first 10 failures
-            print(f"    - [{r.domain}] {r.query[:50]}...: {r.error[:50]}")
-        if len(failed) > 10:
-            print(f"    ... and {len(failed) - 10} more")
+    input_path = Path(TASK_PATHS[task_id])
 
-    # Save results to timestamped directory with domain-specific files
-    if output_file:
-        # Use specified output file (single file mode)
-        save_results(results, Path(output_file))
+    if not input_path.exists():
+        print(f"Error: Input path does not exist: {input_path}")
+        sys.exit(1)
+
+    # Get all JSON files - each file represents a domain
+    json_files = sorted(input_path.glob("*.json"))
+
+    if not json_files:
+        print(f"Error: No JSON files found in {input_path}")
+        sys.exit(1)
+
+    # Filter to specific domains if provided
+    if domains:
+        filtered_files = []
+        for json_file in json_files:
+            if json_file.stem in domains:
+                filtered_files.append(json_file)
+        if not filtered_files:
+            available = [f.stem for f in json_files]
+            print(f"Error: None of the specified domains found: {domains}")
+            print(f"Available domains: {available[:10]}{'...' if len(available) > 10 else ''}")
+            sys.exit(1)
+        json_files = filtered_files
+        print(f"Listing tools for {len(json_files)} domain(s): {[f.stem for f in json_files]}")
     else:
-        # Create human-readable timestamped directory with model name
-        timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-        # Sanitize model name for directory (replace special chars)
-        model_name = (model or "default").replace(":", "_").replace("/", "_")
-        output_dir = Path(f"benchmark_output_{timestamp}_{model_name}")
-        output_dir.mkdir(parents=True, exist_ok=True)
+        print(f"Listing tools for all {len(json_files)} domains")
 
-        # Save domain-specific output files (e.g., address_benchmark_output.json)
-        save_results_by_domain(results, output_dir)
+    print(f"\nTask ID: {task_id}")
+    print(f"Input path: {input_path}")
+    print(f"Container runtime: {container_runtime}")
+    print(f"Container name: {container_name}\n")
 
-        # Also save a combined summary file
-        summary_file = output_dir / "summary.json"
-        summary = {
-            "task_id": task_id,
-            "timestamp": timestamp,
-            "provider": provider,
-            "model": model or "default",
-            "total_items": len(results),
-            "successful": len(successful),
-            "failed": len(failed),
-            "total_time_s": sum(r.duration_s for r in results),
-            "domains": list(set(r.domain for r in results)),
+    # Collect all tools for OpenAPI spec
+    all_tools_by_domain = {}
+
+    # Process each domain
+    for json_file in json_files:
+        domain = json_file.stem
+        
+        print(f"\n{'='*60}")
+        print(f"Domain: {domain}")
+        print(f"{'='*60}")
+        
+        try:
+            tools_detailed = await connect_and_get_tools_detailed(domain, container_runtime, container_name)
+            print(f"  Total tools: {len(tools_detailed)}\n")
+            
+            all_tools_by_domain[domain] = tools_detailed
+            
+            for i, tool in enumerate(tools_detailed, 1):
+                print(f"  {i:3d}. {tool['name']}")
+                if tool['description']:
+                    print(f"       Description: {tool['description'][:100]}{'...' if len(tool['description']) > 100 else ''}")
+                
+                # Show parameters
+                input_schema = tool.get('inputSchema', {})
+                properties = input_schema.get('properties', {})
+                required = input_schema.get('required', [])
+                
+                if properties:
+                    print(f"       Parameters:")
+                    for param_name, param_info in properties.items():
+                        param_type = param_info.get('type', 'unknown')
+                        param_desc = param_info.get('description', '')
+                        required_marker = " (required)" if param_name in required else ""
+                        print(f"         - {param_name}: {param_type}{required_marker}")
+                        if param_desc:
+                            print(f"           {param_desc[:80]}{'...' if len(param_desc) > 80 else ''}")
+                print()
+                
+        except Exception as e:
+            print(f"  ERROR: {e}")
+
+    # Save as OpenAPI-like spec
+    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+    output_file = Path(f"tools_spec_{timestamp}.json")
+    
+    openapi_spec = {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "MCP Tools Specification",
+            "version": "1.0.0",
+            "description": f"Tools available for task {task_id}"
+        },
+        "paths": {},
+        "components": {
+            "schemas": {}
         }
-        with open(summary_file, "w") as f:
-            json.dump(summary, f, indent=2)
-        print(f"  Summary saved to: {summary_file}")
-
-    return results
+    }
+    
+    # Convert tools to OpenAPI paths
+    for domain, tools in all_tools_by_domain.items():
+        for tool in tools:
+            path = f"/v1/{domain}/{tool['name']}"
+            openapi_spec["paths"][path] = {
+                "get": {
+                    "summary": tool['description'],
+                    "operationId": tool['name'],
+                    "parameters": [],
+                    "responses": {
+                        "200": {
+                            "description": "Successful response"
+                        }
+                    }
+                }
+            }
+            
+            # Add parameters
+            input_schema = tool.get('inputSchema', {})
+            properties = input_schema.get('properties', {})
+            required = input_schema.get('required', [])
+            
+            for param_name, param_info in properties.items():
+                openapi_spec["paths"][path]["get"]["parameters"].append({
+                    "name": param_name,
+                    "in": "query",
+                    "required": param_name in required,
+                    "schema": {
+                        "type": param_info.get('type', 'string'),
+                        "description": param_info.get('description', '')
+                    }
+                })
+    
+    with open(output_file, 'w') as f:
+        json.dump(openapi_spec, f, indent=2)
+    
+    print(f"\n{'='*60}")
+    print("Tool listing complete")
+    print(f"{'='*60}")
+    print(f"OpenAPI specification saved to: {output_file}")
 
 
 def main():
@@ -718,8 +882,8 @@ def main():
     parser.add_argument(
         "--container-runtime",
         type=str,
-        default=DEFAULT_CONTAINER_RUNTIME,
-        help=f"Container runtime to use (default: {DEFAULT_CONTAINER_RUNTIME})"
+        default=None,
+        help=f"Container runtime to use (default: auto-detect, prefers podman over docker)"
     )
     parser.add_argument(
         "--container-name",
@@ -738,6 +902,11 @@ def main():
         "--run-agent",
         action="store_true",
         help="Run the agent on benchmark queries (default: just list tools)"
+    )
+    parser.add_argument(
+        "--list-tools",
+        action="store_true",
+        help="List available tools for the specified domain(s) and exit"
     )
     parser.add_argument(
         "--max-samples-per-domain",
@@ -785,6 +954,12 @@ def main():
 
     args = parser.parse_args()
 
+    # Auto-detect container runtime if not specified
+    container_runtime = args.container_runtime
+    if not container_runtime:
+        container_runtime = detect_container_runtime()
+        print(f"Auto-detected container runtime: {container_runtime}")
+
     # Set watsonx environment variables if provided via command line
     if args.provider == "watsonx":
         import os
@@ -799,9 +974,19 @@ def main():
     print("Benchmark Runner")
     print("="*60)
 
+    # Handle --list-tools mode
+    if args.list_tools:
+        asyncio.run(list_tools_for_domains(
+            task_id=args.task_id,
+            container_runtime=container_runtime,
+            container_name=args.container_name,
+            domains=args.domain,
+        ))
+        return
+
     asyncio.run(run_task(
         task_id=args.task_id,
-        container_runtime=args.container_runtime,
+        container_runtime=container_runtime,
         container_name=args.container_name,
         run_agent=args.run_agent,
         provider=args.provider,
