@@ -48,7 +48,6 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from langchain_core.tools import StructuredTool
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 

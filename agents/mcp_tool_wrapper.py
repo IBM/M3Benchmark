@@ -24,9 +24,12 @@ class MCPToolWrapper:
     supports OpenAI name restrictions, profiling/instrumentation, and caching.
 
     Key Features:
-        - Schema Preservation: Converts MCP JSON Schema to Pydantic BaseModel
-        - OpenAI Compatibility: Optional name sanitization (64 chars, alphanumeric)
-        - Profiling Support: Optional timing instrumentation with callbacks
+        - Schema Preservation: Converts MCP JSON Schema to Pydantic
+          BaseModel
+        - OpenAI Compatibility: Optional name sanitization (64 chars,
+          alphanumeric)
+        - Profiling Support: Optional timing instrumentation with
+          callbacks
         - Caching: Cache tool list for performance
         - Async/Sync Support: Both execution modes
 
@@ -65,9 +68,11 @@ class MCPToolWrapper:
 
         Args:
             session: MCP ClientSession for calling tools
-            use_openai_restrictions: Apply OpenAI name restrictions (64 chars, alphanumeric)
+            use_openai_restrictions: Apply OpenAI name restrictions
+                (64 chars, alphanumeric)
             enable_profiling: Enable timing instrumentation
-            profile_callback: Callback function for profiling data with signature:
+            profile_callback: Callback function for profiling data with
+                signature:
                 f(data: Dict[str, Any]) where data contains:
                     - tool_name: str
                     - duration_s: float
@@ -155,7 +160,8 @@ class MCPToolWrapper:
             input_schema: JSON Schema dict from mcp_tool.inputSchema
 
         Returns:
-            Dynamically created Pydantic BaseModel class or None if schema is empty
+            Dynamically created Pydantic BaseModel class or None if
+            schema is empty
         """
         if not isinstance(input_schema, dict) or "properties" not in input_schema:
             return None
@@ -176,12 +182,16 @@ class MCPToolWrapper:
             enum_values = prop_info.get("enum")
             if enum_values:
                 enum_str = ", ".join(map(str, enum_values))
-                description = f"{description} Allowed values: {enum_str}".strip()
+                description = (
+                    f"{description} Allowed values: {enum_str}".strip()
+                )
 
             # Create field (required vs optional)
             if prop_name in required and default == ...:
                 # Required field
-                fields[prop_name] = (python_type, Field(..., description=description))
+                fields[prop_name] = (
+                    python_type, Field(..., description=description)
+                )
             else:
                 # Optional field
                 fields[prop_name] = (
