@@ -48,11 +48,10 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-from langchain_core.tools import StructuredTool
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from agent_interface import AgentInterface, AgentResponse, create_agent
+from agents.agent_interface import AgentInterface, AgentResponse, create_agent
 
 # Task configurations - maps task_id to input directory path
 TASK_PATHS = {
@@ -199,37 +198,8 @@ def stop_mcp_server(container_runtime: str, container_name: str):
         pass
 
 
-class MCPToolWrapper:
-    """Converts MCP tools to LangChain StructuredTool objects."""
-
-    def __init__(self, session: ClientSession):
-        self.session = session
-        self._tools_cache: Optional[List[StructuredTool]] = None
-
-    async def get_tools(self) -> List[StructuredTool]:
-        """Fetch tools from MCP server and convert to LangChain tools."""
-        if self._tools_cache is not None:
-            return self._tools_cache
-
-        response = await self.session.list_tools()
-        self._tools_cache = [self._create_tool(t) for t in response.tools]
-        return self._tools_cache
-
-    def _create_tool(self, mcp_tool) -> StructuredTool:
-        """Convert a single MCP tool to LangChain StructuredTool."""
-        session = self.session
-
-        async def tool_func(**kwargs) -> str:
-            result = await session.call_tool(mcp_tool.name, kwargs)
-            if result.content:
-                return result.content[0].text
-            return "No result"
-
-        return StructuredTool.from_function(
-            name=mcp_tool.name,
-            description=mcp_tool.description or f"Tool: {mcp_tool.name}",
-            coroutine=tool_func,
-        )
+# Import unified MCPToolWrapper
+from agents.mcp_tool_wrapper import MCPToolWrapper
 
 
 async def connect_and_get_session(

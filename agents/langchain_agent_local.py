@@ -83,58 +83,20 @@ _stats: Optional[ProfileStats] = None
 _current_query_index: int = 0
 
 
-class MCPToolWrapper:
-    """Wrapper to convert MCP tools to LangChain tools"""
+# Import unified MCPToolWrapper with profiling support
+from agents.mcp_tool_wrapper import MCPToolWrapper
 
-    def __init__(self, session: ClientSession, use_openai: bool = False):
-        self.session = session
-        self.tools_cache = None
-        self.use_openai = use_openai
 
-    async def get_tools(self) -> List[StructuredTool]:
-        """Fetch tools from MCP server and convert to LangChain tools"""
-        if self.tools_cache is None:
-            response = await self.session.list_tools()
-            mcp_tools = response.tools
-            self.tools_cache = [self._create_langchain_tool(t) for t in mcp_tools]
-        return self.tools_cache
-
-    def _create_langchain_tool(self, mcp_tool) -> StructuredTool:
-        """Convert a single MCP tool to a LangChain StructuredTool"""
-
-        async def tool_func(**kwargs) -> str:
-            global _stats, _current_query_index
-            t0 = time.perf_counter()
-            result = await self.session.call_tool(mcp_tool.name, kwargs)
-            duration = time.perf_counter() - t0
-            if _stats is not None:
-                _stats.tool_calls.append({
-                    "tool_name": mcp_tool.name,
-                    "duration_s": duration,
-                    "query_index": _current_query_index,
-                })
-            print(f"  [tool] {mcp_tool.name} -> {duration:.3f}s")
-            if result.content:
-                return result.content[0].text
-            return "No result"
-
-        tool_name = mcp_tool.name
-
-        if self.use_openai:
-            import re
-            tool_name = re.sub(r'[^a-zA-Z0-9_-]', '_', tool_name)
-            if len(tool_name) > 64:
-                tool_name = tool_name.replace("get_", "").replace("_by_", "_").replace("_with_", "_")
-                if len(tool_name) > 64:
-                    tool_name = tool_name[:64]
-
-        return StructuredTool(
-            name=tool_name,
-            description=mcp_tool.description or f"Tool: {mcp_tool.name}",
-            func=lambda **kwargs: asyncio.run(tool_func(**kwargs)),
-            coroutine=tool_func,
-            args_schema=None,
-        )
+def create_profiling_callback(stats, current_query_index):
+    """Create a profiling callback that updates global stats."""
+    def callback(data):
+        if stats is not None:
+            stats.tool_calls.append({
+                "tool_name": data["tool_name"],
+                "duration_s": data["duration_s"],
+                "query_index": current_query_index,
+            })
+    return callback
 
 
 def create_llm():
@@ -215,7 +177,13 @@ async def main():
 
             # --- Tool discovery ---
             t0 = time.perf_counter()
-            mcp_wrapper = MCPToolWrapper(session, use_openai=use_openai)
+            mcp_wrapper = MCPToolWrapper(
+                session=session,
+                use_openai_restrictions=use_openai,
+                enable_profiling=True,
+                profile_callback=create_profiling_callback(_stats, _current_query_index),
+                current_query_index=_current_query_index
+            )
             all_tools = await mcp_wrapper.get_tools()
             _stats.tool_discovery_s = time.perf_counter() - t0
             print(f"Loaded {len(all_tools)} tools in {_stats.tool_discovery_s:.3f}s")

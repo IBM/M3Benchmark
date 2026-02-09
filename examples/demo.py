@@ -6,16 +6,20 @@ import json
 import sys
 import argparse
 import contextlib
-from langchain_mcp.toolkit import MCPToolkit
+
+# Add parent directory to path so we can import agents module
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from mcp.client.websocket import websocket_client
 
 from agents.tool_calling_agent import ToolCallingAgent
-from agents.llm import create_llm, MCPToolWrapper
+from agents.llm import create_llm
+from agents.mcp_tool_wrapper import MCPToolWrapper
 
 # Configuration
-DATABASE_PATH = os.environ.get("SUPERHERO_DB", "db/dev_databases/superhero/superhero.sqlite")
+DATABASE_PATH = os.environ.get("SUPERHERO_DB", "db/superhero/superhero.sqlite")
 
 @contextlib.asynccontextmanager
 async def connect_to_server(mode: str, server_url: str = None):
@@ -78,23 +82,17 @@ async def run_single_server_with_instances(
             await session.initialize()
             print("MCP session initialized")
 
-            # Create and initialize toolkit once
-            toolkit = MCPToolkit(session=session)
-            await toolkit.initialize()
-            print("MCPToolkit initialized\n")
+            # Use new MCPToolWrapper factory pattern
+            wrapper = MCPToolWrapper(
+                session=session,
+                use_openai_restrictions=(llm_type == "openai")
+            )
+            tools = await wrapper.get_tools()
 
-            # Get tools and bind to LLM once (no need to refresh per universe)
-            mcp_tools = toolkit.get_tools()
-            # Wrap MCPTools
-            if llm_type == "openai":
-                wrapped_tools = [MCPToolWrapper(tool) for tool in mcp_tools]
-            else:
-                wrapped_tools = mcp_tools
+            # Bind tools to LLM
+            llm_with_tools = llm.bind_tools(tools)
 
-            # Bind them to your LLM
-            llm_with_tools = llm.bind_tools(wrapped_tools)
-            
-            print(f"Available tools ({len(mcp_tools)}): {[t.name for t in mcp_tools]}\n")
+            print(f"Available tools ({len(tools)}): {[t.name for t in tools]}\n")
 
             # Loop over each instance
             for instance_id, instance in instances.items():
@@ -107,7 +105,7 @@ async def run_single_server_with_instances(
                     # STEP 1: Call get_data with tool_universe_id to switch and load data
                     print(f"Switching to universe: {instance_id} and loading data")
 
-                    get_data_tool = next((t for t in mcp_tools if t.name == "get_data"), None)
+                    get_data_tool = next((t for t in tools if t.name == "get_data"), None)
                     if not get_data_tool:
                         raise RuntimeError("get_data tool not found!")
 
@@ -134,7 +132,7 @@ async def run_single_server_with_instances(
                     # Note: No toolkit refresh needed - key_name validation happens at runtime
                     agent = ToolCallingAgent(
                         llm_with_tools=llm_with_tools,
-                        mcp_tools=mcp_tools,
+                        mcp_tools=tools,
                         initial_data_handle="initial_data_1",  # Temporary, will be updated
                         max_iterations=10
                     )
@@ -227,6 +225,10 @@ if __name__ == "__main__":
     )
 
     args = parser.parse_args()
+
+    # Check that the database path is correct
+    if not os.path.isfile(DATABASE_PATH):
+        raise FileNotFoundError(f"No database found at {DATABASE_PATH}")
 
     try:
         asyncio.run(main(

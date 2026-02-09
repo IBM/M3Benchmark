@@ -2,7 +2,7 @@ import json
 from typing import Any
 from langchain_core.messages import HumanMessage, SystemMessage, ToolMessage
 
-from agents.result_handle_manager import ResultHandleManager
+from agents.components.result_handle_manager import ResultHandleManager
 
 class ToolCallingAgent:
     """Agent that executes tool-calling loops with handle-based result management"""
@@ -182,7 +182,7 @@ INITIAL DATA:
             # print(f"  Raw result length: {len(result) if result else 0}")
             # print(f"  Raw result (first 500 chars): {str(result)[:500]}")
 
-            parsed_result = json.loads(result)[0]
+            parsed_result = json.loads(result)
             print(f"  Parsed result type: {type(parsed_result)}")
 
             # Extract text field from MCP TextContent format

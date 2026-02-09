@@ -14,61 +14,6 @@ from typing import Any, Sequence, Dict, Callable, Union
 
 from pydantic import Field
 
-class MCPToolWrapper(BaseTool):
-    """Wraps an MCPTool to make it compatible with LangChain ChatModels."""
-
-    name: str
-    description: str
-    _tool: Any = None
-    _fields: Dict[str, Any] = {}
-
-    def __init__(self, tool: Any, **kwargs):
-        mcp_schema = getattr(tool, "args_schema", {})
-        properties = mcp_schema.get("properties", {})
-        
-        # Initialize the tool
-        # set args_schema to None because args are handled manually
-        super().__init__(
-            name=tool.name,
-            description=tool.description,
-            args_schema=None, 
-            **kwargs
-        )
-        self._tool = tool
-        self._fields = properties
-
-    @property
-    def args(self) -> dict:
-        """
-        Returns the parameters (data, key_name, etc.) directly.
-        Overrides defaulting to empty pydantics base.
-        Note: Removing this will lead to empty arguments for the tools.
-        """
-        return self._fields
-
-    def _run(self, **kwargs):
-        # MCP tools expect a dict of arguments
-        if hasattr(self._tool, "run"):
-            return self._tool.run(kwargs)
-        # Fallback: try invoke
-        if hasattr(self._tool, "invoke"):
-            return self._tool.invoke(kwargs)
-        raise NotImplementedError(f"Tool {self.name} has no run or invoke method")
-
-    async def _arun(self, **kwargs):
-        # MCP tools expect a dict of arguments
-        if hasattr(self._tool, "ainvoke"):
-            return await self._tool.ainvoke(kwargs)
-        elif hasattr(self._tool, "arun"):
-            return await self._tool.arun(kwargs)
-        elif hasattr(self._tool, "run"):
-            return self._tool.run(kwargs)
-        elif hasattr(self._tool, "invoke"):
-            return self._tool.invoke(kwargs)
-        raise NotImplementedError(f"Tool {self.name} has no async method")
-
-    # Remove to_openai_tool - let LangChain's convert_to_openai_tool handle it
-
 
 class RITSChatModel(BaseChatModel):
     """LangChain-compatible chat model using httpx for internal RITS inference service."""
