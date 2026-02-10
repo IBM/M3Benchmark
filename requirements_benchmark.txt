@@ -47,6 +47,12 @@ langchain-openai>=0.2.0
 langchain-ollama>=0.2.0
 
 # ----------------------------------------------------------------------------
+# Tool Shortlisting (Semantic Retrieval)
+# ----------------------------------------------------------------------------
+# Required for --top-k-tools to reduce tool count for providers with limits
+sentence-transformers>=2.0.0
+
+# ----------------------------------------------------------------------------
 # Optional: Development and Testing Dependencies
 # ----------------------------------------------------------------------------
 # Uncomment these if you need them for development
