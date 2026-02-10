@@ -98,6 +98,7 @@ class BenchmarkResult:
     answer: str = ""
     tool_calls: List[Dict] = field(default_factory=list)
     trajectory: List[Dict] = field(default_factory=list)  # Agent trajectory
+    turn_id: int = 0
     status: str = "pending"
     error: str = ""
     duration_s: float = 0.0
@@ -114,29 +115,35 @@ def load_benchmark_file(filepath: Path) -> List[BenchmarkItem]:
     return items
 
 
-def save_results(results: List[BenchmarkResult], output_path: Path):
-    """Save benchmark results to JSON file."""
-    output_data = []
-    for r in results:
-        output_data.append({
-            "uuid": r.uuid,
-            "domain": r.domain,
-            "query": r.query,
-            "answer": r.answer,
-            "tool_calls": r.tool_calls,
-            "trajectory": r.trajectory,  # Include trajectory
-            "status": r.status,
-            "error": r.error,
-            "duration_s": r.duration_s,
-        })
+def _extract_tool_response_values(result_str: str):
+    """Extract only the values from a tool response JSON string.
 
-    with open(output_path, "w") as f:
-        json.dump(output_data, f, indent=2)
-    print(f"  Results saved to: {output_path}")
+    Tool responses come as JSON dicts like '{"description": "Foo"}' or
+    '{"codes": []}'. This extracts just the values ("Foo" or []) so the
+    output contains the data without the key names.
+    """
+    try:
+        parsed = json.loads(result_str)
+    except (json.JSONDecodeError, TypeError):
+        return result_str
+
+    if isinstance(parsed, dict):
+        values = list(parsed.values())
+        if len(values) == 1:
+            return values[0]
+        return values
+
+    # Already a plain value (list, int, string, etc.)
+    return parsed
 
 
-def save_results_by_domain(results: List[BenchmarkResult], output_dir: Path):
-    """Save benchmark results to domain-specific JSON files."""
+def save_results_ground_truth(results: List[BenchmarkResult], output_dir: Path):
+    """Save benchmark results in ground truth format to per-domain files.
+
+    Writes one file per domain to output_dir/<domain>.json matching the
+    structure of the example output files (uuid, domain, ground_truth with
+    turn_id, query, answer, and gold_sequence).
+    """
     # Group results by domain
     by_domain: Dict[str, List[BenchmarkResult]] = {}
     for r in results:
@@ -144,12 +151,50 @@ def save_results_by_domain(results: List[BenchmarkResult], output_dir: Path):
             by_domain[r.domain] = []
         by_domain[r.domain].append(r)
 
-    # Save each domain to its own file
-    for domain, domain_results in by_domain.items():
-        output_file = output_dir / f"{domain}_benchmark_output.json"
-        save_results(domain_results, output_file)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
-    print(f"\nAll results saved to: {output_dir}")
+    for domain, domain_results in by_domain.items():
+        records = []
+        for r in domain_results:
+            # Build gold_sequence from tool_calls.
+            # Each tool call becomes its own entry so retries are preserved.
+            gold_sequence = []
+            # Internal LangChain parameters that leak into tool schemas
+            _INTERNAL_KEYS = {"args", "config", "kwargs"}
+            for tc in r.tool_calls:
+                raw_args = tc.get("arguments", {})
+                filtered_args = {
+                    k: v for k, v in raw_args.items() if k not in _INTERNAL_KEYS
+                }
+                gold_sequence.append({
+                    "tool_call": [[{
+                        "name": tc.get("tool_name", ""),
+                        "arguments": filtered_args,
+                    }]],
+                    "tool_response": [_extract_tool_response_values(tc.get("result", ""))],
+                })
+
+            record = {
+                "uuid": r.uuid,
+                "domain": r.domain,
+                "status": r.status,
+                "error": r.error,
+                "duration_s": r.duration_s,
+                "ground_truth": [
+                    {
+                        "turn_id": r.turn_id,
+                        "query": r.query,
+                        "answer": r.answer,
+                        "gold_sequence": gold_sequence,
+                    }
+                ],
+            }
+            records.append(record)
+
+        output_file = output_dir / f"{domain}.json"
+        with open(output_file, "w") as f:
+            json.dump(records, f, indent=2)
+        print(f"  Ground truth results saved to: {output_file}")
 
 
 # Timeout for agent execution (seconds)
@@ -475,6 +520,7 @@ async def run_benchmark_for_domain(
     container_name: str,
     agent: AgentInterface,
     max_samples: Optional[int] = None,
+    shortlister=None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a single domain - starts MCP server once for all items."""
     import time
@@ -514,6 +560,10 @@ async def run_benchmark_for_domain(
                 tools = await wrapper.get_tools()
                 print(f"  Loaded {len(tools)} tools for domain '{domain}'")
 
+                # Pre-compute tool embeddings for shortlisting
+                if shortlister:
+                    shortlister.encode_tools(tools)
+
                 # Run all queries for this domain
                 for i, item in enumerate(items):
                     print(f"\n  [{i+1}/{len(items)}] Query: {item.query[:80]}{'...' if len(item.query) > 80 else ''}")
@@ -522,14 +572,22 @@ async def run_benchmark_for_domain(
                         uuid=item.uuid,
                         domain=domain,
                         query=item.query,
+                        turn_id=item.turn_id,
                     )
 
                     start_time = time.perf_counter()
 
                     try:
+                        # Shortlist tools per query if enabled
+                        if shortlister:
+                            query_tools = shortlister.shortlist(item.query, tools)
+                            print(f"    Shortlisted {len(query_tools)}/{len(tools)} tools")
+                        else:
+                            query_tools = tools
+
                         # Run agent with timeout
                         response = await asyncio.wait_for(
-                            agent.run(item.query, tools),
+                            agent.run(item.query, query_tools),
                             timeout=AGENT_TIMEOUT_SECONDS
                         )
                         result.answer = response.content
@@ -597,6 +655,7 @@ async def run_task(
     max_samples_per_domain: Optional[int] = None,
     output_file: Optional[str] = None,
     domains: Optional[List[str]] = None,
+    top_k_tools: int = 0,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -658,12 +717,20 @@ async def run_task(
     
     agent = create_agent(provider=provider, model=model, **agent_kwargs)
     print(f"Agent: {provider} / {model or 'default'}")
+
+    # Create tool shortlister if requested
+    shortlister = None
+    if top_k_tools > 0:
+        from agents.components.tool_shortlister import ToolShortlister
+        shortlister = ToolShortlister(top_k=top_k_tools)
+        print(f"Tool shortlister enabled: top_k={top_k_tools}")
+
     if max_samples_per_domain:
         print(f"Max samples per domain: {max_samples_per_domain}")
 
-    # Process each domain file
+    # Process each domain file, writing output incrementally per domain
     all_results: List[BenchmarkResult] = []
-    print("jsn files", json_files)
+    gt_output_dir = input_path.parent / "output"
     for json_file in json_files:
         domain = json_file.stem  # Extract domain from filename (e.g., "address" from "address.json")
 
@@ -679,8 +746,12 @@ async def run_task(
             container_name=container_name,
             agent=agent,
             max_samples=max_samples_per_domain,
+            shortlister=shortlister,
         )
         all_results.extend(domain_results)
+
+        # Write output immediately after each domain completes
+        save_results_ground_truth(domain_results, gt_output_dir)
 
     results = all_results
 
@@ -902,6 +973,12 @@ def main():
         help="Model name (default: provider-specific default)"
     )
     parser.add_argument(
+        "--top-k-tools",
+        type=int,
+        default=0,
+        help="Enable tool shortlisting: keep top-k tools per query"
+    )
+    parser.add_argument(
         "--watsonx-project-id",
         type=str,
         default=None,
@@ -962,6 +1039,7 @@ def main():
         max_samples_per_domain=args.max_samples_per_domain,
         output_file=args.output,
         domains=args.domain,
+        top_k_tools=args.top_k_tools,
     ))
 
 
