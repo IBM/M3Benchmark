@@ -316,10 +316,6 @@ class LiveMCPServer(ABC):
                         error_msg = f"Input validation error: {str(e)}"
                         logger.error(f"{name} failed: {error_msg}", exc_info=True)
 
-                        # DEBUG LOGGING
-                        if name == "filter_data":
-                            logger.debug("ERROR calling %s: %s", name, str(e))
-
                         return [TextContent(type="text", text=error_msg)]
 
             # Check for None result
