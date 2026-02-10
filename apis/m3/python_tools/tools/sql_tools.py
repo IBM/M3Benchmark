@@ -1,8 +1,11 @@
 
 from collections import defaultdict
+import logging
 import math
 import os
 from typing import Callable, Literal, Union
+
+logger = logging.getLogger(__name__)
 
 import pandas as pd
 
@@ -223,8 +226,7 @@ def set_query_specific_columns_and_descriptions(join_sequence: list, alias_dict:
     try:
         assert len(query_specific_columns_and_descriptions) == len(current_table_keys)
     except:
-        print("Failed to build name-description list. ")
-        print(f"There were {len(query_specific_columns_and_descriptions)} api calls and {len(current_table_keys)} columns")
+        logger.error("Failed to build name-description list. There were %d api calls and %d columns", len(query_specific_columns_and_descriptions), len(current_table_keys))
         raise Exception("Didn't create the right number of getters. ")
     
     query_specific_columns_and_descriptions = clean_for_json(query_specific_columns_and_descriptions)

@@ -25,11 +25,11 @@ def transform_json(input_path, output_path):
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(result, f, indent=2, ensure_ascii=False)
 
-    print(f"Saved {len(result)} entries to {output_path}")
+    print(f"Saved {len(result)} entries to {output_path}", file=sys.stderr)
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: python script.py <input.json> <output.json>")
+        print("Usage: python script.py <input.json> <output.json>", file=sys.stderr)
         sys.exit(1)
 
     input_json = sys.argv[1]

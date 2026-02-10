@@ -1,8 +1,11 @@
 
 from copy import deepcopy
 import inspect
+import logging
 import os
 from typing import Callable
+
+logger = logging.getLogger(__name__)
 
 from .sql_tools import initialize_active_data, create_getter
 from .slot_filling_tools import (
@@ -187,7 +190,7 @@ class SlotFillingTools():
 
         if use_io_wrappers:
             if not os.path.isdir(io_cache):
-                print(f"Creating cache dir: {io_cache}")
+                logger.info(f"Creating cache dir: {io_cache}")
                 os.makedirs(io_cache, exist_ok=True)
 
         for spec in SLOT_FILLING_TOOLS:
@@ -290,7 +293,7 @@ class SelectionTools():
 
         if use_io_wrappers:
             if not os.path.isdir(io_cache):
-                print(f"Creating cache dir: {io_cache}")
+                logger.info(f"Creating cache dir: {io_cache}")
                 os.makedirs(io_cache, exist_ok=True)
             wrapped_fcns = add_read_from_file_decorator(self.base_tools, self.io_cache)
             self.tools = wrapped_fcns

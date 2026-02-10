@@ -9,6 +9,8 @@ __pycache__/
 .venv/
 *.venv/
 venv/
+build/
+*.egg-info/
 
 # Environment
 .env

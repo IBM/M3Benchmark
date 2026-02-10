@@ -218,13 +218,11 @@ class LiveMCPServer(ABC):
 
                     # DEBUG LOGGING: Capture schema for retrieve_data
                     if name == "retrieve_data":
-                        import json
-                        print(f"\n{'='*80}")
-                        print("MCP Server: list_tools() - retrieve_data schema export")
-                        print(f"{'='*80}")
-                        print(json.dumps(input_schema, indent=2))
-                        print(f"\nProperties: {list(input_schema.get('properties', {}).keys())}")
-                        print(f"{'='*80}\n")
+                        logger.debug(
+                            "list_tools() - retrieve_data schema: %s\nProperties: %s",
+                            json.dumps(input_schema, indent=2),
+                            list(input_schema.get('properties', {}).keys()),
+                        )
 
                     # Note: key_name validation happens at runtime in call_tool()
                     # We don't inject allowed values into the schema to avoid client-side caching issues
@@ -305,25 +303,6 @@ class LiveMCPServer(ABC):
 
                 tool_func = available_tools[name]
 
-                # DEBUG LOGGING
-                if name == "filter_data":
-                    from collections.abc import Mapping as MappingABC
-                    print(f"\n{'='*80}")
-                    print(f"MCP Server: call_tool for {name}")
-                    print(f"{'='*80}")
-                    print(f"Tool function: {tool_func}")
-                    print(f"Tool function name: {getattr(tool_func, '__name__', 'unknown')}")
-                    print(f"Tool function module: {getattr(tool_func, '__module__', 'unknown')}")
-                    print(f"Is wrapped? Has __wrapped__: {hasattr(tool_func, '__wrapped__')}")
-                    print(f"Arguments keys: {list(arguments.keys())}")
-                    for key, value in arguments.items():
-                        if isinstance(value, MappingABC):
-                            print(f"  {key}: type={type(value).__name__}, has _dtypes={('_dtypes' in value)}")
-                            print(f"    keys (first 10): {list(value.keys())[:10]}")
-                        else:
-                            print(f"  {key}: {type(value).__name__} = {str(value)[:100]}")
-                    print(f"{'='*80}\n")
-
                 if name == PEEK_FCN:
                     input_model = self.tool_input_models[name]
                     inputs = input_model(**arguments)
@@ -339,11 +318,7 @@ class LiveMCPServer(ABC):
 
                         # DEBUG LOGGING
                         if name == "filter_data":
-                            print(f"\n{'='*80}")
-                            print(f"MCP Server: ERROR calling {name}")
-                            print(f"{'='*80}")
-                            print(f"Error: {str(e)}")
-                            print(f"{'='*80}\n")
+                            logger.debug("ERROR calling %s: %s", name, str(e))
 
                         return [TextContent(type="text", text=error_msg)]
 
