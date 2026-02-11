@@ -311,6 +311,12 @@ def create_llm(
                 "Install with: pip install langchain-litellm"
             )
 
+        # This is the cheapest model in our allowed set: 
+        # ['aws/claude-opus-4-5', 'claude-opus-4-5-20251101', 
+        # 'claude-sonnet-4-5-20250929', 'aws/claude-sonnet-4-5', 
+        # 'Azure/gpt-5.1-2025-11-13', 'GCP/gemini-2.5-flash', 
+        # 'GCP/gemini-2.5-flash-lite', 'GCP/gemini-2.0-flash', 
+        # 'gcp/gemini-3-flash-preview']
         model_name = model or "GCP/gemini-2.0-flash"
         params: Dict[str, Any] = {
             "model": model_name,
