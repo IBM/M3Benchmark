@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Describe Utilitarianism.",
+    "expected_topic": "Utilitarianism"
+  },
+  {
+    "question": "What role does Zinedine Zidane play?",
+    "expected_topic": "Zinedine Zidane"
+  },
+  {
+    "question": "Tell me about Synod of Hippo.",
+    "expected_topic": "Synod of Hippo"
+  },
+  {
+    "question": "Why is Friction important?",
+    "expected_topic": "Friction"
+  },
+  {
+    "question": "Can you explain Microphone in detail?",
+    "expected_topic": "Microphone"
+  },
+  {
+    "question": "Why is Fictional world of The Hunger Games important?",
+    "expected_topic": "Fictional world of The Hunger Games"
+  },
+  {
+    "question": "What happened with Real estate contract?",
+    "expected_topic": "Real estate contract"
+  },
+  {
+    "question": "What happened with United States budget process?",
+    "expected_topic": "United States budget process"
+  },
+  {
+    "question": "What do you know about Dei verbum?",
+    "expected_topic": "Dei verbum"
+  },
+  {
+    "question": "Can you explain Myelin in detail?",
+    "expected_topic": "Myelin"
+  },
+  {
+    "question": "What are the key facts about List of The Big Bang Theory characters?",
+    "expected_topic": "List of The Big Bang Theory characters"
+  },
+  {
+    "question": "How does Mental calculation work?",
+    "expected_topic": "Mental calculation"
+  },
+  {
+    "question": "Why is Selective Service Act of 1917 important?",
+    "expected_topic": "Selective Service Act of 1917"
+  },
+  {
+    "question": "What do you know about Adventures of Huckleberry Finn?",
+    "expected_topic": "Adventures of Huckleberry Finn"
+  },
+  {
+    "question": "Can you explain Insulin in detail?",
+    "expected_topic": "Insulin"
+  },
+  {
+    "question": "Why is Bacterial cell structure important?",
+    "expected_topic": "Bacterial cell structure"
+  },
+  {
+    "question": "What is the significance of List of major shopping centres in Australia by size?",
+    "expected_topic": "List of major shopping centres in Australia by size"
+  },
+  {
+    "question": "Tell me about Lighthouse of Alexandria.",
+    "expected_topic": "Lighthouse of Alexandria"
+  },
+  {
+    "question": "What happened with A Beautiful Mind (film)?",
+    "expected_topic": "A Beautiful Mind (film)"
+  },
+  {
+    "question": "Why is The Walking Dead (season 6) important?",
+    "expected_topic": "The Walking Dead (season 6)"
+  },
+  {
+    "question": "What is the history of Cnidaria?",
+    "expected_topic": "Cnidaria"
+  },
+  {
+    "question": "Can you explain Holy Chalice in detail?",
+    "expected_topic": "Holy Chalice"
+  },
+  {
+    "question": "Describe State of Origin series.",
+    "expected_topic": "State of Origin series"
+  },
+  {
+    "question": "Can you explain Ancient Greek architecture in detail?",
+    "expected_topic": "Ancient Greek architecture"
+  },
+  {
+    "question": "What is the history of Mass versus weight?",
+    "expected_topic": "Mass versus weight"
+  },
+  {
+    "question": "What happened with Xenon?",
+    "expected_topic": "Xenon"
+  },
+  {
+    "question": "What do you know about Tu Sooraj, Main Saanjh Piyaji?",
+    "expected_topic": "Tu Sooraj, Main Saanjh Piyaji"
+  },
+  {
+    "question": "Can you explain Assassination of Archduke Franz Ferdinand of Austria in detail?",
+    "expected_topic": "Assassination of Archduke Franz Ferdinand of Austria"
+  },
+  {
+    "question": "Tell me about Environmental impact of irrigation.",
+    "expected_topic": "Environmental impact of irrigation"
+  },
+  {
+    "question": "What is Chicxulub crater?",
+    "expected_topic": "Chicxulub crater"
+  },
+  {
+    "question": "Why is Cranberry important?",
+    "expected_topic": "Cranberry"
+  },
+  {
+    "question": "What do you know about Digestive enzyme?",
+    "expected_topic": "Digestive enzyme"
+  },
+  {
+    "question": "What role does Seafloor spreading play?",
+    "expected_topic": "Seafloor spreading"
+  },
+  {
+    "question": "Give me a summary of Baptism.",
+    "expected_topic": "Baptism"
+  },
+  {
+    "question": "What is the history of Colony of Virginia?",
+    "expected_topic": "Colony of Virginia"
+  },
+  {
+    "question": "What does this refer to: All sets of real and color - space primaries are arbitrary , in the sense that there is no one set of primaries that can...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The lifespan of a zebra mussel is four to five years .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Mansa Sandaki Keita , a descendant of kankoro - sigui Mari Djata Keita , deposed Maghan Keita II , becoming the first pe...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In `` Life of Brian '' , Stewie is the one who takes Brian 's death the hardest , and when the family adopts a new dog n...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Many of the Loyalists were forced to abandon substantial properties to America restoration of or compensation for these ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The third Council of Sirmium , in 357 , was the high point of Arianism .",
+    "expected_topic": ""
+  },
+  {
+    "question": "At one time Northwest Airlines had a ticket office in the Peabody Hotel Arcade .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In season ten , episode 22 , Zack and his fianc\u00e9 plan a double date with Penny and Leonard but his fianc\u00e9 does n't turn ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: From his earliest involvement in politics , Cleveland aligned with the Democratic Party .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Particularly , cardiovascular function appears to be lateralized and tied to emotional stress .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Once the Second Punic War had been resolved , and the Romans had begun to regather their strength , they looked to re-as...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Whales are trained using a system of reward ( called `` positive reinforcement '' by trainers ) by giving the killer wha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The other vicar ( played by Gerald Sim ) had a single appearance in the episode `` The Christening '' .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Long distance switches may use a slower , more efficient switch - allocation algorithm than local central offices , beca...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Beaver lives in a dam near Poohsticks Bridge .",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Give me a summary of Blazing Saddles.",
+    "expected_topic": "Blazing Saddles"
+  },
+  {
+    "question": "Can you explain Metrication in the United Kingdom in detail?",
+    "expected_topic": "Metrication in the United Kingdom"
+  },
+  {
+    "question": "Explain 25 or 6 to 4.",
+    "expected_topic": "25 or 6 to 4"
+  },
+  {
+    "question": "Explain Pomp and Circumstance Marches.",
+    "expected_topic": "Pomp and Circumstance Marches"
+  },
+  {
+    "question": "Explain Legends of the Fall.",
+    "expected_topic": "Legends of the Fall"
+  },
+  {
+    "question": "Who or what is Tapioca balls?",
+    "expected_topic": "Tapioca balls"
+  },
+  {
+    "question": "Can you explain Nubia in detail?",
+    "expected_topic": "Nubia"
+  },
+  {
+    "question": "What happened with Revolutions of 1830?",
+    "expected_topic": "Revolutions of 1830"
+  },
+  {
+    "question": "What are the key facts about Sampling distribution?",
+    "expected_topic": "Sampling distribution"
+  },
+  {
+    "question": "What do you know about Ice Cold in Alex?",
+    "expected_topic": "Ice Cold in Alex"
+  },
+  {
+    "question": "Give me a summary of List of Keeping Up with the Kardashians episodes.",
+    "expected_topic": "List of Keeping Up with the Kardashians episodes"
+  },
+  {
+    "question": "What is the significance of Mars, Incorporated?",
+    "expected_topic": "Mars, Incorporated"
+  },
+  {
+    "question": "How does Cultural identity work?",
+    "expected_topic": "Cultural identity"
+  },
+  {
+    "question": "How does Louis Walsh work?",
+    "expected_topic": "Louis Walsh"
+  },
+  {
+    "question": "What are the key facts about Curved mirror?",
+    "expected_topic": "Curved mirror"
+  },
+  {
+    "question": "What is the significance of The Land of Stories?",
+    "expected_topic": "The Land of Stories"
+  },
+  {
+    "question": "Explain Battles of Lexington and Concord.",
+    "expected_topic": "Battles of Lexington and Concord"
+  },
+  {
+    "question": "What is Rush equipment?",
+    "expected_topic": "Rush equipment"
+  },
+  {
+    "question": "What are the key facts about I Want You Back?",
+    "expected_topic": "I Want You Back"
+  },
+  {
+    "question": "How does Astronomical spectroscopy work?",
+    "expected_topic": "Astronomical spectroscopy"
+  },
+  {
+    "question": "Give me a summary of Great Expectations.",
+    "expected_topic": "Great Expectations"
+  },
+  {
+    "question": "Explain Gold standard.",
+    "expected_topic": "Gold standard"
+  },
+  {
+    "question": "How does Matthew 5:22 work?",
+    "expected_topic": "Matthew 5:22"
+  },
+  {
+    "question": "Tell me about Synod of Hippo.",
+    "expected_topic": "Synod of Hippo"
+  },
+  {
+    "question": "What is Technical drawing tool?",
+    "expected_topic": "Technical drawing tool"
+  },
+  {
+    "question": "Tell me about Spanish conquest of the Aztec Empire.",
+    "expected_topic": "Spanish conquest of the Aztec Empire"
+  },
+  {
+    "question": "Give me a summary of Lunar distance (astronomy).",
+    "expected_topic": "Lunar distance (astronomy)"
+  },
+  {
+    "question": "Who or what is Glasgow School of Art?",
+    "expected_topic": "Glasgow School of Art"
+  },
+  {
+    "question": "What do you know about Big Brother (U.S. TV series)?",
+    "expected_topic": "Big Brother (U.S. TV series)"
+  },
+  {
+    "question": "Who or what is They Call the Wind Maria?",
+    "expected_topic": "They Call the Wind Maria"
+  },
+  {
+    "question": "What is the history of Labour Party (UK)?",
+    "expected_topic": "Labour Party (UK)"
+  },
+  {
+    "question": "Tell me about Computer.",
+    "expected_topic": "Computer"
+  },
+  {
+    "question": "Explain Elvis Presley.",
+    "expected_topic": "Elvis Presley"
+  },
+  {
+    "question": "Who or what is Osmosis?",
+    "expected_topic": "Osmosis"
+  },
+  {
+    "question": "Describe Puerto Rican cuisine.",
+    "expected_topic": "Puerto Rican cuisine"
+  },
+  {
+    "question": "Find information related to: These equations for the Mohr circles show that all admissible stress points ( \u03c3 n , \u03c4 n ) ( \\ displaystyle ( \\ sigma _ (...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: About 22 % of land in Northern Australia ( Kimberley , Top End and Cape York ) is now Aboriginal - owned .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: This message is identical to the one displayed when trying to play an unsupported or unpatched game for the first time .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Intelligence that the Confederates were working to develop an ironclad caused consternation for the Union , but Secretar...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: A third company , the Danish Bang & Olufsen improved the Dolby HX `` head room extension '' system for reliably reducing...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: ( These last three live albums are from the same three 1971 - 3 performances , but add and subtract a few different song...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Pete Seeger 's cautionary song `` Turn ! Turn ! Turn ! '' takes many of its lyrics from the Book of Ecclesiastes .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Early on September 9 , Irma made landfall on the Camag\u00fcey Archipelago off the northern coast of Cuba , with sustained wi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In Japanese , the `` Ryukyu Islands '' ( \u7409\u7403 \u8af8\u5cf6 , Ry\u016bky\u016b - shot\u014d ) cover only the Okinawa , Miyako , and Yaeyama Islands ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Ayodhy\u0101 K\u0101\u1e47\u1e0d begins with the famous verse dedicated to the god Shiva : May He in whose lap shines forth the Daughter of ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Earps ' work as lawmen was not welcomed by the Cowboys , who viewed the Earps as badge - toting tyrants who ruthless...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The largest villages and towns of the area are Ouarzazate , Tahanaoute , Amizmiz , Imlil , Tin Mal and Ijoukak .",
+    "expected_topic": ""
+  },
+  {
+    "question": "See also 21CFR201 Part 201.",
+    "expected_topic": ""
+  },
+  {
+    "question": "It is possible to decipher how a particular group of organisms evolved by arranging its fossil record in a chronological...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Differential probes are optimized for acquiring differential signals .",
+    "expected_topic": ""
+  }
+]

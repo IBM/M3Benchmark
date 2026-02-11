@@ -162,7 +162,8 @@ async def main(
     model=None,
     ollama_base_url=None,
     mode="stdio",
-    server_url=None
+    server_url=None,
+    max_samples=None
 ):
     """Main async entry point with single server for all instances.
 
@@ -172,6 +173,7 @@ async def main(
         ollama_base_url: Ollama server URL (optional, default: http://localhost:11434)
         mode: Connection mode - "stdio" (subprocess) or "websocket" (external server)
         server_url: WebSocket URL (required for websocket mode)
+        max_samples: Maximum number of samples to process (optional)
     """
 
     # Create LLM instance
@@ -183,6 +185,11 @@ async def main(
     # Load all instances
     with open("apis/configs/mcp_init_mapping.json") as f:
         instances = json.load(f)
+
+    # Limit samples if requested
+    if max_samples is not None:
+        instances = dict(list(instances.items())[:max_samples])
+        print(f"Limited to {len(instances)} samples\n")
 
     # Run with single server
     await run_single_server_with_instances(
@@ -228,6 +235,12 @@ if __name__ == "__main__":
         default=None,
         help="WebSocket server URL (required for --mode websocket), e.g., ws://localhost:8000/mcp"
     )
+    parser.add_argument(
+        "--max-samples",
+        type=int,
+        default=None,
+        help="Maximum number of samples to process (default: all samples)"
+    )
 
     args = parser.parse_args()
 
@@ -238,6 +251,7 @@ if __name__ == "__main__":
             ollama_base_url=args.ollama_base_url,
             mode=args.mode,
             server_url=args.server_url,
+            max_samples=args.max_samples,
         ))
     except KeyboardInterrupt:
         print("\nStopped by user")

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is J. T. Barrett?",
+    "expected_topic": "J. T. Barrett"
+  },
+  {
+    "question": "Who or what is List of Mako: Island of Secrets episodes?",
+    "expected_topic": "List of Mako: Island of Secrets episodes"
+  },
+  {
+    "question": "What do you know about 25 or 6 to 4?",
+    "expected_topic": "25 or 6 to 4"
+  },
+  {
+    "question": "Tell me about La traviata.",
+    "expected_topic": "La traviata"
+  },
+  {
+    "question": "Can you explain XAMPP in detail?",
+    "expected_topic": "XAMPP"
+  },
+  {
+    "question": "Why is International System of Units important?",
+    "expected_topic": "International System of Units"
+  },
+  {
+    "question": "Can you explain The Rite of Spring in detail?",
+    "expected_topic": "The Rite of Spring"
+  },
+  {
+    "question": "Give me a summary of Call of Duty: Black Ops III.",
+    "expected_topic": "Call of Duty: Black Ops III"
+  },
+  {
+    "question": "What is Political party?",
+    "expected_topic": "Political party"
+  },
+  {
+    "question": "Who or what is Germ theory of disease?",
+    "expected_topic": "Germ theory of disease"
+  },
+  {
+    "question": "What are the key facts about Jacques-Louis David?",
+    "expected_topic": "Jacques-Louis David"
+  },
+  {
+    "question": "What role does Insulin play?",
+    "expected_topic": "Insulin"
+  },
+  {
+    "question": "What is the significance of Red giant?",
+    "expected_topic": "Red giant"
+  },
+  {
+    "question": "Who or what is War of the Austrian Succession?",
+    "expected_topic": "War of the Austrian Succession"
+  },
+  {
+    "question": "Describe Battle of Hampton Roads.",
+    "expected_topic": "Battle of Hampton Roads"
+  },
+  {
+    "question": "Tell me about Environmental issues in India.",
+    "expected_topic": "Environmental issues in India"
+  },
+  {
+    "question": "Why is Germination important?",
+    "expected_topic": "Germination"
+  },
+  {
+    "question": "What is the history of iOS 11?",
+    "expected_topic": "iOS 11"
+  },
+  {
+    "question": "What is Rhode Island?",
+    "expected_topic": "Rhode Island"
+  },
+  {
+    "question": "Give me a summary of Sleeping Beauty.",
+    "expected_topic": "Sleeping Beauty"
+  },
+  {
+    "question": "Why is Queen's Counsel important?",
+    "expected_topic": "Queen's Counsel"
+  },
+  {
+    "question": "Describe Dada.",
+    "expected_topic": "Dada"
+  },
+  {
+    "question": "Give me a summary of Clarabell the Clown.",
+    "expected_topic": "Clarabell the Clown"
+  },
+  {
+    "question": "Who or what is Boeing B-29 Superfortress?",
+    "expected_topic": "Boeing B-29 Superfortress"
+  },
+  {
+    "question": "What is Federalist No. 10?",
+    "expected_topic": "Federalist No. 10"
+  },
+  {
+    "question": "What happened with FIFA World Cup?",
+    "expected_topic": "FIFA World Cup"
+  },
+  {
+    "question": "What is the history of Nun River?",
+    "expected_topic": "Nun River"
+  },
+  {
+    "question": "Tell me about Springfield High School (SHS) is a public comprehensive high school in Springfield, Ohio, United States. It is the only high school in the Springfield City School District, which includes the majority of the city limits..",
+    "expected_topic": "Springfield High School (SHS) is a public comprehensive high school in Springfield, Ohio, United States. It is the only high school in the Springfield City School District, which includes the majority of the city limits."
+  },
+  {
+    "question": "Explain The Way of the World.",
+    "expected_topic": "The Way of the World"
+  },
+  {
+    "question": "What is the significance of Birth control in the United States?",
+    "expected_topic": "Birth control in the United States"
+  },
+  {
+    "question": "Give me a summary of R-410A.",
+    "expected_topic": "R-410A"
+  },
+  {
+    "question": "Explain To Autumn.",
+    "expected_topic": "To Autumn"
+  },
+  {
+    "question": "Explain Night at the Museum: Secret of the Tomb.",
+    "expected_topic": "Night at the Museum: Secret of the Tomb"
+  },
+  {
+    "question": "What is Cult of Chucky?",
+    "expected_topic": "Cult of Chucky"
+  },
+  {
+    "question": "What role does Peru at the FIFA World Cup play?",
+    "expected_topic": "Peru at the FIFA World Cup"
+  },
+  {
+    "question": "Find information related to: Thomas Woodrow Wilson ( December 28 , 1856 -- February 3 , 1924 ) was an American statesman and academic who served as t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Wilson pioneered twice - weekly press conferences in the White House .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Much of the legislation dealt with by Congress is drafted at the initiative of the executive branch .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Two offices of CIA Directorate of Analysis have analytical responsibilities in this area .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Lincoln 's first presidential inauguration occurred on March 4 , 1861 on the East Portico of the United States Capitol .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: At the end of 1913 , summing up the president 's efficacy , the Saturday Evening Post magazine stated , `` This administ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Joint Sessions of the United States Congress occur on special occasions that require a concurrent resolution from both H...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The address fulfills rules in Article II , Section 3 of the U.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: At some time during the first two months of each session , the President customarily delivers the State of the Union Add...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The CIA acts as the primary US HUMINT and general analytic agency , under the Director of National Intelligence , who di...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Central Intelligence Agency ( CIA ) is a civilian foreign intelligence service of the United States federal governme...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: George Washington delivered the first regular annual message before a joint session of Congress on January 8 , 1790 , in...",
+    "expected_topic": ""
+  },
+  {
+    "question": "This became the Family Jewels .",
+    "expected_topic": ""
+  },
+  {
+    "question": "When the CIA was created , its purpose was to create a clearinghouse for foreign policy intelligence and analysis .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: James Madison , then a member of the House of Representatives , argued that the treaty could not , under Constitutional ...",
+    "expected_topic": ""
+  }
+]
