@@ -813,8 +813,6 @@ async def run_task(
     output_dir: Optional[str] = None,
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
-    litellm_base_url: Optional[str] = None,
-    litellm_api_key: Optional[str] = None,
     mode: str = "stdio",
     server_url: Optional[str] = None,
     subprocess_command: Optional[str] = None,
@@ -1150,36 +1148,6 @@ def main():
         help="Enable tool shortlisting: keep top-k tools per query"
     )
     parser.add_argument(
-        "--litellm-base-url",
-        type=str,
-        default=None,
-        help="LiteLLM proxy base URL (e.g. http://localhost:4000, or set LITELLM_BASE_URL env var)"
-    )
-    parser.add_argument(
-        "--litellm-api-key",
-        type=str,
-        default=None,
-        help="API key for LiteLLM (or set LITELLM_API_KEY env var)"
-    )
-    parser.add_argument(
-        "--watsonx-project-id",
-        type=str,
-        default=None,
-        help="watsonx.ai project ID (required for watsonx provider, or set WATSONX_PROJECT_ID env var)"
-    )
-    parser.add_argument(
-        "--watsonx-space-id",
-        type=str,
-        default=None,
-        help="watsonx.ai space ID (alternative to project-id, or set WATSONX_SPACE_ID env var)"
-    )
-    parser.add_argument(
-        "--watsonx-api-key",
-        type=str,
-        default=None,
-        help="watsonx.ai API key (or set WATSONX_APIKEY env var)"
-    )
-    parser.add_argument(
         "--mode",
         type=str,
         default="stdio",
@@ -1219,22 +1187,6 @@ def main():
         task_cfgs[tid] = cfg
 
     container_runtime = args.container_runtime
-
-    # Set provider environment variables if provided via command line
-    if args.provider == "watsonx":
-        import os
-        if args.watsonx_project_id:
-            os.environ["WATSONX_PROJECT_ID"] = args.watsonx_project_id
-        if args.watsonx_space_id:
-            os.environ["WATSONX_SPACE_ID"] = args.watsonx_space_id
-        if args.watsonx_api_key:
-            os.environ["WATSONX_APIKEY"] = args.watsonx_api_key
-    elif args.provider == "litellm":
-        import os
-        if args.litellm_base_url:
-            os.environ["LITELLM_BASE_URL"] = args.litellm_base_url
-        if args.litellm_api_key:
-            os.environ["LITELLM_API_KEY"] = args.litellm_api_key
 
     mode = "parallel" if args.parallel and len(task_ids) > 1 else "sequential"
     print("="*60)
@@ -1304,8 +1256,6 @@ def main():
         output_file=args.output,
         domains=args.domain,
         top_k_tools=args.top_k_tools,
-        litellm_base_url=args.litellm_base_url,
-        litellm_api_key=args.litellm_api_key,
         mode=args.mode,
         server_url=args.server_url,
         subprocess_command=args.subprocess_command,
