@@ -70,7 +70,7 @@ async def run_single_server_with_instances(
     Args:
         llm: The language model instance
         instances: Dict mapping instance_id -> {query, init_args}
-        provider: LLM provider name (e.g. "rits", "ollama", "anthropic", "openai", "watsonx")
+        provider: LLM provider name (e.g. "rits", "ollama", "anthropic", "openai", "litellm", "watsonx")
         mode: Connection mode ("stdio" or "websocket")
         server_url: WebSocket URL (required for websocket mode)
         max_samples_per_domain: Maximum number of instances to process (None = all)
@@ -166,6 +166,7 @@ async def main(
     provider="rits",
     model=None,
     ollama_base_url=None,
+    litellm_base_url=None,
     mode="stdio",
     server_url=None,
     max_samples_per_domain=None
@@ -173,16 +174,31 @@ async def main(
     """Main async entry point with single server for all instances.
 
     Args:
-        provider: LLM provider ("rits", "ollama", "anthropic", "openai", "watsonx")
+        provider: LLM provider ("rits", "ollama", "anthropic", "openai", "litellm", "watsonx")
         model: Model name (optional)
         ollama_base_url: Ollama server URL (optional, default: http://localhost:11434)
+        litellm_base_url: LiteLLM proxy base URL (optional)
         mode: Connection mode - "stdio" (subprocess) or "websocket" (external server)
         server_url: WebSocket URL (required for websocket mode)
         max_samples_per_domain: Maximum number of instances to process (None = all)
     """
 
     # Create LLM instance
-    llm = create_llm(provider=provider, model=model, ollama_base_url=ollama_base_url)
+    llm_kwargs = {}
+    if ollama_base_url:
+        llm_kwargs["ollama_base_url"] = ollama_base_url
+    elif provider == "watsonx":
+        llm_kwargs["project_id"] = os.getenv("WATSONX_PROJECT_ID")
+        llm_kwargs["space_id"] = os.getenv("WATSONX_SPACE_ID")
+        llm_kwargs["api_key"] = os.getenv("WATSONX_APIKEY")
+    elif provider == "litellm":
+        resolved_base_url = litellm_base_url or os.getenv("LITELLM_BASE_URL")
+        if resolved_base_url:
+            llm_kwargs["api_base"] = resolved_base_url
+        resolved_api_key = os.getenv("LITELLM_API_KEY")
+        if resolved_api_key:
+            llm_kwargs["api_key"] = resolved_api_key
+    llm = create_llm(provider=provider, model=model, **llm_kwargs)
     print(f"\n{'='*60}")
     print(f"Using LLM: {provider}" + (f" (model: {model})" if model else ""))
     print(f"{'='*60}\n")
@@ -207,7 +223,7 @@ if __name__ == "__main__":
     parser.add_argument(
         "--provider",
         type=str,
-        choices=["rits", "ollama", "anthropic", "openai", "watsonx"],
+        choices=["rits", "ollama", "anthropic", "openai", "litellm", "watsonx"],
         default="rits",
         help="LLM provider to use (default: rits)"
     )
@@ -222,6 +238,12 @@ if __name__ == "__main__":
         type=str,
         default=None,
         help="Ollama server URL (default: http://localhost:11434)"
+    )
+    parser.add_argument(
+        "--litellm-base-url",
+        type=str,
+        default=None,
+        help="LiteLLM proxy base URL (e.g. http://localhost:4000)"
     )
     parser.add_argument(
         "--mode",
@@ -249,6 +271,7 @@ if __name__ == "__main__":
             provider=args.provider,
             model=args.model,
             ollama_base_url=args.ollama_base_url,
+            litellm_base_url=args.litellm_base_url,
             mode=args.mode,
             server_url=args.server_url,
             max_samples_per_domain=args.max_samples_per_domain,

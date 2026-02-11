@@ -195,12 +195,13 @@ def create_llm(
     """Create LLM instance based on provider.
 
     Args:
-        provider: One of "rits", "ollama", "anthropic", "openai", "watsonx"
+        provider: One of "rits", "ollama", "anthropic", "openai", "litellm", "watsonx"
         model: Model name (optional, uses defaults if not provided)
         api_key: API key (optional, falls back to environment variables)
         temperature: Sampling temperature (default: 0)
         **kwargs: Provider-specific arguments:
             - ollama: ollama_base_url (str)
+            - litellm: api_base (str)
             - watsonx: project_id (str), space_id (str)
 
     Returns:
@@ -298,6 +299,36 @@ def create_llm(
             api_key=resolved_key,
         )
 
+    elif provider == "litellm":
+        try:
+            from langchain_litellm import ChatLiteLLM
+            # Uncomment to debug litellm connection
+            # import litellm
+            # litellm._turn_on_debug()
+        except ImportError:
+            raise ImportError(
+                "langchain-litellm is required for LiteLLM support. "
+                "Install with: pip install langchain-litellm"
+            )
+
+        model_name = model or "GCP/gemini-2.0-flash"
+        params: Dict[str, Any] = {
+            "model": model_name,
+            "temperature": temperature,
+        }
+        if api_key:
+            params["api_key"] = api_key
+        if "api_base" in kwargs:
+            params["api_base"] = kwargs["api_base"]
+        # This parameter is critical. Without it, the client attempts
+        # to infer the provider name from the base of the model name, 
+        # and there is no way to satisfy the check for the model being in 
+        # the allow-list [e.g. GCP/gemini-2.0-flash] and the check for an
+        # existing provider (GCP isn't an existing provider)
+        params["custom_llm_provider"] = "openai"
+
+        return ChatLiteLLM(**params)
+
     elif provider == "watsonx":
         try:
             from langchain_ibm import ChatWatsonx
@@ -345,5 +376,6 @@ def create_llm(
     else:
         raise ValueError(
             f"Unknown provider: {provider}. "
-            "Must be one of: 'rits', 'ollama', 'anthropic', 'openai', 'watsonx'"
+            "Must be one of: 'rits', 'ollama', 'anthropic', 'openai', "
+            "'litellm', 'watsonx'"
         )

@@ -655,6 +655,8 @@ async def run_task(
     output_file: Optional[str] = None,
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
+    litellm_base_url: Optional[str] = None,
+    litellm_api_key: Optional[str] = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -711,6 +713,13 @@ async def run_task(
         llm_kwargs["project_id"] = os.getenv("WATSONX_PROJECT_ID")
         llm_kwargs["space_id"] = os.getenv("WATSONX_SPACE_ID")
         llm_kwargs["api_key"] = os.getenv("WATSONX_APIKEY")
+    elif provider == "litellm":
+        resolved_base_url = litellm_base_url or os.getenv("LITELLM_BASE_URL")
+        if resolved_base_url:
+            llm_kwargs["api_base"] = resolved_base_url
+        resolved_api_key = litellm_api_key or os.getenv("LITELLM_API_KEY")
+        if resolved_api_key:
+            llm_kwargs["api_key"] = resolved_api_key
 
     llm = create_llm(provider=provider, model=model, **llm_kwargs)
     agent = LangGraphReActAgent(llm=llm, model=model or "", provider=provider)
@@ -961,7 +970,7 @@ def main():
         "--provider",
         type=str,
         default="ollama",
-        choices=["anthropic", "openai", "ollama", "watsonx", "rits"],
+        choices=["anthropic", "openai", "ollama", "litellm", "watsonx", "rits"],
         help="LLM provider to use (default: ollama)"
     )
     parser.add_argument(
@@ -975,6 +984,18 @@ def main():
         type=int,
         default=0,
         help="Enable tool shortlisting: keep top-k tools per query"
+    )
+    parser.add_argument(
+        "--litellm-base-url",
+        type=str,
+        default=None,
+        help="LiteLLM proxy base URL (e.g. http://localhost:4000, or set LITELLM_BASE_URL env var)"
+    )
+    parser.add_argument(
+        "--litellm-api-key",
+        type=str,
+        default=None,
+        help="API key for LiteLLM (or set LITELLM_API_KEY env var)"
     )
     parser.add_argument(
         "--watsonx-project-id",
@@ -1038,6 +1059,8 @@ def main():
         output_file=args.output,
         domains=args.domain,
         top_k_tools=args.top_k_tools,
+        litellm_base_url=args.litellm_base_url,
+        litellm_api_key=args.litellm_api_key,
     ))
 
 
