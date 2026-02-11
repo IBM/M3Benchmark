@@ -56,6 +56,7 @@ Output:
   Results saved to: output/task_{id}_{timestamp}/<domain>.json
   e.g. output/task_5_feb_13_11_21am/address.json
 """
+import contextlib
 import json
 import os
 import argparse
@@ -158,6 +159,77 @@ class BenchmarkResult:
     status: str = "pending"
     error: str = ""
     duration_s: float = 0.0
+
+
+@contextlib.asynccontextmanager
+async def connect_to_mcp_server(
+    mode: str = "stdio",
+    # --- Container stdio (FastAPIMCPServer) ---
+    container_runtime: Optional[str] = None,
+    container_name: Optional[str] = None,
+    domain: Optional[str] = None,
+    container_env: Optional[Dict[str, str]] = None,
+    container_command: Optional[List[str]] = None,
+    # --- Local subprocess stdio (SlotFilling/SelectionMCPServer) ---
+    command: Optional[str] = None,
+    args: Optional[List[str]] = None,
+    env: Optional[Dict[str, str]] = None,
+    # --- WebSocket ---
+    server_url: Optional[str] = None,
+):
+    """Async context manager yielding (read_stream, write_stream) for any MCP server type.
+
+    Three connection modes:
+    1. Container stdio: provide container_runtime + container_name (+ domain)
+    2. Local subprocess stdio: provide command + args (+ env)
+    3. WebSocket: provide server_url
+
+    Yields:
+        (read_stream, write_stream) — pass to ClientSession(read, write)
+    """
+    if mode == "stdio":
+        if command:
+            # Local subprocess mode takes priority (SlotFilling/SelectionMCPServer)
+            server_params = StdioServerParameters(
+                command=command,
+                args=args or [],
+                env=env,
+            )
+        else:
+            # Container exec mode (FastAPIMCPServer)
+            # Auto-detect runtime only when command is absent and runtime not given
+            runtime = container_runtime
+            if not runtime:
+                runtime = detect_container_runtime()
+                print(f"  Auto-detected container runtime: {runtime}")
+            if not container_name:
+                raise ValueError(
+                    "stdio mode requires either command or container_name"
+                )
+            exec_env = {"MCP_DOMAIN": domain} if domain else {}
+            if container_env:
+                exec_env.update(container_env)
+            env_args = []
+            for k, v in exec_env.items():
+                env_args += ["-e", f"{k}={v}"]
+            cmd = container_command or ["python", "mcp_server.py"]
+            server_params = StdioServerParameters(
+                command=runtime,
+                args=["exec", "-i"] + env_args + [container_name] + cmd,
+                env=None,
+            )
+        async with stdio_client(server_params) as (read, write):
+            yield read, write
+
+    elif mode == "websocket":
+        if not server_url:
+            raise ValueError("websocket mode requires server_url")
+        from mcp.client.websocket import websocket_client
+        async with websocket_client(server_url) as (read, write):
+            yield read, write
+
+    else:
+        raise ValueError(f"Unknown mode: {mode!r}. Must be 'stdio' or 'websocket'")
 
 
 def load_benchmark_file(filepath: Path) -> List[BenchmarkItem]:
@@ -298,38 +370,36 @@ def detect_container_runtime() -> str:
 
 
 
-def stop_mcp_server(container_runtime: str, container_name: str):
-    """Stop any running mcp_server.py processes inside the container."""
-    try:
-        kill_cmd = [
-            container_runtime, "exec", container_name,
-            "pkill", "-f", "python mcp_server.py"
-        ]
-        subprocess.run(kill_cmd, capture_output=True, timeout=5)
-        print("  Server stopped.")
-    except subprocess.TimeoutExpired:
-        print("  Warning: Timeout while stopping server")
-    except Exception:
-        pass
-
-
-async def connect_and_get_session(
-    domain: str,
-    container_runtime: str,
-    container_name: str,
-    mcp_domain_env: str = "MCP_DOMAIN",
+def stop_mcp_server(
+    mode: str = "stdio",
+    container_runtime: Optional[str] = None,
+    container_name: Optional[str] = None,
 ):
-    """Connect to MCP server and return the session context."""
-    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
-    print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
+    """Stop a running MCP server process.
 
-    server_params = StdioServerParameters(
-        command=container_runtime,
-        args=exec_args,
-        env=None,
-    )
+    For container stdio mode, force-kills the mcp_server.py process inside the
+    container.  For subprocess stdio and websocket modes the transport's own
+    context manager handles teardown, so this is a no-op.
+    """
+    if mode == "websocket":
+        # WebSocket connection is closed by the context manager; nothing to do.
+        return
 
-    return stdio_client(server_params)
+    if mode == "stdio" and container_runtime and container_name:
+        # Container exec mode: pkill the server process inside the container.
+        try:
+            kill_cmd = [
+                container_runtime, "exec", container_name,
+                "pkill", "-f", "python mcp_server.py"
+            ]
+            subprocess.run(kill_cmd, capture_output=True, timeout=5)
+            print("  Server stopped.")
+        except subprocess.TimeoutExpired:
+            print("  Warning: Timeout while stopping server")
+        except Exception:
+            pass
+    # Local subprocess stdio: the stdio_client context manager terminates the
+    # child process on exit, so no explicit kill is needed here.
 
 
 async def connect_and_list_tools(
@@ -337,19 +407,17 @@ async def connect_and_list_tools(
     mcp_domain_env: str = "MCP_DOMAIN",
 ) -> List[str]:
     """Connect to MCP server with the given domain and list available tools."""
-    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
-    print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
-
-    server_params = StdioServerParameters(
-        command=container_runtime,
-        args=exec_args,
-        env=None,
-    )
+    print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
 
     tool_names = []
 
     try:
-        async with stdio_client(server_params) as (read, write):
+        async with connect_to_mcp_server(
+            mode="stdio",
+            container_runtime=container_runtime,
+            container_name=container_name,
+            domain=domain,
+        ) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 response = await session.list_tools()
@@ -364,7 +432,7 @@ async def connect_and_list_tools(
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
             # Force kill on unexpected errors
-            stop_mcp_server(container_runtime, container_name)
+            stop_mcp_server(mode="stdio", container_runtime=container_runtime, container_name=container_name)
             raise
 
     return tool_names
@@ -375,19 +443,17 @@ async def connect_and_get_tools_detailed(
     mcp_domain_env: str = "MCP_DOMAIN",
 ) -> List[Dict[str, Any]]:
     """Connect to MCP server and get detailed tool information including parameters."""
-    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
-    print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
-
-    server_params = StdioServerParameters(
-        command=container_runtime,
-        args=exec_args,
-        env=None,
-    )
+    print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
 
     tools_detailed = []
 
     try:
-        async with stdio_client(server_params) as (read, write):
+        async with connect_to_mcp_server(
+            mode="stdio",
+            container_runtime=container_runtime,
+            container_name=container_name,
+            domain=domain,
+        ) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 response = await session.list_tools()
@@ -407,7 +473,7 @@ async def connect_and_get_tools_detailed(
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
-            stop_mcp_server(container_runtime, container_name)
+            stop_mcp_server(mode="stdio", container_runtime=container_runtime, container_name=container_name)
             raise
 
     return tools_detailed
@@ -419,22 +485,35 @@ async def run_agent_with_query(
     container_runtime: str,
     container_name: str,
     agent: AgentInterface,
-    mcp_domain_env: str = "MCP_DOMAIN",
+    mode: str = "stdio",
+    server_url: Optional[str] = None,
+    subprocess_command: Optional[str] = None,
+    subprocess_args: Optional[List[str]] = None,
+    subprocess_env: Optional[Dict[str, str]] = None,
+    container_command: Optional[List[str]] = None,
 ) -> AgentResponse:
     """Run an agent with tools from the MCP server."""
-    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
-    print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
-
-    server_params = StdioServerParameters(
-        command=container_runtime,
-        args=exec_args,
-        env=None,
-    )
+    if mode == "stdio" and container_runtime and container_name:
+        print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
+    elif mode == "websocket":
+        print(f"  Connecting via websocket: {server_url}")
+    else:
+        print(f"  Starting: {subprocess_command} {' '.join(subprocess_args or [])}")
 
     response = None
 
     try:
-        async with stdio_client(server_params) as (read, write):
+        async with connect_to_mcp_server(
+            mode=mode,
+            container_runtime=container_runtime,
+            container_name=container_name,
+            domain=domain,
+            container_command=container_command,
+            command=subprocess_command,
+            args=subprocess_args,
+            env=subprocess_env,
+            server_url=server_url,
+        ) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -465,7 +544,7 @@ async def run_agent_with_query(
             print(f"  Warning: Cleanup error (ignored): {e}")
             print("  Server stopped.")
         else:
-            stop_mcp_server(container_runtime, container_name)
+            stop_mcp_server(mode=mode, container_runtime=container_runtime, container_name=container_name)
             raise
 
     if response is None:
@@ -577,7 +656,12 @@ async def run_benchmark_for_domain(
     agent: AgentInterface,
     max_samples: Optional[int] = None,
     shortlister=None,
-    mcp_domain_env: str = "MCP_DOMAIN",
+    mode: str = "stdio",
+    server_url: Optional[str] = None,
+    subprocess_command: Optional[str] = None,
+    subprocess_args: Optional[List[str]] = None,
+    subprocess_env: Optional[Dict[str, str]] = None,
+    container_command: Optional[List[str]] = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a single domain - starts MCP server once for all items."""
     import time
@@ -592,18 +676,25 @@ async def run_benchmark_for_domain(
 
     results: List[BenchmarkResult] = []
 
-    # Start MCP server ONCE for this domain
-    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
-    print(f"  Starting MCP server: {container_runtime} {' '.join(exec_args)}")
-
-    server_params = StdioServerParameters(
-        command=container_runtime,
-        args=exec_args,
-        env=None,
-    )
+    if mode == "stdio" and container_runtime and container_name:
+        print(f"  Starting MCP server: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
+    elif mode == "websocket":
+        print(f"  Connecting to MCP server via websocket: {server_url}")
+    else:
+        print(f"  Starting MCP server: {subprocess_command} {' '.join(subprocess_args or [])}")
 
     try:
-        async with stdio_client(server_params) as (read, write):
+        async with connect_to_mcp_server(
+            mode=mode,
+            container_runtime=container_runtime,
+            container_name=container_name,
+            domain=domain,
+            container_command=container_command,
+            command=subprocess_command,
+            args=subprocess_args,
+            env=subprocess_env,
+            server_url=server_url,
+        ) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -688,7 +779,7 @@ async def run_benchmark_for_domain(
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
-            stop_mcp_server(container_runtime, container_name)
+            stop_mcp_server(mode=mode, container_runtime=container_runtime, container_name=container_name)
             raise
 
     return results
@@ -722,7 +813,14 @@ async def run_task(
     output_dir: Optional[str] = None,
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
-    mcp_domain_env: str = "MCP_DOMAIN",
+    litellm_base_url: Optional[str] = None,
+    litellm_api_key: Optional[str] = None,
+    mode: str = "stdio",
+    server_url: Optional[str] = None,
+    subprocess_command: Optional[str] = None,
+    subprocess_args: Optional[List[str]] = None,
+    subprocess_env: Optional[Dict[str, str]] = None,
+    container_command: Optional[List[str]] = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -808,7 +906,12 @@ async def run_task(
             agent=agent,
             max_samples=max_samples_per_domain,
             shortlister=shortlister,
-            mcp_domain_env=mcp_domain_env,
+            mode=mode,
+            server_url=server_url,
+            subprocess_command=subprocess_command,
+            subprocess_args=subprocess_args,
+            subprocess_env=subprocess_env,
+            container_command=container_command,
         )
         all_results.extend(domain_results)
 
@@ -1076,6 +1179,31 @@ def main():
         default=None,
         help="watsonx.ai API key (or set WATSONX_APIKEY env var)"
     )
+    parser.add_argument(
+        "--mode",
+        type=str,
+        default="stdio",
+        choices=["stdio", "websocket"],
+        help="MCP server connection mode: 'stdio' (container or subprocess) or 'websocket' (default: stdio)"
+    )
+    parser.add_argument(
+        "--server-url",
+        type=str,
+        default=None,
+        help="WebSocket server URL for --mode websocket (e.g. ws://localhost:8000/mcp)"
+    )
+    parser.add_argument(
+        "--subprocess-command",
+        type=str,
+        default=None,
+        help="Command for local subprocess stdio mode (e.g. python). Skips container exec."
+    )
+    parser.add_argument(
+        "--subprocess-args",
+        type=str,
+        default=None,
+        help="Space-separated args for local subprocess stdio mode (e.g. '-m apis.m3.python_tools.mcp')"
+    )
 
     args = parser.parse_args()
     task_ids = args.task_id  # list of ints now
@@ -1090,11 +1218,7 @@ def main():
             sys.exit(1)
         task_cfgs[tid] = cfg
 
-    # Auto-detect container runtime if not specified
     container_runtime = args.container_runtime
-    if not container_runtime:
-        container_runtime = detect_container_runtime()
-        print(f"Auto-detected container runtime: {container_runtime}")
 
     # Set provider environment variables if provided via command line
     if args.provider == "watsonx":
@@ -1167,6 +1291,27 @@ def main():
                 await c
 
     asyncio.run(_run_all())
+    subprocess_args = args.subprocess_args.split() if args.subprocess_args else None
+
+    asyncio.run(run_task(
+        task_id=args.task_id,
+        container_runtime=container_runtime,
+        container_name=args.container_name,
+        run_agent=args.run_agent,
+        provider=args.provider,
+        model=args.model,
+        max_samples_per_domain=args.max_samples_per_domain,
+        output_file=args.output,
+        domains=args.domain,
+        top_k_tools=args.top_k_tools,
+        litellm_base_url=args.litellm_base_url,
+        litellm_api_key=args.litellm_api_key,
+        mode=args.mode,
+        server_url=args.server_url,
+        subprocess_command=args.subprocess_command,
+        subprocess_args=subprocess_args,
+        subprocess_env=os.environ.copy() if args.subprocess_command else None,
+    ))
 
 
 if __name__ == "__main__":

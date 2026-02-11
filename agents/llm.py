@@ -191,7 +191,7 @@ def create_llm(
     api_key: Optional[str] = None,
     temperature: float = 0,
     **kwargs,
-):
+) -> BaseChatModel:
     """Create LLM instance based on provider.
 
     Args:
