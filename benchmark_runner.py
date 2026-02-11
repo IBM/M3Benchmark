@@ -53,7 +53,8 @@ from typing import Any, Dict, List, Optional
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from agents.agent_interface import AgentInterface, AgentResponse, create_agent
+from agents.agent_interface import AgentInterface, AgentResponse, LangGraphReActAgent, create_agent
+from agents.llm import create_llm
 from agents.mcp_tool_wrapper import MCPToolWrapper
 # Task configurations - maps task_id to input directory path
 TASK_PATHS = {
@@ -704,16 +705,9 @@ async def run_task(
             results.append(result)
         return results
 
-    # Create agent once for all domains
-    agent_kwargs = {}
-    if provider == "watsonx":
-        # Pass watsonx-specific parameters from environment or command line
-        import os
-        agent_kwargs["project_id"] = os.getenv("WATSONX_PROJECT_ID")
-        agent_kwargs["space_id"] = os.getenv("WATSONX_SPACE_ID")
-        agent_kwargs["api_key"] = os.getenv("WATSONX_APIKEY")
-    
-    agent = create_agent(provider=provider, model=model, **agent_kwargs)
+    # Create LLM and agent once for all domains
+    llm = create_llm(provider=provider, model=model)
+    agent = LangGraphReActAgent(llm=llm, model=model or "", provider=provider)
     print(f"Agent: {provider} / {model or 'default'}")
 
     # Create tool shortlister if requested
@@ -961,7 +955,7 @@ def main():
         "--provider",
         type=str,
         default="ollama",
-        choices=["anthropic", "openai", "ollama", "watsonx"],
+        choices=["anthropic", "openai", "ollama", "litellm", "watsonx", "rits"],
         help="LLM provider to use (default: ollama)"
     )
     parser.add_argument(
@@ -975,6 +969,18 @@ def main():
         type=int,
         default=0,
         help="Enable tool shortlisting: keep top-k tools per query"
+    )
+    parser.add_argument(
+        "--litellm-base-url",
+        type=str,
+        default=None,
+        help="LiteLLM proxy base URL (e.g. http://localhost:4000, or set LITELLM_BASE_URL env var)"
+    )
+    parser.add_argument(
+        "--litellm-api-key",
+        type=str,
+        default=None,
+        help="API key for LiteLLM (or set LITELLM_API_KEY env var)"
     )
     parser.add_argument(
         "--watsonx-project-id",
@@ -1003,7 +1009,7 @@ def main():
         container_runtime = detect_container_runtime()
         print(f"Auto-detected container runtime: {container_runtime}")
 
-    # Set watsonx environment variables if provided via command line
+    # Set provider environment variables if provided via command line
     if args.provider == "watsonx":
         import os
         if args.watsonx_project_id:
@@ -1012,6 +1018,12 @@ def main():
             os.environ["WATSONX_SPACE_ID"] = args.watsonx_space_id
         if args.watsonx_api_key:
             os.environ["WATSONX_APIKEY"] = args.watsonx_api_key
+    elif args.provider == "litellm":
+        import os
+        if args.litellm_base_url:
+            os.environ["LITELLM_BASE_URL"] = args.litellm_base_url
+        if args.litellm_api_key:
+            os.environ["LITELLM_API_KEY"] = args.litellm_api_key
 
     print("="*60)
     print("Benchmark Runner")
