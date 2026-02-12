@@ -3,6 +3,7 @@
 import asyncio
 import json
 import logging
+import yaml
 from abc import ABC, abstractmethod
 from typing import Any, Dict, Optional
 import pathlib
@@ -58,13 +59,13 @@ class LiveMCPServer(ABC):
         # Log the database being used
         logger.info(f"Initializing MCP Server with database: {config.database_path}")
 
-        # Resolve path to mcp_init_mapping.json in project root
+        # Resolve path to mcp_tool_universe_id_mapping.yaml in project root
         project_root = pathlib.Path(__file__).parent.parent.parent.parent.parent
-        self.universe_configuration_file = str(project_root / "apis" / "configs" / "mcp_init_mapping.json")
+        self.universe_configuration_file = str(project_root / "apis" / "configs" / "mcp_tool_universe_id_mapping.yaml")
 
         # Load ALL tool configs at startup
         with open(self.universe_configuration_file) as f:
-            self.all_tool_configs = json.load(f)
+            self.all_tool_configs = yaml.safe_load(f)
 
         # Current universe state (mutable)
         self.tool_universe_id = config.tool_universe_id or list(self.all_tool_configs.keys())[0]

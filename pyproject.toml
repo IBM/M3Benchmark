@@ -20,7 +20,8 @@ dependencies = [
     "sqlglot",
     "pydantic",
     "jinja2",
-    "dotenv"
+    "dotenv",
+    "pyyaml",
 ]
 
 [project.optional-dependencies]

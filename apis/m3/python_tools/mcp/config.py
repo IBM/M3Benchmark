@@ -131,11 +131,11 @@ def load_config(
     # Priority: env_domain (if set) > config file > default "superhero"
     if env_domain is not None:
         # MCP_DOMAIN explicitly set - override config file
-        config_data["database_path"] = f"db/{env_domain}/{env_domain}.sqlite"
+        config_data["database_path"] = f"data/db/{env_domain}/{env_domain}.sqlite"
         logger.debug(f"Config loading: Set database_path from MCP_DOMAIN: {config_data['database_path']}")
     elif "database_path" not in config_data:
         # No config file path and no env - use default superhero
-        config_data["database_path"] = "db/superhero/superhero.sqlite"
+        config_data["database_path"] = "data/db/superhero/superhero.sqlite"
         logger.debug(f"Config loading: Set database_path to default: {config_data['database_path']}")
     if env_cache:
         config_data["cache_dir"] = env_cache

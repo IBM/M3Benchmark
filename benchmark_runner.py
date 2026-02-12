@@ -17,6 +17,10 @@ Tasks:
 Setup:
   pip install mcp langchain-anthropic langgraph langchain-ollama
 
+MCP connection settings are read from a YAML config file
+(default: apis/configs/mcp_connection_config.yaml). Override the path
+with --mcp-config.
+
 Usage:
   # Single task
   python benchmark_runner.py --task_id 2 --run-agent --domain hockey
@@ -32,48 +36,50 @@ Usage:
   python benchmark_runner.py --task_id 5 --run-agent --domain address --max-samples-per-domain 5
   python benchmark_runner.py --task_id 5 --run-agent --provider anthropic --model claude-sonnet-4-5-20250929
 
-  # List tools only (no agent run)
-  python benchmark_runner.py --task_id 5 --list-tools --domain address
+    # Run benchmark on specific domain(s) only
+    python benchmark_runner.py --task_id 2 --run-agent --domain hockey
+    python benchmark_runner.py --task_id 2 --run-agent --domain hockey \
+        --domain address
 
-  # Tool shortlisting (top-k most relevant tools per query)
-  python benchmark_runner.py --task_id 2 --run-agent --domain hockey --top-k-tools 5
+    # Limit samples per domain (e.g., 5 samples from each domain file)
+    python benchmark_runner.py --task_id 2 --run-agent \
+        --max-samples-per-domain 5
 
-Options:
-  --task_id ID [ID ...]       Task ID(s) to run (e.g. 2, 5, or 2 5)
-  --parallel                  Run multiple task_ids concurrently (default: sequential)
-  --run-agent                 Run the agent on benchmark queries
-  --list-tools                List available tools and exit
-  --domain DOMAIN             Filter to specific domain(s), repeatable
-  --max-samples-per-domain N  Cap number of queries per domain
-  --provider PROVIDER         LLM provider: ollama, anthropic, openai, litellm, watsonx, rits
-  --model MODEL               Model name (default: provider-specific)
-  --top-k-tools K             Keep top-K tools per query via embedding similarity
-  --container-runtime RT      Container runtime: docker or podman (default: auto-detect)
-  --container-name NAME       Override container name from task config
-  --output DIR                Override output directory
+    # Use different provider/model
+    python benchmark_runner.py --task_id 2 --run-agent --provider anthropic
+    python benchmark_runner.py --task_id 2 --run-agent \
+        --provider ollama --model llama3.1:8b
+
+    # Use a custom MCP connection config
+    python benchmark_runner.py --task_id 2 --run-agent \
+        --mcp-config my_mcp_config.yaml
 
 Output:
   Results saved to: output/task_{id}_{timestamp}/<domain>.json
   e.g. output/task_5_feb_13_11_21am/address.json
 """
+import asyncio
 import contextlib
 import json
 import os
 import argparse
-from dotenv import load_dotenv
-load_dotenv()
-import asyncio
 import subprocess
 import sys
+import yaml
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
+from dotenv import load_dotenv
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-from agents.agent_interface import AgentInterface, AgentResponse, LangGraphReActAgent, create_agent
+from agents.agent_interface import (
+    AgentInterface,
+    AgentResponse,
+    LangGraphReActAgent,
+)
 from agents.llm import create_llm
 from agents.mcp_tool_wrapper import MCPToolWrapper
 
@@ -114,6 +120,67 @@ TASK_CONFIGS: Dict[int, TaskConfig] = {
 
 # Back-compat helper used by run_task / list_tools_for_domains
 TASK_PATHS = {tid: cfg.input_dir for tid, cfg in TASK_CONFIGS.items()}
+from agents.tool_calling_agent import ToolCallingAgent
+
+load_dotenv()
+# Task configurations - maps task_id to input directory path
+TASK_PATHS = {
+    1: os.environ.get(
+        "TASK_1_DIR",
+        str(Path(__file__).parent / "data" / "tasks" / "task_1"),
+    ),
+    2: os.environ.get(
+        "TASK_2_DIR",
+        str(Path(__file__).parent / "data" / "tasks" / "task_2"),
+    ),
+}
+
+# Default MCP connection config file path
+DEFAULT_MCP_CONFIG = str(
+    Path(__file__).parent / "apis" / "configs" / "mcp_connection_config.yaml"
+)
+
+# Default settings
+DEFAULT_CONTAINER_NAME = "fastapi-mcp-server"
+
+
+@dataclass
+class MCPConnectionConfig:
+    """Connection settings for a single task's MCP server."""
+    mode: str = "stdio"
+    container_name: str = DEFAULT_CONTAINER_NAME
+    container_runtime: Optional[str] = None  # None = auto-detect
+    container_command: Optional[List[str]] = None
+    command: Optional[str] = None
+    args: Optional[List[str]] = None
+    server_url: Optional[str] = None
+
+
+def load_mcp_config(config_path: str) -> Dict[int, MCPConnectionConfig]:
+    """Load MCP connection config from YAML file.
+
+    Returns a dict mapping task_id (int) to MCPConnectionConfig.
+    """
+    with open(config_path, "r") as f:
+        data = yaml.safe_load(f)
+    tasks = data.get("tasks", {})
+    result = {}
+    for k, v in tasks.items():
+        cmd = v.get("command", None)
+        # "python" in config means the current Python executable (virtualenv-safe)
+        if cmd == "python":
+            cmd = sys.executable
+        result[int(k)] = MCPConnectionConfig(
+            mode=v.get("mode", "stdio"),
+            container_name=v.get("container_name", DEFAULT_CONTAINER_NAME),
+            container_runtime=v.get("container_runtime", None),
+            container_command=v.get("container_command", None),
+            command=cmd,
+            args=v.get("args", None),
+            server_url=v.get("server_url", None),
+        )
+    return result
+
 
 @dataclass
 class BenchmarkItem:
@@ -162,85 +229,193 @@ class BenchmarkResult:
 
 
 @contextlib.asynccontextmanager
-async def connect_to_mcp_server(
-    mode: str = "stdio",
-    # --- Container stdio (FastAPIMCPServer) ---
-    container_runtime: Optional[str] = None,
-    container_name: Optional[str] = None,
-    domain: Optional[str] = None,
-    container_env: Optional[Dict[str, str]] = None,
-    container_command: Optional[List[str]] = None,
-    # --- Local subprocess stdio (SlotFilling/SelectionMCPServer) ---
-    command: Optional[str] = None,
-    args: Optional[List[str]] = None,
-    env: Optional[Dict[str, str]] = None,
-    # --- WebSocket ---
-    server_url: Optional[str] = None,
-):
-    """Async context manager yielding (read_stream, write_stream) for any MCP server type.
+async def connect_to_mcp_server(cfg: MCPConnectionConfig, domain: str = ""):
+    """Async context manager yielding (read_stream, write_stream).
 
-    Three connection modes:
-    1. Container stdio: provide container_runtime + container_name (+ domain)
-    2. Local subprocess stdio: provide command + args (+ env)
-    3. WebSocket: provide server_url
+    Connection mode is determined by cfg.mode:
+    - "stdio" with cfg.command: local subprocess (SlotFilling/SelectionMCPServer)
+    - "stdio" without cfg.command: container exec (FastAPIMCPServer)
+    - "websocket": WebSocket connection
 
     Yields:
         (read_stream, write_stream) — pass to ClientSession(read, write)
     """
-    if mode == "stdio":
-        if command:
-            # Local subprocess mode takes priority (SlotFilling/SelectionMCPServer)
+    if cfg.mode == "stdio":
+        if cfg.command:
+            # Local subprocess mode
             server_params = StdioServerParameters(
-                command=command,
-                args=args or [],
-                env=env,
+                command=cfg.command,
+                args=cfg.args or [],
+                env=os.environ.copy(),
             )
         else:
             # Container exec mode (FastAPIMCPServer)
-            # Auto-detect runtime only when command is absent and runtime not given
-            runtime = container_runtime
+            runtime = cfg.container_runtime
             if not runtime:
                 runtime = detect_container_runtime()
                 print(f"  Auto-detected container runtime: {runtime}")
-            if not container_name:
+            if not cfg.container_name:
                 raise ValueError(
                     "stdio mode requires either command or container_name"
                 )
             exec_env = {"MCP_DOMAIN": domain} if domain else {}
-            if container_env:
-                exec_env.update(container_env)
             env_args = []
             for k, v in exec_env.items():
                 env_args += ["-e", f"{k}={v}"]
-            cmd = container_command or ["python", "mcp_server.py"]
+            cmd = cfg.container_command or ["python", "mcp_server.py"]
             server_params = StdioServerParameters(
                 command=runtime,
-                args=["exec", "-i"] + env_args + [container_name] + cmd,
+                args=["exec", "-i"] + env_args + [cfg.container_name] + cmd,
                 env=None,
             )
         async with stdio_client(server_params) as (read, write):
             yield read, write
 
-    elif mode == "websocket":
-        if not server_url:
+    elif cfg.mode == "websocket":
+        if not cfg.server_url:
             raise ValueError("websocket mode requires server_url")
         from mcp.client.websocket import websocket_client
-        async with websocket_client(server_url) as (read, write):
+        async with websocket_client(cfg.server_url) as (read, write):
             yield read, write
 
     else:
-        raise ValueError(f"Unknown mode: {mode!r}. Must be 'stdio' or 'websocket'")
+        raise ValueError(
+            f"Unknown mode: {cfg.mode!r}. Must be 'stdio' or 'websocket'"
+        )
 
 
-def load_benchmark_file(filepath: Path) -> List[BenchmarkItem]:
-    """Load benchmark items from a JSON file."""
-    with open(filepath, "r") as f:
-        data = json.load(f)
+def load_benchmark_data(
+    task_id: int,
+    domains: Optional[List[str]] = None,
+    domain_names_only: bool = False,
+) -> Tuple[List[BenchmarkItem], List[str]]:
+    """Load all benchmark items for a task, optionally filtered by domain.
 
-    items = []
-    for item_data in data:
-        items.append(BenchmarkItem.from_dict(item_data))
-    return items
+    Searches <task_dir>/*/input/ for *.json files (one file per domain,
+    named <domain>.json). Output directories are ignored.
+
+    Args:
+        task_id: Task ID to load data for.
+        domains: Optional list of domain names to filter by.
+        domain_names_only: If True, skip reading JSON files and return only
+            the list of domain names found (items list will be empty).
+
+    Returns:
+        Tuple of (items, domain_names) where items is a flat list of
+        BenchmarkItem objects (empty when domain_names_only=True) and
+        domain_names is a sorted list of domain name strings.
+    """
+    if task_id not in TASK_PATHS:
+        print(f"Error: Unknown task_id {task_id}")
+        sys.exit(1)
+
+    input_path = Path(TASK_PATHS[task_id])
+    if not input_path.exists():
+        print(f"Error: Input path does not exist: {input_path}")
+        sys.exit(1)
+
+    json_files = sorted(input_path.glob("*/input/*.json"))
+    if not json_files:
+        print(f"Error: No JSON files found under {input_path}/*/input/")
+        sys.exit(1)
+
+    if domains:
+        json_files = [f for f in json_files if f.stem in domains]
+        if not json_files:
+            available = sorted(
+                {f.stem for f in input_path.glob("*/input/*.json")}
+            )
+            print(f"Error: No files found for domains: {domains}")
+            suffix = "..." if len(available) > 10 else ""
+            print(f"Available domains: {available[:10]}{suffix}")
+            sys.exit(1)
+
+    domain_names = sorted({f.stem for f in json_files})
+
+    if domain_names_only:
+        return [], domain_names
+
+    items: List[BenchmarkItem] = []
+    for json_file in json_files:
+        with open(json_file, "r") as f:
+            data = json.load(f)
+        for item_data in data:
+            items.append(BenchmarkItem.from_dict(item_data))
+    return items, domain_names
+
+
+def extract_tool_calling_agent_response(agent, answer: str) -> AgentResponse:
+    """Extract AgentResponse-compatible data from ToolCallingAgent after run().
+
+    The ToolCallingAgent stores its message history internally but only returns
+    a string. This function extracts tool_calls and trajectory from
+    agent._messages to create a BenchmarkResult-compatible response.
+
+    Args:
+        agent: ToolCallingAgent instance after run() completed
+        answer: The string returned by agent.run()
+
+    Returns:
+        AgentResponse with tool_calls and trajectory extracted from
+        agent._messages
+    """
+    tool_calls = []
+    trajectory = []
+    tool_call_args = {}  # Map tool_call_id -> {name, args}
+
+    for msg in agent._messages:
+        msg_class = msg.__class__.__name__
+
+        trajectory_entry = {
+            "type": msg_class,
+            "content": getattr(msg, "content", ""),
+        }
+
+        if msg_class == "HumanMessage":
+            trajectory.append(trajectory_entry)
+
+        elif msg_class == "AIMessage":
+            if hasattr(msg, "tool_calls") and msg.tool_calls:
+                trajectory_entry["tool_calls"] = []
+                for tc in msg.tool_calls:
+                    tc_id = tc.get("id", "") or tc.get("tool_call_id", "")
+                    tool_call_args[tc_id] = {
+                        "name": tc.get("name", "unknown"),
+                        "args": tc.get("args", {}),
+                    }
+                    trajectory_entry["tool_calls"].append({
+                        "id": tc_id,
+                        "name": tc.get("name", "unknown"),
+                        "args": tc.get("args", {}),
+                    })
+            trajectory.append(trajectory_entry)
+
+        elif msg_class == "ToolMessage":
+            tool_call_id = getattr(msg, "tool_call_id", "")
+            tool_info = tool_call_args.get(tool_call_id, {})
+            tool_name = (
+                getattr(msg, "name", None) or tool_info.get("name", "unknown")
+            )
+            tool_calls.append({
+                "tool_name": tool_name,
+                "arguments": tool_info.get("args", {}),
+                "result": msg.content,
+            })
+            trajectory_entry["tool_name"] = tool_name
+            trajectory_entry["tool_call_id"] = tool_call_id
+            trajectory_entry["result"] = msg.content
+            trajectory.append(trajectory_entry)
+
+        elif msg_class == "SystemMessage":
+            trajectory.append(trajectory_entry)
+
+    return AgentResponse(
+        content=answer,
+        tool_calls=tool_calls,
+        messages=[],
+        metadata={},
+        trajectory=trajectory,
+    )
 
 
 def _extract_tool_response_values(result_str: str):
@@ -265,7 +440,9 @@ def _extract_tool_response_values(result_str: str):
     return parsed
 
 
-def save_results_ground_truth(results: List[BenchmarkResult], output_dir: Path):
+def save_results_ground_truth(
+    results: List[BenchmarkResult], output_dir: Path
+):
     """Save benchmark results in ground truth format to per-domain files.
 
     Writes one file per domain to output_dir/<domain>.json matching the
@@ -292,14 +469,17 @@ def save_results_ground_truth(results: List[BenchmarkResult], output_dir: Path):
             for tc in r.tool_calls:
                 raw_args = tc.get("arguments", {})
                 filtered_args = {
-                    k: v for k, v in raw_args.items() if k not in _INTERNAL_KEYS
+                    k: v for k, v in raw_args.items()
+                    if k not in _INTERNAL_KEYS
                 }
                 gold_sequence.append({
                     "tool_call": [[{
                         "name": tc.get("tool_name", ""),
                         "arguments": filtered_args,
                     }]],
-                    "tool_response": [_extract_tool_response_values(tc.get("result", ""))],
+                    "tool_response": [
+                        _extract_tool_response_values(tc.get("result", ""))
+                    ],
                 })
 
             record = {
@@ -329,67 +509,46 @@ def save_results_ground_truth(results: List[BenchmarkResult], output_dir: Path):
 AGENT_TIMEOUT_SECONDS = 120
 
 
-# Default settings
-DEFAULT_CONTAINER_NAME = "fastapi-mcp-server"
-DEFAULT_CONTAINER_RUNTIME = "podman"
-
-
-def _build_exec_args(
-    domain: str,
-    container_name: str,
-    mcp_domain_env: str = "MCP_DOMAIN",
-) -> list:
-    """Build the docker/podman exec args for starting an MCP server."""
-    return [
-        "exec", "-i",
-        "-e", f"{mcp_domain_env}={domain}",
-        container_name,
-        "python", "mcp_server.py",
-    ]
-
-
 def detect_container_runtime() -> str:
     """
     Detect available container runtime (podman or docker).
     Returns 'podman' if available, otherwise 'docker'.
     """
     import shutil
-    
+
     # Check if podman is available
     if shutil.which("podman"):
         return "podman"
-    
+
     # Fall back to docker
     if shutil.which("docker"):
         print("  Note: podman not found, using docker instead")
         return "docker"
-    
+
     # Neither found
-    raise RuntimeError("Neither podman nor docker found in PATH. Please install one of them.")
+    raise RuntimeError(
+        "Neither podman nor docker found in PATH. "
+        "Please install one of them."
+    )
 
 
-
-
-def stop_mcp_server(
-    mode: str = "stdio",
-    container_runtime: Optional[str] = None,
-    container_name: Optional[str] = None,
-):
+def stop_mcp_server(cfg: MCPConnectionConfig):
     """Stop a running MCP server process.
 
     For container stdio mode, force-kills the mcp_server.py process inside the
     container.  For subprocess stdio and websocket modes the transport's own
     context manager handles teardown, so this is a no-op.
     """
-    if mode == "websocket":
+    if cfg.mode == "websocket":
         # WebSocket connection is closed by the context manager; nothing to do.
         return
 
-    if mode == "stdio" and container_runtime and container_name:
+    if cfg.mode == "stdio" and not cfg.command and cfg.container_name:
         # Container exec mode: pkill the server process inside the container.
+        runtime = cfg.container_runtime or detect_container_runtime()
         try:
             kill_cmd = [
-                container_runtime, "exec", container_name,
+                runtime, "exec", cfg.container_name,
                 "pkill", "-f", "python mcp_server.py"
             ]
             subprocess.run(kill_cmd, capture_output=True, timeout=5)
@@ -403,21 +562,20 @@ def stop_mcp_server(
 
 
 async def connect_and_list_tools(
-    domain: str, container_runtime: str, container_name: str,
-    mcp_domain_env: str = "MCP_DOMAIN",
+    domain: str,
+    cfg: MCPConnectionConfig,
 ) -> List[str]:
     """Connect to MCP server with the given domain and list available tools."""
-    print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
+    runtime = cfg.container_runtime or "(auto-detect)"
+    print(
+        f"  Starting: {runtime} exec -i"
+        f" -e MCP_DOMAIN={domain} {cfg.container_name} python mcp_server.py"
+    )
 
     tool_names = []
 
     try:
-        async with connect_to_mcp_server(
-            mode="stdio",
-            container_runtime=container_runtime,
-            container_name=container_name,
-            domain=domain,
-        ) as (read, write):
+        async with connect_to_mcp_server(cfg, domain) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 response = await session.list_tools()
@@ -432,40 +590,50 @@ async def connect_and_list_tools(
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
             # Force kill on unexpected errors
-            stop_mcp_server(mode="stdio", container_runtime=container_runtime, container_name=container_name)
+            stop_mcp_server(cfg)
             raise
 
     return tool_names
 
 
 async def connect_and_get_tools_detailed(
-    domain: str, container_runtime: str, container_name: str,
-    mcp_domain_env: str = "MCP_DOMAIN",
+    domain: str,
+    cfg: MCPConnectionConfig,
 ) -> List[Dict[str, Any]]:
-    """Connect to MCP server and get detailed tool information including parameters."""
-    print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
+    """Connect to MCP server and get detailed tool info."""
+    if cfg.mode == "websocket":
+        print(f"  Connecting via websocket: {cfg.server_url}")
+    elif cfg.command:
+        print(
+            f"  Starting: {cfg.command}"
+            f" {' '.join(cfg.args or [])}"
+        )
+    else:
+        runtime = cfg.container_runtime or "(auto-detect)"
+        print(
+            f"  Starting: {runtime} exec -i"
+            f" -e MCP_DOMAIN={domain} {cfg.container_name} python mcp_server.py"
+        )
 
     tools_detailed = []
 
     try:
-        async with connect_to_mcp_server(
-            mode="stdio",
-            container_runtime=container_runtime,
-            container_name=container_name,
-            domain=domain,
-        ) as (read, write):
+        async with connect_to_mcp_server(cfg, domain) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
                 response = await session.list_tools()
-                
+
                 for tool in response.tools:
                     tool_info = {
                         "name": tool.name,
                         "description": tool.description or "",
-                        "inputSchema": tool.inputSchema if hasattr(tool, 'inputSchema') else {}
+                        "inputSchema": (
+                            tool.inputSchema
+                            if hasattr(tool, 'inputSchema') else {}
+                        ),
                     }
                     tools_detailed.append(tool_info)
-        
+
         print("  Server stopped.")
     except ExceptionGroup as eg:
         print(f"  Warning: Cleanup error (ignored): {eg}")
@@ -473,7 +641,7 @@ async def connect_and_get_tools_detailed(
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
-            stop_mcp_server(mode="stdio", container_runtime=container_runtime, container_name=container_name)
+            stop_mcp_server(cfg)
             raise
 
     return tools_detailed
@@ -482,38 +650,28 @@ async def connect_and_get_tools_detailed(
 async def run_agent_with_query(
     domain: str,
     query: str,
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     agent: AgentInterface,
-    mode: str = "stdio",
-    server_url: Optional[str] = None,
-    subprocess_command: Optional[str] = None,
-    subprocess_args: Optional[List[str]] = None,
-    subprocess_env: Optional[Dict[str, str]] = None,
-    container_command: Optional[List[str]] = None,
 ) -> AgentResponse:
     """Run an agent with tools from the MCP server."""
-    if mode == "stdio" and container_runtime and container_name:
-        print(f"  Starting: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
-    elif mode == "websocket":
-        print(f"  Connecting via websocket: {server_url}")
+    if cfg.mode == "stdio" and not cfg.command and cfg.container_name:
+        runtime = cfg.container_runtime or "(auto-detect)"
+        print(
+            f"  Starting: {runtime} exec -i"
+            f" -e MCP_DOMAIN={domain} {cfg.container_name} python mcp_server.py"
+        )
+    elif cfg.mode == "websocket":
+        print(f"  Connecting via websocket: {cfg.server_url}")
     else:
-        print(f"  Starting: {subprocess_command} {' '.join(subprocess_args or [])}")
+        print(
+            f"  Starting: {cfg.command}"
+            f" {' '.join(cfg.args or [])}"
+        )
 
     response = None
 
     try:
-        async with connect_to_mcp_server(
-            mode=mode,
-            container_runtime=container_runtime,
-            container_name=container_name,
-            domain=domain,
-            container_command=container_command,
-            command=subprocess_command,
-            args=subprocess_args,
-            env=subprocess_env,
-            server_url=server_url,
-        ) as (read, write):
+        async with connect_to_mcp_server(cfg, domain) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -528,10 +686,18 @@ async def run_agent_with_query(
                         agent.run(query, tools),
                         timeout=AGENT_TIMEOUT_SECONDS
                     )
-                    print(f"  Agent completed. Response received: {response is not None}")
+                    print(
+                        f"  Agent completed."
+                        f" Response received: {response is not None}"
+                    )
                 except asyncio.TimeoutError:
-                    print(f"  Agent timed out after {AGENT_TIMEOUT_SECONDS}s")
-                    raise TimeoutError(f"Agent timed out after {AGENT_TIMEOUT_SECONDS} seconds")
+                    print(
+                        f"  Agent timed out after {AGENT_TIMEOUT_SECONDS}s"
+                    )
+                    raise TimeoutError(
+                        f"Agent timed out after {AGENT_TIMEOUT_SECONDS}"
+                        " seconds"
+                    )
         # Context exited cleanly
         print("  Server stopped.")
     except ExceptionGroup as eg:
@@ -544,7 +710,7 @@ async def run_agent_with_query(
             print(f"  Warning: Cleanup error (ignored): {e}")
             print("  Server stopped.")
         else:
-            stop_mcp_server(mode=mode, container_runtime=container_runtime, container_name=container_name)
+            stop_mcp_server(cfg)
             raise
 
     if response is None:
@@ -554,27 +720,26 @@ async def run_agent_with_query(
 
 async def process_domain(
     domain: str,
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     agent: Optional[AgentInterface] = None,
     query: Optional[str] = None,
     mcp_domain_env: str = "MCP_DOMAIN",
 ) -> dict:
-    """Process a single domain: connect to MCP server and list tools (optionally run agent)."""
+    """Process a single domain: connect to MCP server and list tools."""
 
-    print(f"\n{'='*60}")
+    print("\n" + "=" * 60)
     print(f"Domain: {domain}")
-    print(f"{'='*60}")
+    print("=" * 60)
 
     try:
         if agent and query:
             # Run agent with query
-            response = await run_agent_with_query(
-                domain, query, container_runtime, container_name, agent,
-                mcp_domain_env=mcp_domain_env,
-            )
+            response = await run_agent_with_query(domain, query, cfg, agent)
             print(f"  Tool calls: {len(response.tool_calls)}")
-            print(f"  Answer: {response.content[:200]}..." if len(response.content) > 200 else f"  Answer: {response.content}")
+            if len(response.content) > 200:
+                print(f"  Answer: {response.content[:200]}...")
+            else:
+                print(f"  Answer: {response.content}")
 
             return {
                 "domain": domain,
@@ -586,7 +751,7 @@ async def process_domain(
             }
         else:
             # Just list tools
-            tool_names = await connect_and_list_tools(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
+            tool_names = await connect_and_list_tools(domain, cfg)
             print(f"  Tools loaded: {len(tool_names)}")
 
             for tool in tool_names[:5]:
@@ -613,8 +778,7 @@ async def process_domain(
 
 async def run_benchmark_item(
     item: BenchmarkItem,
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     agent: AgentInterface,
 ) -> BenchmarkResult:
     """Run a single benchmark item."""
@@ -632,8 +796,7 @@ async def run_benchmark_item(
         response = await run_agent_with_query(
             domain=item.domain,
             query=item.query,
-            container_runtime=container_runtime,
-            container_name=container_name,
+            cfg=cfg,
             agent=agent,
         )
         result.answer = response.content
@@ -651,50 +814,42 @@ async def run_benchmark_item(
 async def run_benchmark_for_domain(
     domain: str,
     items: List[BenchmarkItem],
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     agent: AgentInterface,
     max_samples: Optional[int] = None,
     shortlister=None,
-    mode: str = "stdio",
-    server_url: Optional[str] = None,
-    subprocess_command: Optional[str] = None,
-    subprocess_args: Optional[List[str]] = None,
-    subprocess_env: Optional[Dict[str, str]] = None,
-    container_command: Optional[List[str]] = None,
 ) -> List[BenchmarkResult]:
-    """Run benchmark for a single domain - starts MCP server once for all items."""
+    """Run benchmark for a single domain - starts MCP server once."""
     import time
 
     # Limit samples if requested
     if max_samples and max_samples < len(items):
         items = items[:max_samples]
 
-    print(f"\n{'#'*60}")
+    print("\n" + "#" * 60)
     print(f"# DOMAIN: {domain} ({len(items)} items)")
-    print(f"{'#'*60}")
+    print("#" * 60)
 
     results: List[BenchmarkResult] = []
 
-    if mode == "stdio" and container_runtime and container_name:
-        print(f"  Starting MCP server: {container_runtime} exec -i -e MCP_DOMAIN={domain} {container_name} python mcp_server.py")
-    elif mode == "websocket":
-        print(f"  Connecting to MCP server via websocket: {server_url}")
+    if cfg.mode == "stdio" and not cfg.command and cfg.container_name:
+        runtime = cfg.container_runtime or "(auto-detect)"
+        print(
+            f"  Starting MCP server: {runtime} exec -i"
+            f" -e MCP_DOMAIN={domain} {cfg.container_name} python mcp_server.py"
+        )
+    elif cfg.mode == "websocket":
+        print(
+            f"  Connecting to MCP server via websocket: {cfg.server_url}"
+        )
     else:
-        print(f"  Starting MCP server: {subprocess_command} {' '.join(subprocess_args or [])}")
+        print(
+            f"  Starting MCP server: {cfg.command}"
+            f" {' '.join(cfg.args or [])}"
+        )
 
     try:
-        async with connect_to_mcp_server(
-            mode=mode,
-            container_runtime=container_runtime,
-            container_name=container_name,
-            domain=domain,
-            container_command=container_command,
-            command=subprocess_command,
-            args=subprocess_args,
-            env=subprocess_env,
-            server_url=server_url,
-        ) as (read, write):
+        async with connect_to_mcp_server(cfg, domain) as (read, write):
             async with ClientSession(read, write) as session:
                 await session.initialize()
 
@@ -709,7 +864,13 @@ async def run_benchmark_for_domain(
 
                 # Run all queries for this domain
                 for i, item in enumerate(items):
-                    print(f"\n  [{i+1}/{len(items)}] Query: {item.query}")
+                    query_suffix = (
+                        "..." if len(item.query) > 80 else ""
+                    )
+                    print(
+                        f"\n  [{i+1}/{len(items)}]"
+                        f" Query: {item.query[:80]}{query_suffix}"
+                    )
 
                     result = BenchmarkResult(
                         uuid=item.uuid,
@@ -723,8 +884,13 @@ async def run_benchmark_for_domain(
                     try:
                         # Shortlist tools per query if enabled
                         if shortlister:
-                            query_tools = shortlister.shortlist(item.query, tools)
-                            print(f"    Shortlisted {len(query_tools)}/{len(tools)} tools")
+                            query_tools = shortlister.shortlist(
+                                item.query, tools
+                            )
+                            print(
+                                f"    Shortlisted"
+                                f" {len(query_tools)}/{len(tools)} tools"
+                            )
                         else:
                             query_tools = tools
 
@@ -738,32 +904,107 @@ async def run_benchmark_for_domain(
                         result.trajectory = response.trajectory
                         result.status = "success"
                         elapsed = time.perf_counter() - start_time
-                        print(f"    Status: success | Tools: {len(result.tool_calls)} | Trajectory steps: {len(result.trajectory)} | Time: {elapsed:.2f}s")
+                        print(
+                            f"    Status: success"
+                            f" | Tools: {len(result.tool_calls)}"
+                            f" | Trajectory steps:"
+                            f" {len(result.trajectory)}"
+                            f" | Time: {elapsed:.2f}s"
+                        )
                         # Log the answer
-                        print(f"    Answer: {result.answer or '(empty)'}")
+                        answer_preview = (
+                            result.answer[:200]
+                            if result.answer else "(empty)"
+                        )
+                        ans_suffix = (
+                            "..." if len(result.answer) > 200 else ""
+                        )
+                        print(
+                            f"    Answer: {answer_preview}{ans_suffix}"
+                        )
                         # Log trajectory summary
                         if result.trajectory:
-                            print(f"    Trajectory ({len(result.trajectory)} steps):")
+                            traj_len = len(result.trajectory)
+                            print(
+                                f"    Trajectory ({traj_len} steps):"
+                            )
                             for i, step in enumerate(result.trajectory):
                                 step_type = step.get('type', 'unknown')
                                 if step_type == 'HumanMessage':
-                                    print(f"      [{i+1}] User: {step.get('content', '')}")
+                                    content_preview = (
+                                        step.get('content', '')[:80]
+                                    )
+                                    c_len = len(
+                                        step.get('content', '')
+                                    )
+                                    c_suffix = (
+                                        "..." if c_len > 80 else ""
+                                    )
+                                    print(
+                                        f"      [{i+1}] User:"
+                                        f" {content_preview}{c_suffix}"
+                                    )
                                 elif step_type == 'AIMessage':
-                                    tool_calls = step.get('tool_calls', [])
+                                    content_preview = (
+                                        step.get('content', '')[:80]
+                                    )
+                                    tool_calls = step.get(
+                                        'tool_calls', []
+                                    )
                                     if tool_calls:
-                                        print(f"      [{i+1}] AI: Calling {len(tool_calls)} tool(s)")
+                                        print(
+                                            f"      [{i+1}] AI: Calling"
+                                            f" {len(tool_calls)} tool(s)"
+                                        )
                                         for tc in tool_calls:
-                                            print(f"          - {tc.get('name', 'unknown')}({tc.get('args', {})})")
+                                            tc_name = tc.get(
+                                                'name', 'unknown'
+                                            )
+                                            tc_args = tc.get('args', {})
+                                            print(
+                                                f"          - {tc_name}"
+                                                f"({tc_args})"
+                                            )
                                     else:
-                                        print(f"      [{i+1}] AI: {step.get('content', '')}")
+                                        c_len = len(
+                                            step.get('content', '')
+                                        )
+                                        c_suffix = (
+                                            "..." if c_len > 80 else ""
+                                        )
+                                        print(
+                                            f"      [{i+1}] AI:"
+                                            f" {content_preview}"
+                                            f"{c_suffix}"
+                                        )
                                 elif step_type == 'ToolMessage':
-                                    tool_name = step.get('tool_name', 'unknown')
-                                    result_text = str(step.get('result', ''))
-                                    print(f"      [{i+1}] Tool ({tool_name}):\n{result_text}")
+                                    tool_name = step.get(
+                                        'tool_name', 'unknown'
+                                    )
+                                    result_preview = str(
+                                        step.get('result', '')
+                                    )[:80]
+                                    r_len = len(
+                                        str(step.get('result', ''))
+                                    )
+                                    r_suffix = (
+                                        "..." if r_len > 80 else ""
+                                    )
+                                    print(
+                                        f"      [{i+1}] Tool"
+                                        f" ({tool_name}):"
+                                        f" {result_preview}{r_suffix}"
+                                    )
                     except asyncio.TimeoutError:
                         result.status = "error"
-                        result.error = f"Agent timed out after {AGENT_TIMEOUT_SECONDS} seconds"
-                        print(f"    Status: timeout after {AGENT_TIMEOUT_SECONDS}s")
+                        result.error = (
+                            f"Agent timed out after"
+                            f" {AGENT_TIMEOUT_SECONDS} seconds"
+                        )
+                        print(
+                            f"    Status: timeout after"
+                            f" {AGENT_TIMEOUT_SECONDS}s"
+                        )
                     except Exception as e:
                         result.status = "error"
                         result.error = str(e)
@@ -779,7 +1020,207 @@ async def run_benchmark_for_domain(
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
             print(f"  Warning: Cleanup error (ignored): {e}")
         else:
-            stop_mcp_server(mode=mode, container_runtime=container_runtime, container_name=container_name)
+            stop_mcp_server(cfg)
+            raise
+
+    return results
+
+
+async def run_task1_benchmark(
+    items: List[BenchmarkItem],
+    provider: str,
+    model: Optional[str],
+    cfg: MCPConnectionConfig,
+    max_samples: Optional[int] = None,
+) -> List[BenchmarkResult]:
+    """Run task_id=1 benchmark using ToolCallingAgent + SlotFillingMCPServer.
+
+    Key differences from task_id=2:
+    - Single MCP server for all instances (universe switching via get_data)
+    - ToolCallingAgent with handle-based result management
+
+    Args:
+        items: List of BenchmarkItem objects to process
+        provider: LLM provider name
+        model: Model name (optional)
+        cfg: MCP connection configuration
+        max_samples: Maximum number of instances to process
+
+    Returns:
+        List of BenchmarkResult objects
+    """
+    import time
+
+    results: List[BenchmarkResult] = []
+
+    # Limit samples if requested
+    if max_samples:
+        items = items[:max_samples]
+
+    print("\n" + "#" * 60)
+    print("# TASK 1: ToolCallingAgent + SlotFillingMCPServer")
+    print(f"# Processing {len(items)} instances")
+    print("#" * 60)
+
+    # Create LLM once
+    llm = create_llm(provider=provider, model=model)
+    print(f"  LLM: {provider}" + (f" / {model}" if model else ""))
+
+    # Connect to single MCP server for all instances
+    try:
+        async with connect_to_mcp_server(cfg, domain="") as (read, write):
+            async with ClientSession(read, write) as session:
+                await session.initialize()
+                print("  MCP session initialized")
+
+                # Get tools once (they don't change between universes)
+                wrapper = MCPToolWrapper(
+                    session=session,
+                    use_openai_restrictions=(provider in ("openai", "rits"))
+                )
+                tools = await wrapper.get_tools()
+                print(f"  Loaded {len(tools)} tools")
+
+                # Bind tools to LLM once
+                llm_with_tools = llm.bind_tools(tools)
+
+                # Process each instance
+                for i, item in enumerate(items):
+                    print(f"\n  [{i+1}/{len(items)}] Instance: {item.uuid}")
+                    q_suffix = "..." if len(item.query) > 80 else ""
+                    print(
+                        f"  Query: {item.query[:80]}{q_suffix}"
+                    )
+
+                    result = BenchmarkResult(
+                        uuid=item.uuid,
+                        domain=item.domain,
+                        query=item.query,
+                        turn_id=item.turn_id,
+                    )
+
+                    start_time = time.perf_counter()
+
+                    try:
+                        # Step 1: Switch universe via get_data tool
+                        get_data_tool = next(
+                            (t for t in tools if t.name == "get_data"),
+                            None,
+                        )
+                        if not get_data_tool:
+                            raise RuntimeError(
+                                "get_data tool not found in available tools"
+                            )
+
+                        print(
+                            f"    Switching to universe: {item.uuid}"
+                        )
+                        data_result = await get_data_tool.ainvoke(
+                            {"tool_universe_id": item.uuid}
+                        )
+                        parsed_data = json.loads(data_result)
+
+                        # Handle MCP TextContent format
+                        if isinstance(parsed_data, list) and parsed_data:
+                            first_item = parsed_data[0]
+                            if (
+                                isinstance(first_item, dict)
+                                and "text" in first_item
+                            ):
+                                parsed_data = json.loads(first_item["text"])
+                            else:
+                                parsed_data = first_item
+
+                        if (
+                            isinstance(parsed_data, dict)
+                            and "error" in parsed_data
+                        ):
+                            raise RuntimeError(
+                                f"Universe switch failed:"
+                                f" {parsed_data['error']}"
+                            )
+
+                        print("    Universe loaded successfully")
+
+                        # Step 2: Create agent for this instance
+                        agent = ToolCallingAgent(
+                            llm_with_tools=llm_with_tools,
+                            mcp_tools=tools,
+                            initial_data_handle="placeholder",
+                            max_iterations=10
+                        )
+
+                        # Store initial data and update handle
+                        initial_handle = (
+                            agent.handle_manager.store_initial_data(
+                                parsed_data
+                            )
+                        )
+                        agent._initial_data_handle = initial_handle
+                        print(
+                            f"    Initial data stored as: {initial_handle}"
+                        )
+
+                        # Step 3: Run agent with timeout
+                        answer = await asyncio.wait_for(
+                            agent.run(item.query),
+                            timeout=AGENT_TIMEOUT_SECONDS
+                        )
+
+                        # Step 4: Extract response data from agent
+                        response = extract_tool_calling_agent_response(
+                            agent, answer
+                        )
+
+                        result.answer = response.content
+                        result.tool_calls = response.tool_calls
+                        result.trajectory = response.trajectory
+                        result.status = "success"
+
+                        elapsed = time.perf_counter() - start_time
+                        print(
+                            f"    Status: success"
+                            f" | Tools: {len(result.tool_calls)}"
+                            f" | Time: {elapsed:.2f}s"
+                        )
+                        answer_preview = (
+                            result.answer[:200]
+                            if result.answer else "(empty)"
+                        )
+                        ans_suffix = (
+                            "..." if len(result.answer) > 200 else ""
+                        )
+                        print(
+                            f"    Answer: {answer_preview}{ans_suffix}"
+                        )
+
+                    except asyncio.TimeoutError:
+                        result.status = "error"
+                        result.error = (
+                            f"Agent timed out after"
+                            f" {AGENT_TIMEOUT_SECONDS}s"
+                        )
+                        print(
+                            f"    Status: timeout after"
+                            f" {AGENT_TIMEOUT_SECONDS}s"
+                        )
+                    except Exception as e:
+                        result.status = "error"
+                        result.error = str(e)
+                        print(f"    Status: error | {str(e)[:80]}")
+                        import traceback
+                        traceback.print_exc()
+
+                    result.duration_s = time.perf_counter() - start_time
+                    results.append(result)
+
+        print("\n  Server stopped")
+    except ExceptionGroup as eg:
+        print(f"  Warning: Cleanup error (ignored): {eg}")
+    except Exception as e:
+        if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
+            print(f"  Warning: Cleanup error (ignored): {e}")
+        else:
             raise
 
     return results
@@ -804,8 +1245,7 @@ def _make_output_dir(task_id: int, output_dir: Optional[str] = None) -> Path:
 
 async def run_task(
     task_id: int,
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     run_agent: bool = False,
     provider: str = "ollama",
     model: Optional[str] = None,
@@ -813,12 +1253,6 @@ async def run_task(
     output_dir: Optional[str] = None,
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
-    mode: str = "stdio",
-    server_url: Optional[str] = None,
-    subprocess_command: Optional[str] = None,
-    subprocess_args: Optional[List[str]] = None,
-    subprocess_env: Optional[Dict[str, str]] = None,
-    container_command: Optional[List[str]] = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -827,45 +1261,70 @@ async def run_task(
         print(f"Available task_ids: {list(TASK_PATHS.keys())}")
         sys.exit(1)
 
-    input_path = Path(TASK_PATHS[task_id])
+    # ============================================================
+    # TASK ID 1: ToolCallingAgent + SlotFillingMCPServer
+    # ============================================================
+    if task_id == 1:
+        items, _ = load_benchmark_data(task_id=1, domains=domains)
+        print(f"Loaded {len(items)} items")
 
-    if not input_path.exists():
-        print(f"Error: Input path does not exist: {input_path}")
-        sys.exit(1)
+        if not run_agent:
+            # Just list available items for task 1
+            print(f"\nAvailable items ({len(items)}):")
+            for item in items[:10]:
+                print(f"  {item.uuid}: {item.query[:60]}...")
+            if len(items) > 10:
+                print(f"  ... and {len(items) - 10} more")
+            return []
 
-    # Get all JSON files - each file represents a domain
-    json_files = sorted(input_path.glob("*.json"))
+        # Run task 1 benchmark
+        results = await run_task1_benchmark(
+            items=items,
+            provider=provider,
+            model=model,
+            cfg=cfg,
+            max_samples=max_samples_per_domain,
+        )
 
-    if not json_files:
-        print(f"Error: No JSON files found in {input_path}")
-        sys.exit(1)
+        # Save results
+        if results:
+            output_dir = Path(TASK_PATHS[task_id]).parent / "output"
+            save_results_ground_truth(results, output_dir)
 
-    # Filter to specific domains if provided
-    if domains:
-        filtered_files = []
-        for json_file in json_files:
-            if json_file.stem in domains:
-                filtered_files.append(json_file)
-        if not filtered_files:
-            available = [f.stem for f in json_files]
-            print(f"Error: None of the specified domains found: {domains}")
-            print(f"Available domains: {available[:10]}{'...' if len(available) > 10 else ''}")
-            sys.exit(1)
-        json_files = filtered_files
-        print(f"Filtered to {len(json_files)} domains: {[f.stem for f in json_files]}")
+        # Print summary
+        successful = [r for r in results if r.status == "success"]
+        failed = [r for r in results if r.status == "error"]
+        print("\n" + "=" * 60)
+        print("TASK 1 BENCHMARK SUMMARY")
+        print("=" * 60)
+        print(f"  Total items: {len(results)}")
+        print(f"  Successful: {len(successful)}")
+        print(f"  Failed: {len(failed)}")
 
+        return results
+
+    # ============================================================
+    # TASK ID 2: LangGraphReActAgent + FastAPIMCPServer (existing)
+    # ============================================================
+    all_items, _ = load_benchmark_data(task_id=task_id, domains=domains)
+
+    # Group items by domain
+    items_by_domain: Dict[str, List[BenchmarkItem]] = {}
+    for item in all_items:
+        items_by_domain.setdefault(item.domain, []).append(item)
+
+    domain_list = sorted(items_by_domain)
     print(f"Task ID: {task_id}")
-    print(f"Input path: {input_path}")
-    print(f"Container runtime: {container_runtime}")
-    print(f"Container name: {container_name}")
-    print(f"Processing {len(json_files)} domain files")
+    print(f"Mode: {cfg.mode}")
+    if not cfg.command and cfg.mode == "stdio":
+        print(f"Container name: {cfg.container_name}")
+    print(f"Processing {len(domain_list)} domain(s): {domain_list}")
 
     if not run_agent:
         # Just list tools for each domain (original behavior)
         results = []
-        for json_file in json_files:
-            domain = json_file.stem  # Domain from filename
-            result = await process_domain(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
+        for domain in domain_list:
+            result = await process_domain(domain, cfg)
             results.append(result)
         return results
 
@@ -884,32 +1343,21 @@ async def run_task(
     if max_samples_per_domain:
         print(f"Max samples per domain: {max_samples_per_domain}")
 
-    # Process each domain file, writing output incrementally per domain
+    # Process each domain, writing output incrementally
     all_results: List[BenchmarkResult] = []
-    gt_output_dir = _make_output_dir(task_id, output_dir)
-    print(f"Output directory: {gt_output_dir}")
-    for json_file in json_files:
-        domain = json_file.stem  # Extract domain from filename (e.g., "address" from "address.json")
-
-        # Load benchmark items from this file
-        items = load_benchmark_file(json_file)
-        print(f"\nLoaded {len(items)} items from {json_file.name}")
+    gt_output_dir = Path(TASK_PATHS[task_id]).parent / "output"
+    for domain in domain_list:
+        items = items_by_domain[domain]
+        print(f"\nLoaded {len(items)} items for domain '{domain}'")
 
         # Run benchmark for this domain
         domain_results = await run_benchmark_for_domain(
             domain=domain,
             items=items,
-            container_runtime=container_runtime,
-            container_name=container_name,
+            cfg=cfg,
             agent=agent,
             max_samples=max_samples_per_domain,
             shortlister=shortlister,
-            mode=mode,
-            server_url=server_url,
-            subprocess_command=subprocess_command,
-            subprocess_args=subprocess_args,
-            subprocess_env=subprocess_env,
-            container_command=container_command,
         )
         all_results.extend(domain_results)
 
@@ -922,96 +1370,147 @@ async def run_task(
     successful = [r for r in results if r.status == "success"]
     failed = [r for r in results if r.status == "error"]
 
-    # Summary
-    print(f"\n{'='*60}")
+    print("\n" + "=" * 60)
     print("BENCHMARK SUMMARY")
-    print(f"{'='*60}")
-    successful = [r for r in results if r.status == "success"]
-    failed = [r for r in results if r.status == "error"]
-
+    print("=" * 60)
     print(f"  Total items: {len(results)}")
     print(f"  Successful: {len(successful)}")
     print(f"  Failed: {len(failed)}")
 
+    return results
+
+
 async def list_tools_for_domains(
     task_id: int,
-    container_runtime: str,
-    container_name: str,
+    cfg: MCPConnectionConfig,
     domains: Optional[List[str]] = None,
     mcp_domain_env: str = "MCP_DOMAIN",
 ):
-    """List all available tools for specified domains using MCP protocol with detailed parameters."""
-    
-    print(f"Task ID: {task_id}")
-    print(f"Container runtime: {container_runtime}")
-    print(f"Container name: {container_name}\n")
+    """List all available tools for specified domains via MCP protocol."""
 
-    # If domains are specified, use them directly
-    # Otherwise, try to discover from JSON files in task directory
-    domains_to_process = []
-    
-    if domains:
-        # Use specified domains directly
-        domains_to_process = domains
-        print(f"Listing tools for {len(domains)} specified domain(s): {domains}")
+    print(f"Task ID: {task_id}")
+    if cfg.mode == "websocket":
+        print(f"Server URL: {cfg.server_url}\n")
+    elif cfg.command:
+        print(
+            f"Subprocess: {cfg.command}"
+            f" {' '.join(cfg.args or [])}\n"
+        )
     else:
-        # Try to discover domains from task directory
-        if task_id in TASK_PATHS:
-            input_path = Path(TASK_PATHS[task_id])
-            if input_path.exists():
-                json_files = sorted(input_path.glob("*.json"))
-                if json_files:
-                    domains_to_process = [f.stem for f in json_files]
-                    print(f"Discovered {len(domains_to_process)} domains from task directory")
-        
-        if not domains_to_process:
-            print("Error: No domains specified and could not discover from task directory")
-            print("Please specify domains using --domain flag")
-            sys.exit(1)
+        runtime = cfg.container_runtime or "(auto-detect)"
+        print(f"Container runtime: {runtime}")
+        print(f"Container name: {cfg.container_name}\n")
+
+    _, domains_to_process = load_benchmark_data(
+        task_id=task_id, domains=domains, domain_names_only=True
+    )
+    print(
+        f"Listing tools for {len(domains_to_process)} domain(s):"
+        f" {domains_to_process}"
+    )
 
     # Collect all tools for OpenAPI spec
     all_tools_by_domain = {}
 
-    # Process each domain
-    for domain in domains_to_process:
-        
-        print(f"\n{'='*60}")
-        print(f"Domain: {domain}")
-        print(f"{'='*60}")
-        
+    if task_id == 1:
+        # Task 1: single subprocess server serves all domains (same tools
+        # regardless of domain). Connect once and report under "task_1".
+        print("\n" + "=" * 60)
+        print("Task 1 tools (single server)")
+        print("=" * 60)
         try:
-            tools_detailed = await connect_and_get_tools_detailed(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
+            tools_detailed = await connect_and_get_tools_detailed(
+                domain="",
+                cfg=cfg,
+            )
+            all_tools_by_domain["task_1"] = tools_detailed
             print(f"  Total tools: {len(tools_detailed)}\n")
-            
-            all_tools_by_domain[domain] = tools_detailed
-            
             for i, tool in enumerate(tools_detailed, 1):
                 print(f"  {i:3d}. {tool['name']}")
                 if tool['description']:
-                    print(f"       Description: {tool['description'][:100]}{'...' if len(tool['description']) > 100 else ''}")
-                
-                # Show parameters
+                    desc = tool['description']
+                    d_suffix = "..." if len(desc) > 100 else ""
+                    print(
+                        f"       Description: {desc[:100]}{d_suffix}"
+                    )
                 input_schema = tool.get('inputSchema', {})
                 properties = input_schema.get('properties', {})
                 required = input_schema.get('required', [])
-                
                 if properties:
-                    print(f"       Parameters:")
+                    print("       Parameters:")
                     for param_name, param_info in properties.items():
                         param_type = param_info.get('type', 'unknown')
                         param_desc = param_info.get('description', '')
-                        required_marker = " (required)" if param_name in required else ""
-                        print(f"         - {param_name}: {param_type}{required_marker}")
+                        req_marker = (
+                            " (required)"
+                            if param_name in required else ""
+                        )
+                        print(
+                            f"         - {param_name}:"
+                            f" {param_type}{req_marker}"
+                        )
                         if param_desc:
-                            print(f"           {param_desc[:80]}{'...' if len(param_desc) > 80 else ''}")
+                            pd_suffix = (
+                                "..." if len(param_desc) > 80 else ""
+                            )
+                            print(
+                                f"           {param_desc[:80]}{pd_suffix}"
+                            )
                 print()
-                
         except Exception as e:
             print(f"  ERROR: {e}")
+    else:
+        # Task 2: per-domain connections.
+        for domain in domains_to_process:
+            print("\n" + "=" * 60)
+            print(f"Domain: {domain}")
+            print("=" * 60)
+            try:
+                tools_detailed = await connect_and_get_tools_detailed(
+                    domain=domain,
+                    cfg=cfg,
+                )
+                print(f"  Total tools: {len(tools_detailed)}\n")
+                all_tools_by_domain[domain] = tools_detailed
+                for i, tool in enumerate(tools_detailed, 1):
+                    print(f"  {i:3d}. {tool['name']}")
+                    if tool['description']:
+                        desc = tool['description']
+                        d_suffix = "..." if len(desc) > 100 else ""
+                        print(
+                            f"       Description: {desc[:100]}{d_suffix}"
+                        )
+                    input_schema = tool.get('inputSchema', {})
+                    properties = input_schema.get('properties', {})
+                    required = input_schema.get('required', [])
+                    if properties:
+                        print("       Parameters:")
+                        for param_name, param_info in properties.items():
+                            param_type = param_info.get('type', 'unknown')
+                            param_desc = param_info.get('description', '')
+                            req_marker = (
+                                " (required)"
+                                if param_name in required else ""
+                            )
+                            print(
+                                f"         - {param_name}:"
+                                f" {param_type}{req_marker}"
+                            )
+                            if param_desc:
+                                pd_suffix = (
+                                    "..." if len(param_desc) > 80 else ""
+                                )
+                                print(
+                                    f"           "
+                                    f"{param_desc[:80]}{pd_suffix}"
+                                )
+                    print()
+            except Exception as e:
+                print(f"  ERROR: {e}")
 
     # Save as OpenAPI-like spec
     timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    
+
     # Include domain names in filename if specified
     if domains and len(domains) <= 3:
         # For 1-3 domains, include them in the filename
@@ -1019,11 +1518,13 @@ async def list_tools_for_domains(
         output_file = Path(f"tools_spec_{domain_str}_{timestamp}.json")
     elif domains and len(domains) > 3:
         # For more than 3 domains, just indicate "multiple"
-        output_file = Path(f"tools_spec_multiple_domains_{timestamp}.json")
+        output_file = Path(
+            f"tools_spec_multiple_domains_{timestamp}.json"
+        )
     else:
         # No specific domains (all domains)
         output_file = Path(f"tools_spec_all_{timestamp}.json")
-    
+
     openapi_spec = {
         "openapi": "3.0.0",
         "info": {
@@ -1036,7 +1537,7 @@ async def list_tools_for_domains(
             "schemas": {}
         }
     }
-    
+
     # Convert tools to OpenAPI paths
     for domain, tools in all_tools_by_domain.items():
         for tool in tools:
@@ -1053,12 +1554,12 @@ async def list_tools_for_domains(
                     }
                 }
             }
-            
+
             # Add parameters
             input_schema = tool.get('inputSchema', {})
             properties = input_schema.get('properties', {})
             required = input_schema.get('required', [])
-            
+
             for param_name, param_info in properties.items():
                 openapi_spec["paths"][path]["get"]["parameters"].append({
                     "name": param_name,
@@ -1069,37 +1570,32 @@ async def list_tools_for_domains(
                         "description": param_info.get('description', '')
                     }
                 })
-    
+
     with open(output_file, 'w') as f:
         json.dump(openapi_spec, f, indent=2)
-    
-    print(f"\n{'='*60}")
+
+    print("\n" + "=" * 60)
     print("Tool listing complete")
-    print(f"{'='*60}")
+    print("=" * 60)
     print(f"OpenAPI specification saved to: {output_file}")
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Benchmark Runner for MCP Server")
-    parser.add_argument("--task_id", type=int, nargs="+", required=True, help="Task ID(s) to run (e.g. --task_id 2 5)")
-    parser.add_argument(
-        "--container-runtime",
-        type=str,
-        default=None,
-        help=f"Container runtime to use (default: auto-detect, prefers podman over docker)"
+    parser = argparse.ArgumentParser(
+        description="Benchmark Runner for MCP Server"
     )
     parser.add_argument(
-        "--container-name",
-        type=str,
-        default=None,
-        help="Container name (default: auto-resolved from task config)"
+        "--task_id", type=int, nargs="+", required=True, help="Task ID to run"
     )
     parser.add_argument(
         "--domain",
         type=str,
         action="append",
         default=None,
-        help="Domain(s) to process (can specify multiple times, default: all domains)"
+        help=(
+            "Domain(s) to process"
+            " (can specify multiple times, default: all domains)"
+        ),
     )
     parser.add_argument(
         "--run-agent",
@@ -1132,7 +1628,10 @@ def main():
         "--provider",
         type=str,
         default="ollama",
-        choices=["anthropic", "openai", "ollama", "litellm", "watsonx", "rits"],
+        choices=[
+            "anthropic", "openai", "ollama",
+            "litellm", "watsonx", "rits",
+        ],
         help="LLM provider to use (default: ollama)"
     )
     parser.add_argument(
@@ -1148,29 +1647,13 @@ def main():
         help="Enable tool shortlisting: keep top-k tools per query"
     )
     parser.add_argument(
-        "--mode",
+        "--mcp-config",
         type=str,
-        default="stdio",
-        choices=["stdio", "websocket"],
-        help="MCP server connection mode: 'stdio' (container or subprocess) or 'websocket' (default: stdio)"
-    )
-    parser.add_argument(
-        "--server-url",
-        type=str,
-        default=None,
-        help="WebSocket server URL for --mode websocket (e.g. ws://localhost:8000/mcp)"
-    )
-    parser.add_argument(
-        "--subprocess-command",
-        type=str,
-        default=None,
-        help="Command for local subprocess stdio mode (e.g. python). Skips container exec."
-    )
-    parser.add_argument(
-        "--subprocess-args",
-        type=str,
-        default=None,
-        help="Space-separated args for local subprocess stdio mode (e.g. '-m apis.m3.python_tools.mcp')"
+        default=DEFAULT_MCP_CONFIG,
+        help=(
+            f"Path to MCP connection config YAML file"
+            f" (default: {DEFAULT_MCP_CONFIG})"
+        ),
     )
 
     args = parser.parse_args()
@@ -1186,19 +1669,24 @@ def main():
             sys.exit(1)
         task_cfgs[tid] = cfg
 
-    container_runtime = args.container_runtime
-
     mode = "parallel" if args.parallel and len(task_ids) > 1 else "sequential"
     print("="*60)
     print(f"Benchmark Runner ({mode}, tasks: {task_ids})")
     print("="*60)
+    print("=" * 60)
+    print("Benchmark Runner")
+    print("=" * 60)
+
+    # Load MCP connection config from YAML
+    mcp_configs = load_mcp_config(args.mcp_config)
+    cfg = mcp_configs.get(args.task_id, MCPConnectionConfig())
 
     def _make_run_task_coro(tid: int):
-        cfg = task_cfgs[tid]
-        cname = args.container_name or cfg.container_name
+        task_cfg = task_cfgs[tid]
+        cname = cfg.container_name
         return run_task(
             task_id=tid,
-            container_runtime=container_runtime,
+            container_runtime=cfg.container_runtime,
             container_name=cname,
             run_agent=args.run_agent,
             provider=args.provider,
@@ -1245,10 +1733,16 @@ def main():
     asyncio.run(_run_all())
     subprocess_args = args.subprocess_args.split() if args.subprocess_args else None
 
+        asyncio.run(list_tools_for_domains(
+            task_id=args.task_id,
+            cfg=cfg,
+            domains=args.domain,
+        ))
+        return
+
     asyncio.run(run_task(
         task_id=args.task_id,
-        container_runtime=container_runtime,
-        container_name=args.container_name,
+        cfg=cfg,
         run_agent=args.run_agent,
         provider=args.provider,
         model=args.model,
@@ -1256,11 +1750,6 @@ def main():
         output_file=args.output,
         domains=args.domain,
         top_k_tools=args.top_k_tools,
-        mode=args.mode,
-        server_url=args.server_url,
-        subprocess_command=args.subprocess_command,
-        subprocess_args=subprocess_args,
-        subprocess_env=os.environ.copy() if args.subprocess_command else None,
     ))
 
 

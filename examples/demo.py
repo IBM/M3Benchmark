@@ -186,7 +186,7 @@ async def main(
     print(f"{'='*60}\n")
 
     # Load all instances
-    with open("apis/configs/mcp_init_mapping.json") as f:
+    with open("apis/configs/mcp_tool_universe_id_mapping.json") as f:
         instances = json.load(f)
 
     # Run with single server
