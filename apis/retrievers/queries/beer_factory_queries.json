@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is The Tiger Who Came to Tea?",
+    "expected_topic": "The Tiger Who Came to Tea"
+  },
+  {
+    "question": "What role does Mary, Mary, Quite Contrary play?",
+    "expected_topic": "Mary, Mary, Quite Contrary"
+  },
+  {
+    "question": "Can you explain La Vie en rose in detail?",
+    "expected_topic": "La Vie en rose"
+  },
+  {
+    "question": "What role does Great Salt Lake play?",
+    "expected_topic": "Great Salt Lake"
+  },
+  {
+    "question": "What are the key facts about Name change?",
+    "expected_topic": "Name change"
+  },
+  {
+    "question": "Can you explain Santiago de Compostela in detail?",
+    "expected_topic": "Santiago de Compostela"
+  },
+  {
+    "question": "How does Sleep work?",
+    "expected_topic": "Sleep"
+  },
+  {
+    "question": "Why is Sir Gawain and the Green Knight important?",
+    "expected_topic": "Sir Gawain and the Green Knight"
+  },
+  {
+    "question": "Who or what is Parens patriae?",
+    "expected_topic": "Parens patriae"
+  },
+  {
+    "question": "Why is Field of Dreams important?",
+    "expected_topic": "Field of Dreams"
+  },
+  {
+    "question": "Explain Ash Wednesday.",
+    "expected_topic": "Ash Wednesday"
+  },
+  {
+    "question": "Explain Water fluoridation.",
+    "expected_topic": "Water fluoridation"
+  },
+  {
+    "question": "What are the key facts about Hurricane Harvey?",
+    "expected_topic": "Hurricane Harvey"
+  },
+  {
+    "question": "What happened with Fahrenheit 451?",
+    "expected_topic": "Fahrenheit 451"
+  },
+  {
+    "question": "How does Primary election work?",
+    "expected_topic": "Primary election"
+  },
+  {
+    "question": "Why is James Dean important?",
+    "expected_topic": "James Dean"
+  },
+  {
+    "question": "Explain Freedom of speech by country.",
+    "expected_topic": "Freedom of speech by country"
+  },
+  {
+    "question": "Tell me about Supreme Court of India.",
+    "expected_topic": "Supreme Court of India"
+  },
+  {
+    "question": "Describe Across the Universe.",
+    "expected_topic": "Across the Universe"
+  },
+  {
+    "question": "Give me a summary of Pope.",
+    "expected_topic": "Pope"
+  },
+  {
+    "question": "Describe Starbucks.",
+    "expected_topic": "Starbucks"
+  },
+  {
+    "question": "What happened with Pride and Prejudice and Zombies (film)?",
+    "expected_topic": "Pride and Prejudice and Zombies (film)"
+  },
+  {
+    "question": "Why is Second Battle of the Marne important?",
+    "expected_topic": "Second Battle of the Marne"
+  },
+  {
+    "question": "What is the significance of Cost\u2013benefit analysis?",
+    "expected_topic": "Cost\u2013benefit analysis"
+  },
+  {
+    "question": "What do you know about Sociological theory?",
+    "expected_topic": "Sociological theory"
+  },
+  {
+    "question": "Give me a summary of Fasting and abstinence in the Catholic Church.",
+    "expected_topic": "Fasting and abstinence in the Catholic Church"
+  },
+  {
+    "question": "What role does St. Croix River (Wisconsin\u2013Minnesota) play?",
+    "expected_topic": "St. Croix River (Wisconsin\u2013Minnesota)"
+  },
+  {
+    "question": "What happened with Chinese marriage?",
+    "expected_topic": "Chinese marriage"
+  },
+  {
+    "question": "What do you know about Coureur des bois?",
+    "expected_topic": "Coureur des bois"
+  },
+  {
+    "question": "Can you explain Peripheral chemoreceptors in detail?",
+    "expected_topic": "Peripheral chemoreceptors"
+  },
+  {
+    "question": "Can you explain Lighthouse of Alexandria in detail?",
+    "expected_topic": "Lighthouse of Alexandria"
+  },
+  {
+    "question": "Can you explain Negan in detail?",
+    "expected_topic": "Negan"
+  },
+  {
+    "question": "Give me a summary of Hyperinflation.",
+    "expected_topic": "Hyperinflation"
+  },
+  {
+    "question": "What happened with Exhalation?",
+    "expected_topic": "Exhalation"
+  },
+  {
+    "question": "Who or what is Ejaculatory duct?",
+    "expected_topic": "Ejaculatory duct"
+  },
+  {
+    "question": "What does this refer to: Buckfast contains 15 % alcohol in the 750 ml green - bottled UK version , and 14.",
+    "expected_topic": ""
+  },
+  {
+    "question": "The prohibition amendment allowed the Kansas Legislature to define what constituted `` intoxicating liquor .",
+    "expected_topic": ""
+  },
+  {
+    "question": "In 2013 , they opened a satellite brewery in Brevard , North Carolina , with an initial production of 40,000 barrels whi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Beer is the most common alcoholic beverage .",
+    "expected_topic": ""
+  },
+  {
+    "question": "In the 13th and 14th centuries Grand Dukes and warriors were practicing the Pagan faith as an official religion .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The largest area of Lithuanian territory became part of the Russian Empire .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The first people settled in the territory of Lithuania after the last glacial period in the 10th millennium BC : Kunda ,...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: They are the largest craft brewery ( by volume ) in the U.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: After the deaths of Jogaila and Vytautas , the Lithuanian nobility attempted to break the union between Poland and Lithu...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Baltic tribes did not maintain close cultural or political contacts with the Roman Empire , but they did maintain tr...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Polish -- Lithuanian Commonwealth was created in 1569 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: A brewpub is a pub or restaurant that brews beer on the premises .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The cherry blossom is a major tourist attraction in Germany 's Altes Land orchard region .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Oskar Blues Brewery brews eight year - round production beers , brewed in 100 and 200 barrel batches .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Ringside seats were $150 ( equivalent to $906 in 2017 ) and each man was guaranteed 2.",
+    "expected_topic": ""
+  }
+]

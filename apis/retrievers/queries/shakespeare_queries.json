@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the history of Bert and Ernie?",
+    "expected_topic": "Bert and Ernie"
+  },
+  {
+    "question": "What role does List of Liverpool F.C. records and statistics play?",
+    "expected_topic": "List of Liverpool F.C. records and statistics"
+  },
+  {
+    "question": "Give me a summary of Rapid eye movement sleep.",
+    "expected_topic": "Rapid eye movement sleep"
+  },
+  {
+    "question": "Tell me about Underworld (film series).",
+    "expected_topic": "Underworld (film series)"
+  },
+  {
+    "question": "Who or what is Harry Potter and the Goblet of Fire (film)?",
+    "expected_topic": "Harry Potter and the Goblet of Fire (film)"
+  },
+  {
+    "question": "How does Carbon dioxide in Earth's atmosphere work?",
+    "expected_topic": "Carbon dioxide in Earth's atmosphere"
+  },
+  {
+    "question": "What role does Bachelor's degree play?",
+    "expected_topic": "Bachelor's degree"
+  },
+  {
+    "question": "Explain Baja California.",
+    "expected_topic": "Baja California"
+  },
+  {
+    "question": "What do you know about Crusades?",
+    "expected_topic": "Crusades"
+  },
+  {
+    "question": "What do you know about Drinking water supply and sanitation in the United States?",
+    "expected_topic": "Drinking water supply and sanitation in the United States"
+  },
+  {
+    "question": "What role does Tokyo Godfathers play?",
+    "expected_topic": "Tokyo Godfathers"
+  },
+  {
+    "question": "Tell me about Quartz clock.",
+    "expected_topic": "Quartz clock"
+  },
+  {
+    "question": "Why is Three Witches important?",
+    "expected_topic": "Three Witches"
+  },
+  {
+    "question": "What is the significance of Lakers\u2013Clippers rivalry?",
+    "expected_topic": "Lakers\u2013Clippers rivalry"
+  },
+  {
+    "question": "How does Terror management theory work?",
+    "expected_topic": "Terror management theory"
+  },
+  {
+    "question": "Can you explain Quito in detail?",
+    "expected_topic": "Quito"
+  },
+  {
+    "question": "How does Test probe work?",
+    "expected_topic": "Test probe"
+  },
+  {
+    "question": "How does Ivy Dickens work?",
+    "expected_topic": "Ivy Dickens"
+  },
+  {
+    "question": "Explain Three-phase electric power.",
+    "expected_topic": "Three-phase electric power"
+  },
+  {
+    "question": "What is the significance of Olivia Benson?",
+    "expected_topic": "Olivia Benson"
+  },
+  {
+    "question": "Give me a summary of Jessica Jones.",
+    "expected_topic": "Jessica Jones"
+  },
+  {
+    "question": "Describe Vascular tissue.",
+    "expected_topic": "Vascular tissue"
+  },
+  {
+    "question": "Can you explain HMHS Britannic in detail?",
+    "expected_topic": "HMHS Britannic"
+  },
+  {
+    "question": "What do you know about Teresa Palmer portrayed Julie Grigio, Juliet's analogue in the 2013 zombie movie adaptation Warm Bodies, opposite Nicholas Hoult as R, the film's zombified Romeo analogue?",
+    "expected_topic": "Teresa Palmer portrayed Julie Grigio, Juliet's analogue in the 2013 zombie movie adaptation Warm Bodies, opposite Nicholas Hoult as R, the film's zombified Romeo analogue"
+  },
+  {
+    "question": "What happened with Changeup?",
+    "expected_topic": "Changeup"
+  },
+  {
+    "question": "Explain Spec Ops: The Line.",
+    "expected_topic": "Spec Ops: The Line"
+  },
+  {
+    "question": "Explain Nissan Maxima.",
+    "expected_topic": "Nissan Maxima"
+  },
+  {
+    "question": "What is the history of Armed Forces of the Philippines?",
+    "expected_topic": "Armed Forces of the Philippines"
+  },
+  {
+    "question": "What do you know about Our Casuarina Tree?",
+    "expected_topic": "Our Casuarina Tree"
+  },
+  {
+    "question": "What do you know about Recruitment in the British Army?",
+    "expected_topic": "Recruitment in the British Army"
+  },
+  {
+    "question": "Describe Race and ethnicity in the United States.",
+    "expected_topic": "Race and ethnicity in the United States"
+  },
+  {
+    "question": "What is Scooby-Doo?",
+    "expected_topic": "Scooby-Doo"
+  },
+  {
+    "question": "What is the history of Joker (character)?",
+    "expected_topic": "Joker (character)"
+  },
+  {
+    "question": "Why is Australian Army during World War II important?",
+    "expected_topic": "Australian Army during World War II"
+  },
+  {
+    "question": "Explain Jennifer Jareau.",
+    "expected_topic": "Jennifer Jareau"
+  },
+  {
+    "question": "What does this refer to: In 1554, Matteo Bandello published the second volume of his Novelle, which included his version of Giulietta e Romeo, pr...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Even Capulet tries to encourage Count Paris, a wealthy suitor, to wait a little longer before even thinking of marrying ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Mary Saunderson was the first woman to play Juliet professionally.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Mercutio loses his temper and begins fighting Tybalt himself.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Peter Brook's 1947 version was the beginning of a different style of Romeo and Juliet performances.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Throughout the century, audiences, influenced by the cinema, became less willing to accept actors distinctly older than ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Da Porto presented the narrative in close to its modern form, including the names of the lovers, the rival families of M...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Meanwhile, Benvolio talks with his cousin Romeo, Montague's son, about Romeo's recent depression.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Juliet visits Friar Laurence for help, and he offers her a potion that will put her into a deathlike coma or catalepsy f...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Scholars are divided on the role of fate in the play.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Luigi da Porto adapted the story as Giulietta e Romeo and included it in his Historia novellamente ritrovata di due Nobi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: == Juliet's age ==\nAs the story occurs, Juliet is approaching her fourteenth birthday.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: === Feminist criticism ===\nFeminist literary critics argue that the blame for the family feud lies in Verona's patriarch...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Shakespeare also uses sub-plots to offer a clearer view of the actions of the main characters.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The play is sometimes given a historical setting, enabling audiences to reflect on the underlying conflicts.",
+    "expected_topic": ""
+  }
+]

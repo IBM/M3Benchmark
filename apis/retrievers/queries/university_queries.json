@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Why is Queen's Counsel important?",
+    "expected_topic": "Queen's Counsel"
+  },
+  {
+    "question": "What role does Eastern Orthodox Church play?",
+    "expected_topic": "Eastern Orthodox Church"
+  },
+  {
+    "question": "What is Home computer?",
+    "expected_topic": "Home computer"
+  },
+  {
+    "question": "What is the history of Blinded by the Light?",
+    "expected_topic": "Blinded by the Light"
+  },
+  {
+    "question": "What is the significance of Great Chicago Fire?",
+    "expected_topic": "Great Chicago Fire"
+  },
+  {
+    "question": "How does iMac (Intel-based) work?",
+    "expected_topic": "iMac (Intel-based)"
+  },
+  {
+    "question": "Give me a summary of United States free speech exceptions.",
+    "expected_topic": "United States free speech exceptions"
+  },
+  {
+    "question": "What happened with Quechuan languages?",
+    "expected_topic": "Quechuan languages"
+  },
+  {
+    "question": "What is The Lovely Bones (film)?",
+    "expected_topic": "The Lovely Bones (film)"
+  },
+  {
+    "question": "Describe Moose.",
+    "expected_topic": "Moose"
+  },
+  {
+    "question": "Describe Female reproductive system.",
+    "expected_topic": "Female reproductive system"
+  },
+  {
+    "question": "Describe James Dean.",
+    "expected_topic": "James Dean"
+  },
+  {
+    "question": "How does Economy of England in the Middle Ages work?",
+    "expected_topic": "Economy of England in the Middle Ages"
+  },
+  {
+    "question": "What are the key facts about Negan?",
+    "expected_topic": "Negan"
+  },
+  {
+    "question": "Give me a summary of United States presidential line of succession.",
+    "expected_topic": "United States presidential line of succession"
+  },
+  {
+    "question": "Tell me about Right of self-defense in Maryland.",
+    "expected_topic": "Right of self-defense in Maryland"
+  },
+  {
+    "question": "What happened with Triangle Shirtwaist Factory fire?",
+    "expected_topic": "Triangle Shirtwaist Factory fire"
+  },
+  {
+    "question": "Describe Covering: The Hidden Assault on Our Civil Rights.",
+    "expected_topic": "Covering: The Hidden Assault on Our Civil Rights"
+  },
+  {
+    "question": "Why is One Thousand and One Nights important?",
+    "expected_topic": "One Thousand and One Nights"
+  },
+  {
+    "question": "Give me a summary of Hellenistic period.",
+    "expected_topic": "Hellenistic period"
+  },
+  {
+    "question": "What is the history of Ramayana?",
+    "expected_topic": "Ramayana"
+  },
+  {
+    "question": "What do you know about Aftermath of the Korean War?",
+    "expected_topic": "Aftermath of the Korean War"
+  },
+  {
+    "question": "Give me a summary of Return of the Jedi.",
+    "expected_topic": "Return of the Jedi"
+  },
+  {
+    "question": "What is Probability?",
+    "expected_topic": "Probability"
+  },
+  {
+    "question": "What is the significance of Saturated and unsaturated compounds?",
+    "expected_topic": "Saturated and unsaturated compounds"
+  },
+  {
+    "question": "What do you know about Sarvepalli Radhakrishnan?",
+    "expected_topic": "Sarvepalli Radhakrishnan"
+  },
+  {
+    "question": "Describe Capital asset pricing model.",
+    "expected_topic": "Capital asset pricing model"
+  },
+  {
+    "question": "Tell me about Spider web.",
+    "expected_topic": "Spider web"
+  },
+  {
+    "question": "What role does Lunar eclipse play?",
+    "expected_topic": "Lunar eclipse"
+  },
+  {
+    "question": "Can you explain The Wolfman (2010 film) in detail?",
+    "expected_topic": "The Wolfman (2010 film)"
+  },
+  {
+    "question": "What are the key facts about Factor analysis?",
+    "expected_topic": "Factor analysis"
+  },
+  {
+    "question": "What is the history of Diamond?",
+    "expected_topic": "Diamond"
+  },
+  {
+    "question": "What do you know about Siberia?",
+    "expected_topic": "Siberia"
+  },
+  {
+    "question": "Give me a summary of Nine Years' War.",
+    "expected_topic": "Nine Years' War"
+  },
+  {
+    "question": "Tell me about Santa Barbara, California.",
+    "expected_topic": "Santa Barbara, California"
+  },
+  {
+    "question": "Find information related to: Particularly notable for its high production values , the series rapidly became a commercial success in Britain and abro...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Pre-school is often the term used to refer to child care centers that care primarily for 3 and 4 - year old children .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: San Jose is served by Norman Y .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The programme takes place in a grassy , floral landscape populated by rabbits with bird calls audible in the background ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "During the 1968 presidential election , Richard Nixon campaigned on a promise to end the draft .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Tinky Winky ( played by Dave Thompson and Simon Shelton in the original series and by Jeremiah Krage in the revival seri...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The terminal has 2 international arrival gates : Gates 17 and 18 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In Mexico , President Felipe Calderon Hinojosa created a Social Program named `` Programa de Estancias Infantiles '' tha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The runway which became 12R / 30L was 4,500 feet ( 1,400 m ) until about 1962 -- Brokaw Rd was the northwest boundary of...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In 2012 the airport had 134,947 aircraft operations , average 370 per day : 60 % airline , 16 % air taxi , 23 % general ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The former General Aviation services were previously located , on the South end of what is now 30R and was , in fact , t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Teletubbies has been aired in over 120 countries in 45 different languages .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Year Presenter Award / Category Nominee Status Ref .",
+    "expected_topic": ""
+  },
+  {
+    "question": "From 1960 to 2010 San Jose State University operated a flight - simulator facility for its aviation program in buildings...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In October 1967 , Stop the Draft Week resulted in major clashes at the Oakland , California military induction center , ...",
+    "expected_topic": ""
+  }
+]

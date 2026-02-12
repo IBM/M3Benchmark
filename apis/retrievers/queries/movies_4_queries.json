@@ -1,0 +1,202 @@
+[
+  {
+    "question": "How does Water splitting work?",
+    "expected_topic": "Water splitting"
+  },
+  {
+    "question": "What do you know about Ring of Fire?",
+    "expected_topic": "Ring of Fire"
+  },
+  {
+    "question": "Give me a summary of Skeletal muscle.",
+    "expected_topic": "Skeletal muscle"
+  },
+  {
+    "question": "What role does Constitution of South Carolina play?",
+    "expected_topic": "Constitution of South Carolina"
+  },
+  {
+    "question": "What is They seek refuge in a cave but are captured by Goblins and taken to their leader, the Great Goblin. Bilbo becomes separated from the Dwarves and falls into a crevice where he meets Gollum, who accidentally drops a golden ring. Bilbo pockets the ring and confronts Gollum. They play a riddle game, wagering that if Bilbo wins, he will be shown the way out; if he loses, Gollum will eat him. Bilbo tricks Gollum and wins, but Gollum realizes his ring is missing. Chased by Gollum, Bilbo discovers the ring grants him invisibility. Instead of killing Gollum, Bilbo spares him and escapes.?",
+    "expected_topic": "They seek refuge in a cave but are captured by Goblins and taken to their leader, the Great Goblin. Bilbo becomes separated from the Dwarves and falls into a crevice where he meets Gollum, who accidentally drops a golden ring. Bilbo pockets the ring and confronts Gollum. They play a riddle game, wagering that if Bilbo wins, he will be shown the way out; if he loses, Gollum will eat him. Bilbo tricks Gollum and wins, but Gollum realizes his ring is missing. Chased by Gollum, Bilbo discovers the ring grants him invisibility. Instead of killing Gollum, Bilbo spares him and escapes."
+  },
+  {
+    "question": "What are the key facts about Washington court system?",
+    "expected_topic": "Washington court system"
+  },
+  {
+    "question": "What role does In the post-credits scene, the voodoo doll of Jack created by Blackbeard washes ashore and is picked up by Angelica, who smiles. play?",
+    "expected_topic": "In the post-credits scene, the voodoo doll of Jack created by Blackbeard washes ashore and is picked up by Angelica, who smiles."
+  },
+  {
+    "question": "What are the key facts about Ho Chi Minh City?",
+    "expected_topic": "Ho Chi Minh City"
+  },
+  {
+    "question": "What happened with Ashtray?",
+    "expected_topic": "Ashtray"
+  },
+  {
+    "question": "Can you explain The Sound of Silence in detail?",
+    "expected_topic": "The Sound of Silence"
+  },
+  {
+    "question": "What do you know about Boston Tea Party?",
+    "expected_topic": "Boston Tea Party"
+  },
+  {
+    "question": "Explain Election recount.",
+    "expected_topic": "Election recount"
+  },
+  {
+    "question": "What is the history of Tequila?",
+    "expected_topic": "Tequila"
+  },
+  {
+    "question": "What is the history of Marble Falls, Texas?",
+    "expected_topic": "Marble Falls, Texas"
+  },
+  {
+    "question": "What is the history of Blue \u00d6yster Cult?",
+    "expected_topic": "Blue \u00d6yster Cult"
+  },
+  {
+    "question": "What are the key facts about Uncle Ben?",
+    "expected_topic": "Uncle Ben"
+  },
+  {
+    "question": "How does Spratly Islands dispute work?",
+    "expected_topic": "Spratly Islands dispute"
+  },
+  {
+    "question": "What are the key facts about Wicked (musical)?",
+    "expected_topic": "Wicked (musical)"
+  },
+  {
+    "question": "What happened with Social class in the United States?",
+    "expected_topic": "Social class in the United States"
+  },
+  {
+    "question": "What role does Nick Bottom play?",
+    "expected_topic": "Nick Bottom"
+  },
+  {
+    "question": "Can you explain Small intestine in detail?",
+    "expected_topic": "Small intestine"
+  },
+  {
+    "question": "What is the significance of Carol Danvers?",
+    "expected_topic": "Carol Danvers"
+  },
+  {
+    "question": "Describe Swing Vote (2008 film).",
+    "expected_topic": "Swing Vote (2008 film)"
+  },
+  {
+    "question": "Who or what is The Devil Wears Prada (film)?",
+    "expected_topic": "The Devil Wears Prada (film)"
+  },
+  {
+    "question": "Give me a summary of Institutional review board.",
+    "expected_topic": "Institutional review board"
+  },
+  {
+    "question": "Tell me about Mr. Noodle.",
+    "expected_topic": "Mr. Noodle"
+  },
+  {
+    "question": "What is Sith?",
+    "expected_topic": "Sith"
+  },
+  {
+    "question": "Can you explain Danny Trejo in detail?",
+    "expected_topic": "Danny Trejo"
+  },
+  {
+    "question": "What are the key facts about History of democracy?",
+    "expected_topic": "History of democracy"
+  },
+  {
+    "question": "Describe List of locations in Pirates of the Caribbean.",
+    "expected_topic": "List of locations in Pirates of the Caribbean"
+  },
+  {
+    "question": "Give me a summary of Stratovolcano.",
+    "expected_topic": "Stratovolcano"
+  },
+  {
+    "question": "Can you explain Fox River (Wisconsin) in detail?",
+    "expected_topic": "Fox River (Wisconsin)"
+  },
+  {
+    "question": "What are the key facts about You can't have your cake and eat it?",
+    "expected_topic": "You can't have your cake and eat it"
+  },
+  {
+    "question": "What is the significance of I Have a Dream?",
+    "expected_topic": "I Have a Dream"
+  },
+  {
+    "question": "Why is The Great Goblin informs the Dwarves that Azog, an Orc war-chief who killed Thr\u00f3r and lost to Thorin outside of Moria, has placed a bounty on Thorin. Gandalf arrives, helps the Dwarves escape, and kills the Great Goblin. Bilbo reunites with the group and hides his new ring. The company is ambushed by Azog and takes refuge in trees. Thorin charges Azog but is injured by his Warg. Bilbo saves Thorin and confronts Azog, just as eagles summoned by Gandalf to rescue them arrive. important?",
+    "expected_topic": "The Great Goblin informs the Dwarves that Azog, an Orc war-chief who killed Thr\u00f3r and lost to Thorin outside of Moria, has placed a bounty on Thorin. Gandalf arrives, helps the Dwarves escape, and kills the Great Goblin. Bilbo reunites with the group and hides his new ring. The company is ambushed by Azog and takes refuge in trees. Thorin charges Azog but is injured by his Warg. Bilbo saves Thorin and confronts Azog, just as eagles summoned by Gandalf to rescue them arrive."
+  },
+  {
+    "question": "Often , the vast landscape becomes more than a vivid backdrop ; it becomes a character in the film .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Also known as Neo-Westerns , these films have contemporary U.",
+    "expected_topic": ""
+  },
+  {
+    "question": "The following year , he produced the biographical sports film Mary Kom starring Priyanka Chopra , which premiered at the...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Titanic suffered backlash in addition to its success.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: For his work in the Western film Unforgiven ( 1992 ) and the sports drama Million Dollar Baby ( 2004 ) , Eastwood won Ac...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: James Cameron had a fascination with shipwrecks , and , for him , the RMS Titanic was `` the Mount Everest of shipwrecks...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Titanic was the first foreign - language film to succeed in India , which has the largest movie - going audience in the ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Cameron 's inspiration for the film came from his fascination with shipwrecks ; he felt a love story interspersed with t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "After filming the underwater shots, Cameron began writing the screenplay.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: His next film , Devdas , starring Shah Rukh Khan , Aishwarya Rai and Madhuri Dixit , was Bhansali 's ode to the novel of...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In 1992 , Eastwood revisited the western genre in his film Unforgiven , a film in which he directed and starred as an ag...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Bhansali made his directorial debut with Khamoshi : The Musical ( 1996 ) , for which he received the Filmfare Critics Aw...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Outlaw Josey Wales ( 1976 ) , a western inspired by Asa Carter 's 1972 novel of the same name , has lead character J...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Meanwhile , films such as The Big Lebowski , which plucked actor Sam Elliott out of the Old West and into a Los Angeles ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: After filming the underwater shots , Cameron began writing the screenplay .",
+    "expected_topic": ""
+  }
+]

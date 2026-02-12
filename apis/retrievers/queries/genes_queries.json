@@ -1,0 +1,202 @@
+[
+  {
+    "question": "How does Christmas stocking work?",
+    "expected_topic": "Christmas stocking"
+  },
+  {
+    "question": "What is 1946 Cabinet Mission to India?",
+    "expected_topic": "1946 Cabinet Mission to India"
+  },
+  {
+    "question": "What role does Project Runway (season 16) play?",
+    "expected_topic": "Project Runway (season 16)"
+  },
+  {
+    "question": "Describe Encyclop\u00e9die.",
+    "expected_topic": "Encyclop\u00e9die"
+  },
+  {
+    "question": "What role does Nine Years' War play?",
+    "expected_topic": "Nine Years' War"
+  },
+  {
+    "question": "Give me a summary of Louis Armstrong New Orleans International Airport.",
+    "expected_topic": "Louis Armstrong New Orleans International Airport"
+  },
+  {
+    "question": "What happened with Final Fantasy VII?",
+    "expected_topic": "Final Fantasy VII"
+  },
+  {
+    "question": "Tell me about Glow stick.",
+    "expected_topic": "Glow stick"
+  },
+  {
+    "question": "Who or what is Hawaii (island)?",
+    "expected_topic": "Hawaii (island)"
+  },
+  {
+    "question": "What role does Welcome Back, Kotter play?",
+    "expected_topic": "Welcome Back, Kotter"
+  },
+  {
+    "question": "What happened with Samurai?",
+    "expected_topic": "Samurai"
+  },
+  {
+    "question": "What is First Nations?",
+    "expected_topic": "First Nations"
+  },
+  {
+    "question": "How does Star Wars work?",
+    "expected_topic": "Star Wars"
+  },
+  {
+    "question": "Why is Original Vampires (The Vampire Diaries) important?",
+    "expected_topic": "Original Vampires (The Vampire Diaries)"
+  },
+  {
+    "question": "Explain Xhosa language.",
+    "expected_topic": "Xhosa language"
+  },
+  {
+    "question": "Give me a summary of Input/output.",
+    "expected_topic": "Input/output"
+  },
+  {
+    "question": "Tell me about Mr. Bean.",
+    "expected_topic": "Mr. Bean"
+  },
+  {
+    "question": "What is the significance of Internet Explorer?",
+    "expected_topic": "Internet Explorer"
+  },
+  {
+    "question": "Can you explain Gun laws in Georgia in detail?",
+    "expected_topic": "Gun laws in Georgia"
+  },
+  {
+    "question": "Who or what is America's Got Talent?",
+    "expected_topic": "America's Got Talent"
+  },
+  {
+    "question": "How does Lunar eclipse work?",
+    "expected_topic": "Lunar eclipse"
+  },
+  {
+    "question": "What happened with Effects of Hurricane Wilma in Florida?",
+    "expected_topic": "Effects of Hurricane Wilma in Florida"
+  },
+  {
+    "question": "How does Pony Express work?",
+    "expected_topic": "Pony Express"
+  },
+  {
+    "question": "Describe Seven Dwarfs.",
+    "expected_topic": "Seven Dwarfs"
+  },
+  {
+    "question": "What role does Islamic architecture play?",
+    "expected_topic": "Islamic architecture"
+  },
+  {
+    "question": "How does America's Cup work?",
+    "expected_topic": "America's Cup"
+  },
+  {
+    "question": "What is History of the Islamic Republic of Iran?",
+    "expected_topic": "History of the Islamic Republic of Iran"
+  },
+  {
+    "question": "What role does April 2015 Nepal earthquake play?",
+    "expected_topic": "April 2015 Nepal earthquake"
+  },
+  {
+    "question": "What is the history of Bogeyman?",
+    "expected_topic": "Bogeyman"
+  },
+  {
+    "question": "Can you explain Borderlands/La Frontera: The New Mestiza in detail?",
+    "expected_topic": "Borderlands/La Frontera: The New Mestiza"
+  },
+  {
+    "question": "Explain Monongahela River.",
+    "expected_topic": "Monongahela River"
+  },
+  {
+    "question": "How does Joseph McCarthy work?",
+    "expected_topic": "Joseph McCarthy"
+  },
+  {
+    "question": "Why is Kent State shootings important?",
+    "expected_topic": "Kent State shootings"
+  },
+  {
+    "question": "Give me a summary of Perry Expedition.",
+    "expected_topic": "Perry Expedition"
+  },
+  {
+    "question": "Tell me about Computer mouse.",
+    "expected_topic": "Computer mouse"
+  },
+  {
+    "question": "What does this refer to: Robbie Pratt ( Nick Gehlfuss ; season 4 ) is Mike 's alcoholic brother .",
+    "expected_topic": ""
+  },
+  {
+    "question": "This section 's plot summary may be too long or excessively detailed .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Historically , the parades were unofficial events and sometimes had an air of menace .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The ecumenical councils followed a democratic form , with each bishop having one vote .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: On his return from campaigns in Greece , the general Sulla brought back what is probably the most well - known element o...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Depending on the species , spermatozoa can fertilize ova externally or internally .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The military recycles some metals .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Several art museums , such as the San Diego Museum of Art , the Timken Gallery , the Mingei International Museum featuri...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Traditionally , the flag may be decorated with golden fringe surrounding the perimeter of the flag as long as it does no...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Leopard Temporal range : Late Pliocene or Early Pleistocene to recent African leopard ( Panthera pardus pardus ) Conserv...",
+    "expected_topic": ""
+  },
+  {
+    "question": "When taking judicial office in a superior court , a barrister loses the title of Queen 's Counsel and only regains it if...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In 1983 the High Court of Australia defined an Aboriginal or Torres Strait Islander as `` a person of Aboriginal or Torr...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In 1994 , Governor Pete Wilson vetoed a plan by the legislature to abolish the Franchise Tax Board and give its responsi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Moving to a monocoque body usually has a negative impact on towing capacity .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Expansion Pak ( \u62e1\u5f35 \u30d1\u30c3\u30af , Kakuch\u014d Pakku ) consists of 4 MB ( megabytes ) of random access memory ( RAM ) -- which is ...",
+    "expected_topic": ""
+  }
+]

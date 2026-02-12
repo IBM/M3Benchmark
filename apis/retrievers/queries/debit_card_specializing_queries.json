@@ -1,0 +1,202 @@
+[
+  {
+    "question": "How does Legal working age work?",
+    "expected_topic": "Legal working age"
+  },
+  {
+    "question": "What happened with List of Attack on Titan episodes?",
+    "expected_topic": "List of Attack on Titan episodes"
+  },
+  {
+    "question": "Why is Aztec religion important?",
+    "expected_topic": "Aztec religion"
+  },
+  {
+    "question": "Describe Metrication in the United States.",
+    "expected_topic": "Metrication in the United States"
+  },
+  {
+    "question": "What is the history of Nuss procedure?",
+    "expected_topic": "Nuss procedure"
+  },
+  {
+    "question": "What role does Vaishnavism play?",
+    "expected_topic": "Vaishnavism"
+  },
+  {
+    "question": "Who or what is Titanic (1997 film)?",
+    "expected_topic": "Titanic (1997 film)"
+  },
+  {
+    "question": "Can you explain The Mother (How I Met Your Mother) in detail?",
+    "expected_topic": "The Mother (How I Met Your Mother)"
+  },
+  {
+    "question": "What role does Las Posadas play?",
+    "expected_topic": "Las Posadas"
+  },
+  {
+    "question": "What do you know about Cellular respiration?",
+    "expected_topic": "Cellular respiration"
+  },
+  {
+    "question": "What happened with Pete's Dragon (2016 film)?",
+    "expected_topic": "Pete's Dragon (2016 film)"
+  },
+  {
+    "question": "Describe Telephone exchange.",
+    "expected_topic": "Telephone exchange"
+  },
+  {
+    "question": "Describe United States budget process.",
+    "expected_topic": "United States budget process"
+  },
+  {
+    "question": "What is the significance of Constellation?",
+    "expected_topic": "Constellation"
+  },
+  {
+    "question": "What happened with Bald eagle?",
+    "expected_topic": "Bald eagle"
+  },
+  {
+    "question": "Tell me about John Steinbeck.",
+    "expected_topic": "John Steinbeck"
+  },
+  {
+    "question": "Explain Acronym.",
+    "expected_topic": "Acronym"
+  },
+  {
+    "question": "What is the significance of Alpha hydroxy acid?",
+    "expected_topic": "Alpha hydroxy acid"
+  },
+  {
+    "question": "Who or what is High-voltage direct current?",
+    "expected_topic": "High-voltage direct current"
+  },
+  {
+    "question": "What is Jenny Humphrey?",
+    "expected_topic": "Jenny Humphrey"
+  },
+  {
+    "question": "What role does Magnetic field play?",
+    "expected_topic": "Magnetic field"
+  },
+  {
+    "question": "Give me a summary of Chin-up.",
+    "expected_topic": "Chin-up"
+  },
+  {
+    "question": "What role does Selena Gomez play?",
+    "expected_topic": "Selena Gomez"
+  },
+  {
+    "question": "Can you explain Gerontocracy in detail?",
+    "expected_topic": "Gerontocracy"
+  },
+  {
+    "question": "What is the significance of Arctic fox?",
+    "expected_topic": "Arctic fox"
+  },
+  {
+    "question": "Who or what is Ryan Toby?",
+    "expected_topic": "Ryan Toby"
+  },
+  {
+    "question": "What do you know about Truancy?",
+    "expected_topic": "Truancy"
+  },
+  {
+    "question": "Describe Star Wars.",
+    "expected_topic": "Star Wars"
+  },
+  {
+    "question": "Describe Exploration of Mars.",
+    "expected_topic": "Exploration of Mars"
+  },
+  {
+    "question": "Tell me about Free clinic.",
+    "expected_topic": "Free clinic"
+  },
+  {
+    "question": "Describe Portia (The Merchant of Venice).",
+    "expected_topic": "Portia (The Merchant of Venice)"
+  },
+  {
+    "question": "What do you know about Elizabethan government?",
+    "expected_topic": "Elizabethan government"
+  },
+  {
+    "question": "Give me a summary of Mass Effect: Andromeda.",
+    "expected_topic": "Mass Effect: Andromeda"
+  },
+  {
+    "question": "What happened with Inventory turnover?",
+    "expected_topic": "Inventory turnover"
+  },
+  {
+    "question": "What role does List of Dr. Quinn, Medicine Woman episodes play?",
+    "expected_topic": "List of Dr. Quinn, Medicine Woman episodes"
+  },
+  {
+    "question": "What does this refer to: A 2012 report by the Canadian Centre for Policy Alternatives demonstrated that the top 100 Canadian CEOs were paid an av...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The role of a bail justice is to hear bail applications ( under the Bail Act 1977 ) and to hear applications for interim...",
+    "expected_topic": ""
+  },
+  {
+    "question": "On March 24 , 2008 , Aquino 's family announced that the former President had been diagnosed with colorectal cancer .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: so that they form an n \u00d7 n symmetric matrix .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Neoplasia of WBCs can be benign but is often malignant .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Antigonid Macedonian kings continued to expand and equip the navy .",
+    "expected_topic": ""
+  },
+  {
+    "question": "If we take another sample of 25 cups , we could easily expect to find mean values like 250.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The 1639 transit of Venus was accurately predicted by Jeremiah Horrocks and observed by him and his friend , William Cra...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Following the mission , there was confusion over the identification of the plane .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Practice Statement ( 1966 ) 3 All ER 77 was a statement made in the House of Lords by Lord Gardiner LC on July 26 , ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Peripheral chemoreceptors were identified as necessary to breathing regulation much sooner than their mechanisms for acq...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Reuleaux 's original motivation for studying the Reuleaux triangle was as a counterexample , showing that three single -...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Parliament is bicameral , with two houses -- the House of Commons and the House of Lords ; the monarch formally forms a ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Schwartz uses the `` Unlimited '' theme as the second major motif running through the score .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The application of steam power to the industrial processes of printing supported a massive expansion of newspaper and po...",
+    "expected_topic": ""
+  }
+]

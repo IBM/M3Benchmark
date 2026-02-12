@@ -17,22 +17,69 @@ ChromaDB (chroma_data/)  +  Granite Embeddings
 
 ---
 
-## Quick Start (Docker)
+## Quick Test
+
+Get from zero to running queries in 4 steps.
+
+### Step 1 — Install huggingface_hub and download data
 
 ```bash
-cd apis/retrievers
-
-# 1. Download ChromaDB data from HuggingFace
 pip install huggingface_hub
+cd apis/retrievers
 python hf_sync.py download --repo anupamamurthi/retriever-chroma-data
+```
 
-# 2. Start the container
+This downloads `chroma_data/` (~2GB, pre-indexed ChromaDB collections) and `queries/` (sample test queries) into the current directory.
+
+### Step 2 — Start the container
+
+```bash
+# Using docker compose
 docker compose up -d
 
-# 3. Verify it's healthy
-docker compose logs -f
-docker compose ps
+# Or using docker run directly (pulls from Docker Hub)
+docker run -d \
+  --name retriever-mcp-server \
+  -p 8001:8001 \
+  -e PRELOAD_COLLECTIONS=true \
+  -v ./chroma_data:/app/chroma_data \
+  -v ./queries:/app/queries:ro \
+  -i -t \
+  docker.io/amurthi44g1wd/retriever-mcp:latest
+```
+
+### Step 3 — Verify it's running
+
+```bash
+docker ps
 curl http://localhost:8001/health
+curl http://localhost:8001/domains
+```
+
+### Step 4 — Run test queries
+
+```bash
+# Direct HTTP to FastAPI
+python test_queries.py address --max-queries 5
+
+# Via MCP server inside the container
+python test_queries.py --mode docker address --max-queries 5
+
+# Multiple domains
+python test_queries.py --mode docker address hockey --max-queries 3
+
+# All domains
+python test_queries.py --mode docker --max-queries 3
+```
+
+### Step 5 — Stop the container
+
+```bash
+# If started with docker compose
+docker compose down
+
+# If started with docker run
+docker stop retriever-mcp-server && docker rm retriever-mcp-server
 ```
 
 ---

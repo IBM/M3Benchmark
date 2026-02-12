@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What role does Distributor play?",
+    "expected_topic": "Distributor"
+  },
+  {
+    "question": "What happened with Environmental impact of the Deepwater Horizon oil spill?",
+    "expected_topic": "Environmental impact of the Deepwater Horizon oil spill"
+  },
+  {
+    "question": "What is the history of Sensitivity and specificity?",
+    "expected_topic": "Sensitivity and specificity"
+  },
+  {
+    "question": "What do you know about Bill (law)?",
+    "expected_topic": "Bill (law)"
+  },
+  {
+    "question": "Explain Celtic Britons.",
+    "expected_topic": "Celtic Britons"
+  },
+  {
+    "question": "Give me a summary of Sabbath in Christianity.",
+    "expected_topic": "Sabbath in Christianity"
+  },
+  {
+    "question": "What is the significance of Pride & Prejudice (2005 film)?",
+    "expected_topic": "Pride & Prejudice (2005 film)"
+  },
+  {
+    "question": "What is Astronomical spectroscopy?",
+    "expected_topic": "Astronomical spectroscopy"
+  },
+  {
+    "question": "Can you explain H II region in detail?",
+    "expected_topic": "H II region"
+  },
+  {
+    "question": "What is the history of Economic history of the Netherlands (1500\u20131815)?",
+    "expected_topic": "Economic history of the Netherlands (1500\u20131815)"
+  },
+  {
+    "question": "What do you know about IronPython?",
+    "expected_topic": "IronPython"
+  },
+  {
+    "question": "What happened with Allegory of the Cave?",
+    "expected_topic": "Allegory of the Cave"
+  },
+  {
+    "question": "What is the significance of Sanctification?",
+    "expected_topic": "Sanctification"
+  },
+  {
+    "question": "What is the significance of Artemis?",
+    "expected_topic": "Artemis"
+  },
+  {
+    "question": "What do you know about Yogi Bear?",
+    "expected_topic": "Yogi Bear"
+  },
+  {
+    "question": "What is the significance of A Man and a Woman?",
+    "expected_topic": "A Man and a Woman"
+  },
+  {
+    "question": "What role does Deion Sanders play?",
+    "expected_topic": "Deion Sanders"
+  },
+  {
+    "question": "Tell me about History of the Seventh-day Adventist Church.",
+    "expected_topic": "History of the Seventh-day Adventist Church"
+  },
+  {
+    "question": "Give me a summary of Franklin D. Roosevelt.",
+    "expected_topic": "Franklin D. Roosevelt"
+  },
+  {
+    "question": "What is the significance of Waikato River?",
+    "expected_topic": "Waikato River"
+  },
+  {
+    "question": "Tell me about List of Diary of a Wimpy Kid characters.",
+    "expected_topic": "List of Diary of a Wimpy Kid characters"
+  },
+  {
+    "question": "How does Ford Super Duty work?",
+    "expected_topic": "Ford Super Duty"
+  },
+  {
+    "question": "What role does List of The Mortal Instruments characters play?",
+    "expected_topic": "List of The Mortal Instruments characters"
+  },
+  {
+    "question": "Why is Cleveland Browns important?",
+    "expected_topic": "Cleveland Browns"
+  },
+  {
+    "question": "Explain Lectionary.",
+    "expected_topic": "Lectionary"
+  },
+  {
+    "question": "How does Government of Australia work?",
+    "expected_topic": "Government of Australia"
+  },
+  {
+    "question": "How does Around the World in Eighty Days work?",
+    "expected_topic": "Around the World in Eighty Days"
+  },
+  {
+    "question": "How does Virus work?",
+    "expected_topic": "Virus"
+  },
+  {
+    "question": "How does The Mask of Zorro work?",
+    "expected_topic": "The Mask of Zorro"
+  },
+  {
+    "question": "What do you know about Sydney Royal Easter Show?",
+    "expected_topic": "Sydney Royal Easter Show"
+  },
+  {
+    "question": "What role does Monday Night Football play?",
+    "expected_topic": "Monday Night Football"
+  },
+  {
+    "question": "How does Star Wars work?",
+    "expected_topic": "Star Wars"
+  },
+  {
+    "question": "Explain Speed of sound.",
+    "expected_topic": "Speed of sound"
+  },
+  {
+    "question": "Who or what is Amazon rainforest?",
+    "expected_topic": "Amazon rainforest"
+  },
+  {
+    "question": "What is the significance of Separation of church and state in the United States?",
+    "expected_topic": "Separation of church and state in the United States"
+  },
+  {
+    "question": "Kinsey and Wilson also noted that the cast and crew could neither `` confirm nor deny '' but were `` hoping '' for a ret...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Easter Island is a volcanic high island , consisting mainly of three extinct coalesced volcanoes : Terevaka ( altitude 5...",
+    "expected_topic": ""
+  },
+  {
+    "question": "These events ended the king 's independence and signified the change of power and reforms about to overtake France .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Delaware River is named in honor of Thomas West , 3rd Baron De La Warr ( 1577 -- 1618 ) , an English nobleman and th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Lorentz force is always perpendicular to both the velocity of the particle and the magnetic field that created it .",
+    "expected_topic": ""
+  },
+  {
+    "question": "A matter of first impression ( known as primae impressionis in Latin ) is a legal case in which there is no binding auth...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The fifth season was released on DVD in region 1 on April 5 , 2011 , and in region 2 on August 12 , 2013 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Since the Zapatistas ' first uprising , the newspaper La Jornada has continuously covered them .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Cumulus clouds are a genus of free - convective low - level cloud along with the related limited - convective cloud stra...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Pittsburgh citizens helped to defuse the threat by banishing three men whose intercepted letters had given offense to th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Jonathan Banks as Rick Dicker , a government agent responsible for helping the Parrs stay undercover and unremarkable .",
+    "expected_topic": ""
+  },
+  {
+    "question": "In the ancient Levant , doves were used as symbols for the Canaanite mother goddess Asherah .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The news criteria pressure journalists and news outlets to frequently publish new stories , in order to stay current on ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Newfoundland was ruled as a royal colony in 1933 -- 49 , with a governor appointed by London who made the decisions .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: On January 29 , 2013 , ESA scientists reported that the ionosphere of the planet Venus streams outwards in a manner simi...",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What are the key facts about Macedonia (terminology)?",
+    "expected_topic": "Macedonia (terminology)"
+  },
+  {
+    "question": "What happened with Van de Graaff generator?",
+    "expected_topic": "Van de Graaff generator"
+  },
+  {
+    "question": "What is Anderson then had 40 saves in his next game, also a shutout victory, as Florida defeated the Boston Bruins 1\u20130 in overtime on March 4, 2008. That also set an NHL record for most saves in consecutive shutouts, with 93. Anderson's record of 53 saves in a single shutout, however, was broken when Mike Smith of the Phoenix Coyotes made a 54-save shutout against the Columbus Blue Jackets on April 3, 2012.?",
+    "expected_topic": "Anderson then had 40 saves in his next game, also a shutout victory, as Florida defeated the Boston Bruins 1\u20130 in overtime on March 4, 2008. That also set an NHL record for most saves in consecutive shutouts, with 93. Anderson's record of 53 saves in a single shutout, however, was broken when Mike Smith of the Phoenix Coyotes made a 54-save shutout against the Columbus Blue Jackets on April 3, 2012."
+  },
+  {
+    "question": "What is the history of Stem cell?",
+    "expected_topic": "Stem cell"
+  },
+  {
+    "question": "Describe Jacques-Louis David.",
+    "expected_topic": "Jacques-Louis David"
+  },
+  {
+    "question": "What role does Education reform play?",
+    "expected_topic": "Education reform"
+  },
+  {
+    "question": "Give me a summary of Mr. Bean.",
+    "expected_topic": "Mr. Bean"
+  },
+  {
+    "question": "Can you explain Mary Had a Little Lamb in detail?",
+    "expected_topic": "Mary Had a Little Lamb"
+  },
+  {
+    "question": "What happened with Cherry blossom?",
+    "expected_topic": "Cherry blossom"
+  },
+  {
+    "question": "How does Distributor work?",
+    "expected_topic": "Distributor"
+  },
+  {
+    "question": "Tell me about Peninsular War.",
+    "expected_topic": "Peninsular War"
+  },
+  {
+    "question": "What is Curling?",
+    "expected_topic": "Curling"
+  },
+  {
+    "question": "What is Direct memory access?",
+    "expected_topic": "Direct memory access"
+  },
+  {
+    "question": "Tell me about Angel Batista.",
+    "expected_topic": "Angel Batista"
+  },
+  {
+    "question": "What is Video poker?",
+    "expected_topic": "Video poker"
+  },
+  {
+    "question": "Why is Negan important?",
+    "expected_topic": "Negan"
+  },
+  {
+    "question": "What are the key facts about Movable type?",
+    "expected_topic": "Movable type"
+  },
+  {
+    "question": "What is the significance of Spider?",
+    "expected_topic": "Spider"
+  },
+  {
+    "question": "Tell me about Democratic Republic of the Congo.",
+    "expected_topic": "Democratic Republic of the Congo"
+  },
+  {
+    "question": "What role does Kumari (goddess) play?",
+    "expected_topic": "Kumari (goddess)"
+  },
+  {
+    "question": "What role does New York gubernatorial election, 2018 play?",
+    "expected_topic": "New York gubernatorial election, 2018"
+  },
+  {
+    "question": "How does Archie Marries Veronica/Archie Marries Betty work?",
+    "expected_topic": "Archie Marries Veronica/Archie Marries Betty"
+  },
+  {
+    "question": "Describe Upon retirement, Plante took a job with Molson as a sales representative but remained active in the NHL. In 1965, Scotty Bowman asked Plante to play for the Montreal Jr. Canadiens in a game against the Soviet National Team. Honoured to represent his country, Plante agreed, and after receiving permission from both the Rangers (who owned his rights) and Molson, he began practising. The Canadiens won 2\u20131, and Plante was named first star of the game..",
+    "expected_topic": "Upon retirement, Plante took a job with Molson as a sales representative but remained active in the NHL. In 1965, Scotty Bowman asked Plante to play for the Montreal Jr. Canadiens in a game against the Soviet National Team. Honoured to represent his country, Plante agreed, and after receiving permission from both the Rangers (who owned his rights) and Molson, he began practising. The Canadiens won 2\u20131, and Plante was named first star of the game."
+  },
+  {
+    "question": "Give me a summary of Aragorn.",
+    "expected_topic": "Aragorn"
+  },
+  {
+    "question": "Explain French Polynesia.",
+    "expected_topic": "French Polynesia"
+  },
+  {
+    "question": "Who or what is 1935 Labor Day hurricane?",
+    "expected_topic": "1935 Labor Day hurricane"
+  },
+  {
+    "question": "Give me a summary of Jurisdiction stripping.",
+    "expected_topic": "Jurisdiction stripping"
+  },
+  {
+    "question": "What is the history of The Walt Disney Company?",
+    "expected_topic": "The Walt Disney Company"
+  },
+  {
+    "question": "Can you explain With minor changes to the text, number font and pant striping, the uniforms were used until the 1997\u201398 season. in detail?",
+    "expected_topic": "With minor changes to the text, number font and pant striping, the uniforms were used until the 1997\u201398 season."
+  },
+  {
+    "question": "Explain Benedict's reagent.",
+    "expected_topic": "Benedict's reagent"
+  },
+  {
+    "question": "What happened with Frederica Wilson?",
+    "expected_topic": "Frederica Wilson"
+  },
+  {
+    "question": "Tell me about Bachelor's degree.",
+    "expected_topic": "Bachelor's degree"
+  },
+  {
+    "question": "What happened with Great Migration (African American)?",
+    "expected_topic": "Great Migration (African American)"
+  },
+  {
+    "question": "What is Police dog?",
+    "expected_topic": "Police dog"
+  },
+  {
+    "question": "What role does Scientific management play?",
+    "expected_topic": "Scientific management"
+  },
+  {
+    "question": "Since its inception , the award has been given to 31 different players .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Jordan was freshly motivated by the playoff defeat , and he trained aggressively for the 1995 -- 96 season .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: There are many traditions associated with the Stanley Cup .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: If a player has been on an active major league roster for ten full seasons and on one team for the last five , he may no...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Bill Russell NBA Finals Most Valuable Player Award ( formerly known as the NBA Finals Most Valuable Player Award ) i...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Pistons successfully defended their title in 1990 , despite losing Mahorn to the Minnesota Timberwolves in the expan...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Currently , a player must have played at least half of the regular season games ( usually 41 in current league format ) ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Once a player has been placed on a team 's 40 - man roster , a team has 3 option years on that player .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Jordan and the Bulls continued their dominance in the 1991 -- 92 season , establishing a 67 -- 15 record , topping their...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The coffee break originated in the late 19th century in Stoughton , Wisconsin , with the wives of Norwegian immigrants .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Bulls entered the 1989 -- 90 season as a team on the rise , with their core group of Jordan and young improving play...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: His contract has expired with at least six years of service time on a major league 25 - man roster or disabled list , OR...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: is without a contract for the next season , AND has been tendered a contract offer by his current team by the tender dea...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In the 1990 -- 91 season , Jordan won his second MVP award after averaging 31.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: A coffee break in the United States and elsewhere is a short mid-morning rest period granted to employees in business an...",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What do you know about The Devil Wears Prada (film)?",
+    "expected_topic": "The Devil Wears Prada (film)"
+  },
+  {
+    "question": "What is Little Red Riding Hood?",
+    "expected_topic": "Little Red Riding Hood"
+  },
+  {
+    "question": "What is Parameter (computer programming)?",
+    "expected_topic": "Parameter (computer programming)"
+  },
+  {
+    "question": "What is the history of Lake District?",
+    "expected_topic": "Lake District"
+  },
+  {
+    "question": "Who or what is United Church of Christ?",
+    "expected_topic": "United Church of Christ"
+  },
+  {
+    "question": "What is Charles Dickens?",
+    "expected_topic": "Charles Dickens"
+  },
+  {
+    "question": "Describe Gun laws in Wisconsin.",
+    "expected_topic": "Gun laws in Wisconsin"
+  },
+  {
+    "question": "What is the significance of Cluedo?",
+    "expected_topic": "Cluedo"
+  },
+  {
+    "question": "Give me a summary of Appointment and confirmation to the Supreme Court of the United States.",
+    "expected_topic": "Appointment and confirmation to the Supreme Court of the United States"
+  },
+  {
+    "question": "Describe Ancient Egyptian deities.",
+    "expected_topic": "Ancient Egyptian deities"
+  },
+  {
+    "question": "What happened with Natural gas?",
+    "expected_topic": "Natural gas"
+  },
+  {
+    "question": "Explain Rwandan genocide.",
+    "expected_topic": "Rwandan genocide"
+  },
+  {
+    "question": "What is the significance of Magnetic field?",
+    "expected_topic": "Magnetic field"
+  },
+  {
+    "question": "Explain Magnetosphere of Jupiter.",
+    "expected_topic": "Magnetosphere of Jupiter"
+  },
+  {
+    "question": "Explain Command-line interface.",
+    "expected_topic": "Command-line interface"
+  },
+  {
+    "question": "How does Gun laws in Texas work?",
+    "expected_topic": "Gun laws in Texas"
+  },
+  {
+    "question": "How does History of Colombia work?",
+    "expected_topic": "History of Colombia"
+  },
+  {
+    "question": "How does Beauty and the Beast work?",
+    "expected_topic": "Beauty and the Beast"
+  },
+  {
+    "question": "Tell me about California High-Speed Rail.",
+    "expected_topic": "California High-Speed Rail"
+  },
+  {
+    "question": "Who or what is Stamp Act 1765?",
+    "expected_topic": "Stamp Act 1765"
+  },
+  {
+    "question": "What is the significance of Bird nest?",
+    "expected_topic": "Bird nest"
+  },
+  {
+    "question": "Describe Australia\u2013Canada relations.",
+    "expected_topic": "Australia\u2013Canada relations"
+  },
+  {
+    "question": "Tell me about Kim Jong-un.",
+    "expected_topic": "Kim Jong-un"
+  },
+  {
+    "question": "What is Three card brag?",
+    "expected_topic": "Three card brag"
+  },
+  {
+    "question": "What are the key facts about List of The Last Ship characters?",
+    "expected_topic": "List of The Last Ship characters"
+  },
+  {
+    "question": "Describe Gunfight at the O.K. Corral.",
+    "expected_topic": "Gunfight at the O.K. Corral"
+  },
+  {
+    "question": "What is the significance of Medieval theatre?",
+    "expected_topic": "Medieval theatre"
+  },
+  {
+    "question": "What is the significance of Middle ear?",
+    "expected_topic": "Middle ear"
+  },
+  {
+    "question": "Tell me about BIOS.",
+    "expected_topic": "BIOS"
+  },
+  {
+    "question": "Explain Air Jordan.",
+    "expected_topic": "Air Jordan"
+  },
+  {
+    "question": "Tell me about Disk storage.",
+    "expected_topic": "Disk storage"
+  },
+  {
+    "question": "What is the history of Oliver Twist?",
+    "expected_topic": "Oliver Twist"
+  },
+  {
+    "question": "What is List of Xbox 360 games compatible with Xbox One?",
+    "expected_topic": "List of Xbox 360 games compatible with Xbox One"
+  },
+  {
+    "question": "Can you explain Evolution of fish in detail?",
+    "expected_topic": "Evolution of fish"
+  },
+  {
+    "question": "Explain Cavalier King Charles Spaniel.",
+    "expected_topic": "Cavalier King Charles Spaniel"
+  },
+  {
+    "question": "Find information related to: Such weapons are typically aimed at an opponent 's feet ; this ensures that the impact point is near enough for splash d...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Mora became an assistant coach at his alma mater in 1960 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Examples include branching dialogue tree s in an RPG , or detailed interacting systems in a simulation or strategy game ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: walking simulator A derogatory term sometimes used to classify exploration games , which generally involve exploring an ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: DRM See digital rights management .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: 1 - up An object that gives the player an extra life ( or try ) in games where players have a number of chances to compl...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The decision to return the scholarships was the result of a unanimous decision of the executive committee of the NCAA fo...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Tidus from Final Fantasy X , Doomguy from the Doom series , and Commander Shepard from the Mass Effect series are all ``...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Having committed suicide in ice water , Tim has cautiously preserved his vital organs - his heart in particular which is...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Some systems allow two or more mice to be used at once as input devices .",
+    "expected_topic": ""
+  },
+  {
+    "question": "handheld console A portable gaming console .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: balance Aspects of a multi-player game that keep it fair for all players .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The term has been associated with ubiquitous games , augmented and mixed - reality games , mobile games , alternate - re...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Some video games simulate the playing of sports.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: teamkill The killing of teammates through destruction or damage done to allies , such as through deliberate shooting of ...",
+    "expected_topic": ""
+  }
+]

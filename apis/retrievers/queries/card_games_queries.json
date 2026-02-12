@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Explain Macedonia (ancient kingdom).",
+    "expected_topic": "Macedonia (ancient kingdom)"
+  },
+  {
+    "question": "Give me a summary of American Equal Rights Association.",
+    "expected_topic": "American Equal Rights Association"
+  },
+  {
+    "question": "Who or what is The Good Cop?",
+    "expected_topic": "The Good Cop"
+  },
+  {
+    "question": "Explain Glasgow School of Art.",
+    "expected_topic": "Glasgow School of Art"
+  },
+  {
+    "question": "What is the significance of New Mexico?",
+    "expected_topic": "New Mexico"
+  },
+  {
+    "question": "Tell me about Time.",
+    "expected_topic": "Time"
+  },
+  {
+    "question": "Why is Lion important?",
+    "expected_topic": "Lion"
+  },
+  {
+    "question": "What is the significance of Sovereign wealth fund?",
+    "expected_topic": "Sovereign wealth fund"
+  },
+  {
+    "question": "What happened with Greg Heffley?",
+    "expected_topic": "Greg Heffley"
+  },
+  {
+    "question": "Why is Telephone number important?",
+    "expected_topic": "Telephone number"
+  },
+  {
+    "question": "What is the significance of Anterior cruciate ligament?",
+    "expected_topic": "Anterior cruciate ligament"
+  },
+  {
+    "question": "What are the key facts about Gone Girl (The Vampire Diaries)?",
+    "expected_topic": "Gone Girl (The Vampire Diaries)"
+  },
+  {
+    "question": "What is Exhalation?",
+    "expected_topic": "Exhalation"
+  },
+  {
+    "question": "What do you know about Gemma (botany)?",
+    "expected_topic": "Gemma (botany)"
+  },
+  {
+    "question": "Who or what is Student Nonviolent Coordinating Committee?",
+    "expected_topic": "Student Nonviolent Coordinating Committee"
+  },
+  {
+    "question": "What role does Mississippi River play?",
+    "expected_topic": "Mississippi River"
+  },
+  {
+    "question": "What is Great Salt Lake?",
+    "expected_topic": "Great Salt Lake"
+  },
+  {
+    "question": "What is the history of Kyrie Irving?",
+    "expected_topic": "Kyrie Irving"
+  },
+  {
+    "question": "Explain Santa Claus.",
+    "expected_topic": "Santa Claus"
+  },
+  {
+    "question": "What happened with King Arthur: Legend of the Sword?",
+    "expected_topic": "King Arthur: Legend of the Sword"
+  },
+  {
+    "question": "Give me a summary of Ryukyu Islands.",
+    "expected_topic": "Ryukyu Islands"
+  },
+  {
+    "question": "What is the history of APA Ethics Code?",
+    "expected_topic": "APA Ethics Code"
+  },
+  {
+    "question": "What is Jorah Mormont?",
+    "expected_topic": "Jorah Mormont"
+  },
+  {
+    "question": "What are the key facts about Elsa (Frozen)?",
+    "expected_topic": "Elsa (Frozen)"
+  },
+  {
+    "question": "What is the history of Kenya?",
+    "expected_topic": "Kenya"
+  },
+  {
+    "question": "What do you know about Galentine's Day?",
+    "expected_topic": "Galentine's Day"
+  },
+  {
+    "question": "What is the history of My Princess?",
+    "expected_topic": "My Princess"
+  },
+  {
+    "question": "What do you know about Sickle cell disease?",
+    "expected_topic": "Sickle cell disease"
+  },
+  {
+    "question": "Can you explain Massiah v. United States in detail?",
+    "expected_topic": "Massiah v. United States"
+  },
+  {
+    "question": "Give me a summary of William Horman.",
+    "expected_topic": "William Horman"
+  },
+  {
+    "question": "What is the history of Early world maps?",
+    "expected_topic": "Early world maps"
+  },
+  {
+    "question": "What happened with Trafficking of children?",
+    "expected_topic": "Trafficking of children"
+  },
+  {
+    "question": "Can you explain Atmospheric pressure in detail?",
+    "expected_topic": "Atmospheric pressure"
+  },
+  {
+    "question": "What are the key facts about Cradle of civilization?",
+    "expected_topic": "Cradle of civilization"
+  },
+  {
+    "question": "Why is Battle of Fort Sumter important?",
+    "expected_topic": "Battle of Fort Sumter"
+  },
+  {
+    "question": "Find information related to: Mathematics - The emphasis for learning mathematics is that all students can learn and need to lean mathematics.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: It is admitted that the former gentleman ( Hayne ) is injudiciously pitted against Clay and Webster and , nullification ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Secretary of the Navy , James Forrestal , had decided the previous night that he wanted to go ashore and witness the...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Upper Deck has changed its practice of using materials certified as `` Worn '' by the player depicted on the front of th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In the same way , in higher dimensions one may define generalized cross products by raising indices of the n - dimension...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Between 1 July 1998 and 30 June 1999 , fisheries landed 119,898 tonnes , of which 85 % consisted of krill and 14 % of Pa...",
+    "expected_topic": ""
+  },
+  {
+    "question": "There was also considerable cultural influence exerted by Gaul on Rome , particularly in military matters and horsemansh...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Advertisements begin to appear on league uniforms starting this season .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Whiskey Point Pennsylvania Historical Marker signification Location Main Street between First Street & Park Avenue Monon...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Shortly before the introduction of the system , French regions were asked which symbol they wanted to represent them on ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The song is set in signature common time .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Admiral Konstantin Nikolajewitsch Ruskov ( Russian : \u041a\u043e\u043d\u0441\u0442\u0430\u043d\u0442\u0438\u043d \u041d\u0438\u043a\u043e\u043ba\u0435\u0432\u0438\u0447 \u0420\u0443\u0441\u043a\u043e\u0432 ) was an officer in the Russian Navy b...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Though in later seasons , after Ryan Howard 's promotion , the relationship between him and Jim seems to be tense , in e...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: State protection was extended to its sea traders by the Phoenician city of Tyre and later likewise by the daughter city ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Free Thai Movement ( `` Seri Thai '' ) was established during these first few months .",
+    "expected_topic": ""
+  }
+]

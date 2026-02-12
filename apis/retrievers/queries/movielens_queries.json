@@ -1,0 +1,202 @@
+[
+  {
+    "question": "How does The Governor (The Walking Dead) work?",
+    "expected_topic": "The Governor (The Walking Dead)"
+  },
+  {
+    "question": "What happened with Evolution of fish?",
+    "expected_topic": "Evolution of fish"
+  },
+  {
+    "question": "Describe Yona of the Dawn.",
+    "expected_topic": "Yona of the Dawn"
+  },
+  {
+    "question": "Why is Trinity important?",
+    "expected_topic": "Trinity"
+  },
+  {
+    "question": "Why is Aviation photography important?",
+    "expected_topic": "Aviation photography"
+  },
+  {
+    "question": "Describe Project Mc2.",
+    "expected_topic": "Project Mc2"
+  },
+  {
+    "question": "What is the history of Spirit of Ecstasy?",
+    "expected_topic": "Spirit of Ecstasy"
+  },
+  {
+    "question": "Who or what is Kyrie Irving?",
+    "expected_topic": "Kyrie Irving"
+  },
+  {
+    "question": "Tell me about Education in Bangladesh.",
+    "expected_topic": "Education in Bangladesh"
+  },
+  {
+    "question": "What role does History of the Isle of Wight play?",
+    "expected_topic": "History of the Isle of Wight"
+  },
+  {
+    "question": "Who or what is Ancient Greek cuisine?",
+    "expected_topic": "Ancient Greek cuisine"
+  },
+  {
+    "question": "What do you know about Reba (TV series)?",
+    "expected_topic": "Reba (TV series)"
+  },
+  {
+    "question": "What is Lundy?",
+    "expected_topic": "Lundy"
+  },
+  {
+    "question": "What is Surgical nursing?",
+    "expected_topic": "Surgical nursing"
+  },
+  {
+    "question": "Why is Respiratory system important?",
+    "expected_topic": "Respiratory system"
+  },
+  {
+    "question": "Explain Whigs (British political party).",
+    "expected_topic": "Whigs (British political party)"
+  },
+  {
+    "question": "What role does Major League Baseball transactions play?",
+    "expected_topic": "Major League Baseball transactions"
+  },
+  {
+    "question": "How does Forecasting work?",
+    "expected_topic": "Forecasting"
+  },
+  {
+    "question": "Explain Utilitarianism.",
+    "expected_topic": "Utilitarianism"
+  },
+  {
+    "question": "Give me a summary of Lemony Snicket's A Series of Unfortunate Events.",
+    "expected_topic": "Lemony Snicket's A Series of Unfortunate Events"
+  },
+  {
+    "question": "Who or what is Dale Earnhardt?",
+    "expected_topic": "Dale Earnhardt"
+  },
+  {
+    "question": "Describe Brian Griffin.",
+    "expected_topic": "Brian Griffin"
+  },
+  {
+    "question": "What are the key facts about Moon landing?",
+    "expected_topic": "Moon landing"
+  },
+  {
+    "question": "Give me a summary of Pi.",
+    "expected_topic": "Pi"
+  },
+  {
+    "question": "What role does Singin' in the Rain play?",
+    "expected_topic": "Singin' in the Rain"
+  },
+  {
+    "question": "What is Coffee?",
+    "expected_topic": "Coffee"
+  },
+  {
+    "question": "Tell me about History of calendars.",
+    "expected_topic": "History of calendars"
+  },
+  {
+    "question": "What is the significance of Windsor Castle?",
+    "expected_topic": "Windsor Castle"
+  },
+  {
+    "question": "Explain Priesthood in the Catholic Church.",
+    "expected_topic": "Priesthood in the Catholic Church"
+  },
+  {
+    "question": "Can you explain Who Wants to Be a Superhero? (season 1) in detail?",
+    "expected_topic": "Who Wants to Be a Superhero? (season 1)"
+  },
+  {
+    "question": "What is the significance of Elections in Canada?",
+    "expected_topic": "Elections in Canada"
+  },
+  {
+    "question": "Can you explain Grey's Anatomy (season 14) in detail?",
+    "expected_topic": "Grey's Anatomy (season 14)"
+  },
+  {
+    "question": "Tell me about Chinese food therapy.",
+    "expected_topic": "Chinese food therapy"
+  },
+  {
+    "question": "What role does Silk Road play?",
+    "expected_topic": "Silk Road"
+  },
+  {
+    "question": "Why is Double-entry bookkeeping system important?",
+    "expected_topic": "Double-entry bookkeeping system"
+  },
+  {
+    "question": "What does this refer to: The ninth season of the American television medical drama Grey 's Anatomy began airing in the United States on the Ameri...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: `` Invasion '' Grey 's Anatomy episode Izzie Stevens trying to fight Adamson , as the latter wants to take O'Malley's ol...",
+    "expected_topic": ""
+  },
+  {
+    "question": "When the film became a success , with an unprecedented box office performance , it was credited for being a love story t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Titanic began its awards sweep starting with the Golden Globes , winning four , namely Best Motion Picture -- Drama , Be...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The remaining fall schedule for ABC was announced on October 22 , 2016 , where it was announced that Grey 's Anatomy wou...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Grey 's Anatomy was renewed by ABC on May 10 , 2012 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The hospital receives several surgical residents from Mercy West as they enter Seattle Grace , a repercussion of the rec...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Michael Pascua of The Huffington Post praised the scene in which Yang broke down to Meredith , noting the exceptional ch...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The film received steady attendance after opening in North America on Friday , December 19 , 1997 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Under the supervision of Dr.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Nominated Best Actress in a Miniseries or Television Film Sarah Paulson Won Writers Guild of America Awards Long Form --...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The film grossed an estimated $4.",
+    "expected_topic": ""
+  },
+  {
+    "question": "As the summer draws on , the Losers realize that they have each had an encounter with a seemingly omniscient , alien sha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Upon airing , the episode received 2.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Titanic won the 1997 Academy Award for Best Original Song, as well as four Grammy Awards for Record of the Year, Song of...",
+    "expected_topic": ""
+  }
+]

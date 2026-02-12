@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Tell me about Circumnavigation.",
+    "expected_topic": "Circumnavigation"
+  },
+  {
+    "question": "Describe Second Battle of the Marne.",
+    "expected_topic": "Second Battle of the Marne"
+  },
+  {
+    "question": "What are the key facts about Great Depression in the United States?",
+    "expected_topic": "Great Depression in the United States"
+  },
+  {
+    "question": "What is the history of Xhosa language?",
+    "expected_topic": "Xhosa language"
+  },
+  {
+    "question": "What is the significance of Insulin?",
+    "expected_topic": "Insulin"
+  },
+  {
+    "question": "How does History of the Supreme Court of the United States work?",
+    "expected_topic": "History of the Supreme Court of the United States"
+  },
+  {
+    "question": "What do you know about Economic history of the Netherlands (1500\u20131815)?",
+    "expected_topic": "Economic history of the Netherlands (1500\u20131815)"
+  },
+  {
+    "question": "What is the significance of Household income in the United States?",
+    "expected_topic": "Household income in the United States"
+  },
+  {
+    "question": "Give me a summary of Wetland.",
+    "expected_topic": "Wetland"
+  },
+  {
+    "question": "Can you explain Mount Logan in detail?",
+    "expected_topic": "Mount Logan"
+  },
+  {
+    "question": "How does Results of the War of 1812 work?",
+    "expected_topic": "Results of the War of 1812"
+  },
+  {
+    "question": "Explain Breaking the Waves.",
+    "expected_topic": "Breaking the Waves"
+  },
+  {
+    "question": "What happened with Repatriation (cultural heritage)?",
+    "expected_topic": "Repatriation (cultural heritage)"
+  },
+  {
+    "question": "What is Java version history?",
+    "expected_topic": "Java version history"
+  },
+  {
+    "question": "Describe Enzyme.",
+    "expected_topic": "Enzyme"
+  },
+  {
+    "question": "Tell me about Active transport.",
+    "expected_topic": "Active transport"
+  },
+  {
+    "question": "Describe Population pyramid.",
+    "expected_topic": "Population pyramid"
+  },
+  {
+    "question": "Give me a summary of Mourning dove.",
+    "expected_topic": "Mourning dove"
+  },
+  {
+    "question": "Give me a summary of Spanish language.",
+    "expected_topic": "Spanish language"
+  },
+  {
+    "question": "What is 2016 Los Angeles Rams season?",
+    "expected_topic": "2016 Los Angeles Rams season"
+  },
+  {
+    "question": "What is History of Antarctica?",
+    "expected_topic": "History of Antarctica"
+  },
+  {
+    "question": "What role does Time play?",
+    "expected_topic": "Time"
+  },
+  {
+    "question": "How does Factory Acts work?",
+    "expected_topic": "Factory Acts"
+  },
+  {
+    "question": "Explain Black-eyed pea.",
+    "expected_topic": "Black-eyed pea"
+  },
+  {
+    "question": "What are the key facts about Marble Falls, Texas?",
+    "expected_topic": "Marble Falls, Texas"
+  },
+  {
+    "question": "Why is Wikipedia:Reference desk/Archives/Entertainment/2012 July 7 important?",
+    "expected_topic": "Wikipedia:Reference desk/Archives/Entertainment/2012 July 7"
+  },
+  {
+    "question": "Explain I'm going to Disney World!.",
+    "expected_topic": "I'm going to Disney World!"
+  },
+  {
+    "question": "How does Who Wants to Be a Millionaire? work?",
+    "expected_topic": "Who Wants to Be a Millionaire?"
+  },
+  {
+    "question": "Why is Jephthah important?",
+    "expected_topic": "Jephthah"
+  },
+  {
+    "question": "Why is Cave painting important?",
+    "expected_topic": "Cave painting"
+  },
+  {
+    "question": "Tell me about The dragon (Beowulf).",
+    "expected_topic": "The dragon (Beowulf)"
+  },
+  {
+    "question": "What is Hawaii Five-0 (2010 TV series, season 8)?",
+    "expected_topic": "Hawaii Five-0 (2010 TV series, season 8)"
+  },
+  {
+    "question": "Why is History of the Seventh-day Adventist Church important?",
+    "expected_topic": "History of the Seventh-day Adventist Church"
+  },
+  {
+    "question": "Can you explain The Alienist (TV series) in detail?",
+    "expected_topic": "The Alienist (TV series)"
+  },
+  {
+    "question": "Describe Blue Lagoon Island.",
+    "expected_topic": "Blue Lagoon Island"
+  },
+  {
+    "question": "Find information related to: 1989 was a relative disappointment , with a 9 -- 7 record and a divisional playoff loss to the Cleveland Browns .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In 1996 , the Bills saw their commanding lead in the AFC East race disappear to a surging New England Patriots team ; th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Motivated to prove his worth , Jordan became the star of Laney 's junior varsity squad , and tallied several 40 - point ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: University of North Carolina Latin : Universitat Carol Septet Type Public University system Established 1789 ( Chapel Hi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Official name ( Previous name ) Official abbrev .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: As a freshman in coach Dean Smith 's team - oriented system , he was named ACC Freshman of the Year after he averaged 13...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Two - time Naismith Memorial Basketball Hall of Fame class of 2009 -- individual class of 2010 -- as a member of the `` ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "All Time Wins - 2,206 All Time Winning Percentage - .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Bills won their fourth consecutive AFC East title in 1991 , finishing 13 -- 3 again and with Thurman Thomas winning ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Within its seventeen campuses , UNC houses two medical schools and one teaching hospital , ten nursing programs , two sc...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Bills lost the 1992 AFC East title to the Miami Dolphins and Jim Kelly was injured in the final game of the regular ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Bills , under new coach Wade Phillips signed two quarterbacks for the 1998 season , one that Buffalo traded a high f...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: After Buffalo hosted two NFL games in 1938 ( a practice that would become a semi-regular occurrence in the city until th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Browns brought back the brown pants in their home game against the Buffalo Bills on October 3 , 2013 on Thursday Nig...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Jordan played three seasons for coach Dean Smith at the University of North Carolina .",
+    "expected_topic": ""
+  }
+]

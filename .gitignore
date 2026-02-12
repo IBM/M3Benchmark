@@ -28,4 +28,3 @@ train/
 build/
 db/
 *chroma_data*
-apis/retrievers/queries/*.json

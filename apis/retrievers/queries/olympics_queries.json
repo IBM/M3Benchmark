@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Can you explain These games were perhaps the first games of a new era to make a profit. Although a boycott led by the Soviet Union depleted the field in certain sports, 140 National Olympic Committees took part, which was a record at the time. The Games were also the first time mainland China (People's Republic) participated. in detail?",
+    "expected_topic": "These games were perhaps the first games of a new era to make a profit. Although a boycott led by the Soviet Union depleted the field in certain sports, 140 National Olympic Committees took part, which was a record at the time. The Games were also the first time mainland China (People's Republic) participated."
+  },
+  {
+    "question": "What is the history of Pirates of the Caribbean (film series)?",
+    "expected_topic": "Pirates of the Caribbean (film series)"
+  },
+  {
+    "question": "How does The Hunchback of Notre-Dame work?",
+    "expected_topic": "The Hunchback of Notre-Dame"
+  },
+  {
+    "question": "Who or what is Victoria Cross?",
+    "expected_topic": "Victoria Cross"
+  },
+  {
+    "question": "How does Hearing range work?",
+    "expected_topic": "Hearing range"
+  },
+  {
+    "question": "What is Hades?",
+    "expected_topic": "Hades"
+  },
+  {
+    "question": "How does List of Sons of Anarchy characters work?",
+    "expected_topic": "List of Sons of Anarchy characters"
+  },
+  {
+    "question": "Give me a summary of Civilian Conservation Corps.",
+    "expected_topic": "Civilian Conservation Corps"
+  },
+  {
+    "question": "What are the key facts about American Sign Language?",
+    "expected_topic": "American Sign Language"
+  },
+  {
+    "question": "What happened with Jane Eyre?",
+    "expected_topic": "Jane Eyre"
+  },
+  {
+    "question": "Why is Kobe Bryant important?",
+    "expected_topic": "Kobe Bryant"
+  },
+  {
+    "question": "Why is Education reform important?",
+    "expected_topic": "Education reform"
+  },
+  {
+    "question": "What are the key facts about Modem?",
+    "expected_topic": "Modem"
+  },
+  {
+    "question": "Who or what is Where Do You Go (La Bouche song)?",
+    "expected_topic": "Where Do You Go (La Bouche song)"
+  },
+  {
+    "question": "Describe The Honeymooners.",
+    "expected_topic": "The Honeymooners"
+  },
+  {
+    "question": "What is the significance of Pope?",
+    "expected_topic": "Pope"
+  },
+  {
+    "question": "Explain On 18 August, at the 2008 Summer Olympics in Beijing, at the age of 61, Millar anchored his team (also including Jill Henselwood, Eric Lamaze, and Mac Cone) to a first-place standing. Riding In Style, he completed a faultless round to lead the Canadian team into a jump-off for gold with the United States. Ultimately Canada would finish behind the American team to capture silver \u2013 Millar's first Olympic medal..",
+    "expected_topic": "On 18 August, at the 2008 Summer Olympics in Beijing, at the age of 61, Millar anchored his team (also including Jill Henselwood, Eric Lamaze, and Mac Cone) to a first-place standing. Riding In Style, he completed a faultless round to lead the Canadian team into a jump-off for gold with the United States. Ultimately Canada would finish behind the American team to capture silver \u2013 Millar's first Olympic medal."
+  },
+  {
+    "question": "How does Nuclear weapon work?",
+    "expected_topic": "Nuclear weapon"
+  },
+  {
+    "question": "What do you know about Slope?",
+    "expected_topic": "Slope"
+  },
+  {
+    "question": "What is \"The Revival of the Olympic Games\". Running through the Ages. McFarland. ISBN 0-7864-0971-1. OCLC 46650949. Retrieved 9 April 2016.?",
+    "expected_topic": "\"The Revival of the Olympic Games\". Running through the Ages. McFarland. ISBN 0-7864-0971-1. OCLC 46650949. Retrieved 9 April 2016."
+  },
+  {
+    "question": "What are the key facts about Sherman's March to the Sea?",
+    "expected_topic": "Sherman's March to the Sea"
+  },
+  {
+    "question": "Describe United Nations.",
+    "expected_topic": "United Nations"
+  },
+  {
+    "question": "What is The rules and regulations were not uniform, so the Organising Committee had to choose among the codes of the various national athletic associations. The jury, the referees and the game director bore the same names as in antiquity (Ephor, Helanodic and Alitarc). Prince George acted as final referee; according to Coubertin, \"his presence gave weight and authority to the decisions of the ephors\".?",
+    "expected_topic": "The rules and regulations were not uniform, so the Organising Committee had to choose among the codes of the various national athletic associations. The jury, the referees and the game director bore the same names as in antiquity (Ephor, Helanodic and Alitarc). Prince George acted as final referee; according to Coubertin, \"his presence gave weight and authority to the decisions of the ephors\"."
+  },
+  {
+    "question": "Give me a summary of Robert Bond.",
+    "expected_topic": "Robert Bond"
+  },
+  {
+    "question": "What are the key facts about Desert?",
+    "expected_topic": "Desert"
+  },
+  {
+    "question": "Give me a summary of Sophia Peletier.",
+    "expected_topic": "Sophia Peletier"
+  },
+  {
+    "question": "Why is Operation Barbarossa important?",
+    "expected_topic": "Operation Barbarossa"
+  },
+  {
+    "question": "Describe Comparison of Star Trek and Star Wars.",
+    "expected_topic": "Comparison of Star Trek and Star Wars"
+  },
+  {
+    "question": "What happened with Areas of mathematics?",
+    "expected_topic": "Areas of mathematics"
+  },
+  {
+    "question": "What happened with Tree of life?",
+    "expected_topic": "Tree of life"
+  },
+  {
+    "question": "Why is Germ cell important?",
+    "expected_topic": "Germ cell"
+  },
+  {
+    "question": "Can you explain 2018 Monster Energy NASCAR Cup Series in detail?",
+    "expected_topic": "2018 Monster Energy NASCAR Cup Series"
+  },
+  {
+    "question": "Who or what is Land lot?",
+    "expected_topic": "Land lot"
+  },
+  {
+    "question": "What happened with Where the Wild Things Are (film)?",
+    "expected_topic": "Where the Wild Things Are (film)"
+  },
+  {
+    "question": "What role does Stem cell play?",
+    "expected_topic": "Stem cell"
+  },
+  {
+    "question": "What does this refer to: The Olympic symbols are icons , flags and symbols used by the International Olympic Committee ( IOC ) to elevate the Oly...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Mahmoud Ahmadinejad was elected to the presidency twice , in 2005 and 2009 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: While leading in the men 's marathon with less than 10 kilometres to go , Brazilian runner Vanderlei de Lima was attacke...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: For the inaugural Youth Olympic Games , an Olympic flag was created for the junior version of the Games .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Russian weightlifter Ibragim Samadov was disqualified for protest after he refused to accept the bronze medal .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: A novelty American football game was attempted in metric units in 1977 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Ahmadinejad 's outspoken pronouncements in foreign affairs included personal letters to a number of world leaders includ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: High school football is the most popular sport in the United States played by boys ; over 1.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Measured distances as used in events such as shot put , high jump , and discus throw are , however , often in feet and i...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Olympic Movement uses symbols to represent the ideals embodied in the Olympic Charter .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Replay reviews are only utilized at the college level and above .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The American National Metric Council ( ANMC ) was established in 1973 by the American National Standards Institute ( ANS...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Muslim Student Followers of the Imam 's Line demanded that Shah Mohammad Reza Pahlavi return to Iran for trial and e...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The foundation should be laid strong and firm .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: That let the Americans make the last spike to win by two to move to the next round .",
+    "expected_topic": ""
+  }
+]

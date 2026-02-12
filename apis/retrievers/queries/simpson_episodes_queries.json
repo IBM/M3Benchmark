@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Describe Tariff.",
+    "expected_topic": "Tariff"
+  },
+  {
+    "question": "Give me a summary of Rhode Island.",
+    "expected_topic": "Rhode Island"
+  },
+  {
+    "question": "How does Halley's Comet work?",
+    "expected_topic": "Halley's Comet"
+  },
+  {
+    "question": "Can you explain Electric chair in detail?",
+    "expected_topic": "Electric chair"
+  },
+  {
+    "question": "Why is Meander important?",
+    "expected_topic": "Meander"
+  },
+  {
+    "question": "What is the history of Romance languages?",
+    "expected_topic": "Romance languages"
+  },
+  {
+    "question": "What do you know about Languages of Burkina Faso?",
+    "expected_topic": "Languages of Burkina Faso"
+  },
+  {
+    "question": "What are the key facts about Southern Ocean?",
+    "expected_topic": "Southern Ocean"
+  },
+  {
+    "question": "Tell me about Anemia.",
+    "expected_topic": "Anemia"
+  },
+  {
+    "question": "Tell me about Cristiano Ronaldo.",
+    "expected_topic": "Cristiano Ronaldo"
+  },
+  {
+    "question": "What is the history of Helena (A Midsummer Night's Dream)?",
+    "expected_topic": "Helena (A Midsummer Night's Dream)"
+  },
+  {
+    "question": "Describe Korea under Japanese rule.",
+    "expected_topic": "Korea under Japanese rule"
+  },
+  {
+    "question": "How does Rules of netball work?",
+    "expected_topic": "Rules of netball"
+  },
+  {
+    "question": "What is the history of The Matrix Reloaded?",
+    "expected_topic": "The Matrix Reloaded"
+  },
+  {
+    "question": "Why is Ernie Stautner important?",
+    "expected_topic": "Ernie Stautner"
+  },
+  {
+    "question": "Give me a summary of Kidnapping of Colleen Stan.",
+    "expected_topic": "Kidnapping of Colleen Stan"
+  },
+  {
+    "question": "What happened with Small intestine?",
+    "expected_topic": "Small intestine"
+  },
+  {
+    "question": "What happened with Louis Walsh?",
+    "expected_topic": "Louis Walsh"
+  },
+  {
+    "question": "Why is The Bootleg Series Vol. 10: Another Self Portrait (1969\u20131971) important?",
+    "expected_topic": "The Bootleg Series Vol. 10: Another Self Portrait (1969\u20131971)"
+  },
+  {
+    "question": "Describe Probability.",
+    "expected_topic": "Probability"
+  },
+  {
+    "question": "Describe Allies of World War II.",
+    "expected_topic": "Allies of World War II"
+  },
+  {
+    "question": "What is the history of Cristina Yang?",
+    "expected_topic": "Cristina Yang"
+  },
+  {
+    "question": "What is the history of The Orville?",
+    "expected_topic": "The Orville"
+  },
+  {
+    "question": "What is the history of Five Nights at Freddy's?",
+    "expected_topic": "Five Nights at Freddy's"
+  },
+  {
+    "question": "How does Mark and recapture work?",
+    "expected_topic": "Mark and recapture"
+  },
+  {
+    "question": "Describe Guns N' Roses.",
+    "expected_topic": "Guns N' Roses"
+  },
+  {
+    "question": "Give me a summary of Wikipedia:Reference desk/Archives/Entertainment/2012 July 7.",
+    "expected_topic": "Wikipedia:Reference desk/Archives/Entertainment/2012 July 7"
+  },
+  {
+    "question": "Tell me about History of the San Diego Chargers.",
+    "expected_topic": "History of the San Diego Chargers"
+  },
+  {
+    "question": "Can you explain Peachtree Road Race in detail?",
+    "expected_topic": "Peachtree Road Race"
+  },
+  {
+    "question": "Explain Dow Jones Industrial Average.",
+    "expected_topic": "Dow Jones Industrial Average"
+  },
+  {
+    "question": "What do you know about Caenorhabditis elegans?",
+    "expected_topic": "Caenorhabditis elegans"
+  },
+  {
+    "question": "Who or what is Rory Gilmore?",
+    "expected_topic": "Rory Gilmore"
+  },
+  {
+    "question": "What is the significance of It is the first episode of The Simpsons to have Islam portrayed in a large role. It was the most watched show on Fox on its original airing, and received fairly positive reviews from television critics. Its commentary on Islamophobia in the United States proved to be controversial, however.?",
+    "expected_topic": "It is the first episode of The Simpsons to have Islam portrayed in a large role. It was the most watched show on Fox on its original airing, and received fairly positive reviews from television critics. Its commentary on Islamophobia in the United States proved to be controversial, however."
+  },
+  {
+    "question": "What are the key facts about Fast Times at Ridgemont High?",
+    "expected_topic": "Fast Times at Ridgemont High"
+  },
+  {
+    "question": "What is America's Cup?",
+    "expected_topic": "America's Cup"
+  },
+  {
+    "question": "Find information related to: Diff'rent Strokes is an American sitcom that aired on NBC from November 3 , 1978 , to May 4 , 1985 , and on ABC from Sep...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The 2016 version of the show departed from prior versions in a number of ways : Episodes lasted 60 minutes rather than 3...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The sitcom starred Coleman as Arnold Jackson and Todd Bridges as his older brother , Willis .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Two games were played , and each wrong vote paid the challengers $100 ; $500 was paid if the entire panel had been foole...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The daytime show was reduced to two games to accommodate a five - minute news break towards the half - hour mark .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: There were three maids during the sitcom 's run : Edna Garrett ( Charlotte Rae ) , Adelaide Brubaker ( Nedra Volz ) , an...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Kubrick personally aided in modifying the Steadicam 's video transmission technology .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Each wrong vote in this version was worth $50 to the challengers ; `` complete stumps '' of the entire panel won the cha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "To Tell the Truth Logo for To Tell the Truth whose use began with the 2016 editions .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: On the pilot and the prime - time run , three games were played per episode .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Facts of Life ( 1979 -- 88 ) is a spin - off of Diff'rent Strokes featuring Drummond 's former maid Mrs.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: On the job , Booth is characterized as a `` man of action '' and once claimed that he would `` rot behind a desk '' .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: While not a spin - off , Hello , Larry ( 1979 -- 80 ) had a connection to Strokes as it was established in a crossover e...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The design of the Tripods was described by Spielberg as `` graceful , '' with artist Doug Chiang replicating aquatic lif...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: After the second game , a new game called `` One on One '' was played with the four impostors from earlier .",
+    "expected_topic": ""
+  }
+]
