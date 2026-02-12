@@ -87,6 +87,13 @@ OLLAMA_MODEL=llama3.1:8b
 # Set to "true" to skip Claude even when ANTHROPIC_API_KEY is set
 # SKIP_CLAUDE=true
 
+# --- LiteLLM (agents/llm.py) ---
+# API key passed to LiteLLM (used when the underlying provider requires one)
+LITELLM_API_KEY=your-litellm-api-key-here
+
+# Optional: base URL for a self-hosted LiteLLM proxy server
+# LITELLM_BASE_URL=http://localhost:4000
+
 # --- IBM watsonx.ai (agents/agent_interface.py, benchmark_runner.py) ---
 # API key for IBM watsonx.ai
 WATSONX_APIKEY=your-watsonx-api-key-here

@@ -185,22 +185,42 @@ class RITSChatModel(BaseChatModel):
         )
 
 
-def create_llm(llm_type="openai", model=None, ollama_base_url=None):
-    """Create LLM instance based on type
+def create_llm(
+    provider: str = "ollama",
+    model: Optional[str] = None,
+    api_key: Optional[str] = None,
+    temperature: float = 0,
+    **kwargs,
+):
+    """Create LLM instance based on provider.
 
     Args:
-        llm_type: Either "openai" or "ollama"
+        provider: One of "rits", "ollama", "anthropic", "openai", "litellm", "watsonx"
         model: Model name (optional, uses defaults if not provided)
-        ollama_base_url: Ollama server URL (default: http://localhost:11434)
+        api_key: API key (optional, falls back to environment variables)
+        temperature: Sampling temperature (default: 0)
+        **kwargs: Provider-specific arguments:
+            - ollama: ollama_base_url (str)
+            - litellm: api_base (str)
+            - watsonx: project_id (str), space_id (str)
 
     Returns:
-        LLM instance
+        LangChain BaseChatModel instance
     """
-    if llm_type == "openai":
-        # Get RITS API key
-        try:
-            rits_api_key = os.environ["RITS_API_KEY"]
-        except BaseException:
+    if provider == "watsonx":
+        kwargs.setdefault("project_id", os.environ.get("WATSONX_PROJECT_ID"))
+        kwargs.setdefault("space_id", os.environ.get("WATSONX_SPACE_ID"))
+        if not api_key:
+            api_key = os.environ.get("WATSONX_APIKEY")
+    elif provider == "litellm":
+        resolved_base_url = os.environ.get("LITELLM_BASE_URL")
+        if resolved_base_url:
+            kwargs.setdefault("api_base", resolved_base_url)
+        if not api_key:
+            api_key = os.environ.get("LITELLM_API_KEY")
+    if provider == "rits":
+        rits_api_key = api_key or os.environ.get("RITS_API_KEY")
+        if not rits_api_key:
             raise ValueError(
                 "You need to set the env var RITS_API_KEY to use a "
                 "model from RITS."
@@ -212,15 +232,14 @@ def create_llm(llm_type="openai", model=None, ollama_base_url=None):
         )
         model_name = model or "llama-3-3-70b-instruct"
 
-        # Use RITSChatModel with the actual RITS inference service
         return RITSChatModel(
             model_name=model_name,
             base_url=base_url,
             api_key=rits_api_key,
-            temperature=0
+            temperature=temperature,
         )
-    elif llm_type == "ollama":
-        # Lazy import to avoid dependency conflicts when not using Ollama
+
+    elif provider == "ollama":
         try:
             from langchain_ollama import ChatOllama
         except ImportError:
@@ -230,7 +249,11 @@ def create_llm(llm_type="openai", model=None, ollama_base_url=None):
             )
 
         model_name = model or "llama3.1:8b"
-        base_url = ollama_base_url or "http://localhost:11434"
+        base_url = (
+            kwargs.get("ollama_base_url")
+            or os.environ.get("OLLAMA_BASE_URL")
+            or "http://localhost:11434"
+        )
 
         print(f"Connecting to Ollama at {base_url}")
         print(
@@ -243,9 +266,137 @@ def create_llm(llm_type="openai", model=None, ollama_base_url=None):
         return ChatOllama(
             model=model_name,
             base_url=base_url,
-            temperature=0
+            temperature=temperature,
+            num_ctx=65536,
         )
+
+    elif provider == "anthropic":
+        try:
+            from langchain_anthropic import ChatAnthropic
+        except ImportError:
+            raise ImportError(
+                "langchain-anthropic is required for Anthropic support. "
+                "Install with: pip install langchain-anthropic"
+            )
+
+        resolved_key = api_key or os.environ.get("ANTHROPIC_API_KEY")
+        if not resolved_key:
+            raise ValueError(
+                "You need to set the env var ANTHROPIC_API_KEY to use "
+                "an Anthropic model."
+            )
+
+        return ChatAnthropic(
+            model=model or "claude-3-5-sonnet-20241022",
+            temperature=temperature,
+            api_key=resolved_key,
+        )
+
+    elif provider == "openai":
+        try:
+            from langchain_openai import ChatOpenAI
+        except ImportError:
+            raise ImportError(
+                "langchain-openai is required for OpenAI support. "
+                "Install with: pip install langchain-openai"
+            )
+
+        resolved_key = api_key or os.environ.get("OPENAI_API_KEY")
+        if not resolved_key:
+            raise ValueError(
+                "You need to set the env var OPENAI_API_KEY to use "
+                "an OpenAI model."
+            )
+
+        return ChatOpenAI(
+            model=model or "gpt-4.1",
+            temperature=temperature,
+            api_key=resolved_key,
+        )
+
+    elif provider == "litellm":
+        try:
+            from langchain_litellm import ChatLiteLLM
+            # Uncomment to debug litellm connection
+            # import litellm
+            # litellm._turn_on_debug()
+        except ImportError:
+            raise ImportError(
+                "langchain-litellm is required for LiteLLM support. "
+                "Install with: pip install langchain-litellm"
+            )
+
+        # This is the cheapest model in our allowed set: 
+        # ['aws/claude-opus-4-5', 'claude-opus-4-5-20251101', 
+        # 'claude-sonnet-4-5-20250929', 'aws/claude-sonnet-4-5', 
+        # 'Azure/gpt-5.1-2025-11-13', 'GCP/gemini-2.5-flash', 
+        # 'GCP/gemini-2.5-flash-lite', 'GCP/gemini-2.0-flash', 
+        # 'gcp/gemini-3-flash-preview']
+        model_name = model or "GCP/gemini-2.0-flash"
+        params: Dict[str, Any] = {
+            "model": model_name,
+            "temperature": temperature,
+        }
+        if api_key:
+            params["api_key"] = api_key
+        if "api_base" in kwargs:
+            params["api_base"] = kwargs["api_base"]
+        # This parameter is critical. Without it, the client attempts
+        # to infer the provider name from the base of the model name, 
+        # and there is no way to satisfy the check for the model being in 
+        # the allow-list [e.g. GCP/gemini-2.0-flash] and the check for an
+        # existing provider (GCP isn't an existing provider)
+        params["custom_llm_provider"] = "openai"
+
+        return ChatLiteLLM(**params)
+
+    elif provider == "watsonx":
+        try:
+            from langchain_ibm import ChatWatsonx
+        except ImportError:
+            raise ImportError(
+                "langchain-ibm is required for watsonx support. "
+                "Install with: pip install langchain-ibm"
+            )
+
+        resolved_key = api_key or os.environ.get("WATSONX_APIKEY")
+        if not resolved_key:
+            raise ValueError(
+                "You need to set the env var WATSONX_APIKEY to use "
+                "a watsonx.ai model."
+            )
+
+        project_id = kwargs.get("project_id") or os.environ.get("WATSONX_PROJECT_ID")
+        space_id = kwargs.get("space_id") or os.environ.get("WATSONX_SPACE_ID")
+
+        if not project_id and not space_id:
+            raise ValueError(
+                "Either project_id or space_id is required for watsonx.ai. "
+                "Set WATSONX_PROJECT_ID or WATSONX_SPACE_ID environment variable."
+            )
+
+        url = os.environ.get("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
+
+        params: Dict[str, Any] = {
+            "model_id": model or "openai/gpt-oss-120b",
+            "url": url,
+            "apikey": resolved_key,
+            "params": {
+                "temperature": temperature,
+                "max_new_tokens": 4096,
+            },
+        }
+
+        if project_id:
+            params["project_id"] = project_id
+        elif space_id:
+            params["space_id"] = space_id
+
+        return ChatWatsonx(**params)
+
     else:
         raise ValueError(
-            f"Unknown LLM type: {llm_type}. Must be 'openai' or 'ollama'"
+            f"Unknown provider: {provider}. "
+            "Must be one of: 'rits', 'ollama', 'anthropic', 'openai', "
+            "'litellm', 'watsonx'"
         )

@@ -35,8 +35,9 @@ python benchmark_runner.py --task_id 2 --run-agent --domain hockey --max-samples
 import os
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import Any, Callable, List, Union
+from typing import List, Union
 
+from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.tools import StructuredTool
 
 
@@ -84,93 +85,21 @@ class LangGraphReActAgent(AgentInterface):
 
     def __init__(
         self,
-        model: str = "claude-3-5-sonnet-20241022",
-        temperature: float = 0,
-        api_key: str | None = None,
-        provider: str = "ollama",
-        project_id: str | None = None,
-        space_id: str | None = None,
+        llm: BaseChatModel,
+        model: str = "",
+        provider: str = "",
     ):
         """
         Initialize the LangGraph ReAct agent.
 
         Args:
-            model: Model name to use
-            temperature: Temperature for generation
-            api_key: API key (defaults to env var based on provider)
-            provider: "anthropic", "openai", "ollama", or "watsonx"
-            project_id: watsonx.ai project ID (required for watsonx provider)
-            space_id: watsonx.ai space ID (optional, alternative to project_id)
+            llm: Already-constructed LangChain chat model instance
+            model: Model name (for metadata only)
+            provider: Provider name (for metadata only)
         """
+        self._llm = llm
         self.model = model
-        self.temperature = temperature
         self.provider = provider
-        self.api_key = api_key
-        self.project_id = project_id
-        self.space_id = space_id
-        self._llm = None
-
-    def _get_llm(self):
-        """Lazily initialize the LLM."""
-        if self._llm is not None:
-            return self._llm
-        
-        if self.provider == "anthropic":
-            from langchain_anthropic import ChatAnthropic
-            self._llm = ChatAnthropic(
-                model=self.model,
-                temperature=self.temperature,
-                api_key=self.api_key or os.getenv("ANTHROPIC_API_KEY"),
-            )
-        elif self.provider == "openai":
-            from langchain_openai import ChatOpenAI
-            self._llm = ChatOpenAI(
-                model=self.model,
-                temperature=self.temperature,
-                api_key=self.api_key or os.getenv("OPENAI_API_KEY"),
-            )
-        elif self.provider == "ollama":
-            from langchain_ollama import ChatOllama
-            self._llm = ChatOllama(
-                model=self.model,
-                temperature=self.temperature,
-                num_ctx=65536,
-            )
-        elif self.provider == "watsonx":
-            from langchain_ibm import ChatWatsonx
-            
-            # Get credentials from environment or parameters
-            api_key = self.api_key or os.getenv("WATSONX_APIKEY")
-            project_id = self.project_id or os.getenv("WATSONX_PROJECT_ID")
-            space_id = self.space_id or os.getenv("WATSONX_SPACE_ID")
-            url = os.getenv("WATSONX_URL", "https://us-south.ml.cloud.ibm.com")
-            
-            if not api_key:
-                raise ValueError("watsonx.ai API key is required. Set WATSONX_APIKEY environment variable or pass api_key parameter.")
-            
-            if not project_id and not space_id:
-                raise ValueError("Either project_id or space_id is required for watsonx.ai. Set WATSONX_PROJECT_ID or WATSONX_SPACE_ID environment variable.")
-            
-            params = {
-                "model_id": self.model,
-                "url": url,
-                "apikey": api_key,
-                "params": {
-                    "temperature": self.temperature,
-                    "max_new_tokens": 4096,
-                }
-            }
-            
-            if project_id:
-                params["project_id"] = project_id
-            elif space_id:
-                params["space_id"] = space_id
-            
-            self._llm = ChatWatsonx(**params)
-        else:
-            raise ValueError(f"Unknown provider: {self.provider}")
-
-        return self._llm
 
     def _messages_to_langchain(self, messages: List[Message]) -> List[tuple]:
         """Convert Message objects to LangChain format."""
@@ -218,8 +147,7 @@ class LangGraphReActAgent(AgentInterface):
     ) -> AgentResponse:
         """Run the ReAct agent with given input and tools."""
         from langgraph.prebuilt import create_react_agent
-        llm = self._get_llm()
-        agent = create_react_agent(llm, tools)
+        agent = create_react_agent(self._llm, tools)
 
         # Build tool map for manual execution
         tool_map = {t.name: t for t in tools}
@@ -340,24 +268,24 @@ def create_agent(
     Factory function to create an agent.
 
     Args:
-        provider: "anthropic", "openai", "ollama", or "watsonx"
+        provider: "anthropic", "openai", "ollama", "watsonx", or "rits"
         model: Model name (defaults based on provider)
-        **kwargs: Additional arguments passed to agent constructor
-                  For watsonx: project_id or space_id, api_key
+        **kwargs: Additional arguments forwarded to create_llm()
+                  e.g. api_key, project_id, space_id, ollama_base_url
 
     Returns:
         AgentInterface implementation
     """
+    from agents.llm import create_llm
+
     default_models = {
         "anthropic": "claude-3-5-sonnet-20241022",
         "openai": "gpt-4.1",
         "ollama": "llama3.1:8b",
         "watsonx": "openai/gpt-oss-120b",
+        "rits": "llama-3-3-70b-instruct",
     }
 
-    model = model or default_models.get(provider, "claude-3-5-sonnet-20241022")
-    return LangGraphReActAgent(
-        model=model,
-        provider=provider,
-        **kwargs,
-    )
+    resolved_model = model or default_models.get(provider, "")
+    llm = create_llm(provider=provider, model=resolved_model, **kwargs)
+    return LangGraphReActAgent(llm=llm, model=resolved_model, provider=provider)

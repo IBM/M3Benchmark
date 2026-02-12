@@ -41,6 +41,10 @@ agents = [
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
     "httpx",
+    "litellm",
+    "langchain-litellm",
+    "langchain-ollama",
+    "langchain-ibm"
 ]
 
 # MCP server functionality (includes agents)

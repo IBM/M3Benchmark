@@ -60,18 +60,20 @@ async def connect_to_server(mode: str, server_url: str = None):
 async def run_single_server_with_instances(
     llm,
     instances: dict,
-    llm_type: str,
+    provider: str,
     mode: str = "stdio",
-    server_url: str = None
+    server_url: str = None,
+    max_samples_per_domain: int = None
 ):
     """Run queries against a single MCP server, switching universes for each instance.
 
     Args:
         llm: The language model instance
         instances: Dict mapping instance_id -> {query, init_args}
-        llm_type: LLM provider type ("openai" or "ollama")
+        provider: LLM provider name (e.g. "rits", "ollama", "anthropic", "openai", "litellm", "watsonx")
         mode: Connection mode ("stdio" or "websocket")
         server_url: WebSocket URL (required for websocket mode)
+        max_samples_per_domain: Maximum number of instances to process (None = all)
     """
     print(f"\n{'='*60}")
     print(f"Connecting to MCP server (mode: {mode})")
@@ -90,7 +92,7 @@ async def run_single_server_with_instances(
             # Use new MCPToolWrapper factory pattern
             wrapper = MCPToolWrapper(
                 session=session,
-                use_openai_restrictions=(llm_type == "openai")
+                use_openai_restrictions=(provider in ("openai", "rits"))
             )
             tools = await wrapper.get_tools()
 
@@ -100,7 +102,10 @@ async def run_single_server_with_instances(
             print(f"Available tools ({len(tools)}): {[t.name for t in tools]}\n")
 
             # Loop over each instance
-            for instance_id, instance in instances.items():
+            items = list(instances.items())
+            if max_samples_per_domain is not None:
+                items = items[:max_samples_per_domain]
+            for instance_id, instance in items:
                 query = instance['query']
                 print(f"\n{'='*60}")
                 print(f"Processing Instance: {instance_id}")
@@ -158,69 +163,57 @@ async def run_single_server_with_instances(
 
 
 async def main(
-    llm_type="openai",
+    provider="rits",
     model=None,
-    ollama_base_url=None,
     mode="stdio",
     server_url=None,
-    max_samples=None
+    max_samples_per_domain=None
 ):
     """Main async entry point with single server for all instances.
 
     Args:
-        llm_type: Either "openai" or "ollama"
+        provider: LLM provider ("rits", "ollama", "anthropic", "openai", "litellm", "watsonx")
         model: Model name (optional)
-        ollama_base_url: Ollama server URL (optional, default: http://localhost:11434)
         mode: Connection mode - "stdio" (subprocess) or "websocket" (external server)
         server_url: WebSocket URL (required for websocket mode)
-        max_samples: Maximum number of samples to process (optional)
+        max_samples_per_domain: Maximum number of instances to process (None = all)
     """
 
     # Create LLM instance
-    llm = create_llm(llm_type=llm_type, model=model, ollama_base_url=ollama_base_url)
+    llm = create_llm(provider=provider, model=model)
     print(f"\n{'='*60}")
-    print(f"Using LLM: {llm_type}" + (f" (model: {model})" if model else ""))
+    print(f"Using LLM: {provider}" + (f" (model: {model})" if model else ""))
     print(f"{'='*60}\n")
 
     # Load all instances
     with open("apis/configs/mcp_init_mapping.json") as f:
         instances = json.load(f)
 
-    # Limit samples if requested
-    if max_samples is not None:
-        instances = dict(list(instances.items())[:max_samples])
-        print(f"Limited to {len(instances)} samples\n")
-
     # Run with single server
     await run_single_server_with_instances(
         llm,
         instances,
-        llm_type,
+        provider,
         mode=mode,
-        server_url=server_url
+        server_url=server_url,
+        max_samples_per_domain=max_samples_per_domain
     )
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="MCP Demo with LLM options")
     parser.add_argument(
-        "--llm",
+        "--provider",
         type=str,
-        choices=["openai", "ollama"],
-        default="openai",
-        help="LLM provider to use (default: openai)"
+        choices=["rits", "ollama", "anthropic", "openai", "litellm", "watsonx"],
+        default="rits",
+        help="LLM provider to use (default: rits)"
     )
     parser.add_argument(
         "--model",
         type=str,
         default=None,
-        help="Model name (default: llama-3-3-70b-instruct for openai, llama3.3 for ollama)"
-    )
-    parser.add_argument(
-        "--ollama-base-url",
-        type=str,
-        default=None,
-        help="Ollama server URL (default: http://localhost:11434)"
+        help="Model name (default: provider-specific default)"
     )
     parser.add_argument(
         "--mode",
@@ -236,22 +229,20 @@ if __name__ == "__main__":
         help="WebSocket server URL (required for --mode websocket), e.g., ws://localhost:8000/mcp"
     )
     parser.add_argument(
-        "--max-samples",
+        "--max-samples-per-domain",
         type=int,
         default=None,
-        help="Maximum number of samples to process (default: all samples)"
+        help="Maximum number of instances to process (default: all)"
     )
 
     args = parser.parse_args()
-
     try:
         asyncio.run(main(
-            llm_type=args.llm,
+            provider=args.provider,
             model=args.model,
-            ollama_base_url=args.ollama_base_url,
             mode=args.mode,
             server_url=args.server_url,
-            max_samples=args.max_samples,
+            max_samples_per_domain=args.max_samples_per_domain,
         ))
     except KeyboardInterrupt:
         print("\nStopped by user")
