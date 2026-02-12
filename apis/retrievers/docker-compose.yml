@@ -1,24 +1,23 @@
 services:
   retriever-mcp:
+    # Option 1: Build locally
     build: .
+    # Option 2: Use pre-built image from Docker Hub (comment out 'build' above)
+    # image: docker.io/amurthi44g1wd/retriever-mcp:latest
+
     container_name: retriever-mcp-server
-    command: >
-      bash -c "
-        uvicorn server:app --host 0.0.0.0 --port 8001 &
-        echo 'Waiting for FastAPI retriever server...' &&
-        until curl -sf http://localhost:8001/health > /dev/null 2>&1; do sleep 1; done &&
-        echo 'FastAPI is up, starting MCP server...' &&
-        python mcp_server.py
-      "
     ports:
       - "8001:8001"
     environment:
       - FASTAPI_BASE_URL=http://localhost:8001
       - MCP_DOMAIN=${MCP_DOMAIN:-}
       - PRELOAD_COLLECTIONS=true
+      # Set HF_REPO to auto-download data on first start
+      - HF_REPO=${HF_REPO:-anupamamurthi/retriever-chroma-data}
     volumes:
-      - ./chroma_data:/app/chroma_data
-      - ./queries:/app/queries:ro
+      # Persist downloaded data across container restarts
+      - chroma_data:/app/chroma_data
+      - queries_data:/app/queries
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
       interval: 10s
@@ -27,3 +26,7 @@ services:
     restart: unless-stopped
     stdin_open: true
     tty: true
+
+volumes:
+  chroma_data:
+  queries_data:
