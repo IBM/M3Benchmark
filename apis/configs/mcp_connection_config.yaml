@@ -17,3 +17,13 @@ tasks:
     container_command:
       - python
       - mcp_server.py
+
+  # Task 5: LangGraphReActAgent + RetrieverMCPServer (ChromaDB)
+  # Uses docker/podman container exec (per-domain MCP server)
+  5:
+    mode: stdio
+    container_name: retriever-mcp-server
+    container_runtime: null  # null = auto-detect (prefers podman, falls back to docker)
+    container_command:
+      - python
+      - mcp_server.py

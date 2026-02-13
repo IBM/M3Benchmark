@@ -5,11 +5,6 @@ Benchmark Runner
 
 Runs LLM agents against MCP tool servers and records trajectories + answers.
 
-Each task_id maps to a TaskConfig:
-  - input_dir:       where the domain JSON files live
-  - container_name:  which Docker container to exec into
-  - mcp_domain_env:  env var the MCP server reads for domain filtering
-
 Tasks:
   Task 2  -> fastapi-mcp-server   (M3 SQL tools)
   Task 5  -> retriever-mcp-server (ChromaDB retriever)
@@ -76,42 +71,6 @@ from agents.llm import create_llm
 from agents.mcp_tool_wrapper import MCPToolWrapper
 
 
-# ---------------------------------------------------------------------------
-# Task configurations
-# ---------------------------------------------------------------------------
-@dataclass
-class TaskConfig:
-    """Per-task settings: where the data is, which container to use, and
-    what environment variable name the MCP server reads for domain filtering."""
-    input_dir: str
-    container_name: str
-    mcp_domain_env: str = "MCP_DOMAIN"
-
-
-TASK_CONFIGS: Dict[int, TaskConfig] = {
-    2: TaskConfig(
-        input_dir=os.environ.get(
-            "TASK_2_DIR",
-            "/Users/anu/Documents/GitHub/routing/EnterpriseBenchmark/train/input/",
-        ),
-        container_name="fastapi-mcp-server",
-        # NOTE: existing task_2 passes MCP_DOMAIN (plural) which the m3
-        # server doesn't actually read — it reads MCP_DOMAIN.  Keeping the
-        # legacy value here to avoid changing current behaviour.
-        mcp_domain_env="MCP_DOMAIN",
-    ),
-    5: TaskConfig(
-        input_dir=os.environ.get(
-            "TASK_5_DIR",
-            "/Users/anu/Desktop/data/task_5/train/input",
-        ),
-        container_name="retriever-mcp-server",
-        mcp_domain_env="MCP_DOMAIN",
-    ),
-}
-
-# Back-compat helper used by run_task / list_tools_for_domains
-TASK_PATHS = {tid: cfg.input_dir for tid, cfg in TASK_CONFIGS.items()}
 from agents.tool_calling_agent import ToolCallingAgent
 from benchmark.mcp_client import (
     load_mcp_config,
@@ -327,7 +286,6 @@ async def process_domain(
     cfg: MCPConnectionConfig,
     agent: Optional[AgentInterface] = None,
     query: Optional[str] = None,
-    mcp_domain_env: str = "MCP_DOMAIN",
 ) -> dict:
     """Process a single domain: connect to MCP server and list tools."""
 
@@ -644,7 +602,7 @@ def _make_task1_item_runner(llm):
 
 def _make_task2_item_runner(agent):
     """Return a domain-level factory for task_id=2 (LangGraphReActAgent)."""
-    def factory(tools):
+    def factory(_tools):
         async def item_runner(item, query_tools):
             return await agent.run(item.query, query_tools)
         return item_runner
@@ -728,6 +686,7 @@ async def run_task(
         item_runner_factory = _make_task2_item_runner(agent)
 
     # Process each domain, writing output incrementally
+    out_dir = _make_output_dir(task_id, output_dir)
     all_results: List[BenchmarkResult] = []
     for domain in domain_list:
         items = items_by_domain[domain]
@@ -742,7 +701,7 @@ async def run_task(
             shortlister=shortlister,
         )
         all_results.extend(domain_results)
-        save_results_ground_truth(domain_results, Path(output_file))
+        save_results_ground_truth(domain_results, out_dir / f"{domain}.json")
 
     results = all_results
 
@@ -764,7 +723,6 @@ async def list_tools_for_domains(
     task_id: int,
     cfg: MCPConnectionConfig,
     domains: Optional[List[str]] = None,
-    mcp_domain_env: str = "MCP_DOMAIN",
 ):
     """List all available tools for specified domains via MCP protocol."""
 
@@ -988,35 +946,19 @@ def main():
     args = parser.parse_args()
     task_ids = args.task_id  # list of ints now
 
-    # Validate all task IDs upfront
-    task_cfgs = {}
-    for tid in task_ids:
-        cfg = TASK_CONFIGS.get(tid)
-        if not cfg:
-            print(f"Error: Unknown task_id {tid}")
-            print(f"Available task_ids: {list(TASK_CONFIGS.keys())}")
-            sys.exit(1)
-        task_cfgs[tid] = cfg
-
     mode = "parallel" if args.parallel and len(task_ids) > 1 else "sequential"
     print("="*60)
     print(f"Benchmark Runner ({mode}, tasks: {task_ids})")
     print("="*60)
-    print("=" * 60)
-    print("Benchmark Runner")
-    print("=" * 60)
 
     # Load MCP connection config from YAML
     mcp_configs = load_mcp_config(args.mcp_config)
-    cfg = mcp_configs.get(args.task_id, MCPConnectionConfig())
 
     def _make_run_task_coro(tid: int):
-        task_cfg = task_cfgs[tid]
-        cname = cfg.container_name
+        task_cfg = mcp_configs.get(tid, MCPConnectionConfig())
         return run_task(
             task_id=tid,
-            container_runtime=cfg.container_runtime,
-            container_name=cname,
+            cfg=task_cfg,
             run_agent=args.run_agent,
             provider=args.provider,
             model=args.model,
@@ -1024,18 +966,14 @@ def main():
             output_dir=args.output,
             domains=args.domain,
             top_k_tools=args.top_k_tools,
-            mcp_domain_env=cfg.mcp_domain_env,
         )
 
     def _make_list_tools_coro(tid: int):
-        cfg = task_cfgs[tid]
-        cname = args.container_name or cfg.container_name
+        task_cfg = mcp_configs.get(tid, MCPConnectionConfig())
         return list_tools_for_domains(
             task_id=tid,
-            container_runtime=container_runtime,
-            container_name=cname,
+            cfg=task_cfg,
             domains=args.domain,
-            mcp_domain_env=cfg.mcp_domain_env,
         )
 
     # Handle --list-tools mode
@@ -1060,26 +998,6 @@ def main():
                 await c
 
     asyncio.run(_run_all())
-    subprocess_args = args.subprocess_args.split() if args.subprocess_args else None
-
-        asyncio.run(list_tools_for_domains(
-            task_id=args.task_id,
-            cfg=cfg,
-            domains=args.domain,
-        ))
-        return
-
-    asyncio.run(run_task(
-        task_id=args.task_id,
-        cfg=cfg,
-        run_agent=args.run_agent,
-        provider=args.provider,
-        model=args.model,
-        max_samples_per_domain=args.max_samples_per_domain,
-        output_file=args.output,
-        domains=args.domain,
-        top_k_tools=args.top_k_tools,
-    ))
 
 
 if __name__ == "__main__":
