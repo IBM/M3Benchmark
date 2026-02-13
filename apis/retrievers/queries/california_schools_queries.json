@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Why is Operating theater important?",
+    "expected_topic": "Operating theater"
+  },
+  {
+    "question": "What role does Sapper play?",
+    "expected_topic": "Sapper"
+  },
+  {
+    "question": "How does Tangerine (novel) work?",
+    "expected_topic": "Tangerine (novel)"
+  },
+  {
+    "question": "Describe Marco Polo (game).",
+    "expected_topic": "Marco Polo (game)"
+  },
+  {
+    "question": "What are the key facts about Cladogram?",
+    "expected_topic": "Cladogram"
+  },
+  {
+    "question": "How does 2016 Los Angeles Rams season work?",
+    "expected_topic": "2016 Los Angeles Rams season"
+  },
+  {
+    "question": "Explain Rohitash Gaud.",
+    "expected_topic": "Rohitash Gaud"
+  },
+  {
+    "question": "What do you know about Waste minimisation?",
+    "expected_topic": "Waste minimisation"
+  },
+  {
+    "question": "Explain Economic history of the Netherlands (1500\u20131815).",
+    "expected_topic": "Economic history of the Netherlands (1500\u20131815)"
+  },
+  {
+    "question": "What role does Prairie dog play?",
+    "expected_topic": "Prairie dog"
+  },
+  {
+    "question": "What is Lisbeth Salander?",
+    "expected_topic": "Lisbeth Salander"
+  },
+  {
+    "question": "How does British Army during World War I work?",
+    "expected_topic": "British Army during World War I"
+  },
+  {
+    "question": "What is the significance of Sales taxes in the United States?",
+    "expected_topic": "Sales taxes in the United States"
+  },
+  {
+    "question": "What happened with Elections in Canada?",
+    "expected_topic": "Elections in Canada"
+  },
+  {
+    "question": "What is the significance of Major League Baseball Wild Card Game?",
+    "expected_topic": "Major League Baseball Wild Card Game"
+  },
+  {
+    "question": "Give me a summary of Hell's Kitchen (U.S. TV series).",
+    "expected_topic": "Hell's Kitchen (U.S. TV series)"
+  },
+  {
+    "question": "What role does Project Mc2 play?",
+    "expected_topic": "Project Mc2"
+  },
+  {
+    "question": "What do you know about The Clark Sisters?",
+    "expected_topic": "The Clark Sisters"
+  },
+  {
+    "question": "Tell me about Southwestern United States.",
+    "expected_topic": "Southwestern United States"
+  },
+  {
+    "question": "How does Little Red Riding Hood work?",
+    "expected_topic": "Little Red Riding Hood"
+  },
+  {
+    "question": "Who or what is Modern history?",
+    "expected_topic": "Modern history"
+  },
+  {
+    "question": "What happened with Wonder Woman?",
+    "expected_topic": "Wonder Woman"
+  },
+  {
+    "question": "Tell me about Chick-fil-A.",
+    "expected_topic": "Chick-fil-A"
+  },
+  {
+    "question": "What do you know about Florida Keys?",
+    "expected_topic": "Florida Keys"
+  },
+  {
+    "question": "What is the history of Anti-lock braking system?",
+    "expected_topic": "Anti-lock braking system"
+  },
+  {
+    "question": "Why is Characters of God of War important?",
+    "expected_topic": "Characters of God of War"
+  },
+  {
+    "question": "Why is Origin of the domestic dog important?",
+    "expected_topic": "Origin of the domestic dog"
+  },
+  {
+    "question": "What is Cell wall?",
+    "expected_topic": "Cell wall"
+  },
+  {
+    "question": "Tell me about New York gubernatorial election, 2018.",
+    "expected_topic": "New York gubernatorial election, 2018"
+  },
+  {
+    "question": "What is Substantia nigra?",
+    "expected_topic": "Substantia nigra"
+  },
+  {
+    "question": "What are the key facts about Right-to-work law?",
+    "expected_topic": "Right-to-work law"
+  },
+  {
+    "question": "Who or what is Hollywood Walk of Fame?",
+    "expected_topic": "Hollywood Walk of Fame"
+  },
+  {
+    "question": "How does Love Actually work?",
+    "expected_topic": "Love Actually"
+  },
+  {
+    "question": "What is Self-pollination?",
+    "expected_topic": "Self-pollination"
+  },
+  {
+    "question": "Can you explain Olivia Benson in detail?",
+    "expected_topic": "Olivia Benson"
+  },
+  {
+    "question": "What does this refer to: It has a relatively low gain -- bandwidth product compared to a BJT .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: By the 1820s , the term Pilgrims was becoming more common .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: From the end of the Devonian to the Mid Carboniferous a 30 million year gap occurs in the fossil record .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Precision manufacturing techniques made it possible to build machines that mechanized the shoe industry .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Easter Island lies atop the Rano Kau Ridge , and consists of three shield volcanoes with parallel geologic histories .",
+    "expected_topic": ""
+  },
+  {
+    "question": "A luxury tax is a tax on luxury goods : products not considered essential .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Aggregating review website Metacritic gave the Microsoft Windows version 80 / 100 based on 33 reviews , the PlayStation ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Another controversy is valuing the environment , which in the 21st century is typically assessed by valuing ecosystem se...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Worldwide , Siberia is well known primarily for its long , harsh winters , with a January average of \u2212 25 \u00b0 C ( \u2212 13 \u00b0 F...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Chromolithography is a chemical process .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In 1891 , Ben Talbot is confronted , and killed by a fierce creature in the Blackmoor woods .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: A `` Memorandum of Understanding on Royal Taxation '' was published on 5 February 1993 and amended in 1996 , 2009 and 20...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The disadvantages of HVDC are in conversion , switching , control , availability , and maintenance .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The absence of any specific examples of people praying the `` Sinner 's Prayer '' in the Bible is also used by some to a...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Roosevelt Administration reacted by launching a rhetorical campaign against monopoly power , which was cast as the c...",
+    "expected_topic": ""
+  }
+]

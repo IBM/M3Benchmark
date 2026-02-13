@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Can you explain Client\u2013server model in detail?",
+    "expected_topic": "Client\u2013server model"
+  },
+  {
+    "question": "What is Adolescence?",
+    "expected_topic": "Adolescence"
+  },
+  {
+    "question": "Give me a summary of Harry Potter and the Goblet of Fire (film).",
+    "expected_topic": "Harry Potter and the Goblet of Fire (film)"
+  },
+  {
+    "question": "How does List of Marvel Cinematic Universe films work?",
+    "expected_topic": "List of Marvel Cinematic Universe films"
+  },
+  {
+    "question": "What do you know about Alex Avila?",
+    "expected_topic": "Alex Avila"
+  },
+  {
+    "question": "What is Jenilee Harrison?",
+    "expected_topic": "Jenilee Harrison"
+  },
+  {
+    "question": "Give me a summary of Emperor of Japan.",
+    "expected_topic": "Emperor of Japan"
+  },
+  {
+    "question": "Give me a summary of Mount St. Helens.",
+    "expected_topic": "Mount St. Helens"
+  },
+  {
+    "question": "Give me a summary of Maldives.",
+    "expected_topic": "Maldives"
+  },
+  {
+    "question": "How does Football records in England work?",
+    "expected_topic": "Football records in England"
+  },
+  {
+    "question": "What happened with The Raven That Refused to Sing (And Other Stories)?",
+    "expected_topic": "The Raven That Refused to Sing (And Other Stories)"
+  },
+  {
+    "question": "How does Bobcat work?",
+    "expected_topic": "Bobcat"
+  },
+  {
+    "question": "Why is Quartz clock important?",
+    "expected_topic": "Quartz clock"
+  },
+  {
+    "question": "Why is Cremation important?",
+    "expected_topic": "Cremation"
+  },
+  {
+    "question": "Explain Lance Franklin.",
+    "expected_topic": "Lance Franklin"
+  },
+  {
+    "question": "What happened with I Want to Hold Your Hand?",
+    "expected_topic": "I Want to Hold Your Hand"
+  },
+  {
+    "question": "Explain Recycling.",
+    "expected_topic": "Recycling"
+  },
+  {
+    "question": "Tell me about Abomination (Bible).",
+    "expected_topic": "Abomination (Bible)"
+  },
+  {
+    "question": "What is the significance of BrainPop?",
+    "expected_topic": "BrainPop"
+  },
+  {
+    "question": "Tell me about Where the Wild Things Are (film).",
+    "expected_topic": "Where the Wild Things Are (film)"
+  },
+  {
+    "question": "What are the key facts about Provisions of the Patient Protection and Affordable Care Act?",
+    "expected_topic": "Provisions of the Patient Protection and Affordable Care Act"
+  },
+  {
+    "question": "What is the significance of Tequila?",
+    "expected_topic": "Tequila"
+  },
+  {
+    "question": "What do you know about National colours of Australia?",
+    "expected_topic": "National colours of Australia"
+  },
+  {
+    "question": "Who or what is Black ghost knifefish?",
+    "expected_topic": "Black ghost knifefish"
+  },
+  {
+    "question": "What is the history of Ryukyu Islands?",
+    "expected_topic": "Ryukyu Islands"
+  },
+  {
+    "question": "Can you explain Liturgical colours in detail?",
+    "expected_topic": "Liturgical colours"
+  },
+  {
+    "question": "How does Triple Crown of Thoroughbred Racing (United States) work?",
+    "expected_topic": "Triple Crown of Thoroughbred Racing (United States)"
+  },
+  {
+    "question": "What are the key facts about River Thames?",
+    "expected_topic": "River Thames"
+  },
+  {
+    "question": "Tell me about Bride of Frankenstein.",
+    "expected_topic": "Bride of Frankenstein"
+  },
+  {
+    "question": "Why is Kingdom of England important?",
+    "expected_topic": "Kingdom of England"
+  },
+  {
+    "question": "What role does Oakland Raiders relocation to Las Vegas play?",
+    "expected_topic": "Oakland Raiders relocation to Las Vegas"
+  },
+  {
+    "question": "What role does American Horror Story play?",
+    "expected_topic": "American Horror Story"
+  },
+  {
+    "question": "What is Hundred Years' War?",
+    "expected_topic": "Hundred Years' War"
+  },
+  {
+    "question": "What is Medical device?",
+    "expected_topic": "Medical device"
+  },
+  {
+    "question": "What happened with Nutrition facts label?",
+    "expected_topic": "Nutrition facts label"
+  },
+  {
+    "question": "Prior to production on Season 4 began , Kohan and the writers informed Wiley that her character was going to die , but n...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: This section does not cite any sources .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Our knowledge of this period is supplemented by Pali Buddhist texts .",
+    "expected_topic": ""
+  },
+  {
+    "question": "In the early 19th century , when neoclassicism and romantism flourished , famous academic artists focused on mythologica...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In recent years , some of the game 's best pitchers have relied heavily on the changeup .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The Victorian era of the United Kingdom was the period of Queen Victoria 's reign from June 1837 to January 1901 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The first part of the tower was built in the 12th century , but in the 15th century several modifications were made and ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "A version of Calvinism that has been adopted by both theological conservatives and liberals gained influence in the Dutc...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The median income for a household in the city was $30,568 , and the median income for a family was $38,297 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The colony was amalgamated into the Dominion of New England in 1686 , as King James II attempted to enforce royal author...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The soils are generally poor , except on the plains , where areas with natural grass , fertile soils and warm summers pr...",
+    "expected_topic": ""
+  },
+  {
+    "question": "If conservative medical treatments fail to achieve a full term pregnancy , the physician or WHNP may suggest the patient...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Regarding the relations of early Philippine polities with the various state - level polities of Indonesia and Malaysia ,...",
+    "expected_topic": ""
+  },
+  {
+    "question": "American ginseng Panax quinquefolius Conservation status Vulnerable ( NatureServe ) Scientific classification Kingdom : ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Circa 1800 BC , the Norte Chico civilization began to decline , with more powerful centers appearing to the south and no...",
+    "expected_topic": ""
+  }
+]

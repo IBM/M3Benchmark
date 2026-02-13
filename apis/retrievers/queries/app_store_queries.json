@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Tell me about Three Witches.",
+    "expected_topic": "Three Witches"
+  },
+  {
+    "question": "What are the key facts about Armistice of 11 November 1918?",
+    "expected_topic": "Armistice of 11 November 1918"
+  },
+  {
+    "question": "What happened with Egg donation?",
+    "expected_topic": "Egg donation"
+  },
+  {
+    "question": "Who or what is Antonin Scalia?",
+    "expected_topic": "Antonin Scalia"
+  },
+  {
+    "question": "Describe Idealization and devaluation.",
+    "expected_topic": "Idealization and devaluation"
+  },
+  {
+    "question": "How does Dan Humphrey work?",
+    "expected_topic": "Dan Humphrey"
+  },
+  {
+    "question": "What do you know about Habeas corpus?",
+    "expected_topic": "Habeas corpus"
+  },
+  {
+    "question": "What are the key facts about Finances of the British royal family?",
+    "expected_topic": "Finances of the British royal family"
+  },
+  {
+    "question": "How does Boeing B-29 Superfortress work?",
+    "expected_topic": "Boeing B-29 Superfortress"
+  },
+  {
+    "question": "What is the history of Differential (mechanical device)?",
+    "expected_topic": "Differential (mechanical device)"
+  },
+  {
+    "question": "Give me a summary of Dancing with the Stars (U.S. season 22).",
+    "expected_topic": "Dancing with the Stars (U.S. season 22)"
+  },
+  {
+    "question": "What do you know about Transport in London?",
+    "expected_topic": "Transport in London"
+  },
+  {
+    "question": "Tell me about History of Colombia.",
+    "expected_topic": "History of Colombia"
+  },
+  {
+    "question": "How does Water potential work?",
+    "expected_topic": "Water potential"
+  },
+  {
+    "question": "What are the key facts about Chicken Fried?",
+    "expected_topic": "Chicken Fried"
+  },
+  {
+    "question": "What do you know about Illinois?",
+    "expected_topic": "Illinois"
+  },
+  {
+    "question": "How does Harry Potter and the Philosopher's Stone work?",
+    "expected_topic": "Harry Potter and the Philosopher's Stone"
+  },
+  {
+    "question": "What do you know about Burning of Washington?",
+    "expected_topic": "Burning of Washington"
+  },
+  {
+    "question": "What is the history of Portia (The Merchant of Venice)?",
+    "expected_topic": "Portia (The Merchant of Venice)"
+  },
+  {
+    "question": "What is the history of Yeh Rishta Kya Kehlata Hai?",
+    "expected_topic": "Yeh Rishta Kya Kehlata Hai"
+  },
+  {
+    "question": "Who or what is The Book of the Thousand Nights and a Night?",
+    "expected_topic": "The Book of the Thousand Nights and a Night"
+  },
+  {
+    "question": "What role does Fallopian tube play?",
+    "expected_topic": "Fallopian tube"
+  },
+  {
+    "question": "What are the key facts about Channel Tunnel?",
+    "expected_topic": "Channel Tunnel"
+  },
+  {
+    "question": "Tell me about Zuko.",
+    "expected_topic": "Zuko"
+  },
+  {
+    "question": "What is the history of Border Collie?",
+    "expected_topic": "Border Collie"
+  },
+  {
+    "question": "Explain Lion.",
+    "expected_topic": "Lion"
+  },
+  {
+    "question": "What is the significance of The Muppet Movie?",
+    "expected_topic": "The Muppet Movie"
+  },
+  {
+    "question": "Why is Adobe Photoshop important?",
+    "expected_topic": "Adobe Photoshop"
+  },
+  {
+    "question": "Explain Rub' al Khali.",
+    "expected_topic": "Rub' al Khali"
+  },
+  {
+    "question": "What do you know about Grip (job)?",
+    "expected_topic": "Grip (job)"
+  },
+  {
+    "question": "What role does Jurassic World: Fallen Kingdom play?",
+    "expected_topic": "Jurassic World: Fallen Kingdom"
+  },
+  {
+    "question": "Why is Houston Astros important?",
+    "expected_topic": "Houston Astros"
+  },
+  {
+    "question": "Give me a summary of Irrational number.",
+    "expected_topic": "Irrational number"
+  },
+  {
+    "question": "What is the history of Evidence of common descent?",
+    "expected_topic": "Evidence of common descent"
+  },
+  {
+    "question": "How does Bindi (decoration) work?",
+    "expected_topic": "Bindi (decoration)"
+  },
+  {
+    "question": "What does this refer to: Many of the Loyalists were forced to abandon substantial properties to America restoration of or compensation for these ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In `` Life of Brian '' , Stewie is the one who takes Brian 's death the hardest , and when the family adopts a new dog n...",
+    "expected_topic": ""
+  },
+  {
+    "question": "For punishment , the chief of the gods struck down each of the lovers and transformed them into great mountains where th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "English dictionaries describe finger as meaning either one of the five digits including the thumb , or one of the four e...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Once the Second Punic War had been resolved , and the Romans had begun to regather their strength , they looked to re-as...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The premium first quality wool is taken from the back and upper sides of the rabbit .",
+    "expected_topic": ""
+  },
+  {
+    "question": "In season ten , episode 22 , Zack and his fianc\u00e9 plan a double date with Penny and Leonard but his fianc\u00e9 does n't turn ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In The Reluctant Admiral , Hiroyuki Agawa gives a quotation from a reply by Admiral Yamamoto to Ogata Taketora on Januar...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The other vicar ( played by Gerald Sim ) had a single appearance in the episode `` The Christening '' .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: All sets of real and color - space primaries are arbitrary , in the sense that there is no one set of primaries that can...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Shakespeare 's creation of the Three Witches may have also been influenced by an anti-witchcraft law passed by King Jame...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Moose often show aggression to other animals as well ; especially predators .",
+    "expected_topic": ""
+  },
+  {
+    "question": "At one time Northwest Airlines had a ticket office in the Peabody Hotel Arcade .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Carnegie was a frequent contributor to periodicals on labor issues .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Poverty and economic insecurity increase the risk that a person will commit suicide .",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "How does Quinn Fabray work?",
+    "expected_topic": "Quinn Fabray"
+  },
+  {
+    "question": "Can you explain London Bridge (Lake Havasu City) in detail?",
+    "expected_topic": "London Bridge (Lake Havasu City)"
+  },
+  {
+    "question": "Describe History of Puerto Rico.",
+    "expected_topic": "History of Puerto Rico"
+  },
+  {
+    "question": "Why is The Alienist (TV series) important?",
+    "expected_topic": "The Alienist (TV series)"
+  },
+  {
+    "question": "What is the history of The Happy Prince and Other Tales?",
+    "expected_topic": "The Happy Prince and Other Tales"
+  },
+  {
+    "question": "What is Somatic cell nuclear transfer?",
+    "expected_topic": "Somatic cell nuclear transfer"
+  },
+  {
+    "question": "Give me a summary of Wolf Girl and Black Prince.",
+    "expected_topic": "Wolf Girl and Black Prince"
+  },
+  {
+    "question": "Explain Striated muscle tissue.",
+    "expected_topic": "Striated muscle tissue"
+  },
+  {
+    "question": "Who or what is Story of a Girl (novel)?",
+    "expected_topic": "Story of a Girl (novel)"
+  },
+  {
+    "question": "What role does Blinded by the Light play?",
+    "expected_topic": "Blinded by the Light"
+  },
+  {
+    "question": "Who or what is If a tree falls in a forest?",
+    "expected_topic": "If a tree falls in a forest"
+  },
+  {
+    "question": "What is the history of Synod of Hippo?",
+    "expected_topic": "Synod of Hippo"
+  },
+  {
+    "question": "What are the key facts about Phone connector (audio)?",
+    "expected_topic": "Phone connector (audio)"
+  },
+  {
+    "question": "What are the key facts about Right of Children to Free and Compulsory Education Act, 2009?",
+    "expected_topic": "Right of Children to Free and Compulsory Education Act, 2009"
+  },
+  {
+    "question": "What is Taxonomy (biology)?",
+    "expected_topic": "Taxonomy (biology)"
+  },
+  {
+    "question": "Who or what is Pharynx?",
+    "expected_topic": "Pharynx"
+  },
+  {
+    "question": "Give me a summary of Seedless fruit.",
+    "expected_topic": "Seedless fruit"
+  },
+  {
+    "question": "Explain Magna Carta Holy Grail.",
+    "expected_topic": "Magna Carta Holy Grail"
+  },
+  {
+    "question": "What are the key facts about Standard of living in China?",
+    "expected_topic": "Standard of living in China"
+  },
+  {
+    "question": "What is the history of Whitney Houston?",
+    "expected_topic": "Whitney Houston"
+  },
+  {
+    "question": "What happened with Hilda group?",
+    "expected_topic": "Hilda group"
+  },
+  {
+    "question": "Who or what is Islamic architecture?",
+    "expected_topic": "Islamic architecture"
+  },
+  {
+    "question": "What is the history of Hyde Park, London?",
+    "expected_topic": "Hyde Park, London"
+  },
+  {
+    "question": "What happened with My Sister's Keeper (novel)?",
+    "expected_topic": "My Sister's Keeper (novel)"
+  },
+  {
+    "question": "What are the key facts about Leo (constellation)?",
+    "expected_topic": "Leo (constellation)"
+  },
+  {
+    "question": "What happened with Parameter (computer programming)?",
+    "expected_topic": "Parameter (computer programming)"
+  },
+  {
+    "question": "Describe United Nations Partition Plan for Palestine.",
+    "expected_topic": "United Nations Partition Plan for Palestine"
+  },
+  {
+    "question": "Who or what is Restoration (England)?",
+    "expected_topic": "Restoration (England)"
+  },
+  {
+    "question": "What role does Cell division play?",
+    "expected_topic": "Cell division"
+  },
+  {
+    "question": "Describe Production design of The Lord of the Rings film series.",
+    "expected_topic": "Production design of The Lord of the Rings film series"
+  },
+  {
+    "question": "Give me a summary of Cardinal direction.",
+    "expected_topic": "Cardinal direction"
+  },
+  {
+    "question": "Can you explain England at the FIFA World Cup in detail?",
+    "expected_topic": "England at the FIFA World Cup"
+  },
+  {
+    "question": "Why is Edward VIII abdication crisis important?",
+    "expected_topic": "Edward VIII abdication crisis"
+  },
+  {
+    "question": "Can you explain Philadelphia Eagles in detail?",
+    "expected_topic": "Philadelphia Eagles"
+  },
+  {
+    "question": "Describe Alternative energy.",
+    "expected_topic": "Alternative energy"
+  },
+  {
+    "question": "The proportion of electrons able to cross the base and reach the collector is a measure of the BJT efficiency .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Other etymologies derive the name from Latin compositum , local Vulgar Latin Composita Tella , meaning `` burial ground ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The adult human brain weighs on average about 1.",
+    "expected_topic": ""
+  },
+  {
+    "question": "The lead roles were performed by Tim Healy , Kevin Whately , Jimmy Nail , Timothy Spall , Christopher Fairbank , Pat Roa...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The closer the known square is to the unknown , the more accurate the approximation .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The warriors retreated to Prophetstown where , according to one chief 's account , the warriors confronted Tenskwatawa .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Once the bottle is opened , the tequila will be subject to oxidation which will continue to happen even if no more oxyge...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Ernie was originally performed by Jim Henson .",
+    "expected_topic": ""
+  },
+  {
+    "question": "On the Llano , V\u00e1zquez de Coronado encountered vast herds of bison -- the American buffalo .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Leaving his `` least reliable soldiers '' under the command of Pedro de Alvarado to guard Moctezuma , Cort\u00e9s set out aga...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Super You is the television viewer and the sixth Super Reader in Seasons 2 and 3 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: On February 26 , the searchers found the group 's abandoned and badly damaged tent on Kholat Syakhl .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The third - generation Ford Explorer was marketed by all three divisions of Ford Motor Company : by Mercury as the secon...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In 2003 , Rover produced his first Miss Morning Glory Calendar ( for the 2004 calendar year ) .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The districts of the Bahamas provide a system of local government everywhere except New Providence ( which holds 70 % of...",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What are the key facts about Angel Batista?",
+    "expected_topic": "Angel Batista"
+  },
+  {
+    "question": "Who or what is The Breakfast Club?",
+    "expected_topic": "The Breakfast Club"
+  },
+  {
+    "question": "What do you know about A Walk Among the Tombstones (film)?",
+    "expected_topic": "A Walk Among the Tombstones (film)"
+  },
+  {
+    "question": "What role does Spec Ops: The Line play?",
+    "expected_topic": "Spec Ops: The Line"
+  },
+  {
+    "question": "What do you know about Seneca Falls Convention?",
+    "expected_topic": "Seneca Falls Convention"
+  },
+  {
+    "question": "How does Tao work?",
+    "expected_topic": "Tao"
+  },
+  {
+    "question": "What is Black Sabbath?",
+    "expected_topic": "Black Sabbath"
+  },
+  {
+    "question": "Can you explain Republic (Plato) in detail?",
+    "expected_topic": "Republic (Plato)"
+  },
+  {
+    "question": "Can you explain The Big Bang Theory (season 11) in detail?",
+    "expected_topic": "The Big Bang Theory (season 11)"
+  },
+  {
+    "question": "What is the significance of List of Ed, Edd n Eddy characters?",
+    "expected_topic": "List of Ed, Edd n Eddy characters"
+  },
+  {
+    "question": "Who or what is Dubuque, Iowa?",
+    "expected_topic": "Dubuque, Iowa"
+  },
+  {
+    "question": "Can you explain National identification number in detail?",
+    "expected_topic": "National identification number"
+  },
+  {
+    "question": "What is the history of Hurricane Katrina?",
+    "expected_topic": "Hurricane Katrina"
+  },
+  {
+    "question": "What is the significance of Three Billboards Outside Ebbing, Missouri?",
+    "expected_topic": "Three Billboards Outside Ebbing, Missouri"
+  },
+  {
+    "question": "Describe Survivor (franchise).",
+    "expected_topic": "Survivor (franchise)"
+  },
+  {
+    "question": "What is Studio Backlot Tour?",
+    "expected_topic": "Studio Backlot Tour"
+  },
+  {
+    "question": "How does Motte-and-bailey castle work?",
+    "expected_topic": "Motte-and-bailey castle"
+  },
+  {
+    "question": "Explain Ellipsis.",
+    "expected_topic": "Ellipsis"
+  },
+  {
+    "question": "What happened with Cavalier King Charles Spaniel?",
+    "expected_topic": "Cavalier King Charles Spaniel"
+  },
+  {
+    "question": "How does Costa Maya work?",
+    "expected_topic": "Costa Maya"
+  },
+  {
+    "question": "Who or what is Disk storage?",
+    "expected_topic": "Disk storage"
+  },
+  {
+    "question": "Who or what is High-voltage direct current?",
+    "expected_topic": "High-voltage direct current"
+  },
+  {
+    "question": "Tell me about Spanish Inquisition.",
+    "expected_topic": "Spanish Inquisition"
+  },
+  {
+    "question": "What is the significance of Grand juries in the United States?",
+    "expected_topic": "Grand juries in the United States"
+  },
+  {
+    "question": "What do you know about Love It or List It?",
+    "expected_topic": "Love It or List It"
+  },
+  {
+    "question": "What happened with George Takei?",
+    "expected_topic": "George Takei"
+  },
+  {
+    "question": "Can you explain Republican Party (United States) in detail?",
+    "expected_topic": "Republican Party (United States)"
+  },
+  {
+    "question": "What is the history of Stanford\u2013Binet Intelligence Scales?",
+    "expected_topic": "Stanford\u2013Binet Intelligence Scales"
+  },
+  {
+    "question": "Describe List of The Vampire Diaries characters.",
+    "expected_topic": "List of The Vampire Diaries characters"
+  },
+  {
+    "question": "Why is List of Game of Thrones characters important?",
+    "expected_topic": "List of Game of Thrones characters"
+  },
+  {
+    "question": "What is the significance of Karachi?",
+    "expected_topic": "Karachi"
+  },
+  {
+    "question": "What is Wikipedia:Citing sources?",
+    "expected_topic": "Wikipedia:Citing sources"
+  },
+  {
+    "question": "What do you know about Adam and Eve?",
+    "expected_topic": "Adam and Eve"
+  },
+  {
+    "question": "Who or what is Thymus?",
+    "expected_topic": "Thymus"
+  },
+  {
+    "question": "How does Corrosion work?",
+    "expected_topic": "Corrosion"
+  },
+  {
+    "question": "39,736 Army National Guard and 5,952 Air National Guard were deployed ( 45,688 total ) .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Gevanni skillfully follows and monitors suspects and has abilities such as the skill of picking locks .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Ticks that transmit B.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Catalonia saw the first railway construction in the Iberian Peninsula in 1848 , linking Barcelona with Matar\u00f3 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The adolescent growth spurt is a rapid increase in the individual 's height and weight during puberty resulting from the...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Chief Executive of Hong Kong can be impeached by the Legislative Council .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Related to metacognition and abstract thought , perspective - taking involves a more sophisticated theory of mind .",
+    "expected_topic": ""
+  },
+  {
+    "question": "By 1746 an integrated brass mill was working at Warmley near Bristol .",
+    "expected_topic": ""
+  },
+  {
+    "question": "This article needs additional citations for verification .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Most evidence suggests that statins are effective in preventing heart disease in those with high cholesterol , but no hi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Hitler issued Order 30 : `` The Arab Freedom Movement in the Middle East is our natural ally against England .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: This last point may be disputed .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: During the eighteenth century the number of conversos accused by the Inquisition decreased significantly .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In the episodes following the break up , Rachel and Ross are initially hostile towards each other , but continue to harb...",
+    "expected_topic": ""
+  },
+  {
+    "question": "When CDR Chandler was promoted to Chief of Naval Operations after the defeat of the Immunes and the successful creation ...",
+    "expected_topic": ""
+  }
+]

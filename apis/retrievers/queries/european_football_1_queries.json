@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What are the key facts about Nickel?",
+    "expected_topic": "Nickel"
+  },
+  {
+    "question": "What do you know about Lynette Scavo?",
+    "expected_topic": "Lynette Scavo"
+  },
+  {
+    "question": "Describe List of military special forces units.",
+    "expected_topic": "List of military special forces units"
+  },
+  {
+    "question": "Can you explain 2018 Rose Bowl in detail?",
+    "expected_topic": "2018 Rose Bowl"
+  },
+  {
+    "question": "Tell me about Child labour.",
+    "expected_topic": "Child labour"
+  },
+  {
+    "question": "Why is Cheetos important?",
+    "expected_topic": "Cheetos"
+  },
+  {
+    "question": "Give me a summary of Republican Party (United States).",
+    "expected_topic": "Republican Party (United States)"
+  },
+  {
+    "question": "Tell me about Small intestine.",
+    "expected_topic": "Small intestine"
+  },
+  {
+    "question": "Who or what is Defense of Marriage Act?",
+    "expected_topic": "Defense of Marriage Act"
+  },
+  {
+    "question": "Why is English contract law important?",
+    "expected_topic": "English contract law"
+  },
+  {
+    "question": "Can you explain Prime Minister of France in detail?",
+    "expected_topic": "Prime Minister of France"
+  },
+  {
+    "question": "What do you know about Old-Time Religion?",
+    "expected_topic": "Old-Time Religion"
+  },
+  {
+    "question": "Who or what is True (Spandau Ballet song)?",
+    "expected_topic": "True (Spandau Ballet song)"
+  },
+  {
+    "question": "Who or what is Flag of the Dominican Republic?",
+    "expected_topic": "Flag of the Dominican Republic"
+  },
+  {
+    "question": "What role does Thar Desert play?",
+    "expected_topic": "Thar Desert"
+  },
+  {
+    "question": "What happened with Ernest Darby?",
+    "expected_topic": "Ernest Darby"
+  },
+  {
+    "question": "Tell me about The Star-Spangled Banner.",
+    "expected_topic": "The Star-Spangled Banner"
+  },
+  {
+    "question": "Can you explain International Regulations for Preventing Collisions at Sea in detail?",
+    "expected_topic": "International Regulations for Preventing Collisions at Sea"
+  },
+  {
+    "question": "Give me a summary of Hell's Kitchen (U.S. TV series).",
+    "expected_topic": "Hell's Kitchen (U.S. TV series)"
+  },
+  {
+    "question": "What is the significance of 2018 NBA Playoffs?",
+    "expected_topic": "2018 NBA Playoffs"
+  },
+  {
+    "question": "What are the key facts about War for the Planet of the Apes?",
+    "expected_topic": "War for the Planet of the Apes"
+  },
+  {
+    "question": "Describe River Welland.",
+    "expected_topic": "River Welland"
+  },
+  {
+    "question": "Explain Quantum mechanics.",
+    "expected_topic": "Quantum mechanics"
+  },
+  {
+    "question": "What is the history of List of mathematical symbols?",
+    "expected_topic": "List of mathematical symbols"
+  },
+  {
+    "question": "How does Moth work?",
+    "expected_topic": "Moth"
+  },
+  {
+    "question": "Can you explain Millennials in detail?",
+    "expected_topic": "Millennials"
+  },
+  {
+    "question": "What is the significance of Dipping tobacco?",
+    "expected_topic": "Dipping tobacco"
+  },
+  {
+    "question": "What is Billa (2009 film)?",
+    "expected_topic": "Billa (2009 film)"
+  },
+  {
+    "question": "Explain Bantu peoples in South Africa.",
+    "expected_topic": "Bantu peoples in South Africa"
+  },
+  {
+    "question": "What is the significance of Excess post-exercise oxygen consumption?",
+    "expected_topic": "Excess post-exercise oxygen consumption"
+  },
+  {
+    "question": "What is Liz Parker?",
+    "expected_topic": "Liz Parker"
+  },
+  {
+    "question": "Why is False Claims Act important?",
+    "expected_topic": "False Claims Act"
+  },
+  {
+    "question": "Describe Stone Mountain.",
+    "expected_topic": "Stone Mountain"
+  },
+  {
+    "question": "Explain SpongeBob SquarePants.",
+    "expected_topic": "SpongeBob SquarePants"
+  },
+  {
+    "question": "What is Working memory?",
+    "expected_topic": "Working memory"
+  },
+  {
+    "question": "By the turn of the millennium , the capacity of White Hart Lane had become lower than other major Premier League clubs .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Prior to the 2010 playoffs , the overtime winner was simply the first team to score any points ; however , they were cha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The FIFA World Cup , often simply called the World Cup , is an international association football competition contested ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The 89,019 crowd for the New Zealand versus Argentina game set a new record attendance for a Rugby World Cup game .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The White Hart Lane ground was built on a disused nursery owned by the brewery Charringtons and located behind a public ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The record home attendance at White Hart Lane was 75,038 on 5 March 1938 in a cup tie against Sunderland .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Wembley Stadium is owned by the governing body of English football , the Football Association ( the FA ) , through its s...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The English Women 's FA was formed in 1969 ( as a result of the increased interest generated by the 1966 World Cup ) , a...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The American Bowl games began in 1986 and continued until 2005 at various sites in countries around the world .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In recent years , the NFL has expanded into new markets and ventures outside of the United States , beginning with a reg...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The need for a single body to oversee association football had become apparent by the beginning of the 20th century , wi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Record attendance : 126,047 -- Bolton Wanderers v West Ham United played at Wembley FA Cup Final ( 28 April 1923 ) .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The European Football League ( EFL ) , run by the European Federation of American Football ( EFAF ) , is an annual invit...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The all - seater stadium is a bowl design with a capacity of 90,000 , protected from the elements by a sliding roof that...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In 1970 an Italian ladies football federation , known as Federazione Femminili Italiana Gioco Calcia or FFIGC , ran a ``...",
+    "expected_topic": ""
+  }
+]

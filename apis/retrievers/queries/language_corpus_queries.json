@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the significance of Eugene Porter?",
+    "expected_topic": "Eugene Porter"
+  },
+  {
+    "question": "Tell me about Early world maps.",
+    "expected_topic": "Early world maps"
+  },
+  {
+    "question": "What is the significance of Leaning Tower of Pisa?",
+    "expected_topic": "Leaning Tower of Pisa"
+  },
+  {
+    "question": "What is the significance of Pharynx?",
+    "expected_topic": "Pharynx"
+  },
+  {
+    "question": "Can you explain Spanish conquest of the Inca Empire in detail?",
+    "expected_topic": "Spanish conquest of the Inca Empire"
+  },
+  {
+    "question": "What are the key facts about Harry Potter and the Philosopher's Stone?",
+    "expected_topic": "Harry Potter and the Philosopher's Stone"
+  },
+  {
+    "question": "Explain Magic Mirror (Snow White).",
+    "expected_topic": "Magic Mirror (Snow White)"
+  },
+  {
+    "question": "Explain Quasar.",
+    "expected_topic": "Quasar"
+  },
+  {
+    "question": "Can you explain One Tree Hill (season 4) in detail?",
+    "expected_topic": "One Tree Hill (season 4)"
+  },
+  {
+    "question": "Why is Byzantine Empire important?",
+    "expected_topic": "Byzantine Empire"
+  },
+  {
+    "question": "What happened with Age of Enlightenment?",
+    "expected_topic": "Age of Enlightenment"
+  },
+  {
+    "question": "Can you explain Allies of World War II in detail?",
+    "expected_topic": "Allies of World War II"
+  },
+  {
+    "question": "Tell me about Colonies in antiquity.",
+    "expected_topic": "Colonies in antiquity"
+  },
+  {
+    "question": "Who or what is Tooth decay?",
+    "expected_topic": "Tooth decay"
+  },
+  {
+    "question": "How does Nathan's Hot Dog Eating Contest work?",
+    "expected_topic": "Nathan's Hot Dog Eating Contest"
+  },
+  {
+    "question": "What do you know about Moai?",
+    "expected_topic": "Moai"
+  },
+  {
+    "question": "Explain In-N-Out Burger.",
+    "expected_topic": "In-N-Out Burger"
+  },
+  {
+    "question": "Describe Niche differentiation.",
+    "expected_topic": "Niche differentiation"
+  },
+  {
+    "question": "What is the significance of Urban renewal?",
+    "expected_topic": "Urban renewal"
+  },
+  {
+    "question": "What are the key facts about Electoral College (United States)?",
+    "expected_topic": "Electoral College (United States)"
+  },
+  {
+    "question": "What is the significance of Middle ear?",
+    "expected_topic": "Middle ear"
+  },
+  {
+    "question": "What is the significance of Cagney & Lacey?",
+    "expected_topic": "Cagney & Lacey"
+  },
+  {
+    "question": "What do you know about Made in Chelsea?",
+    "expected_topic": "Made in Chelsea"
+  },
+  {
+    "question": "What is Supreme Court of India?",
+    "expected_topic": "Supreme Court of India"
+  },
+  {
+    "question": "What are the key facts about Certified teacher?",
+    "expected_topic": "Certified teacher"
+  },
+  {
+    "question": "Who or what is The Lord of the Rings: The Two Towers?",
+    "expected_topic": "The Lord of the Rings: The Two Towers"
+  },
+  {
+    "question": "What are the key facts about Moss?",
+    "expected_topic": "Moss"
+  },
+  {
+    "question": "What are the key facts about Negative number?",
+    "expected_topic": "Negative number"
+  },
+  {
+    "question": "What do you know about Wolf Girl and Black Prince?",
+    "expected_topic": "Wolf Girl and Black Prince"
+  },
+  {
+    "question": "What is the significance of Joe Sewell?",
+    "expected_topic": "Joe Sewell"
+  },
+  {
+    "question": "What role does Command-line interface play?",
+    "expected_topic": "Command-line interface"
+  },
+  {
+    "question": "What is the history of Hope Logan?",
+    "expected_topic": "Hope Logan"
+  },
+  {
+    "question": "Why is Operon important?",
+    "expected_topic": "Operon"
+  },
+  {
+    "question": "Who or what is In the Ghetto?",
+    "expected_topic": "In the Ghetto"
+  },
+  {
+    "question": "What role does Water buffalo play?",
+    "expected_topic": "Water buffalo"
+  },
+  {
+    "question": "Find information related to: Finnish and Swedish are the official languages of Helsinki.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In some Native Hawaiian communities , there is a constant use of `` talk story '' which plays an essential role in promo...",
+    "expected_topic": ""
+  },
+  {
+    "question": "No executions were carried out in the Australian Capital Territory , where federal legislation abolished capital punishm...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Oneness Pentecostals demur from the Trinitarian view of baptism and emphasize baptism ' in the name of Jesus Christ ' as...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Pieterse is currently set to re-appear as Alison in Pretty Little Liars spin - off The Perfectionists , which is based o...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: California 's interconnected water system serves over 30 million people and irrigates over 5,680,000 acres ( 2,300,000 h...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The plain in the south of Jalpaiguri , Alipurduar and Cooch Behar district is also made of new alluvium deposited by num...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In probability theory , the normal ( or Gaussian ) distribution is a very common continuous probability distribution .",
+    "expected_topic": ""
+  },
+  {
+    "question": "A juvenile court ( or young offender 's court ) is a tribunal having special authority to pass judgements for crimes tha...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The history of copper in architecture can be linked to its durability , corrosion resistance , prestigious appearance , ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Sold as part of the Barcode Truck kit .",
+    "expected_topic": ""
+  },
+  {
+    "question": "From 1420 to 1644 , the Forbidden City was the seat of the Ming dynasty .",
+    "expected_topic": ""
+  },
+  {
+    "question": "He also mentioned the characterization of Pennywise 's survivalist attitude , and a passage in the novel which inspired ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Another of the most famous Ryukyuan creatures is the shisa ( `` lion dog '' ) .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In the south , Emiliano Zapata continued his rebellion in Morelos under the Plan of Ayala , calling for the expropriatio...",
+    "expected_topic": ""
+  }
+]

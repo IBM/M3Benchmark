@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What do you know about Oncogene?",
+    "expected_topic": "Oncogene"
+  },
+  {
+    "question": "Why is Blackjack important?",
+    "expected_topic": "Blackjack"
+  },
+  {
+    "question": "What role does Greco-Persian Wars play?",
+    "expected_topic": "Greco-Persian Wars"
+  },
+  {
+    "question": "What role does SpongeBob SquarePants play?",
+    "expected_topic": "SpongeBob SquarePants"
+  },
+  {
+    "question": "What are the key facts about Vehicle insurance in the United States?",
+    "expected_topic": "Vehicle insurance in the United States"
+  },
+  {
+    "question": "What is the history of Cave painting?",
+    "expected_topic": "Cave painting"
+  },
+  {
+    "question": "Tell me about Taste bud.",
+    "expected_topic": "Taste bud"
+  },
+  {
+    "question": "Tell me about Emotional lateralization.",
+    "expected_topic": "Emotional lateralization"
+  },
+  {
+    "question": "Explain Phil Hartman.",
+    "expected_topic": "Phil Hartman"
+  },
+  {
+    "question": "Tell me about Anticyclone.",
+    "expected_topic": "Anticyclone"
+  },
+  {
+    "question": "Why is Baptism important?",
+    "expected_topic": "Baptism"
+  },
+  {
+    "question": "Describe Ranger's Apprentice.",
+    "expected_topic": "Ranger's Apprentice"
+  },
+  {
+    "question": "Tell me about Liverpool F.C..",
+    "expected_topic": "Liverpool F.C."
+  },
+  {
+    "question": "What is the significance of Institution?",
+    "expected_topic": "Institution"
+  },
+  {
+    "question": "Tell me about Bootstrapping.",
+    "expected_topic": "Bootstrapping"
+  },
+  {
+    "question": "What is the history of Mexico City?",
+    "expected_topic": "Mexico City"
+  },
+  {
+    "question": "What do you know about Mali Empire?",
+    "expected_topic": "Mali Empire"
+  },
+  {
+    "question": "Describe No-hitter.",
+    "expected_topic": "No-hitter"
+  },
+  {
+    "question": "What is The Last Man on Earth (TV series)?",
+    "expected_topic": "The Last Man on Earth (TV series)"
+  },
+  {
+    "question": "What is the history of Summer Time in Europe?",
+    "expected_topic": "Summer Time in Europe"
+  },
+  {
+    "question": "What do you know about Call of Duty: World at War?",
+    "expected_topic": "Call of Duty: World at War"
+  },
+  {
+    "question": "How does Eating disorder work?",
+    "expected_topic": "Eating disorder"
+  },
+  {
+    "question": "Why is Karachi important?",
+    "expected_topic": "Karachi"
+  },
+  {
+    "question": "Describe Eukaryote.",
+    "expected_topic": "Eukaryote"
+  },
+  {
+    "question": "Why is Me and Earl and the Dying Girl (film) important?",
+    "expected_topic": "Me and Earl and the Dying Girl (film)"
+  },
+  {
+    "question": "Explain Note-taking.",
+    "expected_topic": "Note-taking"
+  },
+  {
+    "question": "Why is Casualties of the Iraq War important?",
+    "expected_topic": "Casualties of the Iraq War"
+  },
+  {
+    "question": "What is the history of The Tiger Who Came to Tea?",
+    "expected_topic": "The Tiger Who Came to Tea"
+  },
+  {
+    "question": "Who or what is Uncle Ben?",
+    "expected_topic": "Uncle Ben"
+  },
+  {
+    "question": "What is Demographics of Mexico?",
+    "expected_topic": "Demographics of Mexico"
+  },
+  {
+    "question": "Give me a summary of As of 7 July 2021, HMH's adult books will be published as Mariner Books, while HMH's children's books will be published as Clarion Books..",
+    "expected_topic": "As of 7 July 2021, HMH's adult books will be published as Mariner Books, while HMH's children's books will be published as Clarion Books."
+  },
+  {
+    "question": "What are the key facts about Accounting rate of return?",
+    "expected_topic": "Accounting rate of return"
+  },
+  {
+    "question": "Tell me about Guardians of the Galaxy (film).",
+    "expected_topic": "Guardians of the Galaxy (film)"
+  },
+  {
+    "question": "What is Romeo and Juliet?",
+    "expected_topic": "Romeo and Juliet"
+  },
+  {
+    "question": "What role does America's Got Talent (season 12) play?",
+    "expected_topic": "America's Got Talent (season 12)"
+  },
+  {
+    "question": "Find information related to: Stephen Brown noted that the early Harry Potter books , especially Harry Potter and the Philosopher 's Stone , were a ru...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Scholastic announced that approximately one - ten - thousandth ( 0.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Colleen Wing Textless variant cover of Totally Awesome Hulk # 11 ( December 2016 ) .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In early July 2005 , a Real Canadian Superstore in Coquitlam , British Columbia , Canada , accidentally sold fourteen co...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Some customers receive free post office boxes if the USPS declines to provide door - to - door delivery to their locatio...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In the now - retitled Luke Cage , Power Man # 18 ( April 1974 ) , Cage mourns his ex-girlfriend Reva Connors , who had b...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The book was published in the United Kingdom by Bloomsbury , and in the United States by Scholastic on 16 July 2005 , as...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Deathly Hallows was released in hardcover on 21 July 2007 and in paperback in the United Kingdom on 10 July 2008 and the...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: As part of the All - New , All - Different Marvel , Claire is a doctor who specializes in dealing with super-powered hum...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Harry Potter and the Half - Blood Prince Cover art of the first UK edition Author J.",
+    "expected_topic": ""
+  },
+  {
+    "question": "It is somewhat misleading to characterize the mailbox rule as a `` monopoly , '' because the enforcement of 18 U.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Scholastic , the American publisher of the Harry Potter series , launched a multimillion - dollar `` There will soon be ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Another option is the old - style general delivery , for people who have neither post office boxes nor street addresses ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Regional mail is either trucked to the appropriate local post office , or kept in the building for carrier routes served...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Article I , section 8 , Clause 7 of the United States Constitution grants Congress the power to establish post offices a...",
+    "expected_topic": ""
+  }
+]

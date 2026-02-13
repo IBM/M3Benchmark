@@ -1,0 +1,35 @@
+[
+  {
+    "agent": "LangGraph React Agent",
+    "model": "llama-3-3-70b-instruct",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 44.02,
+      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
+  },
+  {
+    "agent": "LangGraph React Agent",
+    "model": "claude-opus-4-5-20251101",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0,
+      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
+  },
+  {
+    "agent": "LangGraph React Agent",
+    "model": "gpt-5.1-2025-11-13",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0,
+      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
+  }
+]

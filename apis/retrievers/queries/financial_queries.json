@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Give me a summary of Salvadoran cuisine.",
+    "expected_topic": "Salvadoran cuisine"
+  },
+  {
+    "question": "What is Facial hair in the military?",
+    "expected_topic": "Facial hair in the military"
+  },
+  {
+    "question": "Who or what is Flowers for Algernon?",
+    "expected_topic": "Flowers for Algernon"
+  },
+  {
+    "question": "Give me a summary of Portuguese Mozambique.",
+    "expected_topic": "Portuguese Mozambique"
+  },
+  {
+    "question": "How does Monarchy of the United Kingdom work?",
+    "expected_topic": "Monarchy of the United Kingdom"
+  },
+  {
+    "question": "Give me a summary of Lagrangian mechanics.",
+    "expected_topic": "Lagrangian mechanics"
+  },
+  {
+    "question": "Who or what is Los Angeles Chargers?",
+    "expected_topic": "Los Angeles Chargers"
+  },
+  {
+    "question": "Can you explain Smocking in detail?",
+    "expected_topic": "Smocking"
+  },
+  {
+    "question": "Why is Bantu peoples in South Africa important?",
+    "expected_topic": "Bantu peoples in South Africa"
+  },
+  {
+    "question": "What is the significance of Dancing with the Stars (U.S. season 22)?",
+    "expected_topic": "Dancing with the Stars (U.S. season 22)"
+  },
+  {
+    "question": "What is the history of Natural logarithm?",
+    "expected_topic": "Natural logarithm"
+  },
+  {
+    "question": "What is the significance of Karl Urban?",
+    "expected_topic": "Karl Urban"
+  },
+  {
+    "question": "What is the history of History of Puerto Rico?",
+    "expected_topic": "History of Puerto Rico"
+  },
+  {
+    "question": "Why is Shakespeare's reputation important?",
+    "expected_topic": "Shakespeare's reputation"
+  },
+  {
+    "question": "What are the key facts about Chlorine pentafluoride?",
+    "expected_topic": "Chlorine pentafluoride"
+  },
+  {
+    "question": "What happened with Civil Rights Act of 1964?",
+    "expected_topic": "Civil Rights Act of 1964"
+  },
+  {
+    "question": "Who or what is Indian painting?",
+    "expected_topic": "Indian painting"
+  },
+  {
+    "question": "Tell me about Byzantine Empire.",
+    "expected_topic": "Byzantine Empire"
+  },
+  {
+    "question": "Give me a summary of American Civil War.",
+    "expected_topic": "American Civil War"
+  },
+  {
+    "question": "What do you know about Wetland?",
+    "expected_topic": "Wetland"
+  },
+  {
+    "question": "Why is Probability important?",
+    "expected_topic": "Probability"
+  },
+  {
+    "question": "What is the history of Terror management theory?",
+    "expected_topic": "Terror management theory"
+  },
+  {
+    "question": "What happened with Communications satellite?",
+    "expected_topic": "Communications satellite"
+  },
+  {
+    "question": "What do you know about Election recount?",
+    "expected_topic": "Election recount"
+  },
+  {
+    "question": "Tell me about NBA post-season records.",
+    "expected_topic": "NBA post-season records"
+  },
+  {
+    "question": "What is the history of Pendulum?",
+    "expected_topic": "Pendulum"
+  },
+  {
+    "question": "What is the history of Boreal forest of Canada?",
+    "expected_topic": "Boreal forest of Canada"
+  },
+  {
+    "question": "What is Richard III (play)?",
+    "expected_topic": "Richard III (play)"
+  },
+  {
+    "question": "Why is Timeline of young people's rights in the United Kingdom important?",
+    "expected_topic": "Timeline of young people's rights in the United Kingdom"
+  },
+  {
+    "question": "How does 1935 Labor Day hurricane work?",
+    "expected_topic": "1935 Labor Day hurricane"
+  },
+  {
+    "question": "What happened with Latin American wars of independence?",
+    "expected_topic": "Latin American wars of independence"
+  },
+  {
+    "question": "Why is Reservation in India important?",
+    "expected_topic": "Reservation in India"
+  },
+  {
+    "question": "What do you know about Pelvic inflammatory disease?",
+    "expected_topic": "Pelvic inflammatory disease"
+  },
+  {
+    "question": "What are the key facts about Social equality?",
+    "expected_topic": "Social equality"
+  },
+  {
+    "question": "What do you know about Cancer (constellation)?",
+    "expected_topic": "Cancer (constellation)"
+  },
+  {
+    "question": "The Fishburn store - ship was of 378 tons ; the Borrowdale of 272 tons ; and the Golden Grove of 331 tons .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In the mid-1850s , James Young succeeded in distilling paraffin wax from coal and oil shales at Bathgate in West Lothian...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Great Lakes Circle Tour is a designated scenic road system connecting all of the Great Lakes and the Saint Lawrence ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The combat in Mass Effect : Andromeda was one of the best - reviewed aspects of the game .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The current Emperor on the throne is typically referred to as Tenn\u014d Heika ( \u5929\u7687 \u965b\u4e0b , `` His ( Imperial ) Majesty the Empe...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Sub-Saharan Africa and Southern Asia accounted for 5.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Roger Ebert gave the film four stars and called it a `` crazed grabbag of a movie that does everything to keep us laughi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: At the start of the Second World War , the British Army Strength stood at 897,000 men including reserves .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Lead and Copper , a documentary on the Flint water contamination crisis , is scheduled to be released in 2017 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Ponceau S is a negatively charged reversible dye that stains proteins a reddish pink color and is removed easily by wash...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Douglas , a moderate on the slavery issue who favored `` popular sovereignty '' , was ahead on the first ballot , but ne...",
+    "expected_topic": ""
+  },
+  {
+    "question": "On November 4 , 2014 , it was announced that Lifetime had cancelled Witches of East End after a decline in ratings durin...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The term Neolithic Revolution was coined in 1923 by V.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Jackson was awarded with a humanitarian award , from the Crenshaw Community Youth & Arts Foundation , in 1994 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Posters helped to mobilize the nation .",
+    "expected_topic": ""
+  }
+]

@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What are the key facts about Democracy?",
+    "expected_topic": "Democracy"
+  },
+  {
+    "question": "What role does Revenge play?",
+    "expected_topic": "Revenge"
+  },
+  {
+    "question": "What is the history of Steve Johnson and Kayla Brady?",
+    "expected_topic": "Steve Johnson and Kayla Brady"
+  },
+  {
+    "question": "Why is The Birthday Party (film) important?",
+    "expected_topic": "The Birthday Party (film)"
+  },
+  {
+    "question": "Can you explain Mercury pollution in the ocean in detail?",
+    "expected_topic": "Mercury pollution in the ocean"
+  },
+  {
+    "question": "What is the significance of Secretary-General of the United Nations?",
+    "expected_topic": "Secretary-General of the United Nations"
+  },
+  {
+    "question": "What role does Sea of Galilee play?",
+    "expected_topic": "Sea of Galilee"
+  },
+  {
+    "question": "Explain John Lennon.",
+    "expected_topic": "John Lennon"
+  },
+  {
+    "question": "Tell me about Pomp and Circumstance Marches.",
+    "expected_topic": "Pomp and Circumstance Marches"
+  },
+  {
+    "question": "Give me a summary of One Thousand and One Nights.",
+    "expected_topic": "One Thousand and One Nights"
+  },
+  {
+    "question": "How does United States Declaration of Independence work?",
+    "expected_topic": "United States Declaration of Independence"
+  },
+  {
+    "question": "Explain Aria Montgomery.",
+    "expected_topic": "Aria Montgomery"
+  },
+  {
+    "question": "What is the history of Nation state?",
+    "expected_topic": "Nation state"
+  },
+  {
+    "question": "Who or what is How to Train Your Dragon 2?",
+    "expected_topic": "How to Train Your Dragon 2"
+  },
+  {
+    "question": "Explain French Polynesia.",
+    "expected_topic": "French Polynesia"
+  },
+  {
+    "question": "What are the key facts about It Is Well with My Soul?",
+    "expected_topic": "It Is Well with My Soul"
+  },
+  {
+    "question": "Tell me about Mustang.",
+    "expected_topic": "Mustang"
+  },
+  {
+    "question": "Who or what is Whole life insurance?",
+    "expected_topic": "Whole life insurance"
+  },
+  {
+    "question": "How does Dance work?",
+    "expected_topic": "Dance"
+  },
+  {
+    "question": "What are the key facts about Berlin Wall?",
+    "expected_topic": "Berlin Wall"
+  },
+  {
+    "question": "What is the history of Punnett square?",
+    "expected_topic": "Punnett square"
+  },
+  {
+    "question": "What is Double-entry bookkeeping system?",
+    "expected_topic": "Double-entry bookkeeping system"
+  },
+  {
+    "question": "What is The Walking Dead (video game)?",
+    "expected_topic": "The Walking Dead (video game)"
+  },
+  {
+    "question": "Why is Antonin Scalia important?",
+    "expected_topic": "Antonin Scalia"
+  },
+  {
+    "question": "Give me a summary of Adobe Photoshop.",
+    "expected_topic": "Adobe Photoshop"
+  },
+  {
+    "question": "Can you explain Two Treatises of Government in detail?",
+    "expected_topic": "Two Treatises of Government"
+  },
+  {
+    "question": "Can you explain Agatha Christie in detail?",
+    "expected_topic": "Agatha Christie"
+  },
+  {
+    "question": "What is the history of Southern strategy?",
+    "expected_topic": "Southern strategy"
+  },
+  {
+    "question": "Why is Estrogen important?",
+    "expected_topic": "Estrogen"
+  },
+  {
+    "question": "What do you know about Moth?",
+    "expected_topic": "Moth"
+  },
+  {
+    "question": "What happened with American Revolution?",
+    "expected_topic": "American Revolution"
+  },
+  {
+    "question": "Describe Emancipation Proclamation.",
+    "expected_topic": "Emancipation Proclamation"
+  },
+  {
+    "question": "Describe Big Five personality traits.",
+    "expected_topic": "Big Five personality traits"
+  },
+  {
+    "question": "What is the significance of Mental calculation?",
+    "expected_topic": "Mental calculation"
+  },
+  {
+    "question": "What do you know about Me and Julio Down by the Schoolyard?",
+    "expected_topic": "Me and Julio Down by the Schoolyard"
+  },
+  {
+    "question": "Unexamined cultural identity : `` a stage where one 's cultural characteristics are taken for granted , and consequently...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: See also 21CFR201 Part 201.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Part 5 , in articles 205 to 222 , deals with EU foreign policy .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: 8 `` Self - Contradiction - Spring Storm - '' November 22 , 2014 Kyouya and Erika go to view the cherry blossoms over sp...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Differential probes are optimized for acquiring differential signals .",
+    "expected_topic": ""
+  },
+  {
+    "question": "These equations for the Mohr circles show that all admissible stress points ( \u03c3 n , \u03c4 n ) ( \\ displaystyle ( \\ sigma _ (...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: By the end of June 1857 , the Company had lost control of much of Bundelkhand and eastern Rajasthan .",
+    "expected_topic": ""
+  },
+  {
+    "question": "This section needs additional citations for verification .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Skeletal striated muscle / Striated voluntary muscle A top - down view of skeletal muscle Details Latin muscularis stria...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In Japanese , the `` Ryukyu Islands '' ( \u7409\u7403 \u8af8\u5cf6 , Ry\u016bky\u016b - shot\u014d ) cover only the Okinawa , Miyako , and Yaeyama Islands ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Kiyomi Takada ( \u9ad8\u7530 \u6e05\u7f8e , Takada Kiyomi ) is a former classmate and girlfriend of Light in the college , to whom he used t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In Karlsruhe on 3 May 1842 , Ernest married 21 - year - old Princess Alexandrine of Baden .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Intelligence that the Confederates were working to develop an ironclad caused consternation for the Union , but Secretar...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In the March 7 , 2012 presentation that mainly dealt with the third generation iPad , Apple CEO Tim Cook announced a thi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "It is possible to decipher how a particular group of organisms evolved by arranging its fossil record in a chronological...",
+    "expected_topic": ""
+  }
+]

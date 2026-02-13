@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What role does The White Queen (TV series) play?",
+    "expected_topic": "The White Queen (TV series)"
+  },
+  {
+    "question": "Explain Katherine Mayfair.",
+    "expected_topic": "Katherine Mayfair"
+  },
+  {
+    "question": "Explain Land Rover Series.",
+    "expected_topic": "Land Rover Series"
+  },
+  {
+    "question": "What is the significance of Denver?",
+    "expected_topic": "Denver"
+  },
+  {
+    "question": "Describe Tea culture.",
+    "expected_topic": "Tea culture"
+  },
+  {
+    "question": "What are the key facts about Rocky Mountains?",
+    "expected_topic": "Rocky Mountains"
+  },
+  {
+    "question": "How does Human sacrifice in Aztec culture work?",
+    "expected_topic": "Human sacrifice in Aztec culture"
+  },
+  {
+    "question": "Describe Java version history.",
+    "expected_topic": "Java version history"
+  },
+  {
+    "question": "What is Shelley Morrison?",
+    "expected_topic": "Shelley Morrison"
+  },
+  {
+    "question": "Give me a summary of The Birthday Party (film).",
+    "expected_topic": "The Birthday Party (film)"
+  },
+  {
+    "question": "Tell me about Helena (A Midsummer Night's Dream).",
+    "expected_topic": "Helena (A Midsummer Night's Dream)"
+  },
+  {
+    "question": "What is the significance of Oak (wine)?",
+    "expected_topic": "Oak (wine)"
+  },
+  {
+    "question": "What role does History of chemistry play?",
+    "expected_topic": "History of chemistry"
+  },
+  {
+    "question": "What is the significance of Rainbow?",
+    "expected_topic": "Rainbow"
+  },
+  {
+    "question": "Tell me about Tap and die.",
+    "expected_topic": "Tap and die"
+  },
+  {
+    "question": "Can you explain Little Lion Man in detail?",
+    "expected_topic": "Little Lion Man"
+  },
+  {
+    "question": "What do you know about T-Dog (The Walking Dead)?",
+    "expected_topic": "T-Dog (The Walking Dead)"
+  },
+  {
+    "question": "What happened with Optic nerve?",
+    "expected_topic": "Optic nerve"
+  },
+  {
+    "question": "What do you know about Sickle cell disease?",
+    "expected_topic": "Sickle cell disease"
+  },
+  {
+    "question": "What is Moose?",
+    "expected_topic": "Moose"
+  },
+  {
+    "question": "What is the history of River Mersey?",
+    "expected_topic": "River Mersey"
+  },
+  {
+    "question": "Can you explain Monarchy of the United Kingdom in detail?",
+    "expected_topic": "Monarchy of the United Kingdom"
+  },
+  {
+    "question": "What is the significance of History of the Miami Marlins?",
+    "expected_topic": "History of the Miami Marlins"
+  },
+  {
+    "question": "Describe Three-letter acronym.",
+    "expected_topic": "Three-letter acronym"
+  },
+  {
+    "question": "Who or what is Aung San Suu Kyi?",
+    "expected_topic": "Aung San Suu Kyi"
+  },
+  {
+    "question": "Give me a summary of Gray code.",
+    "expected_topic": "Gray code"
+  },
+  {
+    "question": "Explain Gold standard.",
+    "expected_topic": "Gold standard"
+  },
+  {
+    "question": "What are the key facts about Ancient Greek architecture?",
+    "expected_topic": "Ancient Greek architecture"
+  },
+  {
+    "question": "What is the history of Battle of Gettysburg?",
+    "expected_topic": "Battle of Gettysburg"
+  },
+  {
+    "question": "Give me a summary of American Sign Language.",
+    "expected_topic": "American Sign Language"
+  },
+  {
+    "question": "What is the history of Child care?",
+    "expected_topic": "Child care"
+  },
+  {
+    "question": "How does Call of Duty: WWII work?",
+    "expected_topic": "Call of Duty: WWII"
+  },
+  {
+    "question": "Explain Agatha Christie.",
+    "expected_topic": "Agatha Christie"
+  },
+  {
+    "question": "What are the key facts about Alan Shepard?",
+    "expected_topic": "Alan Shepard"
+  },
+  {
+    "question": "What is the history of Electric car?",
+    "expected_topic": "Electric car"
+  },
+  {
+    "question": "What does this refer to: Bug management includes the process of documenting , categorizing , assigning , reproducing , correcting and releasing t...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Ramayana Rama with his wife Sita and brother Lakshmana during exile in forest , manuscript , ca .",
+    "expected_topic": ""
+  },
+  {
+    "question": "This new reorganization , although very ambitious , lacked the proper path to the homologation of diplomas for highly ed...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Owen Gleiberman gave the film a `` B - '' in his review for Entertainment Weekly and wrote , `` The Thin Red Line could ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "While it is often stated that the COF is a `` material property , '' it is better categorized as a `` system property .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Simultaneous advances in early seismic imaging techniques in and around Wadati -- Benioff zones along the trenches bound...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Salinity has a strong influence on wetland water chemistry , particularly in wetlands along the coast .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: One issue that has been raised is the ability of a jury to fully understand statistical or scientific evidence .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Branwell is the author of Juvenilia , which he wrote as a child with his sister Charlotte , Glass Town , Angria , poems ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In the Northern Ireland question , the British and Irish governments started to seek a peaceful resolution to the violen...",
+    "expected_topic": ""
+  },
+  {
+    "question": "After Parliament was dismissed , Elizabeth and Cecil drafted the Royal Injunctions .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The laminae are broad , short , and strong .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Quiet Versailles , the seat of royal power , was a stifling environment for reformers .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The idea behind the standardized testing policy movement is that testing is the first step to improving schools , teachi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: This was the fourth playoff meeting between these two teams , with the Warriors winning two of the first three meetings ...",
+    "expected_topic": ""
+  }
+]

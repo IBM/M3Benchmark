@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Who or what is Sir Gawain and the Green Knight?",
+    "expected_topic": "Sir Gawain and the Green Knight"
+  },
+  {
+    "question": "Describe Mr. Bean.",
+    "expected_topic": "Mr. Bean"
+  },
+  {
+    "question": "Can you explain Spanish Inquisition in detail?",
+    "expected_topic": "Spanish Inquisition"
+  },
+  {
+    "question": "What is the history of Quadratic equation?",
+    "expected_topic": "Quadratic equation"
+  },
+  {
+    "question": "Who or what is Playoff history of the New Orleans Saints?",
+    "expected_topic": "Playoff history of the New Orleans Saints"
+  },
+  {
+    "question": "Who or what is Aragorn?",
+    "expected_topic": "Aragorn"
+  },
+  {
+    "question": "Who or what is Certified teacher?",
+    "expected_topic": "Certified teacher"
+  },
+  {
+    "question": "How does Grenade (song) work?",
+    "expected_topic": "Grenade (song)"
+  },
+  {
+    "question": "What is List of Marvel Cinematic Universe television series?",
+    "expected_topic": "List of Marvel Cinematic Universe television series"
+  },
+  {
+    "question": "Why is Melbourne Cup important?",
+    "expected_topic": "Melbourne Cup"
+  },
+  {
+    "question": "Why is Neolithic Revolution important?",
+    "expected_topic": "Neolithic Revolution"
+  },
+  {
+    "question": "Can you explain BIOS in detail?",
+    "expected_topic": "BIOS"
+  },
+  {
+    "question": "Tell me about Sagittarius (constellation).",
+    "expected_topic": "Sagittarius (constellation)"
+  },
+  {
+    "question": "Explain The Madcap Laughs.",
+    "expected_topic": "The Madcap Laughs"
+  },
+  {
+    "question": "What is The Walking Dead (video game)?",
+    "expected_topic": "The Walking Dead (video game)"
+  },
+  {
+    "question": "What role does Poetic Justice (film) play?",
+    "expected_topic": "Poetic Justice (film)"
+  },
+  {
+    "question": "What is Diet Coke and Mentos eruption?",
+    "expected_topic": "Diet Coke and Mentos eruption"
+  },
+  {
+    "question": "Why is Heat important?",
+    "expected_topic": "Heat"
+  },
+  {
+    "question": "Give me a summary of The Honeymooners.",
+    "expected_topic": "The Honeymooners"
+  },
+  {
+    "question": "What role does Ramayana play?",
+    "expected_topic": "Ramayana"
+  },
+  {
+    "question": "What role does Flag of Guam play?",
+    "expected_topic": "Flag of Guam"
+  },
+  {
+    "question": "Can you explain New Year in detail?",
+    "expected_topic": "New Year"
+  },
+  {
+    "question": "Who or what is Academic dress in the United Kingdom?",
+    "expected_topic": "Academic dress in the United Kingdom"
+  },
+  {
+    "question": "What happened with Hawaii Five-0 (2010 TV series, season 8)?",
+    "expected_topic": "Hawaii Five-0 (2010 TV series, season 8)"
+  },
+  {
+    "question": "What are the key facts about Death in Paradise (TV series)?",
+    "expected_topic": "Death in Paradise (TV series)"
+  },
+  {
+    "question": "What is the significance of Culture?",
+    "expected_topic": "Culture"
+  },
+  {
+    "question": "What is Radioactive decay?",
+    "expected_topic": "Radioactive decay"
+  },
+  {
+    "question": "Can you explain History of Maryland in detail?",
+    "expected_topic": "History of Maryland"
+  },
+  {
+    "question": "What happened with Holy Chalice?",
+    "expected_topic": "Holy Chalice"
+  },
+  {
+    "question": "What are the key facts about Welsh language?",
+    "expected_topic": "Welsh language"
+  },
+  {
+    "question": "What do you know about Progression of the bench press world record?",
+    "expected_topic": "Progression of the bench press world record"
+  },
+  {
+    "question": "Why is Eukaryote important?",
+    "expected_topic": "Eukaryote"
+  },
+  {
+    "question": "What is the significance of History of the Pittsburgh Pirates?",
+    "expected_topic": "History of the Pittsburgh Pirates"
+  },
+  {
+    "question": "What is the history of Election recount?",
+    "expected_topic": "Election recount"
+  },
+  {
+    "question": "What happened with Voting rights in the United States?",
+    "expected_topic": "Voting rights in the United States"
+  },
+  {
+    "question": "Find information related to: King 's oft - cited remark about Kubrick being a man who `` thinks too much and feels too little '' is often misconstrue...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In Filipino slang , to `` have a nosebleed '' is to have serious difficulty conversing in English with a fluent or nativ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: At the time of the English Reformation the four ( now six ) Welsh dioceses were all part of the Province of Canterbury a...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: A femoral fracture that involves the femoral head , femoral neck or the shaft of the femur immediately below the lesser ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Until the Ashokan inscriptions were discovered and deciphered , stories about Ashoka were based on the legendary account...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Rocky and the guests share an uncomfortable dinner , which they soon realize has been prepared from Eddie 's mutilated r...",
+    "expected_topic": ""
+  },
+  {
+    "question": "After taking a gamble and staying out past his pit - window , Keselowski garnered his fourth win at the first ever Natio...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: At one point the level of rivalry was such that a victory by one of the schools in this game could salvage what had othe...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Historically , production of chemicals from coal has been used since the 1950s and has become established in the market ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Certain countries have cultural differences that lead to more fish consumption and therefore more possible exposure to s...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: This article needs additional citations for verification .",
+    "expected_topic": ""
+  },
+  {
+    "question": "At temperatures below its critical temperature , a gas is also called a vapor , and can be liquefied by compression alon...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Within this view of physics , any other phenomenon that is usually attributed to centrifugal force can be used to identi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Then , there was the furniture .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Although the character does not actually appear in the musical adaptation , towards the end of the show Gandalf explains...",
+    "expected_topic": ""
+  }
+]

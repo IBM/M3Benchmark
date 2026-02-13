@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the history of John Steinbeck?",
+    "expected_topic": "John Steinbeck"
+  },
+  {
+    "question": "What is the history of Nathan Young?",
+    "expected_topic": "Nathan Young"
+  },
+  {
+    "question": "Tell me about 13 Reasons Why.",
+    "expected_topic": "13 Reasons Why"
+  },
+  {
+    "question": "Describe Wonder Woman.",
+    "expected_topic": "Wonder Woman"
+  },
+  {
+    "question": "Explain Osage Nation.",
+    "expected_topic": "Osage Nation"
+  },
+  {
+    "question": "Tell me about Carbon dioxide.",
+    "expected_topic": "Carbon dioxide"
+  },
+  {
+    "question": "What do you know about List of Attack on Titan characters?",
+    "expected_topic": "List of Attack on Titan characters"
+  },
+  {
+    "question": "What are the key facts about Environmental issues in India?",
+    "expected_topic": "Environmental issues in India"
+  },
+  {
+    "question": "What is Franchising?",
+    "expected_topic": "Franchising"
+  },
+  {
+    "question": "How does No-hitter work?",
+    "expected_topic": "No-hitter"
+  },
+  {
+    "question": "Why is Pierre de Coubertin important?",
+    "expected_topic": "Pierre de Coubertin"
+  },
+  {
+    "question": "Describe Tao.",
+    "expected_topic": "Tao"
+  },
+  {
+    "question": "Describe Dirty Dancing (2017 film).",
+    "expected_topic": "Dirty Dancing (2017 film)"
+  },
+  {
+    "question": "Can you explain History of coal mining in detail?",
+    "expected_topic": "History of coal mining"
+  },
+  {
+    "question": "Give me a summary of Mining industry of Nigeria.",
+    "expected_topic": "Mining industry of Nigeria"
+  },
+  {
+    "question": "Why is Me and Earl and the Dying Girl (film) important?",
+    "expected_topic": "Me and Earl and the Dying Girl (film)"
+  },
+  {
+    "question": "What role does Cross River gorilla play?",
+    "expected_topic": "Cross River gorilla"
+  },
+  {
+    "question": "Explain Starbucks.",
+    "expected_topic": "Starbucks"
+  },
+  {
+    "question": "Explain H II region.",
+    "expected_topic": "H II region"
+  },
+  {
+    "question": "What is Recursion (computer science)?",
+    "expected_topic": "Recursion (computer science)"
+  },
+  {
+    "question": "What do you know about Thermal comfort?",
+    "expected_topic": "Thermal comfort"
+  },
+  {
+    "question": "Can you explain Ryukyuan religion in detail?",
+    "expected_topic": "Ryukyuan religion"
+  },
+  {
+    "question": "What role does Japanese cuisine play?",
+    "expected_topic": "Japanese cuisine"
+  },
+  {
+    "question": "What is the significance of The Passion of the Christ?",
+    "expected_topic": "The Passion of the Christ"
+  },
+  {
+    "question": "What happened with Of Course He's Dead?",
+    "expected_topic": "Of Course He's Dead"
+  },
+  {
+    "question": "Give me a summary of SpongeBob SquarePants.",
+    "expected_topic": "SpongeBob SquarePants"
+  },
+  {
+    "question": "Can you explain Lance Franklin in detail?",
+    "expected_topic": "Lance Franklin"
+  },
+  {
+    "question": "Give me a summary of Brian Griffin.",
+    "expected_topic": "Brian Griffin"
+  },
+  {
+    "question": "What happened with Spanish Inquisition?",
+    "expected_topic": "Spanish Inquisition"
+  },
+  {
+    "question": "What is the history of The Walking Dead (video game)?",
+    "expected_topic": "The Walking Dead (video game)"
+  },
+  {
+    "question": "How does Liz Parker work?",
+    "expected_topic": "Liz Parker"
+  },
+  {
+    "question": "What is the significance of Calum Scott?",
+    "expected_topic": "Calum Scott"
+  },
+  {
+    "question": "What role does Mitochondrion play?",
+    "expected_topic": "Mitochondrion"
+  },
+  {
+    "question": "What happened with Beryllium hydroxide?",
+    "expected_topic": "Beryllium hydroxide"
+  },
+  {
+    "question": "What happened with Peninsular War?",
+    "expected_topic": "Peninsular War"
+  },
+  {
+    "question": "What does this refer to: Upon its release , Gone with the Wind broke attendance records everywhere .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Florida is the only state to charge sales tax on the rental of real estate , commercial or residential , raising more th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Florida also permits counties to raise a `` tourist development tax '' of up to an additional 13 % for stays of 6 months...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Variety put the worldwide rental for The Greatest Show on Earth at around $18.",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: A `` discretionary sales surtax '' may be imposed by the counties of up to 75.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Dirty Dozen was a massive commercial success .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The 2015 edition of Guinness World Records does not provide an explicit figure for Snow White and the Seven Dwarfs .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Even though it earned its investors roughly twice as much as the previous record - holder , The Birth of a Nation , the ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The figure for Titanic is most likely based on the gross from its 1997 theatrical release , and does not incorporate ear...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Because of release schedules -- especially in the case of films released towards the end of the year -- and different re...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: As of February 25 , 2018 , All the Money in the World has grossed $25.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Snow White 's $418 million global cume omits earnings outside of North America from 1987 onwards .",
+    "expected_topic": ""
+  },
+  {
+    "question": "There is no federal sales or use tax in the United States .",
+    "expected_topic": ""
+  },
+  {
+    "question": "All states exempt from sales or use tax purchases of goods made for resale in the same form .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: On this chart , films are ranked by the revenues from theatrical exhibition at their nominal value , along with the high...",
+    "expected_topic": ""
+  }
+]

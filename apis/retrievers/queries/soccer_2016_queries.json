@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What are the key facts about United States Secret Service?",
+    "expected_topic": "United States Secret Service"
+  },
+  {
+    "question": "Why is Mains electricity important?",
+    "expected_topic": "Mains electricity"
+  },
+  {
+    "question": "Give me a summary of What's that got to do with the...?.",
+    "expected_topic": "What's that got to do with the...?"
+  },
+  {
+    "question": "What is the history of History of Kenya?",
+    "expected_topic": "History of Kenya"
+  },
+  {
+    "question": "Explain Apollo.",
+    "expected_topic": "Apollo"
+  },
+  {
+    "question": "What is the significance of Sisters, Servants of the Immaculate Heart of Mary?",
+    "expected_topic": "Sisters, Servants of the Immaculate Heart of Mary"
+  },
+  {
+    "question": "Why is Katherine Mayfair important?",
+    "expected_topic": "Katherine Mayfair"
+  },
+  {
+    "question": "How does 2017\u201318 NBA season work?",
+    "expected_topic": "2017\u201318 NBA season"
+  },
+  {
+    "question": "What is Eagles (band)?",
+    "expected_topic": "Eagles (band)"
+  },
+  {
+    "question": "What happened with Biomass?",
+    "expected_topic": "Biomass"
+  },
+  {
+    "question": "What role does Free clinic play?",
+    "expected_topic": "Free clinic"
+  },
+  {
+    "question": "Describe Space Shuttle retirement.",
+    "expected_topic": "Space Shuttle retirement"
+  },
+  {
+    "question": "Tell me about Natural logarithm.",
+    "expected_topic": "Natural logarithm"
+  },
+  {
+    "question": "Explain Unforgotten.",
+    "expected_topic": "Unforgotten"
+  },
+  {
+    "question": "Give me a summary of Anthony Eden.",
+    "expected_topic": "Anthony Eden"
+  },
+  {
+    "question": "Tell me about Glock.",
+    "expected_topic": "Glock"
+  },
+  {
+    "question": "Give me a summary of Hydrate.",
+    "expected_topic": "Hydrate"
+  },
+  {
+    "question": "What happened with Plant virus?",
+    "expected_topic": "Plant virus"
+  },
+  {
+    "question": "What is the history of Teenage Mutant Ninja Turtles?",
+    "expected_topic": "Teenage Mutant Ninja Turtles"
+  },
+  {
+    "question": "How does The Honeymooners work?",
+    "expected_topic": "The Honeymooners"
+  },
+  {
+    "question": "How does America's Got Talent work?",
+    "expected_topic": "America's Got Talent"
+  },
+  {
+    "question": "What is Band gap?",
+    "expected_topic": "Band gap"
+  },
+  {
+    "question": "Describe Deadpool (film).",
+    "expected_topic": "Deadpool (film)"
+  },
+  {
+    "question": "Who or what is Porus?",
+    "expected_topic": "Porus"
+  },
+  {
+    "question": "Give me a summary of Battle of Long Island.",
+    "expected_topic": "Battle of Long Island"
+  },
+  {
+    "question": "What is Statue of Liberty?",
+    "expected_topic": "Statue of Liberty"
+  },
+  {
+    "question": "Can you explain Germination in detail?",
+    "expected_topic": "Germination"
+  },
+  {
+    "question": "Can you explain English Reformation in detail?",
+    "expected_topic": "English Reformation"
+  },
+  {
+    "question": "Give me a summary of Making out.",
+    "expected_topic": "Making out"
+  },
+  {
+    "question": "What is the significance of Who Wants to Be a Millionaire? (UK game show)?",
+    "expected_topic": "Who Wants to Be a Millionaire? (UK game show)"
+  },
+  {
+    "question": "What are the key facts about Lemony Snicket's A Series of Unfortunate Events?",
+    "expected_topic": "Lemony Snicket's A Series of Unfortunate Events"
+  },
+  {
+    "question": "What is Football records in England?",
+    "expected_topic": "Football records in England"
+  },
+  {
+    "question": "What are the key facts about First impression (psychology)?",
+    "expected_topic": "First impression (psychology)"
+  },
+  {
+    "question": "Why is Floyd Mayweather Jr. vs. Manny Pacquiao important?",
+    "expected_topic": "Floyd Mayweather Jr. vs. Manny Pacquiao"
+  },
+  {
+    "question": "Why is Two-party system important?",
+    "expected_topic": "Two-party system"
+  },
+  {
+    "question": "What does this refer to: Six of the eight champions have won one of their titles while playing in their own homeland , the exceptions being Brazi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: With the Olympic event continuing to be contested only between amateur teams , Sir Thomas Lipton organised the Sir Thoma...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Jump up ^ There was no third place match in 1930 ; the United States and Yugoslavia lost in the semi-finals .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The 21 World Cup tournaments have been won by eight national teams .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The world 's first international football match was a challenge match played in Glasgow in 1872 between Scotland and Eng...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The first two World Cup matches took place simultaneously on 13 July 1930 , and were won by France and the USA , who def...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Most appearances in all competitions : Ian Callaghan , 857 .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The point was won in a match against Middlesbrough , and they finished in fifteenth place .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Since the establishment of the club in 1892 , 45 players have been club captain of Liverpool F.",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Most wins : 7 , Ashley Cole ( Arsenal ) ( 2002 , 2003 , 2005 ) & ( Chelsea ) ( 2007 , 2009 , 2010 , 2012 ) Most appearan...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Most titles won by an individual player : 13 , Ryan Giggs Most career league appearances : 1,005 ( 849 in First Division...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Most career league goals : 434 , Arthur Rowley ( 619 matches , for West Bromwich Albion , Fulham , Leicester City and Sh...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The holder of the record for the most league appearances is Jimmy Montgomery , having made 527 first team appearances be...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The FIFA World Cup , often simply called the World Cup , is an international association football competition contested ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Steve Perryman holds the appearance record for Spurs , having played 854 games for the club between 1969 and 1986 , of w...",
+    "expected_topic": ""
+  }
+]

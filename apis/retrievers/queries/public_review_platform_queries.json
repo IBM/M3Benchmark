@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is Student's t-test?",
+    "expected_topic": "Student's t-test"
+  },
+  {
+    "question": "What do you know about Call of Duty: Black Ops?",
+    "expected_topic": "Call of Duty: Black Ops"
+  },
+  {
+    "question": "Can you explain In My Place in detail?",
+    "expected_topic": "In My Place"
+  },
+  {
+    "question": "What is the history of Bigg Boss Kannada 5?",
+    "expected_topic": "Bigg Boss Kannada 5"
+  },
+  {
+    "question": "How does Transamination work?",
+    "expected_topic": "Transamination"
+  },
+  {
+    "question": "Can you explain Lebanon in detail?",
+    "expected_topic": "Lebanon"
+  },
+  {
+    "question": "Give me a summary of List of Sabrina the Teenage Witch characters.",
+    "expected_topic": "List of Sabrina the Teenage Witch characters"
+  },
+  {
+    "question": "Give me a summary of Scientific management.",
+    "expected_topic": "Scientific management"
+  },
+  {
+    "question": "Tell me about Tom Lehrer.",
+    "expected_topic": "Tom Lehrer"
+  },
+  {
+    "question": "What is the history of Louisiana Purchase?",
+    "expected_topic": "Louisiana Purchase"
+  },
+  {
+    "question": "How does IronPython work?",
+    "expected_topic": "IronPython"
+  },
+  {
+    "question": "Why is Phoenix (constellation) important?",
+    "expected_topic": "Phoenix (constellation)"
+  },
+  {
+    "question": "What do you know about Materials management?",
+    "expected_topic": "Materials management"
+  },
+  {
+    "question": "What role does Who Wants to Be a Millionaire? (UK game show) play?",
+    "expected_topic": "Who Wants to Be a Millionaire? (UK game show)"
+  },
+  {
+    "question": "Explain Ancient Roman architecture.",
+    "expected_topic": "Ancient Roman architecture"
+  },
+  {
+    "question": "What happened with List of most-liked tweets?",
+    "expected_topic": "List of most-liked tweets"
+  },
+  {
+    "question": "Give me a summary of Supply (economics).",
+    "expected_topic": "Supply (economics)"
+  },
+  {
+    "question": "Who or what is You Raise Me Up?",
+    "expected_topic": "You Raise Me Up"
+  },
+  {
+    "question": "What happened with Christina Aguilera?",
+    "expected_topic": "Christina Aguilera"
+  },
+  {
+    "question": "Explain Postulates of special relativity.",
+    "expected_topic": "Postulates of special relativity"
+  },
+  {
+    "question": "Who or what is Emperor of Japan?",
+    "expected_topic": "Emperor of Japan"
+  },
+  {
+    "question": "Describe Western Roman Empire.",
+    "expected_topic": "Western Roman Empire"
+  },
+  {
+    "question": "Describe Ohio State University Marching Band.",
+    "expected_topic": "Ohio State University Marching Band"
+  },
+  {
+    "question": "What role does Mohammad Hamid Ansari play?",
+    "expected_topic": "Mohammad Hamid Ansari"
+  },
+  {
+    "question": "Give me a summary of Fremont Street Experience.",
+    "expected_topic": "Fremont Street Experience"
+  },
+  {
+    "question": "Why is Easter Island important?",
+    "expected_topic": "Easter Island"
+  },
+  {
+    "question": "Give me a summary of Timon and Pumbaa.",
+    "expected_topic": "Timon and Pumbaa"
+  },
+  {
+    "question": "What happened with Original sin?",
+    "expected_topic": "Original sin"
+  },
+  {
+    "question": "Tell me about History of chemistry.",
+    "expected_topic": "History of chemistry"
+  },
+  {
+    "question": "Tell me about Election Commission of India.",
+    "expected_topic": "Election Commission of India"
+  },
+  {
+    "question": "Why is Biafra important?",
+    "expected_topic": "Biafra"
+  },
+  {
+    "question": "What happened with Space Shuttle retirement?",
+    "expected_topic": "Space Shuttle retirement"
+  },
+  {
+    "question": "Explain Mercury-in-glass thermometer.",
+    "expected_topic": "Mercury-in-glass thermometer"
+  },
+  {
+    "question": "Why is Gone Girl (The Vampire Diaries) important?",
+    "expected_topic": "Gone Girl (The Vampire Diaries)"
+  },
+  {
+    "question": "Tell me about Roo Stewart.",
+    "expected_topic": "Roo Stewart"
+  },
+  {
+    "question": "Find information related to: The ball mouse replaced the external wheels with a single ball that could rotate in any direction .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Xbox Live Gold is a paid subscription service for the Xbox community .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The Xerox Alto was one of the first computers designed for individual use in 1973 and is regarded as the first modern co...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: According to a January 2015 Gartner report , `` Android surpassed a billion shipments of devices in 2014 , and will cont...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: old - school gaming See retrogaming .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Xbox Games Store ( formerly Xbox Live Marketplace ) is a unified storefront which offers both free and premium content f...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Xbox Live is an online multiplayer gaming and digital media delivery service created and operated by Microsoft .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: One feature is the ability to watch standard quality and 720p streaming movies and TV shows from Netflix through the Xbo...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In the Halo universe , the SPARTAN program is a project designed to produce genetically augmented , power armored supers...",
+    "expected_topic": ""
+  },
+  {
+    "question": "In July 2011 , Google said that 550,000 Android devices were being activated every day , up from 400,000 per day in May ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The widespread adoption of graphical user interfaces in the software of the 1980s and 1990s made mice all but indispensa...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Douglas Engelbart of the Stanford Research Institute ( now SRI International ) has been credited in published books by T...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Ivan Sutherland developed Sketchpad in 1963 , widely held as the first graphical computer - aided design program .",
+    "expected_topic": ""
+  },
+  {
+    "question": "When the development for the Telefunken main frame TR 440 ( de ) began in 1965 , Mallebrein and his team came up with th...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The videos are mostly filmed on the Halo map Blood Gulch ( and its Halo 2 counterpart , Coagulation ) , although later e...",
+    "expected_topic": ""
+  }
+]

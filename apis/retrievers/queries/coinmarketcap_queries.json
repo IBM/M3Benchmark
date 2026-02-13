@@ -1,0 +1,202 @@
+[
+  {
+    "question": "What is the history of American football?",
+    "expected_topic": "American football"
+  },
+  {
+    "question": "Tell me about Stewie Griffin.",
+    "expected_topic": "Stewie Griffin"
+  },
+  {
+    "question": "What do you know about Northern cardinal?",
+    "expected_topic": "Northern cardinal"
+  },
+  {
+    "question": "Who or what is Walk the Line (soundtrack)?",
+    "expected_topic": "Walk the Line (soundtrack)"
+  },
+  {
+    "question": "What is the history of Book of Enoch?",
+    "expected_topic": "Book of Enoch"
+  },
+  {
+    "question": "Tell me about Marshall Plan.",
+    "expected_topic": "Marshall Plan"
+  },
+  {
+    "question": "What role does American Revolution play?",
+    "expected_topic": "American Revolution"
+  },
+  {
+    "question": "What is Mary Alice Young?",
+    "expected_topic": "Mary Alice Young"
+  },
+  {
+    "question": "Can you explain List of Andi Mack episodes in detail?",
+    "expected_topic": "List of Andi Mack episodes"
+  },
+  {
+    "question": "What are the key facts about Big Ben?",
+    "expected_topic": "Big Ben"
+  },
+  {
+    "question": "Give me a summary of Adventures of Huckleberry Finn.",
+    "expected_topic": "Adventures of Huckleberry Finn"
+  },
+  {
+    "question": "How does Little Red Riding Hood work?",
+    "expected_topic": "Little Red Riding Hood"
+  },
+  {
+    "question": "What is the significance of Trafficking of children?",
+    "expected_topic": "Trafficking of children"
+  },
+  {
+    "question": "Why is New Year important?",
+    "expected_topic": "New Year"
+  },
+  {
+    "question": "Tell me about Origin of the domestic dog.",
+    "expected_topic": "Origin of the domestic dog"
+  },
+  {
+    "question": "What are the key facts about List of Indian folk dances?",
+    "expected_topic": "List of Indian folk dances"
+  },
+  {
+    "question": "What is Quadratic equation?",
+    "expected_topic": "Quadratic equation"
+  },
+  {
+    "question": "What happened with Russian culture?",
+    "expected_topic": "Russian culture"
+  },
+  {
+    "question": "How does Teenage Mutant Ninja Turtles work?",
+    "expected_topic": "Teenage Mutant Ninja Turtles"
+  },
+  {
+    "question": "Give me a summary of Would You Lay with Me (In a Field of Stone) (song).",
+    "expected_topic": "Would You Lay with Me (In a Field of Stone) (song)"
+  },
+  {
+    "question": "What do you know about Trent Affair?",
+    "expected_topic": "Trent Affair"
+  },
+  {
+    "question": "Tell me about Economic history of World War I.",
+    "expected_topic": "Economic history of World War I"
+  },
+  {
+    "question": "Who or what is The Eyes of the Dragon?",
+    "expected_topic": "The Eyes of the Dragon"
+  },
+  {
+    "question": "What is the significance of Logan (film)?",
+    "expected_topic": "Logan (film)"
+  },
+  {
+    "question": "What is the history of Balkans?",
+    "expected_topic": "Balkans"
+  },
+  {
+    "question": "What are the key facts about Agenda 21?",
+    "expected_topic": "Agenda 21"
+  },
+  {
+    "question": "Describe Fukushima Daiichi nuclear disaster.",
+    "expected_topic": "Fukushima Daiichi nuclear disaster"
+  },
+  {
+    "question": "What is the history of PageRank?",
+    "expected_topic": "PageRank"
+  },
+  {
+    "question": "What role does Germination play?",
+    "expected_topic": "Germination"
+  },
+  {
+    "question": "Explain Me and Julio Down by the Schoolyard.",
+    "expected_topic": "Me and Julio Down by the Schoolyard"
+  },
+  {
+    "question": "Tell me about Chin-up.",
+    "expected_topic": "Chin-up"
+  },
+  {
+    "question": "How does United States Bill of Rights work?",
+    "expected_topic": "United States Bill of Rights"
+  },
+  {
+    "question": "Give me a summary of Lisa Eilbacher.",
+    "expected_topic": "Lisa Eilbacher"
+  },
+  {
+    "question": "What happened with Hellenistic period?",
+    "expected_topic": "Hellenistic period"
+  },
+  {
+    "question": "Tell me about Name of Iran.",
+    "expected_topic": "Name of Iran"
+  },
+  {
+    "question": "The Popsicle Index is a quality of life measurement coined by Catherine Austin Fitts as the percentage of people - in a ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Railroads allowed harvests to reach markets more quickly and Gustavus Franklin Swift 's refrigerated railroad car allowe...",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Physical Quality of Life Index ( PQLI ) is a measure developed by sociologist Morris David Morris in the 1970s , bas...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Quality of life ( QOL ) is the general well - being of individuals and societies , outlining negative and positive featu...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: A US Marines Sergeant emailed ten of his friends in August 2004 having wrongly been told that Starbucks had stopped supp...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: The damping factor is subtracted from 1 ( and in some variations of the algorithm , the result is divided by the number ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Equilibrium in perfect competition is the point where market demands will be equal to market supply .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: After 18 years , Ralston Purina decided in 1985 that Foodmaker was a non-core asset and sold it to management .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In 2014 , Starbucks established a program to support veterans and their families .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In March 2016 , Starbucks unveiled a five - year plan to donate 100 percent of unsold food from its 7,600 company - oper...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Standard indicators of the quality of life include not only wealth and employment but also the built environment , physi...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The term quality of life is also used by politicians and economists to measure the livability of a given city or nation ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Day - Reconstruction Method was another way of measuring happiness , in which researchers asked their subjects to recall...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The short run supply curve for a perfectly competitive firm is the marginal cost ( MC ) curve at and above the shutdown ...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: In perfect competition , any profit - maximizing producer faces a market price equal to its marginal cost ( P = MC ) .",
+    "expected_topic": ""
+  }
+]

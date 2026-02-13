@@ -1,0 +1,202 @@
+[
+  {
+    "question": "Tell me about The Jungle Book (2016 film).",
+    "expected_topic": "The Jungle Book (2016 film)"
+  },
+  {
+    "question": "What role does Hurricane Isaac (2012) play?",
+    "expected_topic": "Hurricane Isaac (2012)"
+  },
+  {
+    "question": "Explain The Tortilla Curtain.",
+    "expected_topic": "The Tortilla Curtain"
+  },
+  {
+    "question": "What are the key facts about Nessun dorma?",
+    "expected_topic": "Nessun dorma"
+  },
+  {
+    "question": "What is the history of List of Shameless (U.S. TV series) characters?",
+    "expected_topic": "List of Shameless (U.S. TV series) characters"
+  },
+  {
+    "question": "How does Metrication in the United States work?",
+    "expected_topic": "Metrication in the United States"
+  },
+  {
+    "question": "Explain French Polynesia.",
+    "expected_topic": "French Polynesia"
+  },
+  {
+    "question": "What is Corrosion?",
+    "expected_topic": "Corrosion"
+  },
+  {
+    "question": "Describe Battles of Saratoga.",
+    "expected_topic": "Battles of Saratoga"
+  },
+  {
+    "question": "What is the significance of The Second Best Exotic Marigold Hotel?",
+    "expected_topic": "The Second Best Exotic Marigold Hotel"
+  },
+  {
+    "question": "What is the significance of Toyota Tundra?",
+    "expected_topic": "Toyota Tundra"
+  },
+  {
+    "question": "What is the history of Economic history of Argentina?",
+    "expected_topic": "Economic history of Argentina"
+  },
+  {
+    "question": "Explain List of most streamed artists on Spotify.",
+    "expected_topic": "List of most streamed artists on Spotify"
+  },
+  {
+    "question": "Tell me about Articles of Confederation.",
+    "expected_topic": "Articles of Confederation"
+  },
+  {
+    "question": "What is the significance of Thor: Ragnarok?",
+    "expected_topic": "Thor: Ragnarok"
+  },
+  {
+    "question": "What is Endoplasmic reticulum?",
+    "expected_topic": "Endoplasmic reticulum"
+  },
+  {
+    "question": "Explain Enoch (ancestor of Noah).",
+    "expected_topic": "Enoch (ancestor of Noah)"
+  },
+  {
+    "question": "Can you explain New York Post in detail?",
+    "expected_topic": "New York Post"
+  },
+  {
+    "question": "Who or what is Clarabell the Clown?",
+    "expected_topic": "Clarabell the Clown"
+  },
+  {
+    "question": "What role does The Deer Hunter play?",
+    "expected_topic": "The Deer Hunter"
+  },
+  {
+    "question": "What are the key facts about Siege?",
+    "expected_topic": "Siege"
+  },
+  {
+    "question": "What happened with Mass number?",
+    "expected_topic": "Mass number"
+  },
+  {
+    "question": "Give me a summary of Spanish language.",
+    "expected_topic": "Spanish language"
+  },
+  {
+    "question": "Tell me about SpongeBob SquarePants.",
+    "expected_topic": "SpongeBob SquarePants"
+  },
+  {
+    "question": "Tell me about Illinois wiretapping law.",
+    "expected_topic": "Illinois wiretapping law"
+  },
+  {
+    "question": "What do you know about Hurdy Gurdy Man?",
+    "expected_topic": "Hurdy Gurdy Man"
+  },
+  {
+    "question": "What do you know about The War Prayer?",
+    "expected_topic": "The War Prayer"
+  },
+  {
+    "question": "Who or what is Household income in the United States?",
+    "expected_topic": "Household income in the United States"
+  },
+  {
+    "question": "What is the significance of Tsar Bomba?",
+    "expected_topic": "Tsar Bomba"
+  },
+  {
+    "question": "Tell me about Code talker.",
+    "expected_topic": "Code talker"
+  },
+  {
+    "question": "Why is Cluedo important?",
+    "expected_topic": "Cluedo"
+  },
+  {
+    "question": "What role does One Thousand and One Nights play?",
+    "expected_topic": "One Thousand and One Nights"
+  },
+  {
+    "question": "What is Ojibwe?",
+    "expected_topic": "Ojibwe"
+  },
+  {
+    "question": "What is Petal?",
+    "expected_topic": "Petal"
+  },
+  {
+    "question": "Describe History of the Supreme Court of the United States.",
+    "expected_topic": "History of the Supreme Court of the United States"
+  },
+  {
+    "question": "What does this refer to: New Brunswick , being an officially bilingual province , has both anglophone and francophone school districts .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: The first school for teaching the deaf to speak and read in Britain was Thomas Braidwood 's Academy for the Deaf and Dum...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Non-Francophone students with no previous French - language training learn French by being taught all subjects in the Fr...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Intensive French is a method of FSL education that originated in Newfoundland .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Some schools in Ontario offer a third method of FSL education : the Extended French program .",
+    "expected_topic": ""
+  },
+  {
+    "question": "Earlier attempts at inventing a secular religious tradition informed the Ethical Culture movement .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: Charles - Edward Amory Winslow - American bacteriologist and founder of Yale University 's Department of Public Health (...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Up to the 1950s , the predominant method in deaf education was oralism -- acquiring oral language comprehension and prod...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: With falling support and the depression only getting worse , Bennett attempted to introduce policies based on the New De...",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: In the mid-18th century , Paris became the center of an explosion of philosophic and scientific activity challenging tra...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Find information related to: Yale College was founded by Puritans in 1701 , and in 1716 was relocated to New Haven , Connecticut .",
+    "expected_topic": ""
+  },
+  {
+    "question": "What does this refer to: One result of this is that comprehension levels are often lower than parents would prefer .",
+    "expected_topic": ""
+  },
+  {
+    "question": "The Maldives ( / \u02c8m\u0252ldi\u02d0vz / , / \u02c8m\u0254\u02d0ldi\u02d0vz / , / \u02c8m\u0254\u02d0lda\u026avz / ( listen ) or / \u02c8m\u00e6lda\u026avz / ) , officially the Republic o...",
+    "expected_topic": ""
+  },
+  {
+    "question": "Charles - Michel de l'\u00c9p\u00e9e pioneered deaf education in France .",
+    "expected_topic": ""
+  },
+  {
+    "question": "ASL is thought to have originated in the American School for the Deaf ( ASD ) , founded in Hartford , Connecticut in 181...",
+    "expected_topic": ""
+  }
+]
