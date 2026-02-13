@@ -1,42 +1,58 @@
 #!/usr/bin/env python3
 """
-Simple Benchmark Runner
+Benchmark Runner
+================
 
-Iterates over all domain files in the TASK directory.
-For each file (e.g., address.json, hockey.json):
-  - Extracts domain from filename
-  - Starts MCP server with that domain
-  - Runs agent on benchmark queries from that file
+Runs LLM agents against MCP tool servers and records trajectories + answers.
 
-Each task_id maps to a TaskConfig that specifies:
+Each task_id maps to a TaskConfig:
   - input_dir:       where the domain JSON files live
   - container_name:  which Docker container to exec into
   - mcp_domain_env:  env var the MCP server reads for domain filtering
 
-Task 2  -> container: fastapi-mcp-server   (M3 SQL tools)
-Task 5  -> container: retriever-mcp-server (ChromaDB retriever tools)
+Tasks:
+  Task 2  -> fastapi-mcp-server   (M3 SQL tools)
+  Task 5  -> retriever-mcp-server (ChromaDB retriever)
+
+Setup:
+  pip install mcp langchain-anthropic langgraph langchain-ollama
 
 Usage:
+  # Single task
+  python benchmark_runner.py --task_id 2 --run-agent --domain hockey
+  python benchmark_runner.py --task_id 5 --run-agent --domain address
 
-    pip install mcp langchain-anthropic langgraph langchain-ollama
+  # Multiple tasks (sequential, default)
+  python benchmark_runner.py --task_id 2 5 --run-agent --domain address
 
-    # --- Task 2 (M3 Tools) ---
-    python benchmark_runner.py --task_id 2 --run-agent --domain hockey
-    python benchmark_runner.py --task_id 2 --run-agent --provider anthropic
+  # Multiple tasks (parallel via asyncio.gather)
+  python benchmark_runner.py --task_id 2 5 --run-agent --domain address --parallel
 
-    # --- Task 5 (Retrievers) ---
-    python benchmark_runner.py --task_id 5 --run-agent --domain address
-    python benchmark_runner.py --task_id 5 --list-tools --domain address
+  # Limit samples, choose provider/model
+  python benchmark_runner.py --task_id 5 --run-agent --domain address --max-samples-per-domain 5
+  python benchmark_runner.py --task_id 5 --run-agent --provider anthropic --model claude-sonnet-4-5-20250929
 
-    # Common options
-    python benchmark_runner.py --task_id 5 --run-agent --domain address --max-samples-per-domain 5
-    python benchmark_runner.py --task_id 5 --run-agent --provider ollama --model llama3.1:8b
+  # List tools only (no agent run)
+  python benchmark_runner.py --task_id 5 --list-tools --domain address
+
+  # Tool shortlisting (top-k most relevant tools per query)
+  python benchmark_runner.py --task_id 2 --run-agent --domain hockey --top-k-tools 5
+
+Options:
+  --task_id ID [ID ...]       Task ID(s) to run (e.g. 2, 5, or 2 5)
+  --parallel                  Run multiple task_ids concurrently (default: sequential)
+  --run-agent                 Run the agent on benchmark queries
+  --list-tools                List available tools and exit
+  --domain DOMAIN             Filter to specific domain(s), repeatable
+  --max-samples-per-domain N  Cap number of queries per domain
+  --provider PROVIDER         LLM provider: ollama, anthropic, openai, litellm, watsonx, rits
+  --model MODEL               Model name (default: provider-specific)
+  --top-k-tools K             Keep top-K tools per query via embedding similarity
+  --container-runtime RT      Container runtime: docker or podman (default: auto-detect)
+  --container-name NAME       Override container name from task config
 
 Output:
-    Results saved to: <task_input_dir>/../output/
-        - address.json
-        - hockey.json
-        - ...
+  Results saved to: <task_input_dir>/../output/<domain>.json
 """
 import json
 import os
@@ -944,7 +960,7 @@ async def list_tools_for_domains(
 
 def main():
     parser = argparse.ArgumentParser(description="Benchmark Runner for MCP Server")
-    parser.add_argument("--task_id", type=int, required=True, help="Task ID to run")
+    parser.add_argument("--task_id", type=int, nargs="+", required=True, help="Task ID(s) to run (e.g. --task_id 2 5)")
     parser.add_argument(
         "--container-runtime",
         type=str,
@@ -973,6 +989,11 @@ def main():
         "--list-tools",
         action="store_true",
         help="List available tools for the specified domain(s) and exit"
+    )
+    parser.add_argument(
+        "--parallel",
+        action="store_true",
+        help="Run multiple task_ids in parallel using asyncio.gather (default: sequential)"
     )
     parser.add_argument(
         "--max-samples-per-domain",
@@ -1037,17 +1058,17 @@ def main():
     )
 
     args = parser.parse_args()
+    task_ids = args.task_id  # list of ints now
 
-    # Resolve task config
-    task_cfg = TASK_CONFIGS.get(args.task_id)
-    if not task_cfg:
-        print(f"Error: Unknown task_id {args.task_id}")
-        print(f"Available task_ids: {list(TASK_CONFIGS.keys())}")
-        sys.exit(1)
-
-    # Container name: CLI override > task config
-    container_name = args.container_name or task_cfg.container_name
-    mcp_domain_env = task_cfg.mcp_domain_env
+    # Validate all task IDs upfront
+    task_cfgs = {}
+    for tid in task_ids:
+        cfg = TASK_CONFIGS.get(tid)
+        if not cfg:
+            print(f"Error: Unknown task_id {tid}")
+            print(f"Available task_ids: {list(TASK_CONFIGS.keys())}")
+            sys.exit(1)
+        task_cfgs[tid] = cfg
 
     # Auto-detect container runtime if not specified
     container_runtime = args.container_runtime
@@ -1071,34 +1092,61 @@ def main():
         if args.litellm_api_key:
             os.environ["LITELLM_API_KEY"] = args.litellm_api_key
 
+    mode = "parallel" if args.parallel and len(task_ids) > 1 else "sequential"
     print("="*60)
-    print("Benchmark Runner")
+    print(f"Benchmark Runner ({mode}, tasks: {task_ids})")
     print("="*60)
+
+    def _make_run_task_coro(tid: int):
+        cfg = task_cfgs[tid]
+        cname = args.container_name or cfg.container_name
+        return run_task(
+            task_id=tid,
+            container_runtime=container_runtime,
+            container_name=cname,
+            run_agent=args.run_agent,
+            provider=args.provider,
+            model=args.model,
+            max_samples_per_domain=args.max_samples_per_domain,
+            output_file=args.output,
+            domains=args.domain,
+            top_k_tools=args.top_k_tools,
+            mcp_domain_env=cfg.mcp_domain_env,
+        )
+
+    def _make_list_tools_coro(tid: int):
+        cfg = task_cfgs[tid]
+        cname = args.container_name or cfg.container_name
+        return list_tools_for_domains(
+            task_id=tid,
+            container_runtime=container_runtime,
+            container_name=cname,
+            domains=args.domain,
+            mcp_domain_env=cfg.mcp_domain_env,
+        )
 
     # Handle --list-tools mode
     if args.list_tools:
-        asyncio.run(list_tools_for_domains(
-            task_id=args.task_id,
-            container_runtime=container_runtime,
-            container_name=container_name,
-            domains=args.domain,
-            mcp_domain_env=mcp_domain_env,
-        ))
+        async def _list_all():
+            coros = [_make_list_tools_coro(tid) for tid in task_ids]
+            if args.parallel and len(coros) > 1:
+                await asyncio.gather(*coros)
+            else:
+                for c in coros:
+                    await c
+        asyncio.run(_list_all())
         return
 
-    asyncio.run(run_task(
-        task_id=args.task_id,
-        container_runtime=container_runtime,
-        container_name=container_name,
-        run_agent=args.run_agent,
-        provider=args.provider,
-        model=args.model,
-        max_samples_per_domain=args.max_samples_per_domain,
-        output_file=args.output,
-        domains=args.domain,
-        top_k_tools=args.top_k_tools,
-        mcp_domain_env=mcp_domain_env,
-    ))
+    # Run tasks
+    async def _run_all():
+        coros = [_make_run_task_coro(tid) for tid in task_ids]
+        if args.parallel and len(coros) > 1:
+            await asyncio.gather(*coros)
+        else:
+            for c in coros:
+                await c
+
+    asyncio.run(_run_all())
 
 
 if __name__ == "__main__":
