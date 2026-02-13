@@ -8,34 +8,35 @@ For each file (e.g., address.json, hockey.json):
   - Starts MCP server with that domain
   - Runs agent on benchmark queries from that file
 
+Each task_id maps to a TaskConfig that specifies:
+  - input_dir:       where the domain JSON files live
+  - container_name:  which Docker container to exec into
+  - mcp_domain_env:  env var the MCP server reads for domain filtering
+
+Task 2  -> container: fastapi-mcp-server   (M3 SQL tools)
+Task 5  -> container: retriever-mcp-server (ChromaDB retriever tools)
+
 Usage:
 
-    export TASK_2_DIR=<path to downloaded task_2 directory>
     pip install mcp langchain-anthropic langgraph langchain-ollama
 
-    # List tools only (no agent) - iterates all domains
-    python benchmark_runner.py --task_id 2
-
-    # Run benchmark with agent on all domains
-    python benchmark_runner.py --task_id 2 --run-agent
-
-    # Run benchmark on specific domain(s) only
+    # --- Task 2 (M3 Tools) ---
     python benchmark_runner.py --task_id 2 --run-agent --domain hockey
-    python benchmark_runner.py --task_id 2 --run-agent --domain hockey --domain address
-
-    # Limit samples per domain (e.g., 5 samples from each domain file)
-    python benchmark_runner.py --task_id 2 --run-agent --max-samples-per-domain 5
-
-    # Use different provider/model
     python benchmark_runner.py --task_id 2 --run-agent --provider anthropic
-    python benchmark_runner.py --task_id 2 --run-agent --provider ollama --model llama3.1:8b
+
+    # --- Task 5 (Retrievers) ---
+    python benchmark_runner.py --task_id 5 --run-agent --domain address
+    python benchmark_runner.py --task_id 5 --list-tools --domain address
+
+    # Common options
+    python benchmark_runner.py --task_id 5 --run-agent --domain address --max-samples-per-domain 5
+    python benchmark_runner.py --task_id 5 --run-agent --provider ollama --model llama3.1:8b
 
 Output:
-    Results saved to: benchmark_output_YYYY-MM-DD_HH-MM-SS_<model_name>/
-        - address_benchmark_output.json
-        - hockey_benchmark_output.json
+    Results saved to: <task_input_dir>/../output/
+        - address.json
+        - hockey.json
         - ...
-        - summary.json
 """
 import json
 import os
@@ -56,10 +57,44 @@ from mcp.client.stdio import stdio_client
 from agents.agent_interface import AgentInterface, AgentResponse, LangGraphReActAgent, create_agent
 from agents.llm import create_llm
 from agents.mcp_tool_wrapper import MCPToolWrapper
-# Task configurations - maps task_id to input directory path
-TASK_PATHS = {
-    2: os.environ.get("TASK_2_DIR", "/Users/anu/Documents/GitHub/routing/EnterpriseBenchmark/train/input/"),
+
+
+# ---------------------------------------------------------------------------
+# Task configurations
+# ---------------------------------------------------------------------------
+@dataclass
+class TaskConfig:
+    """Per-task settings: where the data is, which container to use, and
+    what environment variable name the MCP server reads for domain filtering."""
+    input_dir: str
+    container_name: str
+    mcp_domain_env: str = "MCP_DOMAIN"
+
+
+TASK_CONFIGS: Dict[int, TaskConfig] = {
+    2: TaskConfig(
+        input_dir=os.environ.get(
+            "TASK_2_DIR",
+            "/Users/anu/Documents/GitHub/routing/EnterpriseBenchmark/train/input/",
+        ),
+        container_name="fastapi-mcp-server",
+        # NOTE: existing task_2 passes MCP_DOMAINS (plural) which the m3
+        # server doesn't actually read — it reads MCP_DOMAIN.  Keeping the
+        # legacy value here to avoid changing current behaviour.
+        mcp_domain_env="MCP_DOMAINS",
+    ),
+    5: TaskConfig(
+        input_dir=os.environ.get(
+            "TASK_5_DIR",
+            "/Users/anu/Desktop/data/task_5/train/input",
+        ),
+        container_name="retriever-mcp-server",
+        mcp_domain_env="MCP_DOMAIN",
+    ),
 }
+
+# Back-compat helper used by run_task / list_tools_for_domains
+TASK_PATHS = {tid: cfg.input_dir for tid, cfg in TASK_CONFIGS.items()}
 
 @dataclass
 class BenchmarkItem:
@@ -209,6 +244,20 @@ DEFAULT_CONTAINER_NAME = "fastapi-mcp-server"
 DEFAULT_CONTAINER_RUNTIME = "podman"
 
 
+def _build_exec_args(
+    domain: str,
+    container_name: str,
+    mcp_domain_env: str = "MCP_DOMAIN",
+) -> list:
+    """Build the docker/podman exec args for starting an MCP server."""
+    return [
+        "exec", "-i",
+        "-e", f"{mcp_domain_env}={domain}",
+        container_name,
+        "python", "mcp_server.py",
+    ]
+
+
 def detect_container_runtime() -> str:
     """
     Detect available container runtime (podman or docker).
@@ -250,14 +299,10 @@ async def connect_and_get_session(
     domain: str,
     container_runtime: str,
     container_name: str,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ):
     """Connect to MCP server and return the session context."""
-    exec_args = [
-        "exec", "-i",
-        "-e", f"MCP_DOMAIN={domain}",
-        container_name,
-        "python", "mcp_server.py"
-    ]
+    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
     print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
 
     server_params = StdioServerParameters(
@@ -269,14 +314,12 @@ async def connect_and_get_session(
     return stdio_client(server_params)
 
 
-async def connect_and_list_tools(domain: str, container_runtime: str, container_name: str) -> List[str]:
+async def connect_and_list_tools(
+    domain: str, container_runtime: str, container_name: str,
+    mcp_domain_env: str = "MCP_DOMAIN",
+) -> List[str]:
     """Connect to MCP server with the given domain and list available tools."""
-    exec_args = [
-        "exec", "-i",
-        "-e", f"MCP_DOMAIN={domain}",
-        container_name,
-        "python", "mcp_server.py"
-    ]
+    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
     print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
 
     server_params = StdioServerParameters(
@@ -309,14 +352,12 @@ async def connect_and_list_tools(domain: str, container_runtime: str, container_
     return tool_names
 
 
-async def connect_and_get_tools_detailed(domain: str, container_runtime: str, container_name: str) -> List[Dict[str, Any]]:
+async def connect_and_get_tools_detailed(
+    domain: str, container_runtime: str, container_name: str,
+    mcp_domain_env: str = "MCP_DOMAIN",
+) -> List[Dict[str, Any]]:
     """Connect to MCP server and get detailed tool information including parameters."""
-    exec_args = [
-        "exec", "-i",
-        "-e", f"MCP_DOMAIN={domain}",
-        container_name,
-        "python", "mcp_server.py"
-    ]
+    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
     print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
 
     server_params = StdioServerParameters(
@@ -360,14 +401,10 @@ async def run_agent_with_query(
     container_runtime: str,
     container_name: str,
     agent: AgentInterface,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ) -> AgentResponse:
     """Run an agent with tools from the MCP server."""
-    exec_args = [
-        "exec", "-i",
-        "-e", f"MCP_DOMAIN={domain}",
-        container_name,
-        "python", "mcp_server.py"
-    ]
+    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
     print(f"  Starting: {container_runtime} {' '.join(exec_args)}")
 
     server_params = StdioServerParameters(
@@ -424,6 +461,7 @@ async def process_domain(
     container_name: str,
     agent: Optional[AgentInterface] = None,
     query: Optional[str] = None,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ) -> dict:
     """Process a single domain: connect to MCP server and list tools (optionally run agent)."""
 
@@ -435,7 +473,8 @@ async def process_domain(
         if agent and query:
             # Run agent with query
             response = await run_agent_with_query(
-                domain, query, container_runtime, container_name, agent
+                domain, query, container_runtime, container_name, agent,
+                mcp_domain_env=mcp_domain_env,
             )
             print(f"  Tool calls: {len(response.tool_calls)}")
             print(f"  Answer: {response.content[:200]}..." if len(response.content) > 200 else f"  Answer: {response.content}")
@@ -450,7 +489,7 @@ async def process_domain(
             }
         else:
             # Just list tools
-            tool_names = await connect_and_list_tools(domain, container_runtime, container_name)
+            tool_names = await connect_and_list_tools(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
             print(f"  Tools loaded: {len(tool_names)}")
 
             for tool in tool_names[:5]:
@@ -520,6 +559,7 @@ async def run_benchmark_for_domain(
     agent: AgentInterface,
     max_samples: Optional[int] = None,
     shortlister=None,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ) -> List[BenchmarkResult]:
     """Run benchmark for a single domain - starts MCP server once for all items."""
     import time
@@ -535,12 +575,7 @@ async def run_benchmark_for_domain(
     results: List[BenchmarkResult] = []
 
     # Start MCP server ONCE for this domain
-    exec_args = [
-        "exec", "-i",
-        "-e", f"MCP_DOMAIN={domain}",
-        container_name,
-        "python", "mcp_server.py"
-    ]
+    exec_args = _build_exec_args(domain, container_name, mcp_domain_env)
     print(f"  Starting MCP server: {container_runtime} {' '.join(exec_args)}")
 
     server_params = StdioServerParameters(
@@ -565,7 +600,7 @@ async def run_benchmark_for_domain(
 
                 # Run all queries for this domain
                 for i, item in enumerate(items):
-                    print(f"\n  [{i+1}/{len(items)}] Query: {item.query[:80]}{'...' if len(item.query) > 80 else ''}")
+                    print(f"\n  [{i+1}/{len(items)}] Query: {item.query}")
 
                     result = BenchmarkResult(
                         uuid=item.uuid,
@@ -596,29 +631,26 @@ async def run_benchmark_for_domain(
                         elapsed = time.perf_counter() - start_time
                         print(f"    Status: success | Tools: {len(result.tool_calls)} | Trajectory steps: {len(result.trajectory)} | Time: {elapsed:.2f}s")
                         # Log the answer
-                        answer_preview = result.answer[:200] if result.answer else "(empty)"
-                        print(f"    Answer: {answer_preview}{'...' if len(result.answer) > 200 else ''}")
+                        print(f"    Answer: {result.answer or '(empty)'}")
                         # Log trajectory summary
                         if result.trajectory:
                             print(f"    Trajectory ({len(result.trajectory)} steps):")
                             for i, step in enumerate(result.trajectory):
                                 step_type = step.get('type', 'unknown')
                                 if step_type == 'HumanMessage':
-                                    content_preview = step.get('content', '')[:80]
-                                    print(f"      [{i+1}] User: {content_preview}{'...' if len(step.get('content', '')) > 80 else ''}")
+                                    print(f"      [{i+1}] User: {step.get('content', '')}")
                                 elif step_type == 'AIMessage':
-                                    content_preview = step.get('content', '')[:80]
                                     tool_calls = step.get('tool_calls', [])
                                     if tool_calls:
                                         print(f"      [{i+1}] AI: Calling {len(tool_calls)} tool(s)")
                                         for tc in tool_calls:
                                             print(f"          - {tc.get('name', 'unknown')}({tc.get('args', {})})")
                                     else:
-                                        print(f"      [{i+1}] AI: {content_preview}{'...' if len(step.get('content', '')) > 80 else ''}")
+                                        print(f"      [{i+1}] AI: {step.get('content', '')}")
                                 elif step_type == 'ToolMessage':
                                     tool_name = step.get('tool_name', 'unknown')
-                                    result_preview = str(step.get('result', ''))[:80]
-                                    print(f"      [{i+1}] Tool ({tool_name}): {result_preview}{'...' if len(str(step.get('result', ''))) > 80 else ''}")
+                                    result_text = str(step.get('result', ''))
+                                    print(f"      [{i+1}] Tool ({tool_name}):\n{result_text}")
                     except asyncio.TimeoutError:
                         result.status = "error"
                         result.error = f"Agent timed out after {AGENT_TIMEOUT_SECONDS} seconds"
@@ -655,6 +687,7 @@ async def run_task(
     output_file: Optional[str] = None,
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given task_id, iterating over all domain files."""
 
@@ -701,7 +734,7 @@ async def run_task(
         results = []
         for json_file in json_files:
             domain = json_file.stem  # Domain from filename
-            result = await process_domain(domain, container_runtime, container_name)
+            result = await process_domain(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
             results.append(result)
         return results
 
@@ -739,6 +772,7 @@ async def run_task(
             agent=agent,
             max_samples=max_samples_per_domain,
             shortlister=shortlister,
+            mcp_domain_env=mcp_domain_env,
         )
         all_results.extend(domain_results)
 
@@ -767,6 +801,7 @@ async def list_tools_for_domains(
     container_runtime: str,
     container_name: str,
     domains: Optional[List[str]] = None,
+    mcp_domain_env: str = "MCP_DOMAIN",
 ):
     """List all available tools for specified domains using MCP protocol with detailed parameters."""
     
@@ -808,7 +843,7 @@ async def list_tools_for_domains(
         print(f"{'='*60}")
         
         try:
-            tools_detailed = await connect_and_get_tools_detailed(domain, container_runtime, container_name)
+            tools_detailed = await connect_and_get_tools_detailed(domain, container_runtime, container_name, mcp_domain_env=mcp_domain_env)
             print(f"  Total tools: {len(tools_detailed)}\n")
             
             all_tools_by_domain[domain] = tools_detailed
@@ -919,8 +954,8 @@ def main():
     parser.add_argument(
         "--container-name",
         type=str,
-        default=DEFAULT_CONTAINER_NAME,
-        help=f"Container name (default: {DEFAULT_CONTAINER_NAME})"
+        default=None,
+        help="Container name (default: auto-resolved from task config)"
     )
     parser.add_argument(
         "--domain",
@@ -1003,6 +1038,17 @@ def main():
 
     args = parser.parse_args()
 
+    # Resolve task config
+    task_cfg = TASK_CONFIGS.get(args.task_id)
+    if not task_cfg:
+        print(f"Error: Unknown task_id {args.task_id}")
+        print(f"Available task_ids: {list(TASK_CONFIGS.keys())}")
+        sys.exit(1)
+
+    # Container name: CLI override > task config
+    container_name = args.container_name or task_cfg.container_name
+    mcp_domain_env = task_cfg.mcp_domain_env
+
     # Auto-detect container runtime if not specified
     container_runtime = args.container_runtime
     if not container_runtime:
@@ -1034,15 +1080,16 @@ def main():
         asyncio.run(list_tools_for_domains(
             task_id=args.task_id,
             container_runtime=container_runtime,
-            container_name=args.container_name,
+            container_name=container_name,
             domains=args.domain,
+            mcp_domain_env=mcp_domain_env,
         ))
         return
 
     asyncio.run(run_task(
         task_id=args.task_id,
         container_runtime=container_runtime,
-        container_name=args.container_name,
+        container_name=container_name,
         run_agent=args.run_agent,
         provider=args.provider,
         model=args.model,
@@ -1050,6 +1097,7 @@ def main():
         output_file=args.output,
         domains=args.domain,
         top_k_tools=args.top_k_tools,
+        mcp_domain_env=mcp_domain_env,
     ))
 
 
