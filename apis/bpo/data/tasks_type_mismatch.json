@@ -1,0 +1,85 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_27",
+        "description": "Tests agent handling when API returns a plain string instead of structured data. The skills_skill_summary tool returns comma-separated skill names as a single string rather than a structured list/object.",
+        "intent": "Give me a quick summary of skills needed for 05958BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "The skills for 05958BR include Agile, Ansible, AWS, CI/CD, Cyber Engineering, Data Analysis, Docker, Git, Go, GraphQL, Hadoop, Java, Jenkins, Kafka, Kubernetes, Linux, Machine Learning, MongoDB, Networking, Node.js, PostgreSQL, Power BI, Python, React, Redis, REST APIs, Risk Analysis, Scrum, Spark, SQL, Tableau, Terraform, TypeScript, Wireshark",
+          "keywords": [
+            "Python",
+            "AWS|Docker|Kubernetes",
+            "skills"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_summary",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "type_mismatch",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should parse the comma-separated string and present the skills"
+          }
+        }
+      },
+      {
+        "name": "task_28",
+        "description": "Tests agent handling when API returns an int instead of a float or structured response. The candidate_source_source_sla_score tool returns a bare integer.",
+        "intent": "What's the SLA score for Dice sourcing channel on requisition 05958BR?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "The SLA score for Dice on requisition 05958BR is 80%.",
+          "keywords": [
+            "Dice",
+            "SLA",
+            "re:\\b80\\b|re:\\b95\\b"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_source_sla_score",
+              "args": {"requisition_id": "05958BR", "source_name": "Dice"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "type_mismatch",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle int/float correctly and present as percentage"
+          }
+        }
+      },
+      {
+        "name": "task_29",
+        "description": "Tests agent handling when API returns null/None instead of an empty list. The candidate_source_inactive_sources tool returns None when no inactive sources exist.",
+        "intent": "Show me any inactive sources with no candidates for 05958BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "There are no inactive sources for requisition 05958BR. All sourcing channels have active candidates.",
+          "keywords": [
+            "no inactive|none|no sources|all",
+            "active|candidates"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_inactive_sources",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "type_mismatch",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle null gracefully and report no inactive sources"
+          }
+        }
+      }
+    ]
+  }
+]

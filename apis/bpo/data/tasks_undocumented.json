@@ -1,0 +1,84 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_43",
+        "description": "Tests agent handling of non-standard error format. The candidate_source_requisition_details tool returns {\"err\": \"not_found\"} instead of standard RequisitionNotFoundResponse when given an invalid ID.",
+        "intent": "Get detailed info for requisition 99999BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "Requisition 99999BR was not found. The system returned a non-standard error indicating the requisition does not exist.",
+          "keywords": [
+            "99999BR",
+            "not found|not_found|doesn't exist|does not exist|invalid"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_requisition_details",
+              "args": {"requisition_id": "99999BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "undocumented_error_format",
+            "should_report_error": true,
+            "should_retry": false,
+            "expected_behavior": "Agent should parse non-standard error format and report not found"
+          }
+        }
+      },
+      {
+        "name": "task_44",
+        "description": "Tests agent handling of undocumented pagination. The candidate_source_list_all_sources tool returns only a page of results with a next_page token not described in any schema.",
+        "intent": "List all available sourcing channels for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "The available sourcing channels for 05958BR include multiple sources. The results show a total count of all channels, though the response is paginated.",
+          "keywords": [
+            "source|sources|channels",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_list_all_sources",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "undocumented_pagination",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should detect and handle pagination, noting there are more results"
+          }
+        }
+      },
+      {
+        "name": "task_45",
+        "description": "Tests agent handling of undocumented rate limiting info in response body. The candidate_source_batch_metrics tool includes X-RateLimit headers embedded in the JSON response.",
+        "intent": "Fetch batch metrics for all sources on 05958BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "Batch metrics for 05958BR show candidate counts and hire data across all sourcing channels including LinkedIn, Dice, Indeed, GitHub, Referral, CyberSec Jobs, and TechCareers.",
+          "keywords": [
+            "metrics|batch",
+            "candidates|hires|sources",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_batch_metrics",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "undocumented_rate_limiting",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should process the metrics data and optionally note rate limit information"
+          }
+        }
+      }
+    ]
+  }
+]

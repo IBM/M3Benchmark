@@ -1,0 +1,549 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_1",
+        "description": "Lists sources ranked by SLA success rate. | Explanation: CyberSec Jobs was identified as the lowest-performing source because its SLA success rate is 67 %, well below Dice (80 %), LinkedIn (79 %), GitHub (78 %), and the other sources returned by the API.",
+        "intent": "For requisition 05958BR, which source has the lowest SLA performance?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "CyberSec Jobs with 67%",
+          "keywords": [
+            "CyberSec Jobs",
+            "67%|67 %|67"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_sla_per_source",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_2",
+        "description": "Asks for the missing requisition id. | Explanation: The query lacks a requisition ID which is required for the API call.",
+        "intent": "What's the percentage of hires and the total hires per source?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Can you share the requisition ID (e.g., 05958BR or 05959BR)?",
+          "keywords": [
+            "requisition|req",
+            "ID|id|identifier",
+            "missing|without|share|provide|required"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_3",
+        "description": "Shows each source's candidate volume and offer/hire success metrics for jobs similar to 05958BR. | Explanation: Candidate counts and percentages were taken from the candidate-volume API; hire counts and offer-acceptance rates were taken from the recommendation-summary API. The two tables were joined on \"source_name\", producing a combined view of volume and effectiveness for the three leading sources. | Note: Cross-references performance and volume per source. Requires joining APIs on 'source_name'.",
+        "intent": "For requisitions like 05958BR, which sources provided the most candidates, and how effective were they at converting to hires?",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "LinkedIn: 519 candidates (18%), 7 hires. Offer acceptance rate: 70%. Dice: 516 candidates (18%), 11 hires. Offer acceptance rate: 79%. GitHub: 468 candidates (16%), 10 hires. Offer acceptance rate: 77%.",
+          "keywords": [
+            "LinkedIn",
+            "Dice",
+            "GitHub",
+            "Offer acceptance rate",
+            "519",
+            "516",
+            "468",
+            "18%|18 %|18",
+            "70%|70 %|70",
+            "79%|79 %|79",
+            "77%|77 %|77",
+            "hires"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_source_recommendation_summary",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_4",
+        "description": "Asks for the missing requisition id. | Explanation: The query lacks a requisition ID which is required for the API call.",
+        "intent": "Did Dice provide a good funnel conversion rate?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Can you share the requisition ID (e.g., 05958BR or 05959BR)?",
+          "keywords": [
+            "requisition|req",
+            "ID|id|identifier",
+            "missing|without|share|provide|required"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_5",
+        "description": "Asks for the missing requisition id. | Explanation: The query lacks a requisition ID which is required for the API call.",
+        "intent": "Should I include the skill Python? What is its impact on SLA, fill rate, and overall relevance?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Can you share the requisition ID (e.g., 05958BR or 05959BR)?",
+          "keywords": [
+            "requisition|req",
+            "ID|id|identifier",
+            "missing|without|share|provide|required"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_6",
+        "description": "Recommends top-performing sources by combining SLA success, candidate volume, and funnel effectiveness. | Explanation: Each source received a weighted score (50 % SLA success, 30 % candidate volume share, 20 % offer-conversion rate). Dice and LinkedIn tied for top SLA (100 %) and high volume; GitHub's best-in-class conversion (2.8 %) offset its 80 % SLA. Indeed scored 0 on SLA and offers, so it was excluded. | Note: This benchmark tests multi-criteria decision-making and cross-API synthesis.",
+        "intent": "What are the best sources to prioritize for 05959BR?",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "You should prioritize Dice, GitHub, and LinkedIn. Dice and LinkedIn both met SLA 100% of the time and brought in 18% of all candidates. Dice had a strong offer conversion rate (2.7%), and GitHub had the highest conversion (2.8%) despite slightly lower SLA. Indeed should be avoided due to 0% SLA and 0% offer conversion.",
+          "keywords": [
+            "Dice",
+            "GitHub",
+            "LinkedIn",
+            "SLA",
+            "Indeed"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_sla_per_source",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_funnel_conversion_by_source",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_7",
+        "description": "Asks for the missing requisition id. | Explanation: The query lacks a requisition ID which is required for the API call.",
+        "intent": "Out of these skills — Python, Quantum Physics, Cyber Engineering, Risk Analysis, Wireshark — which ones negatively affect SLA performance?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Can you share the requisition ID (e.g., 05958BR or 05959BR)?",
+          "keywords": [
+            "requisition|req",
+            "ID|id|identifier",
+            "missing|without|share|provide|required"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_8",
+        "description": "Returns the definition of the SLA metric for the given requisition. | Explanation: The definitions-and-methodology endpoint contains a JSON field \"sla\" holding the textual definition; the agent extracted that string verbatim. | Note: Tests the agent's ability to locate and return a specific definition.",
+        "intent": "How is the SLA metric defined for 05958BR?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "SLA is defined as 'Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)'.",
+          "keywords": [
+            "SLA",
+            "Percentage",
+            "reviewed",
+            "window"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_9",
+        "description": "Returns the number of requisitions used to compute the reported metrics. | Explanation: The methodology response includes a note like \"Metrics calculated over N = 1047 requisitions\"; the agent parsed the integer 1047 and returned it. | Note: Tests string parsing / information extraction from notes field.",
+        "intent": "How many requisitions were used to compute these metrics for 05958BR?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Metrics are computed from 1047 requisitions.",
+          "keywords": [
+            "1047",
+            "requisitions"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_10",
+        "description": "Returns the list of top metrics considered for source evaluation. | Explanation: The agent read the \"top_metrics_considered\" array from the methodology API response and returned the metrics in the same order. | Note: Tests structured list extraction and formatting.",
+        "intent": "What are the top metrics considered when evaluating candidate sources for 05958BR?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "The top metrics considered are: SLA %, First round review %, Offer acceptance rate, Candidate volume, Total hires.",
+          "keywords": [
+            "SLA",
+            "First round review",
+            "Offer acceptance",
+            "Candidate volume",
+            "Total hires"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_11",
+        "description": "Loops through the provided list of models and reports which ones were used. | Explanation: The agent compared each provided model name against the \"models_involved\" array returned by data-sources-used API and reported matches (used) or non-matches (not used). | Note: Tests loop-based reasoning and partial matching for list membership.",
+        "intent": "Were the following models used to generate metrics for 05958BR: SLA impact regression model, Candidate ranking model, Skill relevance classifier?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Yes, 'SLA impact regression model' and 'Skill relevance classifier' were used. 'Candidate ranking model' was not listed among the models involved.",
+          "keywords": [
+            "SLA impact regression model",
+            "Skill relevance classifier",
+            "Candidate ranking model"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_data_sources_used",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_12",
+        "description": "Loops through the provided list of data sources and reports which ones were used. | Explanation: Each candidate data source was checked against the \"datasets_used\" array from data-sources-used API; two matched and one did not, which the agent reported accordingly. | Note: Tests loop-based reasoning and partial matching for list membership.",
+        "intent": "Were the following data sources used to compute the metrics for 05958BR: Historical hiring success data, Job description embeddings, Funnel conversion metrics?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Yes, 'Historical hiring success data' and 'Funnel conversion metrics' were used. 'Job description embeddings' was not listed among the data sources.",
+          "keywords": [
+            "Historical hiring success data",
+            "Funnel conversion metrics",
+            "Job description embeddings"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_data_sources_used",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_13",
+        "description": "Combines model lookup, retrieves actual SLA delta, and returns SLA definition. | Explanation: The SLA-impact API showed a 0 % delta for Python; data-sources-used API confirmed the 'SLA impact regression model' was involved; the methodology API supplied the formal SLA definition. These three pieces were combined into one coherent answer. | Note: Agent must combine numerical result (delta), model lookup, and formal definition into unified answer.",
+        "intent": "For 05958BR, when evaluating the SLA impact of Python, which models were used, what was the SLA delta, and what is the system definition of SLA?",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "'SLA impact regression model' was used. The SLA delta for Python was 0.0%. SLA is defined as 'Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)'.",
+          "keywords": [
+            "SLA impact regression model",
+            "0.0%|0.0 %|0.0|0%|0 %|0",
+            "SLA",
+            "Percentage",
+            "reviewed",
+            "window"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_impact_sla",
+              "args": {}
+            },
+            {
+              "name": "skills_data_sources_used",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_14",
+        "description": "States that Risk Analysis negatively affects SLA and lists the datasets that informed the analysis. | Explanation: The skill-analysis API flagged Risk Analysis as negatively correlated with SLA. The data-sources-used API listed the four datasets underpinning the evaluation, and both results were consolidated in the response. | Note: Correlation wording corrected to match API ('highly negative impact on SLA').",
+        "intent": "Was 'Risk Analysis' considered historically effective, and what data sources informed this analysis for 05958BR?",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "'Risk Analysis' is **not** considered effective: historical analysis shows it is correlated with a **highly negative impact on SLA**. The evaluation used these data sources: Historical hiring success data, Requisition skill tagging, Funnel conversion metrics, and Candidate quality feedback.",
+          "keywords": [
+            "Risk Analysis",
+            "not",
+            "effective",
+            "highly negative impact on SLA",
+            "SLA",
+            "Historical hiring success data",
+            "Requisition skill tagging"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_analysis",
+              "args": {}
+            },
+            {
+              "name": "skills_data_sources_used",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_15",
+        "description": "Explains that no provided skills hurt SLA, no provided sources require avoidance, and lists datasets used. | Explanation: The agent looped over each skill, querying SLA-impact and skill-analysis APIs; none yielded a negative delta. It then looped over each source, combining SLA-per-source and funnel-conversion data; all three met both SLA and offer benchmarks, so none were flagged. Finally, the datasets_used array was fetched once and reported. | Note: Fully aligned with current API payloads—no unsupported claims.",
+        "intent": "For requisition 05958BR, which of the following skills — Python, Quantum Physics, Wireshark — negatively impact SLA, and which of the following sources — Dice, GitHub, Referral — should be avoided based on low offer conversion or SLA performance? Also, which data sources were used to compute these insights?",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "None of the listed skills show a negative SLA impact in the available data: Python's SLA delta is 0 %, and Quantum Physics and Wireshark are not present in the analysis. Likewise, Dice (SLA 95 %, offer-acceptance 79 %), GitHub (SLA 90 %, offer-acceptance 77 %), and Referral (SLA 95 %, offer-acceptance 62 %) all perform satisfactorily, so none of them need to be avoided. These insights were produced using the following datasets: Historical hiring success data, Requisition skill tagging, Funnel conversion metrics, and Candidate quality feedback.",
+          "keywords": [
+            "Python",
+            "Quantum Physics",
+            "Wireshark",
+            "Dice",
+            "GitHub",
+            "Referral",
+            "SLA",
+            "0%|0 %|0",
+            "95%|95 %|95",
+            "79%|79 %|79",
+            "90%|90 %|90",
+            "77%|77 %|77",
+            "62%|62 %|62",
+            "Historical hiring success data",
+            "Requisition skill tagging",
+            "Funnel conversion metrics",
+            "Candidate quality feedback"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_impact_sla",
+              "args": {}
+            },
+            {
+              "name": "skills_skill_analysis",
+              "args": {}
+            },
+            {
+              "name": "skills_data_sources_used",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_funnel_conversion_by_source",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_sla_per_source",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_16",
+        "description": "Apologises for missing capability; optionally provides an illustrative optimisation if the feature existed. | Explanation: No endpoint returns or accepts free-text job descriptions, so optimisation is unsupported. The hypothetical section shows what the answer could look like if such an endpoint were added. | Note: Demonstrates graceful degradation plus a forward-looking example.",
+        "intent": "Help me optimize the job description for 05959BR.",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Sorry — the available APIs do not expose the current job-description text, so I cannot directly optimise it.",
+          "keywords": [
+            "APIs|API",
+            "job-description|job description",
+            "cannot|can't"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_17",
+        "description": "Prompts the user for the missing job ID instead of guessing. | Explanation: Illustrates a clarification turn when a required parameter (requisition_id) is missing. | Note: Tests conversational error-handling with zero API usage.",
+        "intent": "Which sourcing channel is the most effective for this job?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Can you share the requisition ID (e.g., 05958BR or 05959BR)?",
+          "keywords": [
+            "requisition|req",
+            "ID|id|identifier",
+            "missing|without|share|provide|required"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_18",
+        "description": "Explains unsupported request; shows what a successful answer might include. | Explanation: No endpoints expose hiring-manager data; a possible future answer is sketched for context. | Note: Covers gap #3: hiring-manager analytics.",
+        "intent": "Who's the hiring manager for 05959BR and how responsive is she?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Sorry — current APIs don't return hiring-manager names or responsiveness metrics, so I can't answer that.",
+          "keywords": [
+            "APIs",
+            "hiring-manager",
+            "responsive",
+            "can't|cannot"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_19",
+        "description": "States limitation; optional mock table shows desired granularity. | Explanation: The existing funnel-conversion API only returns percentages by source, not absolute counts or durations per stage. | Note: Covers gap #4: full funnel metrics.",
+        "intent": "Show me the average candidate counts and days spent in each funnel stage for roles like 05959BR.",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "I'm sorry, but none of the available APIs provide stage-by-stage candidate counts or time-in-status metrics, so I can't generate a funnel table.",
+          "keywords": [
+            "APIs|API",
+            "stage",
+            "candidate counts",
+            "time-in-status",
+            "funnel"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_20",
+        "description": "Returns start/end dates, last update date, and requisition count. | Explanation: Pulled time_frame_start, time_frame_end, data_last_updated and total_requisitions_analysed from the metadata-and-timeframe endpoint. | Note: Demonstrates a fully supported recency / frequency query (gap #5).",
+        "intent": "What's the data timeframe for 05958BR and how many similar requisitions were analysed?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "The metrics cover 9 Oct 2023 – 15 Mar 2025 (≈ 18 months) and were last updated on 29 Apr 2025. A total of 40 similar requisitions were analysed.",
+          "keywords": [
+            "9 Oct 2023|Oct 9, 2023",
+            "15 Mar 2025|Mar 15, 2025",
+            "29 Apr 2025|Apr 29, 2025",
+            "40",
+            "requisitions"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_metadata_and_timeframe",
+              "args": {}
+            }
+          ]
+        }
+      },
+      {
+        "name": "task_21",
+        "description": "Gracefully declines unsupported analysis; shows sample comparative table. | Explanation: Only the definition endpoint describes *what* time-to-fill means; no endpoint provides per-source values to compute deltas. | Note: Covers gap #6.",
+        "intent": "How does average time-to-fill compare to SLA for each sourcing channel?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "I'm afraid I can't provide that comparison because the current APIs don't expose time-to-fill broken down by source.",
+          "keywords": [
+            "APIs",
+            "time-to-fill",
+            "source"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_22",
+        "description": "Explains unsupported geographic/channel filter and gives mock estimation. | Explanation: No endpoints accept country/channel parameters; the example illustrates desired behaviour. | Note: Covers gap #7: region & channel-specific analytics.",
+        "intent": "If we posted this role internally in France only, how long would it take to fill?",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Current APIs don't allow filtering by geography or posting channel, so I'm unable to estimate a France-only internal posting timeline.",
+          "keywords": [
+            "Sorry|no|unable|can't|cannot",
+            "APIs|API|filtering|filter",
+            "France|geography|geographic|region|channel",
+            "internal|posting"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_23",
+        "description": "States limitation and shows example list of near-deadline requisitions. | Explanation: No endpoint surfaces open requisitions with SLA dates. The hypothetical section demonstrates the desired list format. | Note: Covers gap #8 and introduces a potential future endpoint.",
+        "intent": "List all requisitions that are within 30 days of their SLA deadline.",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Sorry — the API suite doesn't provide live requisition status or SLA countdowns, so I can't generate that list.",
+          "keywords": [
+            "API|APIs",
+            "SLA",
+            "requisition|req",
+            "status",
+            "countdown|countdowns",
+            "deadline|list"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_24",
+        "description": "Graceful 'ID not found' message with suggested alternatives. | Explanation: Because 05960BR does not exist, the assistant returns a polite error plus four close-match IDs (simulating fuzzy search in the ATS). No API call is made for a bad ID. | Note: Error-handling scenario for invalid requisition IDs.",
+        "intent": "Show candidate funnel for job id 05960BR",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "No job can be found with the ID 05960BR.\nDid you want to use one of the following job IDs instead?\n• UZLXBR — Sourcing Manager\n• F50HBR — Offering Manager\n• MJZ1BR — Offering Manager\n• 5TTKBR — Delivery Analyst",
+          "keywords": [
+            "05960BR",
+            "No job",
+            "can be found|not found"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_25",
+        "description": "Explains unsupported request and sketches desired output. | Explanation: There is no /job-details/ endpoint. The hypothetical section illustrates what the response would look like if such an endpoint became available. | Note: Completes coverage for full requisition card' requests.",
+        "intent": "Show me the details of UZLXBR",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "Sorry — none of the current APIs provide full job-card details (title, location, hiring-manager email, etc.), so I can't display that information.",
+          "keywords": [
+            "APIs",
+            "job-card",
+            "details"
+          ],
+          "tool_calls": []
+        }
+      },
+      {
+        "name": "task_26",
+        "description": "Returns average candidate count for comparable requisitions. | Explanation: candidate-volume-by-source returns `total_candidate_volume = 2913`; metadata-and-timeframe shows `total_requisitions_analysed = 40`. Dividing 2913 ÷ 40 ≈ 73 yields the average. | Note: Covers the repeated average candidate volume questions.",
+        "intent": "How many candidates do we usually get for postings similar to 05959BR?",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "On average, similar postings attract **73 candidates**.",
+          "keywords": [
+            "73",
+            "candidates",
+            "average"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "args": {}
+            },
+            {
+              "name": "candidate_source_metadata_and_timeframe",
+              "args": {}
+            }
+          ]
+        }
+      }
+    ]
+  }
+]
