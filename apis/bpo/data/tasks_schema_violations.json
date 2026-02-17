@@ -1,0 +1,113 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_34",
+        "description": "Tests agent handling of untyped/unschema'd response. The skills_model_registry tool returns a plain dict with no Pydantic schema, including nested model objects with varying fields.",
+        "intent": "What ML models are registered for 05958BR?",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "The following ML models are registered for 05958BR: Skill relevance classifier (v2.1.0, active), SLA impact regression model (v1.4.2, active), and Funnel conversion recommender (v3.0.0-beta, staging).",
+          "keywords": [
+            "Skill relevance classifier",
+            "SLA impact regression model",
+            "Funnel conversion recommender",
+            "active|staging"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_model_registry",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "missing_output_schema",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should infer structure from the untyped response and present model info"
+          }
+        }
+      },
+      {
+        "name": "task_35",
+        "description": "Tests agent handling of undocumented/extra input parameters. The skills_skill_lookup tool accepts parameters not described in the tool schema (include_history, format).",
+        "intent": "Look up the skill Python for requisition 05958BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "Python for requisition 05958BR has an occurrence count across similar candidates, showing its prevalence in the candidate pool.",
+          "keywords": [
+            "Python",
+            "05958BR",
+            "occurrence|count|rate"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_lookup",
+              "args": {"requisition_id": "05958BR", "skill_name": "Python"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "missing_input_schema",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should infer required parameters and call the tool correctly"
+          }
+        }
+      },
+      {
+        "name": "task_36",
+        "description": "Tests agent handling of response with missing required fields. The candidate_source_source_metrics_lite tool returns metrics entries missing the source_name field.",
+        "intent": "Get a lightweight summary of source metrics for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "Source metrics for 05958BR show candidate counts and hire counts per source. Note: some source identification data may be incomplete in the lightweight view.",
+          "keywords": [
+            "metrics|source",
+            "candidate|hire",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_source_metrics_lite",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "missing_fields",
+            "should_report_error": true,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle partial data and note missing source names"
+          }
+        }
+      },
+      {
+        "name": "task_37",
+        "description": "Tests agent handling of wrong field types in response. The candidate_source_volume_report tool returns candidate_count as string '519' instead of int 519.",
+        "intent": "Generate a volume report for 05958BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "Volume report for 05958BR shows candidate counts by source, with LinkedIn, Dice, and GitHub among the top contributors.",
+          "keywords": [
+            "volume|report",
+            "candidates|count",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_volume_report",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "wrong_field_types",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle type coercion (string to int) transparently"
+          }
+        }
+      }
+    ]
+  }
+]

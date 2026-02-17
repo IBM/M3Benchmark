@@ -1,0 +1,137 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_38",
+        "description": "Tests agent handling of large payloads. The candidate_source_full_candidate_details tool returns 1000 pre-generated candidate records.",
+        "intent": "Get full candidate details for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "The full candidate details for 05958BR include 1000 candidate records from various sourcing channels. The candidates span multiple departments and seniority levels.",
+          "keywords": [
+            "1000|1,000",
+            "candidates|records",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_full_candidate_details",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "large_response",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle large payloads without crashing and summarize key info"
+          }
+        }
+      },
+      {
+        "name": "task_39",
+        "description": "Tests agent handling of Unicode and special characters. The candidate_source_source_directory tool returns source names containing emoji, CJK, and Arabic text.",
+        "intent": "Show the source directory for 05959BR",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "The source directory for 05959BR lists 7 sourcing channels including LinkedIn, Dice, Zhaopin (China), Bayt (Middle East), GitHub, Référence (Europe), and Top Talent (APAC).",
+          "keywords": [
+            "LinkedIn|Dice|GitHub",
+            "source|directory|channels",
+            "7|seven"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_source_directory",
+              "args": {"requisition_id": "05959BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "unicode_special_chars",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should handle unicode correctly and present source names"
+          }
+        }
+      },
+      {
+        "name": "task_40",
+        "description": "Tests agent handling of deeply nested JSON (15 levels). The skills_skill_deep_analysis tool returns data nested 15 levels deep.",
+        "intent": "Get a deep analysis breakdown of skills for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "Deep analysis for 05958BR shows the top skills with occurrence counts. The analysis includes multiple layers of categorization across 15 levels of detail.",
+          "keywords": [
+            "skills|analysis",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_skill_deep_analysis",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "deeply_nested_json",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should navigate deep structures and extract meaningful data"
+          }
+        }
+      },
+      {
+        "name": "task_41",
+        "description": "Tests agent handling of extra undocumented fields. The candidate_source_sla_extended tool returns 20 undocumented internal fields alongside the expected SLA data.",
+        "intent": "Get extended SLA data for Dice on requisition 05958BR",
+        "difficulty": "easy",
+        "expected_output": {
+          "response": "The extended SLA data for Dice on requisition 05958BR shows an SLA percentage of approximately 80%.",
+          "keywords": [
+            "Dice",
+            "SLA",
+            "re:\\b80\\b|re:\\b95\\b"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_sla_extended",
+              "args": {"requisition_id": "05958BR", "source_name": "Dice"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "extra_fields",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should ignore extra fields and extract relevant SLA data"
+          }
+        }
+      },
+      {
+        "name": "task_42",
+        "description": "Tests agent handling of input schema mismatch. The skills_analyze_skill_match tool expects `skill_id` parameter but documentation says `skill_name`.",
+        "intent": "Check if Python is a good match for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "Analysis for Python on requisition 05958BR shows a match score and SLA delta. The skill has a measurable occurrence rate among similar candidates.",
+          "keywords": [
+            "Python",
+            "match|score|recommendation",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "skills_analyze_skill_match",
+              "args": {"requisition_id": "05958BR", "skill_id": "Python"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "input_schema_mismatch",
+            "should_report_error": false,
+            "should_retry": true,
+            "expected_behavior": "Agent should adapt to actual function signature despite documentation mismatch"
+          }
+        }
+      }
+    ]
+  }
+]
