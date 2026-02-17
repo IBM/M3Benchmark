@@ -1,0 +1,29 @@
+tasks:
+  # Task 1: ToolCallingAgent + SlotFillingMCPServer
+  # Uses a local Python subprocess (no container needed)
+  1:
+    mode: stdio
+    command: python  # resolved to sys.executable at runtime
+    args:
+      - "-m"
+      - "apis.m3.python_tools.mcp"
+
+  # Task 2: LangGraphReActAgent + FastAPIMCPServer
+  # Uses docker/podman container exec (per-domain MCP server)
+  2:
+    mode: stdio
+    container_name: fastapi-mcp-server
+    container_runtime: null  # null = auto-detect (prefers podman, falls back to docker)
+    container_command:
+      - python
+      - mcp_server.py
+
+  # Task 5: LangGraphReActAgent + RetrieverMCPServer (ChromaDB)
+  # Uses docker/podman container exec (per-domain MCP server)
+  5:
+    mode: stdio
+    container_name: retriever-mcp-server
+    container_runtime: null  # null = auto-detect (prefers podman, falls back to docker)
+    container_command:
+      - python
+      - mcp_server.py

@@ -83,14 +83,6 @@ Environment variables:
     )
 
     parser.add_argument(
-        "--id",
-        "--tool-universe-id",
-        dest="tool_universe_id",
-        metavar="ID",
-        help="Unique ID for this server instance",
-    )
-
-    parser.add_argument(
         "--mode",
         "--server-type",
         dest="server_type",
@@ -171,7 +163,6 @@ def main(args: Optional[List[str]] = None) -> int:
             database_path=parsed_args.database,
             tables=tables,
             cache_dir=parsed_args.cache_dir,
-            tool_universe_id=parsed_args.tool_universe_id,
             server_type=parsed_args.server_type,
             transport=parsed_args.transport,
             host=parsed_args.host,

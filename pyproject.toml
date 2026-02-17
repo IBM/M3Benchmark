@@ -20,7 +20,8 @@ dependencies = [
     "sqlglot",
     "pydantic",
     "jinja2",
-    "dotenv"
+    "dotenv",
+    "pyyaml",
 ]
 
 [project.optional-dependencies]
@@ -58,6 +59,11 @@ mcp = [
     "fastapi>=0.100.0",
     "uvicorn[standard]>=0.23.0",
     "websockets>=11.0",
+    # BPO MCP server dependencies
+    "fastmcp>=0.2.0",
+    "loguru",
+    "pyarrow",
+    "rapidfuzz",
 ]
 
 # Legacy dependencies (historically included but not actively used)
@@ -87,9 +93,13 @@ dev = [
 
 [project.scripts]
 slot-filling-mcp = "apis.m3.python_tools.mcp.cli:main"
+bpo-mcp = "apis.bpo.mcp.server:start_server"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
+
+[tool.setuptools.package-data]
+"apis.bpo.data" = ["*.parquet", "*.json", "*.csv"]
 
 # Optional: Black configuration
 [tool.black]

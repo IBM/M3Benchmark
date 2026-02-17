@@ -1,0 +1,2444 @@
+06e387dae8db-22fe3192ab57:
+  domain: coinmarketcap
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: coins
+        original_table_name: coins
+      T2:
+        modified_table_name: historical
+        original_table_name: historical
+    condition_sequence:
+    - - T1.id
+      - T2.coin_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/coinmarketcap/coinmarketcap.sqlite
+  query: When is the highest closed price of CHNCoin?
+06e387dae8db-2348759ad2df:
+  domain: coinmarketcap
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: coins
+        original_table_name: coins
+      T2:
+        modified_table_name: historical
+        original_table_name: historical
+    condition_sequence:
+    - - T1.ID
+      - T2.coin_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/coinmarketcap/coinmarketcap.sqlite
+  query: What's the percentage of coins that is higher than the price 1 hour ago in
+    May 29,2013? List the names of these coins.
+06e387dae8db-f7dabfa2792a:
+  domain: coinmarketcap
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: coins
+        original_table_name: coins
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/coinmarketcap/coinmarketcap.sqlite
+  query: Please list the names of coins that has been disappeared.
+10050cfaf017-31bdfc317bfa:
+  domain: bike_share_1
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: trip
+        original_table_name: trip
+      T2:
+        modified_table_name: station
+        original_table_name: station
+    condition_sequence:
+    - - T2.name
+      - T1.start_station_name
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/bike_share_1/bike_share_1.sqlite
+  query: Are all stations with zip code 94107 located in San Francisco city?
+10050cfaf017-5dc404589d01:
+  domain: bike_share_1
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: station
+        original_table_name: station
+      T2:
+        modified_table_name: status
+        original_table_name: status
+    condition_sequence:
+    - - T2.station_id
+      - T1.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/bike_share_1/bike_share_1.sqlite
+  query: How many bikes have been borrowed at San Jose Diridon Caltrain Station on
+    the date and time of 10/20/2013 8:11:01 AM and indicate the station's coordinates.
+10050cfaf017-b121e6aef9fb:
+  domain: bike_share_1
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: trip
+        original_table_name: trip
+      T2:
+        modified_table_name: station
+        original_table_name: station
+    condition_sequence:
+    - - T2.name
+      - T1.start_station_name
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/bike_share_1/bike_share_1.sqlite
+  query: Name the city of the station that trip ID 585842 borrowed a bike and indicate
+    when that station was first installed.
+10050cfaf017-d26ed8ee6fa0:
+  domain: bike_share_1
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: trip
+        original_table_name: trip
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/bike_share_1/bike_share_1.sqlite
+  query: What is the average duration of trips which are started at Adobe on Almaden
+    station to Ryland Park?
+1960f609e439-746d54b5d6af:
+  domain: codebase_comments
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Repo
+        original_table_name: Repo
+      T2:
+        modified_table_name: Solution
+        original_table_name: Solution
+      T3:
+        modified_table_name: Method
+        original_table_name: Method
+    condition_sequence:
+    - - T1.Id
+      - T2.RepoId
+      - INNER
+    - - T2.Id
+      - T3.SolutionId
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/codebase_comments/codebase_comments.sqlite
+  query: 'How many language code of method is used for the github address "https://github.com/managedfusion/managedfusion.git
+
+    "?'
+1f58b1e965af-16358e3c3ba8:
+  domain: cars
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: data
+        original_table_name: data
+      T2:
+        modified_table_name: production
+        original_table_name: production
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.ID
+      - T2.ID
+      - INNER
+    - - T3.origin
+      - T2.country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cars/cars.sqlite
+  query: Among the cars produced in 1975, provide IDs, names, and producing countries
+    of the cars with the maximum number of cylinders.
+1f58b1e965af-525468077192:
+  domain: cars
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: production
+        original_table_name: production
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.country
+      - T2.origin
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cars/cars.sqlite
+  query: How many cars were released in the USA in 1981?
+1f58b1e965af-a6b222ef7d94:
+  domain: cars
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: data
+        original_table_name: data
+      T2:
+        modified_table_name: production
+        original_table_name: production
+    condition_sequence:
+    - - T1.ID
+      - T2.ID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cars/cars.sqlite
+  query: What is the horsepower and model year of the car named Subaru Dl?
+1f58b1e965af-ae381e154b21:
+  domain: cars
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: data
+        original_table_name: data
+      T2:
+        modified_table_name: production
+        original_table_name: production
+      T3:
+        modified_table_name: country
+        original_table_name: country
+      T4:
+        modified_table_name: price
+        original_table_name: price
+    condition_sequence:
+    - - T1.ID
+      - T2.ID
+      - INNER
+    - - T3.origin
+      - T2.country
+      - INNER
+    - - T4.ID
+      - T1.ID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cars/cars.sqlite
+  query: Which country produced the most expensive car in 1970?
+2b28654158b1-38bbd8b71cf4:
+  domain: college_completion
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: state_sector_details
+        original_table_name: state_sector_details
+      T2:
+        modified_table_name: state_sector_grads
+        original_table_name: state_sector_grads
+    condition_sequence:
+    - - T2.stateid
+      - T1.stateid
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/college_completion/college_completion.sqlite
+  query: Among the states with a public school count of 20 and below, list their race.
+2ffd766bcf59-04f269918a0d:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Indicators
+        original_table_name: Indicators
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: Which country have the highest CO2 emissions in 1960?
+2ffd766bcf59-2b55b61e771a:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Country
+        original_table_name: Country
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: What South Asian nations have low incomes? Please include the entire names
+    of the nations in your answer.
+2ffd766bcf59-51d864e89302:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Country
+        original_table_name: Country
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: How many country uses the 2008 System of National Accounts methodology? List
+    our their table name.
+2ffd766bcf59-86260bfb31f2:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Footnotes
+        original_table_name: Footnotes
+      T2:
+        modified_table_name: Series
+        original_table_name: Series
+    condition_sequence:
+    - - T1.Seriescode
+      - T2.SeriesCode
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: In 2005, which series codes use the International Monetary Fund, Balance
+    of Payments Statistics Yearbook and data files source?
+2ffd766bcf59-bb4fdfde3e1a:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Country
+        original_table_name: Country
+      T2:
+        modified_table_name: FootNotes
+        original_table_name: FootNotes
+    condition_sequence:
+    - - T1.CountryCode
+      - T2.Countrycode
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: How many footnotes did Aruba got on different series code in the year 2002?
+2ffd766bcf59-d8a037d3b606:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Country
+        original_table_name: Country
+      T2:
+        modified_table_name: CountryNotes
+        original_table_name: CountryNotes
+    condition_sequence:
+    - - T1.CountryCode
+      - T2.Countrycode
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: 'List the series code of country with country notes description as "Data
+    sources : Eurostat" and state the Wb2Code of these countries.'
+2ffd766bcf59-f98561e4dd24:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Series
+        original_table_name: Series
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: What are the subjects of series that have a restricted type of license?
+2ffd766bcf59-fa685699c710:
+  domain: world_development_indicators
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Series
+        original_table_name: Series
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world_development_indicators/world_development_indicators.sqlite
+  query: 'List down the series codes in which the topic is about Environment: Emissions
+    and the license type is restricted. Please include their alpha code.'
+308738b8195d-1c80362c6b30:
+  domain: hockey
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Master
+        original_table_name: Master
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/hockey/hockey.sqlite
+  query: Who are the players played both in NHL and WHA. List the given name and first
+    year they were in NHL and first year in WHA.
+34a533dfd727-1cef03fffb7a:
+  domain: disney
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: characters
+        original_table_name: characters
+      T2:
+        modified_table_name: director
+        original_table_name: director
+    condition_sequence:
+    - - T1.movie_title
+      - T2.name
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/disney/disney.sqlite
+  query: The song "Once Upon a Dream" is associated with the movie directed by whom?
+34a533dfd727-22ef234a62f7:
+  domain: disney
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: characters
+        original_table_name: characters
+      T2:
+        modified_table_name: director
+        original_table_name: director
+    condition_sequence:
+    - - T1.movie_title
+      - T2.name
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/disney/disney.sqlite
+  query: Which movies had the main character named Donald Duck and who directed them?
+34a533dfd727-c95b376399ad:
+  domain: disney
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: movies_total_gross
+        original_table_name: movies_total_gross
+      T2:
+        modified_table_name: characters
+        original_table_name: characters
+    condition_sequence:
+    - - T1.movie_title
+      - T2.movie_title
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/disney/disney.sqlite
+  query: List all the main characters of the movie that are comedy genre.
+34a533dfd727-d803d85a5dd5:
+  domain: disney
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: characters
+        original_table_name: characters
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/disney/disney.sqlite
+  query: Which movie is the character Robin Hood in?
+35a1befb81d1-40d31e6d8b48:
+  domain: talkingdata
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: phone_brand_device_model2
+        original_table_name: phone_brand_device_model2
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/talkingdata/talkingdata.sqlite
+  query: What is the phone brand of the device model "坚果手机"?
+35a1befb81d1-bd7a379cc882:
+  domain: talkingdata
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: phone_brand_device_model2
+        original_table_name: phone_brand_device_model2
+      T2:
+        modified_table_name: gender_age
+        original_table_name: gender_age
+    condition_sequence:
+    - - T1.device_id
+      - T2.device_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/talkingdata/talkingdata.sqlite
+  query: How many male users of the "Galaxy S5" device model?
+35a1befb81d1-c0e888433c67:
+  domain: talkingdata
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: events
+        original_table_name: events
+      T2:
+        modified_table_name: phone_brand_device_model2
+        original_table_name: phone_brand_device_model2
+    condition_sequence:
+    - - T1.device_id
+      - T2.device_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/talkingdata/talkingdata.sqlite
+  query: Please list the location coordinates of all the Galaxy Note 2 devices when
+    an event happened.
+35a1befb81d1-d0e9ab5648c1:
+  domain: talkingdata
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: phone_brand_device_model2
+        original_table_name: phone_brand_device_model2
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/talkingdata/talkingdata.sqlite
+  query: List at least 15 phone models released under the OPPO brand.
+35a1befb81d1-e78ef76176df:
+  domain: talkingdata
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: events
+        original_table_name: events
+      T2:
+        modified_table_name: phone_brand_device_model2
+        original_table_name: phone_brand_device_model2
+    condition_sequence:
+    - - T1.device_id
+      - T2.device_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/talkingdata/talkingdata.sqlite
+  query: Please list the models of all the devices with an event under the location
+    coordinates (121, 31).
+3683085b75b9-345632adedec:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: inspections
+        original_table_name: inspections
+      T2:
+        modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence:
+    - - T1.business_id
+      - T2.business_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: When did eateries from San Bruno city get highest score in inspection?
+3683085b75b9-3508dce6efdb:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: violations
+        original_table_name: violations
+      T2:
+        modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence:
+    - - T1.business_id
+      - T2.business_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: Give the description of the moderate risk violation which "Chez Fayala, Inc."
+    had on 2016/7/1.
+3683085b75b9-58d84670ae99:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: inspections
+        original_table_name: inspections
+      T2:
+        modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence:
+    - - T1.business_id
+      - T2.business_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: List the inspection dates, scores and inspection types for the eateries with
+    tax code AA.
+3683085b75b9-60117f9229f1:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: List down the owner's name with a zip code 94104.
+3683085b75b9-b5c72f8ed7e5:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: inspections
+        original_table_name: inspections
+      T2:
+        modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence:
+    - - T1.business_id
+      - T2.business_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: List the eateries' names and addresses which had reinspection on 2nd February,
+    2015.
+3683085b75b9-e667a591b8a0:
+  domain: food_inspection
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: inspections
+        original_table_name: inspections
+      T2:
+        modified_table_name: businesses
+        original_table_name: businesses
+    condition_sequence:
+    - - T1.business_id
+      - T2.business_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/food_inspection/food_inspection.sqlite
+  query: What are the names of the establishments that met all of the required standards
+    in 2013?
+398991009da1-8ed03d5e838a:
+  domain: menu
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: MenuItem
+        original_table_name: MenuItem
+      T2:
+        modified_table_name: MenuPage
+        original_table_name: MenuPage
+      T3:
+        modified_table_name: Menu
+        original_table_name: Menu
+      T4:
+        modified_table_name: Dish
+        original_table_name: Dish
+    condition_sequence:
+    - - T1.menu_page_id
+      - T2.id
+      - INNER
+    - - T2.menu_id
+      - T3.id
+      - INNER
+    - - T1.dish_id
+      - T4.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/menu/menu.sqlite
+  query: Provide the sponsor and event of the menu which includes Cerealine with Milk.
+398991009da1-ef959cd8b7eb:
+  domain: menu
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: MenuItem
+        original_table_name: MenuItem
+      T2:
+        modified_table_name: Dish
+        original_table_name: Dish
+    condition_sequence:
+    - - T2.id
+      - T1.dish_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/menu/menu.sqlite
+  query: Name the dishes that were on the menu page ID 174.
+3e2b8f7655a2-4fb9857d4706:
+  domain: trains
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: cars
+        original_table_name: cars
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/trains/trains.sqlite
+  query: How many short cars are in the shape of hexagon?
+486ea46224d1-2d840c6cde03:
+  domain: world
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Country
+        original_table_name: Country
+      T2:
+        modified_table_name: CountryLanguage
+        original_table_name: CountryLanguage
+    condition_sequence:
+    - - T1.Code
+      - T2.CountryCode
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world/world.sqlite
+  query: What are the official languages used in Belgium?
+486ea46224d1-53f6cb7126e4:
+  domain: world
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: City
+        original_table_name: City
+      T2:
+        modified_table_name: CountryLanguage
+        original_table_name: CountryLanguage
+    condition_sequence:
+    - - T1.CountryCode
+      - T2.CountryCode
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/world/world.sqlite
+  query: What are the official languages of the country where you can find the city
+    with the least population?
+4ee813c5e32d-9340498e7876:
+  domain: citeseer
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: paper
+        original_table_name: paper
+      T2:
+        modified_table_name: content
+        original_table_name: content
+    condition_sequence:
+    - - T1.paper_id
+      - T2.paper_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/citeseer/citeseer.sqlite
+  query: What is the class label of paper ID 'chakrabarti01integrating'. How many
+    words were cited by this paper ID?
+4ee813c5e32d-ab38bb73b33f:
+  domain: citeseer
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: paper
+        original_table_name: paper
+      T2:
+        modified_table_name: cites
+        original_table_name: cites
+    condition_sequence:
+    - - T1.paper_id
+      - T2.citing_paper_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/citeseer/citeseer.sqlite
+  query: In the papers classified as ML, how many cited butz01algorithmic?
+4ee813c5e32d-f34e1ecc7bd4:
+  domain: citeseer
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: paper
+        original_table_name: paper
+      T2:
+        modified_table_name: content
+        original_table_name: content
+    condition_sequence:
+    - - T1.paper_id
+      - T2.paper_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/citeseer/citeseer.sqlite
+  query: Under what classification do the papers that cited word1163 belong?
+55b7e50368aa-021684c7607e:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: isMember
+        original_table_name: isMember
+      T3:
+        modified_table_name: organization
+        original_table_name: organization
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    - - T3.Country
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: What is the newest established organization where Singapore is a member of?
+55b7e50368aa-06c3a12b0c7f:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: borders
+        original_table_name: borders
+    condition_sequence:
+    - - T1.Code
+      - T2.Country1
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: State all countries with border greater than 4,000. List the full country
+    name.
+55b7e50368aa-1846e6b5b02a:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: organization
+        original_table_name: organization
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.Country
+      - T2.Code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: State the area and population of the country where Asia Pacific Economic
+    Cooperation headquarter is located.
+55b7e50368aa-2039214208b8:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: ethnicGroup
+        original_table_name: ethnicGroup
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Where is the capital of country which has the largest percentage of Malay
+    people?
+55b7e50368aa-20e9959995c0:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: city
+        original_table_name: city
+      T2:
+        modified_table_name: located
+        original_table_name: located
+      T3:
+        modified_table_name: river
+        original_table_name: river
+    condition_sequence:
+    - - T1.Name
+      - T2.City
+      - INNER
+    - - T3.Name
+      - T2.River
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: List all the cities and provinces located at the rivers that flows to Atlantic
+    Ocean.
+55b7e50368aa-52e46b456a44:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: politics
+        original_table_name: politics
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: What are the most recent three independent nations?
+55b7e50368aa-5b42c2fe6d02:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: lake
+        original_table_name: lake
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Which lake is the largest in terms of both surface area and depth?
+55b7e50368aa-6eda0cefa96a:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: organization
+        original_table_name: organization
+      T2:
+        modified_table_name: isMember
+        original_table_name: isMember
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T2.Country
+      - T1.Country
+      - INNER
+    - - T2.Country
+      - T3.Code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: What is the organization(s) that has 'National Society' as member type.
+55b7e50368aa-787e5baa5b78:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: located
+        original_table_name: located
+      T3:
+        modified_table_name: river
+        original_table_name: river
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    - - T3.Name
+      - T2.River
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: What are the names of the cities along the Euphrat River's course? Indicate
+    the capital city of the nation where the Euphrat River flows.
+55b7e50368aa-9c248b6d9e6a:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: city
+        original_table_name: city
+    condition_sequence:
+    - - T2.Country
+      - T1.Code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: How many cities in France have a population of more than 100,000?
+55b7e50368aa-a239ea86518c:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: locatedOn
+        original_table_name: locatedOn
+      T2:
+        modified_table_name: island
+        original_table_name: island
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.Island
+      - T2.Name
+      - INNER
+    - - T3.Code
+      - T1.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Where does Bermuda belong to? Give the full name of the country.
+55b7e50368aa-a8ede821e576:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: ethnicGroup
+        original_table_name: ethnicGroup
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Calculate the population of Arab in each country?
+55b7e50368aa-c879aada012e:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: economy
+        original_table_name: economy
+      T3:
+        modified_table_name: politics
+        original_table_name: politics
+    condition_sequence:
+    - - T1.Code
+      - T2.Country
+      - INNER
+    - - T3.Country
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Find the government type for the country with the highest percentage GDP
+    in Agriculture.
+55b7e50368aa-d6f033c3d26a:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: organization
+        original_table_name: organization
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.Country
+      - T2.Code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: What is the name of the most recently founded organization in Saudi Arabia?
+55b7e50368aa-d7d765de2ae8:
+  domain: mondial_geo
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: city
+        original_table_name: city
+      T2:
+        modified_table_name: located
+        original_table_name: located
+      T3:
+        modified_table_name: river
+        original_table_name: river
+      T4:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.Name
+      - T2.City
+      - INNER
+    - - T3.Name
+      - T2.River
+      - INNER
+    - - T4.Code
+      - T2.Country
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mondial_geo/mondial_geo.sqlite
+  query: Which three countries does the Amazonas flow through? Give the full name
+    of the countries.
+5661cd917583-10be92302469:
+  domain: book_publishing_company
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: employee
+        original_table_name: employee
+      T2:
+        modified_table_name: jobs
+        original_table_name: jobs
+    condition_sequence:
+    - - T1.job_id
+      - T2.job_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/book_publishing_company/book_publishing_company.sqlite
+  query: Please list the first names of the employees who work as Managing Editor.
+5caddc4c49de-97a81aba715f:
+  domain: olympics
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: noc_region
+        original_table_name: noc_region
+      T2:
+        modified_table_name: person_region
+        original_table_name: person_region
+      T3:
+        modified_table_name: person
+        original_table_name: person
+    condition_sequence:
+    - - T1.id
+      - T2.region_id
+      - INNER
+    - - T2.person_id
+      - T3.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/olympics/olympics.sqlite
+  query: How many males from Belgium have participated in an Olympic Games?
+5caddc4c49de-d3259d5eb6ca:
+  domain: olympics
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: noc_region
+        original_table_name: noc_region
+      T2:
+        modified_table_name: person_region
+        original_table_name: person_region
+      T3:
+        modified_table_name: person
+        original_table_name: person
+    condition_sequence:
+    - - T1.id
+      - T2.region_id
+      - INNER
+    - - T2.person_id
+      - T3.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/olympics/olympics.sqlite
+  query: Who is the heaviest athlete from Russia?
+5caddc4c49de-e646d9857be9:
+  domain: olympics
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: noc_region
+        original_table_name: noc_region
+      T2:
+        modified_table_name: person_region
+        original_table_name: person_region
+      T3:
+        modified_table_name: person
+        original_table_name: person
+    condition_sequence:
+    - - T1.id
+      - T2.region_id
+      - INNER
+    - - T2.person_id
+      - T3.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/olympics/olympics.sqlite
+  query: Give the height of the tallest athlete from Portugal.
+5caddc4c49de-ec790d726629:
+  domain: olympics
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: noc_region
+        original_table_name: noc_region
+      T2:
+        modified_table_name: person_region
+        original_table_name: person_region
+      T3:
+        modified_table_name: person
+        original_table_name: person
+    condition_sequence:
+    - - T1.id
+      - T2.region_id
+      - INNER
+    - - T2.person_id
+      - T3.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/olympics/olympics.sqlite
+  query: Calculate the average weight of male athletes from Tonga.
+6d05804bb8d7-734911c78d7a:
+  domain: european_football_1
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: matchs
+        original_table_name: matchs
+      T2:
+        modified_table_name: divisions
+        original_table_name: divisions
+    condition_sequence:
+    - - T1.Div
+      - T2.division
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/european_football_1/european_football_1.sqlite
+  query: How many Away Victories happened on 2016/3/27 in the LaLiga 2 division?
+6e317bcd6839-0792508c5d63:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: address
+        original_table_name: address
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Name the streets in Dallas.
+6e317bcd6839-1e1ab14ce935:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_language
+        original_table_name: book_language
+    condition_sequence:
+    - - T1.language_id
+      - T2.language_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Which language is 'El plan infinito' written in?
+6e317bcd6839-30cca12d7ab8:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_author
+        original_table_name: book_author
+      T3:
+        modified_table_name: author
+        original_table_name: author
+      T4:
+        modified_table_name: order_line
+        original_table_name: order_line
+    condition_sequence:
+    - - T1.book_id
+      - T2.book_id
+      - INNER
+    - - T3.author_id
+      - T2.author_id
+      - INNER
+    - - T4.book_id
+      - T1.book_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Give the author's name of the books that cost 19 dollars and above.
+6e317bcd6839-32171eb8bf77:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_language
+        original_table_name: book_language
+    condition_sequence:
+    - - T1.language_id
+      - T2.language_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: List the ISBN of the book published in Spanish.
+6e317bcd6839-4bd876a584bf:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: cust_order
+        original_table_name: cust_order
+      T2:
+        modified_table_name: customer
+        original_table_name: customer
+      T3:
+        modified_table_name: shipping_method
+        original_table_name: shipping_method
+    condition_sequence:
+    - - T1.customer_id
+      - T2.customer_id
+      - INNER
+    - - T3.method_id
+      - T1.shipping_method_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: What is the shipping method ordered by Nicolette Sadler at 6/29/2020 7:40:07
+    PM?
+6e317bcd6839-55812a546de4:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_author
+        original_table_name: book_author
+      T3:
+        modified_table_name: author
+        original_table_name: author
+    condition_sequence:
+    - - T1.book_id
+      - T2.book_id
+      - INNER
+    - - T3.author_id
+      - T2.author_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Provide the authors and titles of the books which have more than 3000 pages.
+6e317bcd6839-59a2c59fe306:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_language
+        original_table_name: book_language
+    condition_sequence:
+    - - T1.language_id
+      - T2.language_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: List the title of the earliest published Japanese book.
+6e317bcd6839-5dedf50799e3:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: address
+        original_table_name: address
+      T2:
+        modified_table_name: customer_address
+        original_table_name: customer_address
+      T3:
+        modified_table_name: address_status
+        original_table_name: address_status
+    condition_sequence:
+    - - T1.address_id
+      - T2.address_id
+      - INNER
+    - - T3.status_id
+      - T2.status_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Which customer addresses are no longer active?
+6e317bcd6839-6aad3bc9131e:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: book_author
+        original_table_name: book_author
+      T3:
+        modified_table_name: author
+        original_table_name: author
+    condition_sequence:
+    - - T1.book_id
+      - T2.book_id
+      - INNER
+    - - T3.author_id
+      - T2.author_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: What is the name of the first book written by J.K Rowling?
+6e317bcd6839-cdc1250d7cc8:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: address
+        original_table_name: address
+    condition_sequence:
+    - - T1.country_id
+      - T2.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: What are the city addresses of the customers located in the United States
+    of America?
+6e317bcd6839-ce5529ae4d5f:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: book
+        original_table_name: book
+      T2:
+        modified_table_name: order_line
+        original_table_name: order_line
+      T3:
+        modified_table_name: cust_order
+        original_table_name: cust_order
+      T4:
+        modified_table_name: customer
+        original_table_name: customer
+    condition_sequence:
+    - - T1.book_id
+      - T2.book_id
+      - INNER
+    - - T3.order_id
+      - T2.order_id
+      - INNER
+    - - T4.customer_id
+      - T3.customer_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: List the email of customers that bought the book titled Switch on the Night.
+6e317bcd6839-d0d495680bdb:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: address
+        original_table_name: address
+    condition_sequence:
+    - - T1.country_id
+      - T2.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Give the number of Ukrainian addresses in the database.
+6e317bcd6839-defae6714a6c:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: customer
+        original_table_name: customer
+      T2:
+        modified_table_name: customer_address
+        original_table_name: customer_address
+      T3:
+        modified_table_name: address
+        original_table_name: address
+    condition_sequence:
+    - - T1.customer_id
+      - T2.customer_id
+      - INNER
+    - - T3.address_id
+      - T2.address_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Write the full name of the customers whose address is at 55 Dorton Pass,
+    Huangqiao.
+6e317bcd6839-ea29fba2ba6b:
+  domain: books
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: address
+        original_table_name: address
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T2.country_id
+      - T1.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/books/books.sqlite
+  query: Which country is 9 Green Ridge Point, Arendal located at?
+840942187214-07245094c896:
+  domain: authors
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Paper
+        original_table_name: Paper
+      T2:
+        modified_table_name: Journal
+        original_table_name: Journal
+    condition_sequence:
+    - - T1.JournalId
+      - T2.Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/authors/authors.sqlite
+  query: Indicate the year and a full name of the journal in which the publication
+    named 'Area Effects in Cepaea' was published.
+840942187214-28fec41aeb4c:
+  domain: authors
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Paper
+        original_table_name: Paper
+      T2:
+        modified_table_name: PaperAuthor
+        original_table_name: PaperAuthor
+    condition_sequence:
+    - - T1.Id
+      - T2.PaperId
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/authors/authors.sqlite
+  query: List author affiliation for papers whose topic is Quantum Physics.
+840942187214-57231ff51e26:
+  domain: authors
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Paper
+        original_table_name: Paper
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/authors/authors.sqlite
+  query: What was the topic of the article "A Formal Approach to Service Component
+    Architecture" and when was it published?
+840942187214-7794c1fb4da5:
+  domain: authors
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: Conference
+        original_table_name: Conference
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/authors/authors.sqlite
+  query: List the short name of all conferences whose full name begins with International
+    Symposium.
+840942187214-c2374b07b4a9:
+  domain: authors
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Paper
+        original_table_name: Paper
+      T2:
+        modified_table_name: PaperAuthor
+        original_table_name: PaperAuthor
+    condition_sequence:
+    - - T1.Id
+      - T2.PaperId
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/authors/authors.sqlite
+  query: 'Among the author who drafted the paper "A Randomized Comparison of Sirolimus-
+    Versus Paclitaxel-Eluting Stent Implantation in Patients With Diabetes Mellitus",
+    which of them is/are affiliated with the Asan Medical Center, University of Ulsan
+    College of Medicine, Seoul, Korea
+
+    ?'
+a823e527d383-054f49e07905:
+  domain: beer_factory
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: customers
+        original_table_name: customers
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/beer_factory/beer_factory.sqlite
+  query: Please name all of the cities in California.
+a823e527d383-33ad7de4bd09:
+  domain: beer_factory
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: rootbeerbrand
+        original_table_name: rootbeerbrand
+      T2:
+        modified_table_name: rootbeerreview
+        original_table_name: rootbeerreview
+    condition_sequence:
+    - - T1.BrandID
+      - T2.BrandID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/beer_factory/beer_factory.sqlite
+  query: Which brand in 2012 has the lowest star rating and contains cane sugar as
+    well as honey?
+a823e527d383-797d7f814d7a:
+  domain: beer_factory
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: customers
+        original_table_name: customers
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/beer_factory/beer_factory.sqlite
+  query: List the full name and phone number of male customers from Fair Oaks who
+    are subscribed to the email list.
+ac8f8d8803cd-2c4c7643483c:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: works
+        original_table_name: works
+      T2:
+        modified_table_name: chapters
+        original_table_name: chapters
+    condition_sequence:
+    - - T1.id
+      - T2.work_id
+      - ''
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: What is the long title of the Shakespeare's work with Act 4 Scene 5 described
+    as "Mytilene. A street before the brothel."?
+ac8f8d8803cd-4e04204ed09b:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: works
+        original_table_name: works
+      T2:
+        modified_table_name: chapters
+        original_table_name: chapters
+    condition_sequence:
+    - - T1.id
+      - T2.work_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: For how many times has the scene "OLIVIA’S house." appeared in Twelfth Night?
+ac8f8d8803cd-5a570b7c35c6:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: paragraphs
+        original_table_name: paragraphs
+      T2:
+        modified_table_name: chapters
+        original_table_name: chapters
+    condition_sequence:
+    - - T1.chapter_id
+      - T2.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: What are the descriptions of the short chapters?
+ac8f8d8803cd-700c30f15ebb:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: works
+        original_table_name: works
+      T2:
+        modified_table_name: chapters
+        original_table_name: chapters
+      T3:
+        modified_table_name: paragraphs
+        original_table_name: paragraphs
+      T4:
+        modified_table_name: characters
+        original_table_name: characters
+    condition_sequence:
+    - - T1.id
+      - T2.work_id
+      - INNER
+    - - T2.id
+      - T3.chapter_id
+      - INNER
+    - - T3.character_id
+      - T4.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: Describe the full title which had the character named Servant to Montague.
+ac8f8d8803cd-b2d372d28f6e:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: characters
+        original_table_name: characters
+      T2:
+        modified_table_name: paragraphs
+        original_table_name: paragraphs
+    condition_sequence:
+    - - T1.id
+      - T2.character_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: What are the character names in paragraph 3?
+ac8f8d8803cd-d6d551f79f10:
+  domain: shakespeare
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: works
+        original_table_name: works
+      T2:
+        modified_table_name: chapters
+        original_table_name: chapters
+    condition_sequence:
+    - - T1.id
+      - T2.work_id
+      - ''
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/shakespeare/shakespeare.sqlite
+  query: In the Venus and Adonis, what is the description of the last scene listed?
+adba6c0ec8a8-1a759e9e20d8:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: ranking_criteria
+        original_table_name: ranking_criteria
+      T2:
+        modified_table_name: university_ranking_year
+        original_table_name: university_ranking_year
+      T3:
+        modified_table_name: university
+        original_table_name: university
+    condition_sequence:
+    - - T1.id
+      - T2.ranking_criteria_id
+      - INNER
+    - - T3.id
+      - T2.university_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: In 2014, what is the name of the university which was considered a leader
+    in the publications rank?
+adba6c0ec8a8-25c0b001912b:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: university
+        original_table_name: university
+      T2:
+        modified_table_name: university_year
+        original_table_name: university_year
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.id
+      - T2.university_id
+      - INNER
+    - - T3.id
+      - T1.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: Calculate the total number of students in universities located in Sweden.
+adba6c0ec8a8-48d3d334f387:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: university_year
+        original_table_name: university_year
+      T2:
+        modified_table_name: university
+        original_table_name: university
+    condition_sequence:
+    - - T1.university_id
+      - T2.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: Provide the number of students at Yale University in 2016.
+adba6c0ec8a8-7bebe2666cf7:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: university
+        original_table_name: university
+      T2:
+        modified_table_name: university_year
+        original_table_name: university_year
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.id
+      - T2.university_id
+      - INNER
+    - - T3.id
+      - T1.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: What is the location and number of female students in university ID 23 in
+    2011?
+adba6c0ec8a8-898c793d8e8b:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: university
+        original_table_name: university
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.country_id
+      - T2.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: List the name of universities located in Spain.
+adba6c0ec8a8-d6701eb83080:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: ranking_system
+        original_table_name: ranking_system
+      T2:
+        modified_table_name: ranking_criteria
+        original_table_name: ranking_criteria
+    condition_sequence:
+    - - T1.id
+      - T2.ranking_system_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: What are the names of the criteria under Center for World University Rankings?
+adba6c0ec8a8-d7e8975d25b5:
+  domain: university
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: university
+        original_table_name: university
+      T2:
+        modified_table_name: university_ranking_year
+        original_table_name: university_ranking_year
+      T3:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.id
+      - T2.university_id
+      - INNER
+    - - T3.id
+      - T1.country_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/university/university.sqlite
+  query: List the countries of universities that scored 70 and below in 2016.
+afabd538bbfe-da97731427c2:
+  domain: music_tracker
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: torrents
+        original_table_name: torrents
+      T2:
+        modified_table_name: tags
+        original_table_name: tags
+    condition_sequence:
+    - - T1.id
+      - T2.id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/music_tracker/music_tracker.sqlite
+  query: Which artist has id "16"? Provide her or his tag genre.
+bda6fb7cb839-5a80d4af014f:
+  domain: mental_health_survey
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Answer
+        original_table_name: Answer
+      T2:
+        modified_table_name: Question
+        original_table_name: Question
+      T3:
+        modified_table_name: Survey
+        original_table_name: Survey
+    condition_sequence:
+    - - T1.QuestionID
+      - T2.questionid
+      - INNER
+    - - T1.SurveyID
+      - T3.SurveyID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mental_health_survey/mental_health_survey.sqlite
+  query: Tell the number of surveys that contained the question “What country do you
+    work in?”.
+bda6fb7cb839-aa43ee939e99:
+  domain: mental_health_survey
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Answer
+        original_table_name: Answer
+      T2:
+        modified_table_name: Question
+        original_table_name: Question
+    condition_sequence:
+    - - T1.QuestionID
+      - T2.questionid
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/mental_health_survey/mental_health_survey.sqlite
+  query: What answer did user No. 2681 give to the question "Do you currently have
+    a mental health disorder?"?
+d0d7be63ebc2-0631ba69f652:
+  domain: ice_hockey_draft
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: PlayerInfo
+        original_table_name: PlayerInfo
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/ice_hockey_draft/ice_hockey_draft.sqlite
+  query: What is the birthplace of Aaron Gagnon?
+d0d7be63ebc2-0b843412de0c:
+  domain: ice_hockey_draft
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: PlayerInfo
+        original_table_name: PlayerInfo
+      T2:
+        modified_table_name: SeasonStatus
+        original_table_name: SeasonStatus
+      T3:
+        modified_table_name: height_info
+        original_table_name: height_info
+    condition_sequence:
+    - - T1.ELITEID
+      - T2.ELITEID
+      - INNER
+    - - T1.height
+      - T3.height_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/ice_hockey_draft/ice_hockey_draft.sqlite
+  query: Indicate the height of all players from team Oshawa Generals in inches.
+d0d7be63ebc2-108abd51309c:
+  domain: ice_hockey_draft
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: PlayerInfo
+        original_table_name: PlayerInfo
+      T2:
+        modified_table_name: weight_info
+        original_table_name: weight_info
+    condition_sequence:
+    - - T1.weight
+      - T2.weight_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/ice_hockey_draft/ice_hockey_draft.sqlite
+  query: List out the name of players who weight 190 lbs.
+d0d7be63ebc2-6db6cceaa2a2:
+  domain: ice_hockey_draft
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: SeasonStatus
+        original_table_name: SeasonStatus
+      T2:
+        modified_table_name: PlayerInfo
+        original_table_name: PlayerInfo
+    condition_sequence:
+    - - T1.ELITEID
+      - T2.ELITEID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/ice_hockey_draft/ice_hockey_draft.sqlite
+  query: Which team does Andreas Jamtin belong to?
+d0d7be63ebc2-dec35f67fed6:
+  domain: ice_hockey_draft
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: SeasonStatus
+        original_table_name: SeasonStatus
+      T2:
+        modified_table_name: PlayerInfo
+        original_table_name: PlayerInfo
+    condition_sequence:
+    - - T1.ELITEID
+      - T2.ELITEID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/ice_hockey_draft/ice_hockey_draft.sqlite
+  query: List out the seasons that Niklas Eckerblom played.
+d14bbb0be92d-8ae4507b97f7:
+  domain: professional_basketball
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: coaches
+        original_table_name: coaches
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/professional_basketball/professional_basketball.sqlite
+  query: in which year costela01 obtained the best balance of games won as a coach?
+d80c9bf910f1-21cc02c55ecd:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: alias
+        original_table_name: alias
+      T2:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.zip_code
+      - T2.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Give the alias of the cities with an Asian population of 7.
+d80c9bf910f1-54f410e42875:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: CBSA
+        original_table_name: CBSA
+      T2:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.CBSA
+      - T2.CBSA
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: List all the cities with micro CBSA.
+d80c9bf910f1-62822563b574:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+      T2:
+        modified_table_name: zip_congress
+        original_table_name: zip_congress
+    condition_sequence:
+    - - T1.zip_code
+      - T2.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Provide the congress representatives' IDs of the postal points in East Springfield.
+d80c9bf910f1-63aaf8be8efa:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: state
+        original_table_name: state
+      T2:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.abbreviation
+      - T2.state
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Calculate the average number of beneficiaries per postal point in Guam.
+d80c9bf910f1-82071502f95c:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: area_code
+        original_table_name: area_code
+      T2:
+        modified_table_name: country
+        original_table_name: country
+    condition_sequence:
+    - - T1.zip_code
+      - T2.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Give the country and area code of the city with zip code 1116.
+d80c9bf910f1-a13d2c563e2d:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: state
+        original_table_name: state
+      T2:
+        modified_table_name: country
+        original_table_name: country
+      T3:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.abbreviation
+      - T2.state
+      - INNER
+    - - T2.zip_code
+      - T3.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Give the name of the country and state of the city with elevation of 1039.
+d80c9bf910f1-c1488b0a6ad4:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+      T2:
+        modified_table_name: state
+        original_table_name: state
+    condition_sequence:
+    - - T1.state
+      - T2.abbreviation
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: What are the names of the states whose postal point is not affiliated with
+    any organization?
+d80c9bf910f1-ef59d7acb97b:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: country
+        original_table_name: country
+      T2:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.zip_code
+      - T2.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Indicate the name of the country with a population greater than 10000 in
+    2010.
+d80c9bf910f1-f2022f25e89d:
+  domain: address
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: avoid
+        original_table_name: avoid
+      T2:
+        modified_table_name: zip_data
+        original_table_name: zip_data
+    condition_sequence:
+    - - T1.zip_code
+      - T2.zip_code
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/address/address.sqlite
+  query: Which city and state has the bad alias of Lawrenceville?
+e71440999ce8-114d03dd94cd:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Episode
+        original_table_name: Episode
+      T2:
+        modified_table_name: Credit
+        original_table_name: Credit
+      T3:
+        modified_table_name: Person
+        original_table_name: Person
+    condition_sequence:
+    - - T1.episode_id
+      - T2.episode_id
+      - INNER
+    - - T3.person_id
+      - T2.person_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: What was the rating of the episodes that Jace Alexander worked on?
+e71440999ce8-445048c7ef6a:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Person
+        original_table_name: Person
+      T2:
+        modified_table_name: Award
+        original_table_name: Award
+      T3:
+        modified_table_name: Episode
+        original_table_name: Episode
+    condition_sequence:
+    - - T1.person_id
+      - T2.person_id
+      - INNER
+    - - T2.episode_id
+      - T3.episode_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: On what episode did Julia Roberts win the "Outstanding Guest Actress in a
+    Drama Series" award during the 1999 Primetime Emmy Awards? Tell me her role.
+e71440999ce8-5d3188ca4303:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Award
+        original_table_name: Award
+      T2:
+        modified_table_name: Episode
+        original_table_name: Episode
+    condition_sequence:
+    - - T1.episode_id
+      - T2.episode_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: Which episode number has the second highest positive viewer comments and
+    has been awarded "Best Television Episode"?
+e71440999ce8-a4e3b1840eb9:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Episode
+        original_table_name: Episode
+      T2:
+        modified_table_name: Award
+        original_table_name: Award
+    condition_sequence:
+    - - T1.episode_id
+      - T2.episode_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: How many awards did the "Agony" win?
+e71440999ce8-c2ad4bcb3c3a:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Episode
+        original_table_name: Episode
+      T2:
+        modified_table_name: Credit
+        original_table_name: Credit
+      T3:
+        modified_table_name: Person
+        original_table_name: Person
+    condition_sequence:
+    - - T1.episode_id
+      - T2.episode_id
+      - INNER
+    - - T3.person_id
+      - T2.person_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: What are the names of all the people who worked on episode 19 of season 9?
+e71440999ce8-f0a9960ec288:
+  domain: law_episode
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Episode
+        original_table_name: Episode
+      T2:
+        modified_table_name: Award
+        original_table_name: Award
+      T3:
+        modified_table_name: Person
+        original_table_name: Person
+    condition_sequence:
+    - - T1.episode_id
+      - T2.episode_id
+      - INNER
+    - - T2.person_id
+      - T3.person_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/law_episode/law_episode.sqlite
+  query: List out director names that received an award along with the episode number.
+ec134bf7bda5-798760ba8399:
+  domain: cookbook
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Recipe
+        original_table_name: Recipe
+      T2:
+        modified_table_name: Nutrition
+        original_table_name: Nutrition
+    condition_sequence:
+    - - T1.recipe_id
+      - T2.recipe_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cookbook/cookbook.sqlite
+  query: How much fat does the Raspberry Chiffon Pie have?
+ec134bf7bda5-d39cbcc5611a:
+  domain: cookbook
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Recipe
+        original_table_name: Recipe
+      T2:
+        modified_table_name: Quantity
+        original_table_name: Quantity
+      T3:
+        modified_table_name: Ingredient
+        original_table_name: Ingredient
+    condition_sequence:
+    - - T1.recipe_id
+      - T2.recipe_id
+      - INNER
+    - - T3.ingredient_id
+      - T2.ingredient_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/cookbook/cookbook.sqlite
+  query: How many ingredients are required to make the Raspberry Chiffon Pie?
+ee275d64dafc-087d7567fb99:
+  domain: restaurant
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: location
+        original_table_name: location
+      T2:
+        modified_table_name: generalinfo
+        original_table_name: generalinfo
+    condition_sequence:
+    - - T1.id_restaurant
+      - T2.id_restaurant
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/restaurant/restaurant.sqlite
+  query: Among all indian restaurants in Castro St., Mountainview, how many of them
+    is about cookhouse in their label?
+ee275d64dafc-1e2148e15c54:
+  domain: restaurant
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: geographic
+        original_table_name: geographic
+      T2:
+        modified_table_name: generalinfo
+        original_table_name: generalinfo
+    condition_sequence:
+    - - T1.city
+      - T2.city
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/restaurant/restaurant.sqlite
+  query: Calculate the average rating of reviews for restaurants in Santa Cruz County.
+ee275d64dafc-38663e689e62:
+  domain: restaurant
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: generalinfo
+        original_table_name: generalinfo
+      T2:
+        modified_table_name: location
+        original_table_name: location
+    condition_sequence:
+    - - T1.id_restaurant
+      - T2.id_restaurant
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/restaurant/restaurant.sqlite
+  query: On which streets in the city of San Francisco are there restaurants with
+    a review of 1.7?
+ee275d64dafc-69cbf7b68d55:
+  domain: restaurant
+  init_args:
+    alias_to_table_dict:
+      ? ''
+      : modified_table_name: location
+        original_table_name: location
+    condition_sequence: []
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/restaurant/restaurant.sqlite
+  query: How many restaurants are on Irving Street?
+ee275d64dafc-fc2c85a6818e:
+  domain: restaurant
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: generalinfo
+        original_table_name: generalinfo
+      T2:
+        modified_table_name: location
+        original_table_name: location
+    condition_sequence:
+    - - T1.id_restaurant
+      - T2.id_restaurant
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/restaurant/restaurant.sqlite
+  query: What type of food is there in the restaurants on Adeline Street in Berkeley
+    city?
+fe971e7f850a-1fb586124f28:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Match
+        original_table_name: Match
+      T2:
+        modified_table_name: Win_By
+        original_table_name: Win_By
+    condition_sequence:
+    - - T1.Win_Type
+      - T2.Win_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: In the matches where the winning margin is less than fifty, how many teams
+    won by wicket?
+fe971e7f850a-46978a07dc76:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Match
+        original_table_name: Match
+      T2:
+        modified_table_name: Win_By
+        original_table_name: Win_By
+    condition_sequence:
+    - - T1.Win_Type
+      - T2.Win_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: Count the matches that were won by wickets in all season.
+fe971e7f850a-53b884da02a3:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Player
+        original_table_name: Player
+      T2:
+        modified_table_name: Country
+        original_table_name: Country
+    condition_sequence:
+    - - T1.Country_Name
+      - T2.Country_ID
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: Where did SB Joshi come from?
+fe971e7f850a-742fb642e1b6:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Player
+        original_table_name: Player
+      T2:
+        modified_table_name: Batting_Style
+        original_table_name: Batting_Style
+    condition_sequence:
+    - - T1.Batting_hand
+      - T2.Batting_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: List the names of players who play by the left hand.
+fe971e7f850a-7779365661b5:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Match
+        original_table_name: Match
+      T2:
+        modified_table_name: Player_Match
+        original_table_name: Player_Match
+      T3:
+        modified_table_name: Player
+        original_table_name: Player
+    condition_sequence:
+    - - T1.Match_Winner
+      - T2.Team_Id
+      - INNER
+    - - T2.Player_Id
+      - T3.Player_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: List all the names of the winning team's players in the first match of season
+    1.
+fe971e7f850a-db80efb9b61d:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Team
+        original_table_name: Team
+      T2:
+        modified_table_name: Match
+        original_table_name: Match
+      T3:
+        modified_table_name: Win_By
+        original_table_name: Win_By
+    condition_sequence:
+    - - T1.team_id
+      - T2.match_winner
+      - INNER
+    - - T2.win_type
+      - T3.win_id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: In the match ID 419135, who won by runs?
+fe971e7f850a-ee92abb1baa6:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Match
+        original_table_name: Match
+      T2:
+        modified_table_name: Outcome
+        original_table_name: Outcome
+    condition_sequence:
+    - - T1.Outcome_type
+      - T2.Outcome_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: What is the outcome type of match ID 392195?
+fe971e7f850a-f1f73737051b:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Season
+        original_table_name: Season
+      T2:
+        modified_table_name: Player
+        original_table_name: Player
+    condition_sequence:
+    - - T1.Man_of_the_Series
+      - T2.Player_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: Write the name of the player who was the man of the series more than one
+    time.
+fe971e7f850a-f8d63cc288a8:
+  domain: soccer_2016
+  init_args:
+    alias_to_table_dict:
+      T1:
+        modified_table_name: Venue
+        original_table_name: Venue
+      T2:
+        modified_table_name: Match
+        original_table_name: Match
+      T3:
+        modified_table_name: Team
+        original_table_name: Team
+    condition_sequence:
+    - - T1.venue_id
+      - T2.venue_id
+      - INNER
+    - - T2.match_winner
+      - T3.Team_Id
+      - INNER
+    database_path: /proj/m3benchmark/invocable-api-datasets/slot_filling/cache/soccer_2016/soccer_2016.sqlite
+  query: Give the match's venue and winning team for the match ID 392194.

@@ -29,8 +29,8 @@ class MCPServerConfig:
     # Optional: Server name
     server_name: str = "slot-filling-mcp-server"
 
-    # Optional: Tool universe ID for tracking different server instances
-    tool_universe_id: Optional[str] = None
+    # Optional: Domain name (used to filter available tool universes)
+    domain: Optional[str] = None
 
     # Optional: Server type ('slot_filling' or 'selection')
     server_type: Optional[str] = None
@@ -67,7 +67,6 @@ def load_config(
     database_path: Optional[str] = None,
     tables: Optional[List[str]] = None,
     cache_dir: Optional[str] = None,
-    tool_universe_id: Optional[str] = None,
     server_type: Optional[str] = None,
     transport: Optional[str] = None,
     host: Optional[str] = None,
@@ -85,7 +84,6 @@ def load_config(
         database_path: Path to SQLite database (overrides config/env)
         tables: List of tables to load (overrides config/env)
         cache_dir: Cache directory (overrides config/env)
-        tool_universe_id: Unique ID for this server instance (overrides config/env)
         server_type: Server type - 'slot_filling' or 'selection' (overrides config/env)
         transport: Transport protocol - 'stdio' or 'websocket' (overrides config/env)
         host: Host to bind WebSocket server (overrides config/env)
@@ -115,7 +113,6 @@ def load_config(
     env_domain = os.environ.get("MCP_DOMAIN")
     env_cache = os.environ.get("MCP_CACHE_DIR")
     env_tables = os.environ.get("MCP_TABLES")
-    env_tool_universe_id = os.environ.get("MCP_TOOL_UNIVERSE_ID")
     env_server_type = os.environ.get("MCP_SERVER_TYPE")
     env_transport = os.environ.get("MCP_TRANSPORT")
     env_host = os.environ.get("MCP_HOST")
@@ -131,11 +128,12 @@ def load_config(
     # Priority: env_domain (if set) > config file > default "superhero"
     if env_domain is not None:
         # MCP_DOMAIN explicitly set - override config file
-        config_data["database_path"] = f"db/{env_domain}/{env_domain}.sqlite"
+        config_data["domain"] = env_domain
+        config_data["database_path"] = f"data/db/{env_domain}/{env_domain}.sqlite"
         logger.debug(f"Config loading: Set database_path from MCP_DOMAIN: {config_data['database_path']}")
     elif "database_path" not in config_data:
         # No config file path and no env - use default superhero
-        config_data["database_path"] = "db/superhero/superhero.sqlite"
+        config_data["database_path"] = "data/db/superhero/superhero.sqlite"
         logger.debug(f"Config loading: Set database_path to default: {config_data['database_path']}")
 
     # Resolve relative db path: search common locations for the database.
@@ -157,8 +155,6 @@ def load_config(
         config_data["cache_dir"] = env_cache
     if env_tables:
         config_data["tables"] = [t.strip() for t in env_tables.split(",")]
-    if env_tool_universe_id:
-        config_data["tool_universe_id"] = env_tool_universe_id
     if env_server_type:
         config_data["server_type"] = env_server_type
     if env_transport:
@@ -175,8 +171,6 @@ def load_config(
         config_data["tables"] = tables
     if cache_dir:
         config_data["cache_dir"] = cache_dir
-    if tool_universe_id:
-        config_data["tool_universe_id"] = tool_universe_id
     if server_type:
         config_data["server_type"] = server_type
     if transport:

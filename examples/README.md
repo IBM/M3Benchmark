@@ -117,7 +117,7 @@ No API key needed (runs locally)
 
 ### Test Data
 
-- **Location**: `apis/configs/mcp_init_mapping.json`
+- **Location**: `apis/configs/mcp_tool_universe_id_mapping.json`
 - **Contents**: 127 test instances with queries, expected answers, and initialization arguments
 
 ## Usage
@@ -220,7 +220,7 @@ The demo script follows this workflow:
 
 1. **Setup**: Creates an LLM instance based on the provider choice (OpenAI-compatible or Ollama)
 
-2. **Load Test Cases**: Reads 127 test queries from `apis/configs/mcp_init_mapping.json`
+2. **Load Test Cases**: Reads 127 test queries from `apis/configs/mcp_tool_universe_id_mapping.json`
 
 3. **Connect to MCP Server**:
    - **stdio mode**: Launches MCP server as subprocess
@@ -328,7 +328,7 @@ pip install -e ".[mcp]"
 ## Next Steps
 
 - **Explore Tools**: Check `apis/m3/python_tools/tools/slot_filling_tools.py` for available data manipulation functions
-- **Custom Queries**: Modify test queries in `apis/configs/mcp_init_mapping.json`
+- **Custom Queries**: Modify test queries in `apis/configs/mcp_tool_universe_id_mapping.json`
 - **Agent Customization**: Review `agents/tool_calling_agent.py` for agent implementation details
 - **Add Your Database**: Follow the database directory structure to add custom databases
 - **REST API**: See `apis/m3/rest/README.md` for exposing databases via REST endpoints

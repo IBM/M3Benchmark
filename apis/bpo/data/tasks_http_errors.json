@@ -1,0 +1,111 @@
+[
+  {
+    "name": "bpo-benchmark",
+    "user_info": [],
+    "test_cases": [
+      {
+        "name": "task_30",
+        "description": "Tests agent handling of probabilistic 404 errors (20% chance, seeded RNG). The candidate_source_candidate_pipeline_status tool randomly returns 404 errors. Agent should retry or report the error gracefully.",
+        "intent": "What's the candidate pipeline status for 05958BR?",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "The candidate pipeline for 05958BR shows the following distribution by source: LinkedIn, Dice, Indeed, GitHub, Referral, CyberSec Jobs, and TechCareers all have active candidates in the pipeline.",
+          "keywords": [
+            "pipeline|status|candidates",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_candidate_pipeline_status",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "http_404_probabilistic",
+            "should_report_error": false,
+            "should_retry": true,
+            "expected_behavior": "Agent should retry on 404 or report temporary unavailability"
+          }
+        }
+      },
+      {
+        "name": "task_31",
+        "description": "Tests agent handling of HTTP 500 error that includes valid data in the response body. The candidate_source_source_sla_check tool returns error status 500 but includes correct SLA metrics in the body.",
+        "intent": "Run a quick SLA check across all sources for 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "SLA check results for 05958BR across sources: CyberSec Jobs 67%, Indeed 72%, TechCareers 74%, GitHub 78%, LinkedIn 79%, Dice 80%, Referral 82%. Note: the data was retrieved despite a server error status.",
+          "keywords": [
+            "SLA",
+            "CyberSec Jobs|Indeed|Dice",
+            "67|72|74|78|79|80|82"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_source_sla_check",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "http_500_with_body",
+            "should_report_error": true,
+            "should_retry": false,
+            "expected_behavior": "Agent should use response body despite 500 status and optionally note the error"
+          }
+        }
+      },
+      {
+        "name": "task_32",
+        "description": "Tests agent handling of HTTP 503 Service Unavailable. The candidate_source_funnel_status tool always returns 503 with maintenance info.",
+        "intent": "What's the current funnel status for 05958BR?",
+        "difficulty": "medium",
+        "expected_output": {
+          "response": "The funnel status service is currently unavailable due to maintenance. Please try again later.",
+          "keywords": [
+            "unavailable|maintenance|temporarily",
+            "funnel|service",
+            "later|retry"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_funnel_status",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "http_503",
+            "should_report_error": true,
+            "should_retry": false,
+            "expected_behavior": "Agent should report service unavailable with retry info"
+          }
+        }
+      },
+      {
+        "name": "task_33",
+        "description": "Tests agent handling of HTTP 429 rate limiting. The candidate_source_bulk_source_data tool returns 429 after the 3rd call in a session.",
+        "intent": "Pull bulk source data for all requisitions starting with 05958BR",
+        "difficulty": "hard",
+        "expected_output": {
+          "response": "Bulk source data for 05958BR shows candidate and hire counts across all sourcing channels including LinkedIn, Dice, Indeed, GitHub, Referral, CyberSec Jobs, and TechCareers.",
+          "keywords": [
+            "source|sources",
+            "candidates|data",
+            "05958BR"
+          ],
+          "tool_calls": [
+            {
+              "name": "candidate_source_bulk_source_data",
+              "args": {"requisition_id": "05958BR"}
+            }
+          ],
+          "error_handling": {
+            "error_type": "http_429",
+            "should_report_error": false,
+            "should_retry": false,
+            "expected_behavior": "Agent should respect rate limits and use available data"
+          }
+        }
+      }
+    ]
+  }
+]
