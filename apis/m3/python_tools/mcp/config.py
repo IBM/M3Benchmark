@@ -111,6 +111,7 @@ def load_config(
 
     # Environment variable overrides
     env_domain = os.environ.get("MCP_DOMAIN")
+    env_db_root = os.environ.get("MCP_DB_ROOT")
     env_cache = os.environ.get("MCP_CACHE_DIR")
     env_tables = os.environ.get("MCP_TABLES")
     env_server_type = os.environ.get("MCP_SERVER_TYPE")
@@ -118,10 +119,14 @@ def load_config(
     env_host = os.environ.get("MCP_HOST")
     env_port = os.environ.get("MCP_PORT")
 
+    # Effective database root directory (MCP_DB_ROOT env > default "data/db")
+    db_root = env_db_root if env_db_root is not None else "data/db"
+
     # Debug logging
     import logging
     logger = logging.getLogger(__name__)
     logger.debug(f"Config loading: MCP_DOMAIN={env_domain}")
+    logger.debug(f"Config loading: MCP_DB_ROOT={env_db_root} (effective: {db_root})")
     logger.debug(f"Config loading: config_data before domain processing={config_data.get('database_path', 'NOT SET')}")
 
     # Construct database path from domain (env variable or default)
@@ -129,22 +134,22 @@ def load_config(
     if env_domain is not None:
         # MCP_DOMAIN explicitly set - override config file
         config_data["domain"] = env_domain
-        config_data["database_path"] = f"data/db/{env_domain}/{env_domain}.sqlite"
+        config_data["database_path"] = f"{db_root}/{env_domain}/{env_domain}.sqlite"
         logger.debug(f"Config loading: Set database_path from MCP_DOMAIN: {config_data['database_path']}")
     elif "database_path" not in config_data:
         # No config file path and no env - use default superhero
-        config_data["database_path"] = "data/db/superhero/superhero.sqlite"
+        config_data["database_path"] = f"{db_root}/superhero/superhero.sqlite"
         logger.debug(f"Config loading: Set database_path to default: {config_data['database_path']}")
 
     # Resolve relative db path: search common locations for the database.
-    # Checks: db/, data/db/, apis/m3/rest/db/ (relative to CWD)
+    # Checks: MCP_DB_ROOT (if set), db/, data/db/, apis/m3/rest/db/ (relative to CWD)
     db_path = config_data.get("database_path", "")
     if db_path and not os.path.isabs(db_path) and not os.path.exists(db_path):
         # db_path is e.g. "db/superhero/superhero.sqlite" — extract the domain-relative part
         # so we can prepend alternative roots
         parts = db_path.split("/", 1)  # ["db", "superhero/superhero.sqlite"]
         domain_rel = parts[1] if len(parts) > 1 else ""
-        search_roots = ["db", "data/db", "apis/m3/rest/db"]
+        search_roots = ([env_db_root] if env_db_root else []) + ["db", "data/db", "apis/m3/rest/db"]
         for root in search_roots:
             candidate = os.path.join(root, domain_rel) if domain_rel else root
             if os.path.exists(candidate):
@@ -186,7 +191,8 @@ def load_config(
             "Database path is required. Provide via:\n"
             "  - CLI: slot-filling-mcp --db /path/to/database.sqlite\n"
             "  - Config file: --config config.json\n"
-            "  - Environment: MCP_DOMAIN=superhero (constructs db/{domain}/{domain}.sqlite)"
+            "  - Environment: MCP_DOMAIN=superhero (constructs {MCP_DB_ROOT}/{domain}/{domain}.sqlite)\n"
+            "  - Environment: MCP_DB_ROOT=/path/to/dbs (parent directory for domain databases)"
         )
 
     # Filter out None values and unknown keys

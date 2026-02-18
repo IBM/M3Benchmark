@@ -1,19 +1,25 @@
 tasks:
   # All tasks use the unified m3_environ container via docker exec.
+  # MCP_DB_ROOT sets the parent directory for domain databases inside the container
+  # (default: "data/db"). With the volume mount below, /app/db maps to apis/m3/rest/db
+  # on the host, so MCP_DB_ROOT=/app/db is the correct value for containerised tasks.
   # Start the containers first:
   #   docker run -d --name task_1_m3_environ \
   #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
   #       m3_environ
   #   docker run -d --name task_2_m3_environ \
   #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
   #       m3_environ
   #   docker run -d --name task_5_m3_environ \
   #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
   #       -v "$(pwd)/apis/retrievers/chroma_data:/app/retrievers/chroma_data" \
   #       -v "$(pwd)/apis/retrievers/queries:/app/retrievers/queries:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
   #       m3_environ
 
   # Task 1: ToolCallingAgent + SlotFillingMCPServer
@@ -21,6 +27,8 @@ tasks:
     mode: stdio
     container_name: task_1_m3_environ
     container_runtime: docker
+    container_env:
+      MCP_DB_ROOT: /app/db
     container_command:
       - python
       - "-m"
@@ -31,6 +39,8 @@ tasks:
     mode: stdio
     container_name: task_2_m3_environ
     container_runtime: docker
+    container_env:
+      MCP_DB_ROOT: /app/db
     container_command:
       - python
       - /app/m3-rest/mcp_server.py
@@ -40,6 +50,8 @@ tasks:
     mode: stdio
     container_name: task_5_m3_environ
     container_runtime: docker
+    container_env:
+      MCP_DB_ROOT: /app/db
     container_command:
       - python
       - /app/retrievers/mcp_server.py
