@@ -81,9 +81,12 @@ from benchmark.mcp_client import (
 from benchmark.processors import (
     save_results_ground_truth,
     load_benchmark_data,
+    log_trajectory,
+    make_output_dir, 
     BenchmarkItem,
     BenchmarkResult
 )
+from benchmark.processors import generate_openapi_spec
 
 load_dotenv()
 
@@ -169,48 +172,6 @@ def extract_tool_calling_agent_response(agent, answer: str) -> AgentResponse:
         trajectory=trajectory,
     )
 
-
-async def connect_and_get_tools(
-    domain: str,
-    cfg: MCPConnectionConfig,
-    verbose: bool = False,
-) -> Any:
-    """Connect to MCP server and return tool info.
-
-    Args:
-        domain: Domain name passed as MCP_DOMAIN to the server.
-        cfg: MCP connection configuration.
-        verbose: If False (default), return a ``List[str]`` of tool names.
-            If True, return a ``List[Dict[str, Any]]`` with ``name``,
-            ``description``, and ``inputSchema`` for each tool.
-    """
-
-    tools_info: List[Dict[str, Any]] = []
-    try:
-        async with create_client_and_connect(cfg, domain) as session:
-            response = await session.list_tools()
-            for tool in response.tools:
-                tools_info.append({
-                    "name": tool.name,
-                    "description": tool.description or "",
-                    "inputSchema": (
-                        tool.inputSchema
-                        if hasattr(tool, "inputSchema") else {}
-                    ),
-                })
-        print("  Server stopped.")
-    except ExceptionGroup as eg:
-        print(f"  Warning: Cleanup error (ignored): {eg}")
-    except Exception as e:
-        if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
-            print(f"  Warning: Cleanup error (ignored): {e}")
-        else:
-            stop_mcp_server(cfg)
-            raise
-
-    if verbose:
-        return tools_info
-    return [t["name"] for t in tools_info]
 
 
 async def run_agent_with_query(
@@ -313,7 +274,20 @@ async def process_domain(
             }
         else:
             # Just list tools
-            tool_names = await connect_and_get_tools(domain, cfg)
+            tool_names: List[str] = []
+            try:
+                async with create_client_and_connect(cfg, domain) as session:
+                    response = await session.list_tools()
+                    tool_names = [t.name for t in response.tools]
+                print("  Server stopped.")
+            except ExceptionGroup as eg:
+                print(f"  Warning: Cleanup error (ignored): {eg}")
+            except Exception as e:
+                if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
+                    print(f"  Warning: Cleanup error (ignored): {e}")
+                else:
+                    stop_mcp_server(cfg)
+                    raise
             print(f"  Tools loaded: {len(tool_names)}")
 
             for tool in tool_names[:5]:
@@ -439,78 +413,7 @@ async def run_benchmark_for_domain(
                         f"    Answer: {answer_preview}{ans_suffix}"
                     )
                     # Log trajectory summary
-                    if result.trajectory:
-                        traj_len = len(result.trajectory)
-                        print(
-                            f"    Trajectory ({traj_len} steps):"
-                        )
-                        for i, step in enumerate(result.trajectory):
-                            step_type = step.get('type', 'unknown')
-                            if step_type == 'HumanMessage':
-                                content_preview = (
-                                    step.get('content', '')[:80]
-                                )
-                                c_len = len(
-                                    step.get('content', '')
-                                )
-                                c_suffix = (
-                                    "..." if c_len > 80 else ""
-                                )
-                                print(
-                                    f"      [{i+1}] User:"
-                                    f" {content_preview}{c_suffix}"
-                                )
-                            elif step_type == 'AIMessage':
-                                content_preview = (
-                                    step.get('content', '')[:80]
-                                )
-                                tool_calls = step.get(
-                                    'tool_calls', []
-                                )
-                                if tool_calls:
-                                    print(
-                                        f"      [{i+1}] AI: Calling"
-                                        f" {len(tool_calls)} tool(s)"
-                                    )
-                                    for tc in tool_calls:
-                                        tc_name = tc.get(
-                                            'name', 'unknown'
-                                        )
-                                        tc_args = tc.get('args', {})
-                                        print(
-                                            f"          - {tc_name}"
-                                            f"({tc_args})"
-                                        )
-                                else:
-                                    c_len = len(
-                                        step.get('content', '')
-                                    )
-                                    c_suffix = (
-                                        "..." if c_len > 80 else ""
-                                    )
-                                    print(
-                                        f"      [{i+1}] AI:"
-                                        f" {content_preview}"
-                                        f"{c_suffix}"
-                                    )
-                            elif step_type == 'ToolMessage':
-                                tool_name = step.get(
-                                    'tool_name', 'unknown'
-                                )
-                                result_preview = str(
-                                    step.get('result', '')
-                                )[:80]
-                                r_len = len(
-                                    str(step.get('result', ''))
-                                )
-                                r_suffix = (
-                                    "..." if r_len > 80 else ""
-                                )
-                                print(
-                                    f"      [{i+1}] Tool"
-                                    f" ({tool_name}):"
-                                    f" {result_preview}{r_suffix}"
-                                )
+                    log_trajectory(result)
                 except asyncio.TimeoutError:
                     result.status = "error"
                     result.error = (
@@ -609,23 +512,6 @@ def _make_task2_item_runner(agent):
     return factory
 
 
-def _make_output_dir(task_id: int, output_dir: Optional[str] = None) -> Path:
-    """Create a timestamped output directory for a task under CWD.
-
-    Format: output/task_{id}_{Mon}_{dd}_{hh}_{mm}{am|pm}/
-    e.g.    output/task_5_Feb_13_11_21am/
-    """
-    if output_dir:
-        p = Path(output_dir)
-    else:
-        from datetime import datetime
-        now = datetime.now()
-        ts = now.strftime("%b_%d_%I_%M%p").lower()  # e.g. feb_13_11_21am
-        p = Path("output") / f"task_{task_id}_{ts}"
-    p.mkdir(parents=True, exist_ok=True)
-    return p
-
-
 async def run_task(
     task_id: int,
     cfg: MCPConnectionConfig,
@@ -686,7 +572,7 @@ async def run_task(
         item_runner_factory = _make_task2_item_runner(agent)
 
     # Process each domain, writing output incrementally
-    out_dir = _make_output_dir(task_id, output_dir)
+    out_dir = make_output_dir(task_id, output_dir)
     all_results: List[BenchmarkResult] = []
     for domain in domain_list:
         items = items_by_domain[domain]
@@ -747,11 +633,28 @@ async def list_tools_for_domains(
         print(f"Domain: {domain}")
         print("=" * 60)
         try:
-            tools_detailed = await connect_and_get_tools(
-                domain=domain,
-                cfg=cfg,
-                verbose=True,
-            )
+            tools_detailed: List[Dict[str, Any]] = []
+            try:
+                async with create_client_and_connect(cfg, domain) as session:
+                    response = await session.list_tools()
+                    for tool in response.tools:
+                        tools_detailed.append({
+                            "name": tool.name,
+                            "description": tool.description or "",
+                            "inputSchema": (
+                                tool.inputSchema
+                                if hasattr(tool, "inputSchema") else {}
+                            ),
+                        })
+                print("  Server stopped.")
+            except ExceptionGroup as eg:
+                print(f"  Warning: Cleanup error (ignored): {eg}")
+            except Exception as exc:
+                if "TaskGroup" in str(type(exc).__name__) or "TaskGroup" in str(exc):
+                    print(f"  Warning: Cleanup error (ignored): {exc}")
+                else:
+                    stop_mcp_server(cfg)
+                    raise
             print(f"  Total tools: {len(tools_detailed)}\n")
             all_tools_by_domain[domain] = tools_detailed
             for i, tool in enumerate(tools_detailed, 1):
@@ -807,53 +710,8 @@ async def list_tools_for_domains(
         # No specific domains (all domains)
         output_file = Path(f"tools_spec_all_{timestamp}.json")
 
-    openapi_spec = {
-        "openapi": "3.0.0",
-        "info": {
-            "title": "MCP Tools Specification",
-            "version": "1.0.0",
-            "description": f"Tools available for task {task_id}"
-        },
-        "paths": {},
-        "components": {
-            "schemas": {}
-        }
-    }
-
-    # Convert tools to OpenAPI paths
-    for domain, tools in all_tools_by_domain.items():
-        for tool in tools:
-            path = f"/v1/{domain}/{tool['name']}"
-            openapi_spec["paths"][path] = {
-                "get": {
-                    "summary": tool['description'],
-                    "operationId": tool['name'],
-                    "parameters": [],
-                    "responses": {
-                        "200": {
-                            "description": "Successful response"
-                        }
-                    }
-                }
-            }
-
-            # Add parameters
-            input_schema = tool.get('inputSchema', {})
-            properties = input_schema.get('properties', {})
-            required = input_schema.get('required', [])
-
-            for param_name, param_info in properties.items():
-                openapi_spec["paths"][path]["get"]["parameters"].append({
-                    "name": param_name,
-                    "in": "query",
-                    "required": param_name in required,
-                    "schema": {
-                        "type": param_info.get('type', 'string'),
-                        "description": param_info.get('description', '')
-                    }
-                })
-
-    with open(output_file, 'w') as f:
+    openapi_spec = generate_openapi_spec(all_tools_by_domain, task_id)
+    with open(output_file, "w") as f:
         json.dump(openapi_spec, f, indent=2)
 
     print("\n" + "=" * 60)

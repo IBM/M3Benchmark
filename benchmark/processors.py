@@ -2,6 +2,7 @@ import json
 import os
 import sys
 from dataclasses import dataclass, field
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -150,6 +151,51 @@ def _extract_tool_response_values(result_str: str):
     return parsed
 
 
+def make_output_dir(task_id: int, output_dir: Optional[str] = None) -> Path:
+    """Create a timestamped output directory for a task under CWD.
+
+    Format: output/task_{id}_{Mon}_{dd}_{hh}_{mm}{am|pm}/
+    e.g.    output/task_5_Feb_13_11_21am/
+    """
+    if output_dir:
+        p = Path(output_dir)
+    else:
+        now = datetime.now()
+        ts = now.strftime("%b_%d_%I_%M%p").lower()  # e.g. feb_13_11_21am
+        p = Path("output") / f"task_{task_id}_{ts}"
+    p.mkdir(parents=True, exist_ok=True)
+    return p
+
+
+def log_trajectory(result: "BenchmarkResult") -> None:
+    """Print a human-readable summary of a result's trajectory to stdout."""
+    if not result.trajectory:
+        return
+    traj_len = len(result.trajectory)
+    print(f"    Trajectory ({traj_len} steps):")
+    for i, step in enumerate(result.trajectory):
+        step_type = step.get("type", "unknown")
+        if step_type == "HumanMessage":
+            content = step.get("content", "")
+            suffix = "..." if len(content) > 80 else ""
+            print(f"      [{i+1}] User: {content[:80]}{suffix}")
+        elif step_type == "AIMessage":
+            content = step.get("content", "")
+            tool_calls = step.get("tool_calls", [])
+            if tool_calls:
+                print(f"      [{i+1}] AI: Calling {len(tool_calls)} tool(s)")
+                for tc in tool_calls:
+                    print(f"          - {tc.get('name', 'unknown')}({tc.get('args', {})})")
+            else:
+                suffix = "..." if len(content) > 80 else ""
+                print(f"      [{i+1}] AI: {content[:80]}{suffix}")
+        elif step_type == "ToolMessage":
+            tool_name = step.get("tool_name", "unknown")
+            result_str = str(step.get("result", ""))
+            suffix = "..." if len(result_str) > 80 else ""
+            print(f"      [{i+1}] Tool ({tool_name}): {result_str[:80]}{suffix}")
+
+
 def save_results_ground_truth(
     results: List[BenchmarkResult], output_dir: Path
 ):
@@ -213,4 +259,48 @@ def save_results_ground_truth(
         with open(output_file, "w") as f:
             json.dump(records, f, indent=2)
         print(f"  Ground truth results saved to: {output_file}")
+
+
+def generate_openapi_spec(
+    all_tools_by_domain: Dict[str, List[Dict[str, Any]]],
+    task_id: int,
+) -> Dict[str, Any]:
+    """Build an OpenAPI-like spec dict from per-domain tool info."""
+    spec: Dict[str, Any] = {
+        "openapi": "3.0.0",
+        "info": {
+            "title": "MCP Tools Specification",
+            "version": "1.0.0",
+            "description": f"Tools available for task {task_id}",
+        },
+        "paths": {},
+        "components": {"schemas": {}},
+    }
+    for domain, tools in all_tools_by_domain.items():
+        for tool in tools:
+            path = f"/v1/{domain}/{tool['name']}"
+            input_schema = tool.get("inputSchema", {})
+            properties = input_schema.get("properties", {})
+            required = input_schema.get("required", [])
+            parameters = [
+                {
+                    "name": param_name,
+                    "in": "query",
+                    "required": param_name in required,
+                    "schema": {
+                        "type": param_info.get("type", "string"),
+                        "description": param_info.get("description", ""),
+                    },
+                }
+                for param_name, param_info in properties.items()
+            ]
+            spec["paths"][path] = {
+                "get": {
+                    "summary": tool["description"],
+                    "operationId": tool["name"],
+                    "parameters": parameters,
+                    "responses": {"200": {"description": "Successful response"}},
+                }
+            }
+    return spec
 
