@@ -71,6 +71,7 @@ VOLUME /app/db
 VOLUME /app/apis/configs
 VOLUME /app/retrievers/chroma_data
 VOLUME /app/retrievers/queries
+ENV MCP_DB_ROOT=/app/db
 
 EXPOSE 8000 8001
 
