@@ -235,7 +235,7 @@ def main() -> None:
     if not explicit or args.download_data:
         download_data()
 
-    if not explicit or args.pull_image:
+    if args.pull_image:
         pull_image(args.docker_image)
 
     if not explicit or args.start_containers:
