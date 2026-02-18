@@ -69,6 +69,9 @@ Verify with: `podman info | grep -i memTotal`
 
 ```bash
 # 1. Install with init dependencies
+python -m venv .venv
+source .venv/bin/activate
+
 pip install -e ".[init]"
 
 # 2. Run full setup (downloads ~35 GB of data)
@@ -85,7 +88,7 @@ This will:
    - `anupamamurthi/chroma_data` — ChromaDB vector collections
    - `anupamamurthi/queries` — retriever query configurations
 2. Pull `docker.io/amurthi44g1wd/m3_environ:latest` and tag it as `m3_environ`
-3. Start 3 containers (`task_1_m3_environ`, `task_2_m3_environ`, `task_5_m3_environ`)
+3. Start 3 containers (`task_1_m3_environ`, `task_2_m3_environ`, `task_5_m3_environ`) — `task_5_m3_environ` is started with `--memory=4g` to support ChromaDB's memory requirements
 
 You can also run individual steps:
 

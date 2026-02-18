@@ -39,7 +39,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 # Each HuggingFace dataset repo maps to a subdirectory under data/
 HF_DATASETS = {
     "anupamamurthi/db":         "db",
-    # "anupamamurthi/tasks":      "tasks",
+    "anupamamurthi/tasks":      "tasks",
     "anupamamurthi/retriever-chroma-data": "chroma_data",
     "anupamamurthi/queries":    "queries",
 }
@@ -147,10 +147,15 @@ def start_containers() -> None:
     chroma_dir = str(DATA_DIR / "chroma_data")
     queries_dir = str(DATA_DIR / "queries")
 
+    container_extra_flags = {
+        "task_5_m3_environ": ["--memory=4g"],
+    }
+
     for name in CONTAINERS:
         _run([
             rt, "run", "-d",
             "--name", name,
+            *container_extra_flags.get(name, []),
             "-v", f"{db_dir}:/app/db:ro",
             "-v", f"{configs_dir}:/app/apis/configs:ro",
             "-v", f"{chroma_dir}:/app/retrievers/chroma_data",

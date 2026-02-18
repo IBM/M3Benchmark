@@ -10,7 +10,7 @@ Tasks:
   Task 5  -> retriever-mcp-server (ChromaDB retriever)
 
 Setup:
-  pip install mcp langchain-anthropic langgraph langchain-ollama
+  pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama
 
 MCP connection settings are read from a YAML config file
 (default: apis/configs/mcp_connection_config.yaml). Override the path
