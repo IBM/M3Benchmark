@@ -42,6 +42,7 @@ class MCPConnectionConfig:
     container_name: str = DEFAULT_CONTAINER_NAME
     container_runtime: Optional[str] = None  # None = auto-detect
     container_command: Optional[List[str]] = None
+    container_env: Optional[Dict[str, str]] = None
     command: Optional[str] = None
     args: Optional[List[str]] = None
     server_url: Optional[str] = None
@@ -66,6 +67,7 @@ def load_mcp_config(config_path: str) -> Dict[int, MCPConnectionConfig]:
             container_name=v.get("container_name", DEFAULT_CONTAINER_NAME),
             container_runtime=v.get("container_runtime", None),
             container_command=v.get("container_command", None),
+            container_env=v.get("container_env", None),
             command=cmd,
             args=v.get("args", None),
             server_url=v.get("server_url", None),
@@ -116,6 +118,8 @@ async def create_client_and_connect(cfg: MCPConnectionConfig, domain: str = ""):
                     "stdio mode requires either command or container_name"
                 )
             exec_env = {"MCP_DOMAIN": domain} if domain else {}
+            if cfg.container_env:
+                exec_env.update(cfg.container_env)
             env_args = []
             for k, v in exec_env.items():
                 env_args += ["-e", f"{k}={v}"]
