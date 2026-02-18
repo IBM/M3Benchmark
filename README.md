@@ -39,12 +39,39 @@ Auto-evaluation:
 
 Please refer to [evaluation.py](evaluation.py) for more details on how the evaluation was implemented.
 
-## Setup
+## Container Runtime Requirements
 
-The quickest way to get started is with the setup script, which downloads all benchmark data from HuggingFace, pulls the Docker image, and starts the containers.
+The benchmark containers (especially Task 5 with ChromaDB) require a minimum of **8 GB of memory** allocated to your container runtime. With the default memory (often 2 GB), the retriever container will be OOM-killed on startup.
+
+### Docker Desktop
+
+1. Open **Docker Desktop** → **Settings** → **Resources**
+2. Set **Memory** to at least **8 GB**
+3. Click **Apply & Restart**
+
+### Podman
+
+```bash
+podman machine stop
+podman machine set --memory 8192
+podman machine start
+```
+
+Verify with: `podman info | grep -i memTotal`
+
+### Rancher Desktop
+
+1. Open **Rancher Desktop** → **Preferences** → **Virtual Machine**
+2. Set **Memory** to at least **8 GB** (8192 MiB)
+3. Click **Apply** (the VM will restart)
+
+## Setup
 
 ```bash
 # 1. Install with init dependencies
+python -m venv .venv
+source .venv/bin/activate
+
 pip install -e ".[init]"
 
 # 2. Run full setup (downloads ~35 GB of data)
@@ -61,7 +88,7 @@ This will:
    - `anupamamurthi/chroma_data` — ChromaDB vector collections
    - `anupamamurthi/queries` — retriever query configurations
 2. Pull `docker.io/amurthi44g1wd/m3_environ:latest` and tag it as `m3_environ`
-3. Start 3 containers (`task_1_m3_environ`, `task_2_m3_environ`, `task_5_m3_environ`)
+3. Start 3 containers (`task_1_m3_environ`, `task_2_m3_environ`, `task_5_m3_environ`) — `task_5_m3_environ` is started with `--memory=4g` to support ChromaDB's memory requirements
 
 You can also run individual steps:
 

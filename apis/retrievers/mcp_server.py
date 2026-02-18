@@ -150,7 +150,7 @@ class FastAPIMCPServer:
                             input_schema["required"].append(prop_name)
 
                 tool_name = f"query_{path_domain}"
-                description = f"Semantic search within the '{path_domain}' domain collection. Pass a natural language question and get relevant document chunks back."
+                description = operation.get("description") or f"Semantic search within the '{path_domain}' domain collection. Pass a natural language question and get relevant document chunks back."
 
                 tool = Tool(
                     name=tool_name,

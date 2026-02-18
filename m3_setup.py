@@ -39,7 +39,7 @@ DATA_DIR = PROJECT_ROOT / "data"
 # Each HuggingFace dataset repo maps to a subdirectory under data/
 HF_DATASETS = {
     "anupamamurthi/db":         "db",
-    # "anupamamurthi/tasks":      "tasks",
+    "anupamamurthi/tasks":      "tasks",
     "anupamamurthi/retriever-chroma-data": "chroma_data",
     "anupamamurthi/queries":    "queries",
 }
@@ -130,6 +130,9 @@ def start_containers() -> None:
     """Start one container per task (names match mcp_connection_config.yaml)."""
     rt = _runtime()
 
+    # Always pull the latest image before starting containers
+    pull_image()
+
     # Stop and remove all benchmark containers before starting fresh
     print("\n=== Cleaning up existing benchmark containers ===")
     for name in CONTAINERS:
@@ -144,10 +147,15 @@ def start_containers() -> None:
     chroma_dir = str(DATA_DIR / "chroma_data")
     queries_dir = str(DATA_DIR / "queries")
 
+    container_extra_flags = {
+        "task_5_m3_environ": ["--memory=4g"],
+    }
+
     for name in CONTAINERS:
         _run([
             rt, "run", "-d",
             "--name", name,
+            *container_extra_flags.get(name, []),
             "-v", f"{db_dir}:/app/db:ro",
             "-v", f"{configs_dir}:/app/apis/configs:ro",
             "-v", f"{chroma_dir}:/app/retrievers/chroma_data",
@@ -232,7 +240,7 @@ def main() -> None:
     if not explicit or args.download_data:
         download_data()
 
-    if not explicit or args.pull_image:
+    if args.pull_image:
         pull_image(args.docker_image)
 
     if not explicit or args.start_containers:
