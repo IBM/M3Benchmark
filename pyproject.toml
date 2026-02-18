@@ -66,6 +66,11 @@ mcp = [
     "rapidfuzz",
 ]
 
+# Setup / init: download data from HuggingFace + manage containers
+init = [
+    "huggingface_hub",
+]
+
 # Legacy dependencies (historically included but not actively used)
 legacy = [
     "ibm-generative-ai",
@@ -76,6 +81,7 @@ all = [
     "enterprise-benchmark[rest]",
     "enterprise-benchmark[agents]",
     "enterprise-benchmark[mcp]",
+    "enterprise-benchmark[init]",
     "enterprise-benchmark[legacy]",
 ]
 
@@ -94,6 +100,7 @@ dev = [
 [project.scripts]
 slot-filling-mcp = "apis.m3.python_tools.mcp.cli:main"
 bpo-mcp = "apis.bpo.mcp.server:start_server"
+m3-setup = "m3_setup:main"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*"]

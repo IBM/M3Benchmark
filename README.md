@@ -39,6 +39,39 @@ Auto-evaluation:
 
 Please refer to [evaluation.py](evaluation.py) for more details on how the evaluation was implemented.
 
+## Setup
+
+The quickest way to get started is with the setup script, which downloads all benchmark data from HuggingFace, pulls the Docker image, and starts the containers.
+
+```bash
+# 1. Install with init dependencies
+pip install -e ".[init]"
+
+# 2. Run full setup (downloads ~35 GB of data)
+
+python m3_setup.py
+
+
+```
+
+This will:
+1. Download data from 4 HuggingFace repos into `data/`:
+   - `anupamamurthi/db` — SQLite databases
+   - `anupamamurthi/tasks` — benchmark input files (task 1, 2, 5)
+   - `anupamamurthi/chroma_data` — ChromaDB vector collections
+   - `anupamamurthi/queries` — retriever query configurations
+2. Pull `docker.io/amurthi44g1wd/m3_environ:latest` and tag it as `m3_environ`
+3. Start 3 containers (`task_1_m3_environ`, `task_2_m3_environ`, `task_5_m3_environ`)
+
+You can also run individual steps:
+
+```bash
+python m3_setup.py --download-data      # just download data
+python m3_setup.py --pull-image          # just pull the Docker image
+python m3_setup.py --start-containers    # just start containers
+python m3_setup.py --stop-containers     # stop and remove containers
+```
+
 ## ✍️ How to run end-to-end evaluation?
 1. **Install** specific dependencies
     ```bash
