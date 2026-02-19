@@ -17,35 +17,35 @@ MCP connection settings are read from a YAML config file
 
 Usage:
   # Single task, single domain
-  python benchmark_runner.py --task_id 2 --domain hockey
+  python benchmark_runner.py --m3_task_id 2 --domain hockey
 
   # Single task, multiple domains
-  python benchmark_runner.py --task_id 2 --domain hockey --domain address
+  python benchmark_runner.py --m3_task_id 2 --domain hockey --domain address
 
   # Multiple tasks (sequential, default)
-  python benchmark_runner.py --task_id 2 5
+  python benchmark_runner.py --m3_task_id 2 5
 
   # Multiple tasks in parallel
-  python benchmark_runner.py --task_id 2 5 --parallel
+  python benchmark_runner.py --m3_task_id 2 5 --parallel
 
   # Limit samples per domain
-  python benchmark_runner.py --task_id 2 --max-samples-per-domain 5
+  python benchmark_runner.py --m3_task_id 2 --max-samples-per-domain 5
 
   # Choose provider/model
-  python benchmark_runner.py --task_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
-  python benchmark_runner.py --task_id 2 --provider ollama --model llama3.1:8b
+  python benchmark_runner.py --m3_task_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
+  python benchmark_runner.py --m3_task_id 2 --provider ollama --model llama3.1:8b
 
   # Enable tool shortlisting (top-k tools per query)
-  python benchmark_runner.py --task_id 2 --top-k-tools 10
+  python benchmark_runner.py --m3_task_id 2 --top-k-tools 10
 
   # Custom output directory
-  python benchmark_runner.py --task_id 2 --output my_results/
+  python benchmark_runner.py --m3_task_id 2 --output my_results/
 
   # Use a custom MCP connection config
-  python benchmark_runner.py --task_id 2 --mcp-config my_mcp_config.yaml
+  python benchmark_runner.py --m3_task_id 2 --mcp-config my_mcp_config.yaml
 
   # List available tools for a domain (does not run the benchmark)
-  python benchmark_runner.py --task_id 2 --domain hockey --list-tools
+  python benchmark_runner.py --m3_task_id 2 --domain hockey --list-tools
 
 Output:
   Results saved to: output/task_{id}_{timestamp}/<domain>.json
@@ -455,12 +455,12 @@ def main():
         description="Benchmark Runner for MCP Server"
     )
     parser.add_argument(
-        "--task_id",
+        "--m3_task_id",
         type=int,
         nargs="+",
         choices=[1, 2, 3, 4, 5],
         required=True,
-        help="Task ID to run, must be one of [1, 2, 3, 4]"
+        help="M3 Task ID to run, must be one of [1, 2, 3, 4, 5]"
     )
     parser.add_argument(
         "--domain",
@@ -480,7 +480,7 @@ def main():
     parser.add_argument(
         "--parallel",
         action="store_true",
-        help="Run multiple task_ids in parallel using asyncio.gather (default: sequential)"
+        help="Run multiple m3_task_ids in parallel using asyncio.gather (default: sequential)"
     )
     parser.add_argument(
         "--max-samples-per-domain",
@@ -527,7 +527,7 @@ def main():
     )
 
     args = parser.parse_args()
-    task_ids = args.task_id  # list of ints now
+    task_ids = args.m3_task_id  # list of ints now
 
     mode = "parallel" if args.parallel and len(task_ids) > 1 else "sequential"
     print("="*60)

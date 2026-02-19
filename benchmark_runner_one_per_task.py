@@ -25,10 +25,10 @@ Setup:
       m3_environ
 
 Usage:
-  python benchmark_runner_one_per_task.py --task_id 2 --run-agent --domain hockey
-  python benchmark_runner_one_per_task.py --task_id 5 --run-agent --domain address
-  python benchmark_runner_one_per_task.py --task_id 2 5 --run-agent --domain address --parallel
-  python benchmark_runner_one_per_task.py --task_id 2 --list-tools --domain address
+  python benchmark_runner_one_per_task.py --m3_task_id 2 --run-agent --domain hockey
+  python benchmark_runner_one_per_task.py --m3_task_id 5 --run-agent --domain address
+  python benchmark_runner_one_per_task.py --m3_task_id 2 5 --run-agent --domain address --parallel
+  python benchmark_runner_one_per_task.py --m3_task_id 2 --list-tools --domain address
 """
 import json
 import os
@@ -936,17 +936,17 @@ All containers use the same m3_environ Docker image.
   task_5_m3_environ  — M3 REST + Retriever
 
 Examples:
-  python benchmark_runner_one_per_task.py --task_id 2 --run-agent --domain hockey
-  python benchmark_runner_one_per_task.py --task_id 5 --run-agent --domain address
-  python benchmark_runner_one_per_task.py --task_id 2 5 --run-agent --domain address --parallel
-  python benchmark_runner_one_per_task.py --task_id 2 --list-tools --domain address
+  python benchmark_runner_one_per_task.py --m3_task_id 2 --run-agent --domain hockey
+  python benchmark_runner_one_per_task.py --m3_task_id 5 --run-agent --domain address
+  python benchmark_runner_one_per_task.py --m3_task_id 2 5 --run-agent --domain address --parallel
+  python benchmark_runner_one_per_task.py --m3_task_id 2 --list-tools --domain address
 
 Container management:
-  python benchmark_runner_one_per_task.py --task_id 2 5 --run-agent --domain address --start-containers
-  python benchmark_runner_one_per_task.py --task_id 2 5 --run-agent --domain address --cleanup
+  python benchmark_runner_one_per_task.py --m3_task_id 2 5 --run-agent --domain address --start-containers
+  python benchmark_runner_one_per_task.py --m3_task_id 2 5 --run-agent --domain address --cleanup
         """,
     )
-    parser.add_argument("--task_id", type=int, nargs="+", required=True, help="Task ID(s) to run (e.g. --task_id 2 5)")
+    parser.add_argument("--m3_task_id", type=int, nargs="+", required=True, help="M3 Task ID(s) to run (e.g. --m3_task_id 2 5)")
     parser.add_argument(
         "--container-runtime", type=str, default=None,
         help="Container runtime (default: auto-detect, prefers podman over docker)"
@@ -957,7 +957,7 @@ Container management:
     )
     parser.add_argument("--run-agent", action="store_true", help="Run the agent on benchmark queries")
     parser.add_argument("--list-tools", action="store_true", help="List available tools and exit")
-    parser.add_argument("--parallel", action="store_true", help="Run multiple task_ids in parallel")
+    parser.add_argument("--parallel", action="store_true", help="Run multiple m3_task_ids in parallel")
     parser.add_argument("--max-samples-per-domain", type=int, default=None, help="Cap queries per domain")
     parser.add_argument("--output", type=str, default=None, help="Output directory")
     parser.add_argument(
@@ -977,7 +977,7 @@ Container management:
     parser.add_argument("--watsonx-api-key", type=str, default=None, help="watsonx API key")
 
     args = parser.parse_args()
-    task_ids = args.task_id
+    task_ids = args.m3_task_id
 
     # Validate all task IDs upfront
     task_cfgs = {}
