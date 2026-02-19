@@ -2,7 +2,6 @@ import contextlib
 from dataclasses import dataclass
 import logging
 import os
-import shutil
 import subprocess
 import sys
 import yaml
@@ -11,69 +10,12 @@ from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 from typing import AsyncGenerator, Dict, List, Optional
 
+from benchmark.utils import _assert_container_running, detect_container_runtime
+
 logger = logging.getLogger(__name__)
 
 # Default settings
 DEFAULT_CONTAINER_NAME = "fastapi-mcp-server"
-
-def _runtime_works(name: str) -> bool:
-    """Return True if `name --version` exits successfully."""
-    try:
-        result = subprocess.run(
-            [name, "--version"],
-            capture_output=True,
-            timeout=5,
-        )
-        return result.returncode == 0
-    except (FileNotFoundError, subprocess.TimeoutExpired):
-        return False
-
-
-def _assert_container_running(runtime: str, container_name: str) -> None:
-    """Check that container_name exists and is running; raise RuntimeError if not."""
-    try:
-        result = subprocess.run(
-            [runtime, "inspect", "--format", "{{.State.Status}}", container_name],
-            capture_output=True,
-            text=True,
-        )
-    except FileNotFoundError:
-        raise RuntimeError(
-            f"Container runtime {runtime!r} not found or not executable. "
-            "If 'docker' is a symlink to podman, set "
-            "'container_runtime: podman' in your MCP connection config."
-        )
-    if result.returncode != 0:
-        raise RuntimeError(
-            f"Container {container_name!r} not found. "
-            f"Start it with: {runtime} start {container_name}\n"
-            f"({runtime} inspect output: {result.stderr.strip()})"
-        )
-    status = result.stdout.strip()
-    if status != "running":
-        raise RuntimeError(
-            f"Container {container_name!r} exists but is not running "
-            f"(status: {status!r}). "
-            f"Start it with: {runtime} start {container_name}"
-        )
-
-
-def detect_container_runtime() -> str:
-    """
-    Detect available container runtime (podman or docker).
-    Returns 'podman' if available and working, otherwise 'docker'.
-    Raises RuntimeError if neither runtime works.
-    """
-    for name in ("podman", "docker"):
-        if shutil.which(name) and _runtime_works(name):
-            if name == "docker":
-                logger.warning("podman not found or not working, using docker instead")
-            return name
-
-    raise RuntimeError(
-        "Neither podman nor docker found in PATH. "
-        "Please install one of them."
-    )
 
 
 @dataclass

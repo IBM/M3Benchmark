@@ -26,7 +26,7 @@ tasks:
   1:
     mode: stdio
     container_name: task_1_m3_environ
-    container_runtime: docker
+    container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
     container_command:
@@ -38,7 +38,7 @@ tasks:
   2:
     mode: stdio
     container_name: task_2_m3_environ
-    container_runtime: docker
+    container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
     container_command:
@@ -49,7 +49,7 @@ tasks:
   5:
     mode: stdio
     container_name: task_5_m3_environ
-    container_runtime: docker
+    container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
     container_command:

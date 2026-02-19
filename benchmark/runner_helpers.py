@@ -6,6 +6,8 @@ from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from benchmark.utils import _extract_tool_response_values
+
 
 # Task configurations - maps task_id to input directory path
 TASK_PATHS = {
@@ -127,28 +129,6 @@ def load_benchmark_data(
         for item_data in data:
             items.append(BenchmarkItem.from_dict(item_data))
     return items, domain_names
-
-
-def _extract_tool_response_values(result_str: str):
-    """Extract only the values from a tool response JSON string.
-
-    Tool responses come as JSON dicts like '{"description": "Foo"}' or
-    '{"codes": []}'. This extracts just the values ("Foo" or []) so the
-    output contains the data without the key names.
-    """
-    try:
-        parsed = json.loads(result_str)
-    except (json.JSONDecodeError, TypeError):
-        return result_str
-
-    if isinstance(parsed, dict):
-        values = list(parsed.values())
-        if len(values) == 1:
-            return values[0]
-        return values
-
-    # Already a plain value (list, int, string, etc.)
-    return parsed
 
 
 def make_output_dir(task_id: int, output_dir: Optional[str] = None) -> Path:
@@ -309,46 +289,4 @@ def save_results_ground_truth(
         print(f"  Ground truth results saved to: {output_file}")
 
 
-def generate_openapi_spec(
-    all_tools_by_domain: Dict[str, List[Dict[str, Any]]],
-    task_id: int,
-) -> Dict[str, Any]:
-    """Build an OpenAPI-like spec dict from per-domain tool info."""
-    spec: Dict[str, Any] = {
-        "openapi": "3.0.0",
-        "info": {
-            "title": "MCP Tools Specification",
-            "version": "1.0.0",
-            "description": f"Tools available for task {task_id}",
-        },
-        "paths": {},
-        "components": {"schemas": {}},
-    }
-    for domain, tools in all_tools_by_domain.items():
-        for tool in tools:
-            path = f"/v1/{domain}/{tool['name']}"
-            input_schema = tool.get("inputSchema", {})
-            properties = input_schema.get("properties", {})
-            required = input_schema.get("required", [])
-            parameters = [
-                {
-                    "name": param_name,
-                    "in": "query",
-                    "required": param_name in required,
-                    "schema": {
-                        "type": param_info.get("type", "string"),
-                        "description": param_info.get("description", ""),
-                    },
-                }
-                for param_name, param_info in properties.items()
-            ]
-            spec["paths"][path] = {
-                "get": {
-                    "summary": tool["description"],
-                    "operationId": tool["name"],
-                    "parameters": parameters,
-                    "responses": {"200": {"description": "Successful response"}},
-                }
-            }
-    return spec
 

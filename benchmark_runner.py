@@ -85,16 +85,16 @@ from benchmark.mcp_client import (
     stop_mcp_server,
     MCPConnectionConfig
     )
-from benchmark.processors import (
+from benchmark.runner_helpers import (
     save_results_ground_truth,
     load_benchmark_data,
     log_trajectory,
     log_message_history,
     make_output_dir,
     BenchmarkItem,
-    BenchmarkResult
+    BenchmarkResult,
 )
-from benchmark.processors import generate_openapi_spec
+from benchmark.utils import generate_openapi_spec
 
 load_dotenv()
 
