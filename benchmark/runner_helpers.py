@@ -19,6 +19,10 @@ TASK_PATHS = {
         "TASK_2_DIR",
         str(Path(__file__).parent.parent / "data" / "tasks" / "task_2"),
     ),
+    3: os.environ.get(
+        "TASK_3_DIR",
+        str(Path(__file__).parent.parent / "data" / "tasks" / "task_3"),
+    ),
     5: os.environ.get(
         "TASK_5_DIR",
         str(Path(__file__).parent.parent / "data" / "tasks" / "task_5"),

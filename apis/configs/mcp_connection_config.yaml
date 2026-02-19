@@ -45,6 +45,14 @@ tasks:
       - python
       - /app/m3-rest/mcp_server.py
 
+  # Task 3: LangGraphReActAgent + BPO MCP Server
+  # Uses local Python subprocess (no container needed)
+  3:
+    mode: stdio
+    command: python  # resolved to sys.executable at runtime
+    args:
+      - "apis/bpo/mcp/server.py"
+
   # Task 5: LangGraphReActAgent + RetrieverMCPServer (ChromaDB)
   5:
     mode: stdio
