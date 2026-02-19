@@ -47,8 +47,8 @@ HF_DATASETS = {
 # Container names must match apis/configs/mcp_connection_config.yaml
 CONTAINERS = [
     "task_1_m3_environ",
-    "task_2_m3_environ",
-    "task_5_m3_environ",
+    # "task_2_m3_environ",
+    # "task_5_m3_environ",
 ]
 
 

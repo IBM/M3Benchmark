@@ -13,7 +13,7 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-OUTPUT_DIRS_GLOB = "data/tasks/task_1/*/output"
+OUTPUT_DIRS_GLOB = "data/tasks/task_1/output"
 MAPPING_FILE = "apis/configs/mcp_tool_universe_id_mapping.yaml"
 
 
