@@ -45,7 +45,7 @@ HF_DATASETS = {
     "anupamamurthi/queries":    "queries",
 }
 
-# Container names must match apis/configs/mcp_connection_config.yaml
+# Container names must match benchmark/mcp_connection_config.yaml
 CONTAINERS = [
     "task_1_m3_environ",
     "task_2_m3_environ",
@@ -167,7 +167,7 @@ def pull_image(image: str = DOCKER_IMAGE) -> None:
 
 
 def start_containers() -> None:
-    """Start one container per task (names match mcp_connection_config.yaml)."""
+    """Start one container per task (names match benchmark/mcp_connection_config.yaml)."""
     rt = _runtime()
 
     # Always pull the latest image before starting containers
