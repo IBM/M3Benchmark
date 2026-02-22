@@ -113,6 +113,16 @@ python m3_setup.py --stop-containers     # stop and remove containers
 
 3. Test your model locally using `python evaluation.py`. This script will run answer generation and auto-evaluation.
 
+## Validate MCP Servers
+
+Before running the benchmark, verify that the MCP servers are healthy and contain the correct tools:
+
+```bash
+python benchmark/validate_clients.py
+```
+
+This script checks that each MCP server (Tasks 1, 2, 3 and 4) is running properly in its container and exposes the expected tools for all configured domains.
+
 ## Benchmark Runner
 
 `benchmark_runner.py` runs LLM agents against MCP tool servers and records trajectories + answers.

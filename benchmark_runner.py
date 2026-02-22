@@ -13,7 +13,7 @@ Setup:
   pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama
 
 MCP connection settings are read from a YAML config file
-(default: apis/configs/mcp_connection_config.yaml). Override with --mcp-config.
+(default: benchmark/mcp_connection_config.yaml). Override with --mcp-config.
 
 Usage:
   # Single task, single domain
@@ -55,9 +55,8 @@ import asyncio
 import json
 import argparse
 import logging
-from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, List, Optional
 
 from dotenv import load_dotenv
 
@@ -94,14 +93,14 @@ from benchmark.runner_helpers import (
     BenchmarkItem,
     BenchmarkResult,
 )
-from benchmark.utils import generate_openapi_spec
+from benchmark.validate_clients import list_tools_for_domains
 
 load_dotenv()
 
 
 # Default MCP connection config file path
 DEFAULT_MCP_CONFIG = str(
-    Path(__file__).parent / "apis" / "configs" / "mcp_connection_config.yaml"
+    Path(__file__).parent / "benchmark" / "mcp_connection_config.yaml"
 )
 # Timeout for agent execution (seconds)
 AGENT_TIMEOUT_SECONDS = 120
@@ -333,121 +332,6 @@ async def run_task(
     print(f"  Failed: {len(failed)}")
 
     return results
-
-
-async def list_tools_for_domains(
-    task_id: int,
-    cfg: MCPConnectionConfig,
-    domains: Optional[List[str]] = None,
-):
-    """List all available tools for specified domains via MCP protocol."""
-
-    print(f"Task ID: {task_id}")
-    # Collect all tools for OpenAPI spec
-    all_tools_by_domain = {}
-    if task_id == 2:
-        # Task 2: per-domain connections.
-        _, domains_to_process = load_benchmark_data(
-            task_id=task_id, domains=domains, domain_names_only=True
-        )
-        print(
-            f"Listing tools for {len(domains_to_process)} domain(s):"
-            f" {domains_to_process}"
-        )
-    else:
-        # Task 1: same connection for all domains
-        domains_to_process = [""]
-
-    for domain in domains_to_process:
-        print("\n" + "=" * 60)
-        print(f"Domain: {domain}")
-        print("=" * 60)
-        try:
-            tools_detailed: List[Dict[str, Any]] = []
-            try:
-                async with create_client_and_connect(cfg, domain) as session:
-                    response = await session.list_tools()
-                    for tool in response.tools:
-                        tools_detailed.append({
-                            "name": tool.name,
-                            "description": tool.description or "",
-                            "inputSchema": (
-                                tool.inputSchema
-                                if hasattr(tool, "inputSchema") else {}
-                            ),
-                        })
-                print("  Server stopped.")
-            except ExceptionGroup as eg:
-                print(f"  Warning: Cleanup error (ignored): {eg}")
-            except Exception as exc:
-                if "TaskGroup" in str(type(exc).__name__) or "TaskGroup" in str(exc):
-                    print(f"  Warning: Cleanup error (ignored): {exc}")
-                else:
-                    stop_mcp_server(cfg)
-                    raise
-            print(f"  Total tools: {len(tools_detailed)}\n")
-            all_tools_by_domain[domain] = tools_detailed
-            for i, tool in enumerate(tools_detailed, 1):
-                print(f"  {i:3d}. {tool['name']}")
-                if tool['description']:
-                    desc = tool['description']
-                    d_suffix = "..." if len(desc) > 100 else ""
-                    print(
-                        f"       Description: {desc[:100]}{d_suffix}"
-                    )
-                input_schema = tool.get('inputSchema', {})
-                properties = input_schema.get('properties', {})
-                required = input_schema.get('required', [])
-                if properties:
-                    print("       Parameters:")
-                    for param_name, param_info in properties.items():
-                        param_type = param_info.get('type', 'unknown')
-                        param_desc = param_info.get('description', '')
-                        req_marker = (
-                            " (required)"
-                            if param_name in required else ""
-                        )
-                        print(
-                            f"         - {param_name}:"
-                            f" {param_type}{req_marker}"
-                        )
-                        if param_desc:
-                            pd_suffix = (
-                                "..." if len(param_desc) > 80 else ""
-                            )
-                            print(
-                                f"           "
-                                f"{param_desc[:80]}{pd_suffix}"
-                            )
-                print()
-        except Exception as e:
-            print(f"  ERROR: {e}")
-
-    # Save as OpenAPI-like spec
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-
-    # Include domain names in filename if specified
-    if domains and len(domains) <= 3:
-        # For 1-3 domains, include them in the filename
-        domain_str = "_".join(domains)
-        output_file = Path(f"tools_spec_{domain_str}_{timestamp}.json")
-    elif domains and len(domains) > 3:
-        # For more than 3 domains, just indicate "multiple"
-        output_file = Path(
-            f"tools_spec_multiple_domains_{timestamp}.json"
-        )
-    else:
-        # No specific domains (all domains)
-        output_file = Path(f"tools_spec_all_{timestamp}.json")
-
-    openapi_spec = generate_openapi_spec(all_tools_by_domain, task_id)
-    with open(output_file, "w") as f:
-        json.dump(openapi_spec, f, indent=2)
-
-    print("\n" + "=" * 60)
-    print("Tool listing complete")
-    print("=" * 60)
-    print(f"OpenAPI specification saved to: {output_file}")
 
 
 def main():
