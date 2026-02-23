@@ -95,6 +95,40 @@ python benchmark_runner.py \
 
 ---
 
+## Testing the Docker Image
+
+The smoke test validates the image in two tiers — sections 1, 3, and 4 run without any data; section 2 (FastAPI health) requires `data/db` to be populated.
+
+**Without data (just built the image):**
+
+```bash
+make test
+```
+
+Checks file existence, BPO MCP handshake, and M3 REST MCP handshake. FastAPI health check is skipped with a warning until data is downloaded.
+
+**With data (full validation):**
+
+```bash
+make download   # one-time — downloads ~35 GB into data/
+make test       # all 4 sections run including FastAPI health
+```
+
+**Full first-time setup:**
+
+```bash
+make setup      # download → build → test → start → validate
+```
+
+| Check | Requires data? | What it verifies |
+|-------|---------------|-----------------|
+| 1. File existence | No | All required `.py`, `.parquet`, and entrypoint files are in the image |
+| 2. M3 REST FastAPI | Yes (`data/db`) | `/openapi.json` responds and has at least one route |
+| 3. BPO MCP handshake | No | `python /app/apis/bpo/mcp/server.py` returns a valid JSON-RPC response |
+| 4. M3 REST MCP handshake | Yes (`data/db`) | `python /app/m3-rest/mcp_server.py` returns a valid JSON-RPC response (requires FastAPI on port 8000) |
+
+---
+
 ## Makefile Targets
 
 | Target | What it does |

@@ -53,7 +53,7 @@ section "1. Image file checks"
 
 check_file() {
   local path="$1"
-  if docker run --rm "$IMAGE" test -e "$path" 2>/dev/null; then
+  if docker run --rm --entrypoint /bin/sh "$IMAGE" -c "test -e '$path'" 2>/dev/null; then
     pass "$path"
   else
     fail "$path  (not found in image)"
@@ -80,10 +80,6 @@ section "2. M3 REST FastAPI health (port 8000)"
 if [ ! -d "$DB_DIR" ]; then
   echo "  WARNING: $DB_DIR not found — skipping FastAPI health check (run 'make download' first)"
   SKIP_FASTAPI=true
-  echo "  Starting container ${CONTAINER} (no db volume) ..."
-  docker run -d --name "$CONTAINER" \
-    -e MCP_DB_ROOT=/app/db \
-    "$IMAGE" >/dev/null
 else
   SKIP_FASTAPI=false
   echo "  Starting container ${CONTAINER} ..."
@@ -123,10 +119,12 @@ fi
 
 # ---------------------------------------------------------------------------
 section "3. BPO MCP server (stdio handshake)"
+# Runs python directly (--entrypoint bypass) — no db or FastAPI required.
 # ---------------------------------------------------------------------------
 
 BPO_RESPONSE=$(echo "$MCP_INIT" \
-  | docker exec -i "$CONTAINER" python /app/apis/bpo/mcp/server.py 2>/dev/null \
+  | docker run --rm -i --entrypoint python \
+    "$IMAGE" /app/apis/bpo/mcp/server.py 2>/dev/null \
   | head -n 1 || true)
 
 if echo "$BPO_RESPONSE" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); assert 'result' in d or 'id' in d" 2>/dev/null; then
@@ -138,18 +136,25 @@ fi
 
 # ---------------------------------------------------------------------------
 section "4. M3 REST MCP server (stdio handshake)"
+# Requires the FastAPI server to be running (it calls localhost:8000/openapi.json
+# at startup). Uses docker exec against the container from section 2.
+# Skipped when data/db is not available (same condition as section 2).
 # ---------------------------------------------------------------------------
 
-M3_MCP_RESPONSE=$(echo "$MCP_INIT" \
-  | docker exec -i -e MCP_DOMAIN=superhero "$CONTAINER" \
-    python /app/m3-rest/mcp_server.py 2>/dev/null \
-  | head -n 1 || true)
-
-if echo "$M3_MCP_RESPONSE" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); assert 'result' in d or 'id' in d" 2>/dev/null; then
-  pass "M3 REST MCP server returned a valid JSON-RPC response"
+if [ "$SKIP_FASTAPI" = "true" ]; then
+  echo "  Skipping — FastAPI server not running (no data/db). Run 'make download' first."
 else
-  fail "M3 REST MCP server did not return a valid JSON-RPC response"
-  echo "  Raw response: ${M3_MCP_RESPONSE:0:200}"
+  M3_MCP_RESPONSE=$(echo "$MCP_INIT" \
+    | docker exec -i -e MCP_DOMAIN=superhero "$CONTAINER" \
+      python /app/m3-rest/mcp_server.py 2>/dev/null \
+    | head -n 1 || true)
+
+  if echo "$M3_MCP_RESPONSE" | python3 -c "import sys,json; d=json.loads(sys.stdin.read()); assert 'result' in d or 'id' in d" 2>/dev/null; then
+    pass "M3 REST MCP server returned a valid JSON-RPC response"
+  else
+    fail "M3 REST MCP server did not return a valid JSON-RPC response"
+    echo "  Raw response: ${M3_MCP_RESPONSE:0:200}"
+  fi
 fi
 
 # ---------------------------------------------------------------------------

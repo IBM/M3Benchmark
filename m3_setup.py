@@ -178,7 +178,13 @@ def start_containers() -> None:
     rt = _runtime()
     print("\n=== Starting containers ===")
 
-    db_dir = str(DATA_DIR / "db")
+    db_dir = DATA_DIR / "db"
+    if not db_dir.exists() or not any(db_dir.iterdir()):
+        raise SystemExit(
+            f"\nERROR: Database directory '{db_dir}' is missing or empty.\n"
+            "Run 'make download' (or 'python m3_setup.py --download-data') first.\n"
+        )
+    db_dir = str(db_dir)
     configs_dir = str(PROJECT_ROOT / "apis" / "configs")
     chroma_dir = str(DATA_DIR / "chroma_data")
     queries_dir = str(DATA_DIR / "queries")
