@@ -74,6 +74,7 @@ source .venv/bin/activate
 
 pip install -e ".[init]"
 
+
 # 2. Run full setup (downloads ~35 GB of data)
 
 python m3_setup.py
@@ -137,7 +138,8 @@ This script checks that each MCP server (Tasks 1, 2, 3 and 4) is running properl
 ### Quick Start
 
 ```bash
-pip install mcp langchain-anthropic langgraph langchain-ollama
+pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama sentence-transformers
+
 
 # Single task
 python benchmark_runner.py --m3_task_id 5 --domain address

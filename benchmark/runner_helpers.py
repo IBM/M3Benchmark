@@ -46,9 +46,14 @@ class BenchmarkItem:
         """Create BenchmarkItem from JSON dict."""
         dialogue = data.get("dialogue", {})
         turns = dialogue.get("turns", [])
-        # Get first turn's query (for now, single turn support)
-        query = turns[0]["query"] if turns else ""
-        turn_id = turns[0].get("turn_id", 0) if turns else 0
+        # Get first turn's query — support both dialogue.turns and ground_truth formats
+        if turns:
+            query = turns[0]["query"]
+            turn_id = turns[0].get("turn_id", 0)
+        else:
+            ground_truth = data.get("ground_truth", [])
+            query = ground_truth[0]["query"] if ground_truth else ""
+            turn_id = ground_truth[0].get("turn_id", 0) if ground_truth else 0
 
         return cls(
             uuid=data.get("uuid", ""),

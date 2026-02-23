@@ -84,3 +84,4 @@ sentence-transformers>=2.0.0
 langchain-ibm
 huggingface_hub
 pytest
+sentence-transformers
