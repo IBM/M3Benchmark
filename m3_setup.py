@@ -168,18 +168,13 @@ def pull_image(image: str = DOCKER_IMAGE) -> None:
 
 def start_containers() -> None:
     """Start one container per task (names match mcp_connection_config.yaml)."""
-    rt = _runtime()
+    # Stop and remove all benchmark containers before starting fresh
+    stop_containers()
 
     # Always pull the latest image before starting containers
     pull_image()
 
-    # Stop and remove all benchmark containers before starting fresh
-    print("\n=== Cleaning up existing benchmark containers ===")
-    for name in CONTAINERS:
-        _run([rt, "kill", name], capture_output=True)
-        _run([rt, "rm", "-f", name], capture_output=True)
-    print("  Cleanup done.")
-
+    rt = _runtime()
     print("\n=== Starting containers ===")
 
     db_dir = str(DATA_DIR / "db")
@@ -233,8 +228,9 @@ def start_containers() -> None:
 def stop_containers() -> None:
     """Stop and remove all benchmark containers."""
     rt = _runtime()
-    print("\n=== Stopping containers ===")
+    print("\n=== Stopping and removing benchmark containers ===")
     for name in CONTAINERS:
+        _run([rt, "kill", name], capture_output=True)
         _run([rt, "rm", "-f", name], capture_output=True)
         print(f"  Removed {name}")
     print("Done.")
