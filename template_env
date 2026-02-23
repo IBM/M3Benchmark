@@ -106,3 +106,6 @@ WATSONX_PROJECT_ID=your-watsonx-project-id-here
 
 # watsonx.ai API endpoint URL
 WATSONX_URL=https://us-south.ml.cloud.ibm.com
+
+# HF token
+HF_TOKEN=
