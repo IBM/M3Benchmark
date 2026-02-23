@@ -113,6 +113,16 @@ python m3_setup.py --stop-containers     # stop and remove containers
 
 3. Test your model locally using `python evaluation.py`. This script will run answer generation and auto-evaluation.
 
+## Validate MCP Servers
+
+Before running the benchmark, verify that the MCP servers are healthy and contain the correct tools:
+
+```bash
+python benchmark/validate_clients.py
+```
+
+This script checks that each MCP server (Tasks 1, 2, 3 and 4) is running properly in its container and exposes the expected tools for all configured domains.
+
 ## Benchmark Runner
 
 `benchmark_runner.py` runs LLM agents against MCP tool servers and records trajectories + answers.
@@ -130,37 +140,37 @@ python m3_setup.py --stop-containers     # stop and remove containers
 pip install mcp langchain-anthropic langgraph langchain-ollama
 
 # Single task
-python benchmark_runner.py --task_id 5 --domain address
+python benchmark_runner.py --m3_task_id 5 --domain address
 
 # Multiple tasks, sequential (default)
-python benchmark_runner.py --task_id 2 5 --domain address
+python benchmark_runner.py --m3_task_id 2 5 --domain address
 
 # Multiple tasks, parallel
-python benchmark_runner.py --task_id 2 5 --domain address --parallel
+python benchmark_runner.py --m3_task_id 2 5 --domain address --parallel
 ```
 
 ### Common Options
 
 ```bash
 # Limit samples per domain
-python benchmark_runner.py --task_id 5 --domain address --max-samples-per-domain 5
+python benchmark_runner.py --m3_task_id 5 --domain address --max-samples-per-domain 5
 
 # Choose provider and model
-python benchmark_runner.py --task_id 5 --provider anthropic --model claude-sonnet-4-5-20250929
+python benchmark_runner.py --m3_task_id 5 --provider anthropic --model claude-sonnet-4-5-20250929
 
 # List tools only (no agent run)
-python benchmark_runner.py --task_id 5 --list-tools --domain address
+python benchmark_runner.py --m3_task_id 5 --list-tools --domain address
 
 # Tool shortlisting (top-k most relevant per query)
-python benchmark_runner.py --task_id 2 --domain hockey --top-k-tools 5
+python benchmark_runner.py --m3_task_id 2 --domain hockey --top-k-tools 5
 ```
 
 ### All Options
 
 | Flag | Description |
 |------|-------------|
-| `--task_id ID [ID ...]` | Task ID(s) to run (e.g. `2`, `5`, or `2 5`) |
-| `--parallel` | Run multiple task_ids concurrently via `asyncio.gather` |
+| `--m3_task_id ID [ID ...]` | M3 Task ID(s) to run (e.g. `2`, `5`, or `2 5`) |
+| `--parallel` | Run multiple m3_task_ids concurrently via `asyncio.gather` |
 | `--list-tools` | List available tools and exit |
 | `--domain DOMAIN` | Filter to domain(s), repeatable |
 | `--max-samples-per-domain N` | Cap queries per domain |
@@ -262,16 +272,16 @@ docker push docker.io/amurthi44g1wd/m3_environ:latest
 
 ```bash
 # Task 2 — M3 SQL tools
-python benchmark_runner_single_docker_image.py --task_id 2 --domain address
+python benchmark_runner_single_docker_image.py --m3_task_id 2 --domain address
 
 # Task 5 — Retriever tools
-python benchmark_runner_single_docker_image.py --task_id 5 --domain address
+python benchmark_runner_single_docker_image.py --m3_task_id 5 --domain address
 
 # Both tasks in parallel
-python benchmark_runner_single_docker_image.py --task_id 2 5 --domain address --parallel
+python benchmark_runner_single_docker_image.py --m3_task_id 2 5 --domain address --parallel
 
 # List tools only
-python benchmark_runner_single_docker_image.py --task_id 5 --list-tools --domain address
+python benchmark_runner_single_docker_image.py --m3_task_id 5 --list-tools --domain address
 ```
 
 ### Demo (Unified)

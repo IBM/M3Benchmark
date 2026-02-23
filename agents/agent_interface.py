@@ -20,10 +20,10 @@ Usage:
     response = await agent.run(messages, tools=my_tools)
 
 Benchmark runner examples:
-    python benchmark_runner.py --task_id 2 --run-agent
-    python benchmark_runner.py --task_id 2 --run-agent --domain hockey
-    python benchmark_runner.py --task_id 2 --run-agent --domain hockey --domain address
-    python benchmark_runner.py --task_id 2 --run-agent --domain hockey --max-samples-per-domain 5
+    python benchmark_runner.py --m3_task_id 2 --run-agent
+    python benchmark_runner.py --m3_task_id 2 --run-agent --domain hockey
+    python benchmark_runner.py --m3_task_id 2 --run-agent --domain hockey --domain address
+    python benchmark_runner.py --m3_task_id 2 --run-agent --domain hockey --max-samples-per-domain 5
 """
 import json
 import logging

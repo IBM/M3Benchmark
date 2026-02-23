@@ -45,7 +45,7 @@ HF_DATASETS = {
     "anupamamurthi/queries":    "queries",
 }
 
-# Container names must match apis/configs/mcp_connection_config.yaml
+# Container names must match benchmark/mcp_connection_config.yaml
 CONTAINERS = [
     "task_1_m3_environ",
     "task_2_m3_environ",
@@ -288,13 +288,13 @@ def main() -> None:
         print("=" * 60)
         print()
         print("  # Single task, single domain")
-        print("  python benchmark_runner.py --task_id 2 --run-agent --domain address")
+        print("  python benchmark_runner.py --m3_task_id 2 --run-agent --domain address")
         print()
         print("  # All three tasks for one domain")
-        print("  python benchmark_runner.py --task_id 1 2 5 --run-agent --domain address")
+        print("  python benchmark_runner.py --m3_task_id 1 2 5 --run-agent --domain address")
         print()
         print("  # Parallel execution")
-        print("  python benchmark_runner.py --task_id 1 2 5 --run-agent --domain address --parallel")
+        print("  python benchmark_runner.py --m3_task_id 1 2 5 --run-agent --domain address --parallel")
         print()
         print("  # Stop containers when done")
         print("  python m3_setup.py --stop-containers")
