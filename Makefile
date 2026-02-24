@@ -13,6 +13,8 @@
 #   make start       Start all benchmark containers (pulls latest image)
 #   make stop        Stop and remove all benchmark containers
 #   make logs        Tail logs for all running benchmark containers
+#   make clean       Stop containers and remove the local Docker image
+#   make e2e         Run end-to-end benchmark tests (requires HF_TOKEN + OPENAI_API_KEY)
 # =============================================================================
 
 REGISTRY   := docker.io/amurthi44g1wd
@@ -20,7 +22,7 @@ IMAGE_NAME := m3_environ
 REMOTE     := $(REGISTRY)/$(IMAGE_NAME):latest
 DOCKERFILE := docker/Dockerfile.unified
 
-.PHONY: download build test validate tag push release setup start stop logs
+.PHONY: download build test validate tag push release setup start stop logs clean e2e
 
 # ---------------------------------------------------------------------------
 # Download benchmark data from HuggingFace  (prompts for HF token if not set)
@@ -90,3 +92,20 @@ logs:
 		echo "=== $$c ==="; \
 		docker logs --tail 20 $$c 2>/dev/null || echo "  (not running)"; \
 	done
+
+# ---------------------------------------------------------------------------
+# End-to-end benchmark tests
+# Requires: HF_TOKEN and OPENAI_API_KEY env vars set
+# ---------------------------------------------------------------------------
+e2e:
+	@if [ -z "$(HF_TOKEN)" ]; then echo "ERROR: HF_TOKEN is not set."; exit 1; fi
+	@if [ -z "$(OPENAI_API_KEY)" ]; then echo "ERROR: OPENAI_API_KEY is not set."; exit 1; fi
+	python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+# ---------------------------------------------------------------------------
+# Clean — stop & remove containers, then remove the local image
+# ---------------------------------------------------------------------------
+clean:
+	python m3_setup.py --stop-containers
+	docker rmi -f $(IMAGE_NAME) 2>/dev/null || true
+	@echo "Removed containers and image '$(IMAGE_NAME)'."

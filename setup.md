@@ -57,6 +57,45 @@ You should see **4 containers** listed:
 | `task_3_m3_environ` | BPO MCP server + M3 REST API |
 | `task_5_m3_environ` | M3 REST API + ChromaDB Retriever |
 
+### Start containers individually (If needed)
+
+Use these if you need to start a specific container manually (run from project root):
+
+```bash
+# Task 1 — Sel/Slot MCP server
+docker run -d --name task_1_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 2 — M3 REST MCP server
+docker run -d --name task_2_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 3 — BPO MCP server + M3 REST API
+docker run -d --name task_3_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 5 — ChromaDB Retriever (needs extra memory + retriever volumes)
+docker run -d --name task_5_m3_environ \
+    --memory=4g \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    -v "$(pwd)/data/chroma_data:/app/retrievers/chroma_data" \
+    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
+    m3_environ
+```
+
+To stop and remove a single container:
+
+```bash
+docker rm -f task_2_m3_environ
+```
+
 ---
 
 ## 5. Run a Benchmark
@@ -76,21 +115,100 @@ export OPENAI_API_KEY=<your-key>
 export LITELLM_API_KEY=<your-key>
 ```
 
-Run a sample benchmark:
+Make sure containers are running first:
 
 ```bash
-python benchmark_runner.py \
-  --m3_task_id 2 \
-  --domain airline \
-  --max-samples-per-domain 1 \
-  --provider openai
+make start
+```
 
-# Task 3 (BPO + M3 REST tools)
-python benchmark_runner.py \
-  --m3_task_id 3 \
-  --domain airline \
-  --max-samples-per-domain 1 \
-  --provider openai
+**By task:**
+
+```bash
+# Task 1 — Sel/Slot tools
+python benchmark_runner.py --m3_task_id 1 --domain superhero
+
+# Task 2 — M3 REST SQL tools
+python benchmark_runner.py --m3_task_id 2 --domain hockey
+python benchmark_runner.py --m3_task_id 2 --domain airline
+python benchmark_runner.py --m3_task_id 2              # all domains
+
+# Task 3 — BPO + M3 REST tools
+python benchmark_runner.py --m3_task_id 3 --domain airline
+
+# Task 5 — ChromaDB retriever
+python benchmark_runner.py --m3_task_id 5 --domain address
+```
+
+**Common options:**
+
+```bash
+# Limit samples (good for quick tests)
+python benchmark_runner.py --m3_task_id 2 --domain hockey --max-samples-per-domain 5
+
+# Choose provider and model
+python benchmark_runner.py --m3_task_id 2 --domain hockey --provider anthropic --model claude-sonnet-4-6
+python benchmark_runner.py --m3_task_id 2 --domain hockey --provider openai --model gpt-4o
+python benchmark_runner.py --m3_task_id 2 --domain hockey --provider ollama --model llama3.1:8b
+
+# Run multiple tasks in parallel
+python benchmark_runner.py --m3_task_id 2 5 --domain address --parallel
+
+# Just list available tools (no agent run)
+python benchmark_runner.py --m3_task_id 2 --domain hockey --list-tools
+
+# Limit tools via embedding similarity (top-k)
+python benchmark_runner.py --m3_task_id 2 --domain hockey --top-k-tools 10
+```
+
+Results are saved to `output/task_{id}_{timestamp}/{domain}.json`.
+
+---
+
+## Integration & Unit Tests
+
+### End-to-end tests (requires HuggingFace token + OpenAI key + Docker)
+
+These tests download data, start containers, run the benchmark pipeline, and validate output.
+
+```bash
+# Set required env vars
+export HF_TOKEN=hf_...
+export OPENAI_API_KEY=sk-...
+
+# Run all e2e tests
+python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+# Or use a .env file
+cp template_env .env
+# edit .env: set HF_TOKEN and OPENAI_API_KEY
+export $(grep -v '^#' .env | xargs)
+python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+```
+
+Run a single task test:
+
+```bash
+python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task1_address -v -s
+python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task2_address -v -s
+python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task3_airline -v -s
+python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task5_address -v -s
+```
+
+> Containers are started once and shared across all tests. Each task writes to its own isolated output directory.
+
+---
+
+### Live MCP connection validation (requires running containers)
+
+```bash
+make start    # if containers aren't already running
+make validate # connects to all 4 containers and lists tools per domain
+```
+
+Or validate a specific domain only:
+
+```bash
+python benchmark/validate_clients.py --domain airline
 ```
 
 ---
@@ -143,6 +261,8 @@ make setup      # download → build → test → start → validate
 | `make setup` | `download → build → test → start → validate` — full first-time setup |
 | `make start` | Start all benchmark containers |
 | `make stop` | Stop and remove all benchmark containers |
+| `make clean` | Stop containers and remove the local `m3_environ` Docker image |
+| `make e2e` | Run end-to-end benchmark tests (requires `HF_TOKEN` + `OPENAI_API_KEY`) |
 | `make logs` | Last 20 log lines per container |
 
 ---

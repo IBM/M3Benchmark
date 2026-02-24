@@ -3,7 +3,7 @@
 Tests the full pipeline:
   1. Download data from HuggingFace (incremental sync)
   2. Start Docker containers
-  3. Run benchmark_runner.py for task 1, task 2, and task 5
+  3. Run benchmark_runner.py for task 1, task 2, task 3, and task 5
   4. Validate the output JSON files
 
 Requirements:
@@ -28,12 +28,14 @@ Usage:
     # Run only one task
     python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task1_address -v -s
     python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task2_address -v -s
+    python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task3_airline -v -s
     python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task5_address -v -s
 
-    # Run the entire test in one go
+    # Run the entire test suite in one go
     python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
 Notes:
-    - Containers are started once (module-scoped fixture) and shared across all three tests.
+    - Containers are started once (module-scoped fixture) and shared across all tests.
     - Each task writes to its own isolated output directory.
     - Tests fail immediately with a clear error if required env vars are absent.
 """
@@ -81,13 +83,13 @@ def containers_ready():
 # Helpers
 # ---------------------------------------------------------------------------
 
-def _run_benchmark(task_id: int, output_dir: Path) -> subprocess.CompletedProcess:
+def _run_benchmark(task_id: int, output_dir: Path, domain: str = "address") -> subprocess.CompletedProcess:
     """Invoke benchmark_runner.py as a subprocess, streaming output to the terminal."""
     cmd = [
         sys.executable,
         str(PROJECT_ROOT / "benchmark_runner.py"),
         "--m3_task_id", str(task_id),
-        "--domain", "address",
+        "--domain", domain,
         "--provider", "openai",
         "--max-samples-per-domain", "2",
         "--top-k-tools", "100",
@@ -168,12 +170,12 @@ class TestBenchmarkE2E:
         output_dir = tmp_path / "task1"
         output_dir.mkdir()
 
-        result = _run_benchmark(task_id=1, output_dir=output_dir)
+        result = _run_benchmark(task_id=1, output_dir=output_dir, domain="address")
 
         assert result.returncode == 0, (
             f"benchmark_runner.py exited with code {result.returncode} (see output above)"
         )
-        records = _assert_output(output_dir)
+        records = _assert_output(output_dir, domain="address")
         successful = [r for r in records if r["status"] == "success"]
         assert len(successful) >= 1, (
             "Expected at least 1 successful record for task 1.\n"
@@ -185,15 +187,37 @@ class TestBenchmarkE2E:
         output_dir = tmp_path / "task2"
         output_dir.mkdir()
 
-        result = _run_benchmark(task_id=2, output_dir=output_dir)
+        result = _run_benchmark(task_id=2, output_dir=output_dir, domain="address")
 
         assert result.returncode == 0, (
             f"benchmark_runner.py exited with code {result.returncode} (see output above)"
         )
-        records = _assert_output(output_dir)
+        records = _assert_output(output_dir, domain="address")
         successful = [r for r in records if r["status"] == "success"]
         assert len(successful) >= 1, (
             "Expected at least 1 successful record for task 2.\n"
+            + json.dumps(records, indent=2)
+        )
+
+    def test_task3_airline(self, tmp_path):
+        """Task 3: BPO + M3 REST dual-MCP agent on 2 airline-domain samples.
+
+        Uses task_3_m3_environ container which runs both the BPO MCP server
+        (primary) and the M3 REST MCP server (secondary) simultaneously.
+        The agent receives the merged tool list from both servers.
+        """
+        output_dir = tmp_path / "task3"
+        output_dir.mkdir()
+
+        result = _run_benchmark(task_id=3, output_dir=output_dir, domain="airline")
+
+        assert result.returncode == 0, (
+            f"benchmark_runner.py exited with code {result.returncode} (see output above)"
+        )
+        records = _assert_output(output_dir, domain="airline")
+        successful = [r for r in records if r["status"] == "success"]
+        assert len(successful) >= 1, (
+            "Expected at least 1 successful record for task 3.\n"
             + json.dumps(records, indent=2)
         )
 
@@ -202,12 +226,12 @@ class TestBenchmarkE2E:
         output_dir = tmp_path / "task5"
         output_dir.mkdir()
 
-        result = _run_benchmark(task_id=5, output_dir=output_dir)
+        result = _run_benchmark(task_id=5, output_dir=output_dir, domain="address")
 
         assert result.returncode == 0, (
             f"benchmark_runner.py exited with code {result.returncode} (see output above)"
         )
-        records = _assert_output(output_dir)
+        records = _assert_output(output_dir, domain="address")
         successful = [r for r in records if r["status"] == "success"]
         assert len(successful) >= 1, (
             "Expected at least 1 successful record for task 5.\n"
