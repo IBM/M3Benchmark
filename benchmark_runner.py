@@ -421,7 +421,7 @@ def main():
     parser.add_argument(
         "--top-k-tools",
         type=int,
-        default=0,
+        default=128,
         help="Enable tool shortlisting: keep top-k tools per query"
     )
     parser.add_argument(

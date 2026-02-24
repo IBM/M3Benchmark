@@ -10,6 +10,7 @@
 #   make push        Push the tagged image to Docker Hub
 #   make release     build → test → tag → push  (full publish workflow)
 #   make setup       download → build → test → start → validate  (first-time setup)
+#   make pull        Pull the m3_environ image from Docker Hub
 #   make start       Start all benchmark containers (pulls latest image)
 #   make stop        Stop and remove all benchmark containers
 #   make logs        Tail logs for all running benchmark containers
@@ -22,7 +23,7 @@ IMAGE_NAME := m3_environ
 REMOTE     := $(REGISTRY)/$(IMAGE_NAME):latest
 DOCKERFILE := docker/Dockerfile.unified
 
-.PHONY: download build test validate tag push release setup start stop logs clean e2e
+.PHONY: download build test validate tag push release setup pull start stop logs clean e2e
 
 # ---------------------------------------------------------------------------
 # Download benchmark data from HuggingFace  (prompts for HF token if not set)
@@ -80,6 +81,9 @@ setup: download build test start validate
 # ---------------------------------------------------------------------------
 # Container lifecycle  (delegates to m3_setup.py)
 # ---------------------------------------------------------------------------
+pull:
+	python m3_setup.py --pull-image
+
 start:
 	python m3_setup.py --start-containers
 

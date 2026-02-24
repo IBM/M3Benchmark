@@ -7,6 +7,32 @@
 - Docker or Podman running (`docker ps` / `podman ps`)
 - If using Podman, alias it: `alias docker=podman`
 
+### Container memory requirements
+
+Task 5 (ChromaDB) requires at least **8 GB** allocated to your container runtime. The default (often 2 GB) will OOM-kill the retriever on startup.
+
+**Docker Desktop**
+
+1. Open **Docker Desktop** → **Settings** → **Resources**
+2. Set **Memory** to at least **8 GB**
+3. Click **Apply & Restart**
+
+**Podman**
+
+```bash
+podman machine stop
+podman machine set --memory 8192
+podman machine start
+```
+
+Verify with: `podman info | grep -i memTotal`
+
+**Rancher Desktop**
+
+1. Open **Rancher Desktop** → **Preferences** → **Virtual Machine**
+2. Set **Memory** to at least **8 GB** (8192 MiB)
+3. Click **Apply** (the VM will restart)
+
 ---
 
 ## 1. Clone the Repository
@@ -26,17 +52,31 @@ source .venv/bin/activate
 pip install -e ".[init]"
 ```
 
----
-
-## 3. Run Setup Script
+Install benchmark dependencies:
 
 ```bash
-python m3_setup.py
+pip install -r requirements_benchmark.txt
+# or manually:
+pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama
 ```
 
-> **You will be prompted for a Hugging Face token.**
->
-> **Warning:** This step downloads ~30 GB of data. This will be reduced in a future release.
+---
+
+## 3. Download Data, Pull Image, and Start Containers
+
+```bash
+# Download benchmark data from HuggingFace (~30 GB)
+# You will be prompted for a Hugging Face token
+make download
+
+# Pull the m3_environ Docker image
+make pull
+
+# Start all four benchmark containers
+make start
+```
+
+> **Warning:** `make download` fetches ~30 GB of data. This will be reduced in a future release.
 
 ---
 
@@ -57,58 +97,13 @@ You should see **4 containers** listed:
 | `task_3_m3_environ` | BPO MCP server + M3 REST API |
 | `task_5_m3_environ` | M3 REST API + ChromaDB Retriever |
 
-### Start containers individually (If needed)
-
-Use these if you need to start a specific container manually (run from project root):
-
-```bash
-# Task 1 — Sel/Slot MCP server
-docker run -d --name task_1_m3_environ \
-    -v "$(pwd)/data/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    m3_environ
-
-# Task 2 — M3 REST MCP server
-docker run -d --name task_2_m3_environ \
-    -v "$(pwd)/data/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    m3_environ
-
-# Task 3 — BPO MCP server + M3 REST API
-docker run -d --name task_3_m3_environ \
-    -v "$(pwd)/data/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    m3_environ
-
-# Task 5 — ChromaDB Retriever (needs extra memory + retriever volumes)
-docker run -d --name task_5_m3_environ \
-    --memory=4g \
-    -v "$(pwd)/data/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    -v "$(pwd)/data/chroma_data:/app/retrievers/chroma_data" \
-    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
-    m3_environ
-```
-
-To stop and remove a single container:
-
-```bash
-docker rm -f task_2_m3_environ
-```
 
 ---
 
 ## 5. Run a Benchmark
 
-Install benchmark dependencies:
 
-```bash
-pip install -r requirements_benchmark.txt
-# or manually:
-pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama
-```
-
-Set your API keys:
+Set your API keys: (refer to template_env, the benchmark runs across various model providers)
 
 ```bash
 export OPENAI_API_KEY=<your-key>
@@ -170,22 +165,30 @@ Results are saved to `output/task_{id}_{timestamp}/{domain}.json`.
 
 These tests download data, start containers, run the benchmark pipeline, and validate output.
 
+**Step 1 — Set required env vars:**
+
 ```bash
-# Set required env vars
 export HF_TOKEN=hf_...
 export OPENAI_API_KEY=sk-...
+```
 
-# Run all e2e tests
-python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+Alternatively, use a `.env` file:
 
-# Or use a .env file
+```bash
 cp template_env .env
 # edit .env: set HF_TOKEN and OPENAI_API_KEY
 export $(grep -v '^#' .env | xargs)
-python -m pytest tests/e2e/test_benchmark_e2e.py -v -s
 ```
 
-Run a single task test:
+**Step 2 — Run the full e2e suite:**
+
+```bash
+make e2e
+```
+
+> Containers are started once and shared across all tests. Each task writes to its own isolated output directory.
+
+**Run a single task test (optional):**
 
 ```bash
 python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task1_address -v -s
@@ -194,7 +197,42 @@ python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task3_a
 python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task5_address -v -s
 ```
 
-> Containers are started once and shared across all tests. Each task writes to its own isolated output directory.
+**Start containers individually (optional — if you need to debug a specific container):**
+
+```bash
+# Task 1 — Sel/Slot MCP server
+docker run -d --name task_1_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 2 — M3 REST MCP server
+docker run -d --name task_2_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 3 — BPO MCP server + M3 REST API
+docker run -d --name task_3_m3_environ \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    m3_environ
+
+# Task 5 — ChromaDB Retriever (needs extra memory + retriever volumes)
+docker run -d --name task_5_m3_environ \
+    --memory=4g \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    -v "$(pwd)/data/chroma_data:/app/retrievers/chroma_data" \
+    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
+    m3_environ
+```
+
+To stop and remove a single container:
+
+```bash
+docker rm -f task_2_m3_environ
+```
 
 ---
 
@@ -252,6 +290,7 @@ make setup      # download → build → test → start → validate
 | Target | What it does |
 |--------|-------------|
 | `make download` | `python m3_setup.py --download-data` — syncs all 4 HuggingFace repos into `data/` |
+| `make pull` | Pull the `m3_environ` image from Docker Hub |
 | `make build` | Build the Docker image |
 | `make test` | Smoke-test the image (file checks + MCP handshakes) |
 | `make validate` | Live MCP connection check against running containers |
@@ -267,7 +306,7 @@ make setup      # download → build → test → start → validate
 
 ---
 
-## Rebuilding and Pushing the Docker Image
+## Rebuilding and Pushing the Docker Image (to be used by M3 ENV maintainers only)
 
 Run these commands from the **project root** whenever `docker/Dockerfile.unified`, `apis/bpo/`, or any other server code changes.
 

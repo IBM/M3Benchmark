@@ -41,29 +41,7 @@ Please refer to [evaluation.py](evaluation.py) for more details on how the evalu
 
 ## Container Runtime Requirements
 
-The benchmark containers (especially Task 5 with ChromaDB) require a minimum of **8 GB of memory** allocated to your container runtime. With the default memory (often 2 GB), the retriever container will be OOM-killed on startup.
-
-### Docker Desktop
-
-1. Open **Docker Desktop** → **Settings** → **Resources**
-2. Set **Memory** to at least **8 GB**
-3. Click **Apply & Restart**
-
-### Podman
-
-```bash
-podman machine stop
-podman machine set --memory 8192
-podman machine start
-```
-
-Verify with: `podman info | grep -i memTotal`
-
-### Rancher Desktop
-
-1. Open **Rancher Desktop** → **Preferences** → **Virtual Machine**
-2. Set **Memory** to at least **8 GB** (8192 MiB)
-3. Click **Apply** (the VM will restart)
+Task 5 (ChromaDB) requires at least **8 GB** allocated to your container runtime. See [SETUP.md — Container memory requirements](SETUP.md#container-memory-requirements) for instructions for Docker Desktop, Podman, and Rancher Desktop.
 
 ## Setup
 
