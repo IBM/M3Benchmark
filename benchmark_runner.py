@@ -268,10 +268,14 @@ async def run_benchmark_for_domain(
 
         print(f"\n  Server stopped for domain '{domain}'")
     except ExceptionGroup as eg:
+        import traceback
         print(f"  Warning: Cleanup error (ignored): {eg}")
+        traceback.print_exc()
     except Exception as e:
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
+            import traceback
             print(f"  Warning: Cleanup error (ignored): {e}")
+            traceback.print_exc()
         else:
             stop_mcp_server(cfg)
             raise

@@ -2,6 +2,40 @@
 
 > **Note:** These steps create a clean environment so your existing branch and code are not affected.
 
+---
+
+## Quick Start — First Time Test
+
+Everything you need to go from a fresh clone to a working single-sample benchmark run:
+
+```bash
+# 1. Python environment
+python -m venv .venv && source .venv/bin/activate
+pip install -e ".[init]"
+pip install -r requirements_benchmark.txt
+
+# 2. Set required tokens
+export HF_TOKEN=hf_...
+export OPENAI_API_KEY=sk-...
+
+# 3. Download data (~30 GB), pull Docker image, start containers
+make download
+make pull
+make start
+
+# 4. Verify all 4 containers are up
+docker ps
+
+# 5. Run a single-sample smoke test (Task 1, authors domain)
+python benchmark_runner.py --m3_task_id 1 --domain authors --max-samples-per-domain 1 --provider openai
+
+# Results land in output/task_1_<timestamp>/authors.json
+```
+
+> If you hit issues, see [Debugging containers](#debugging-containers) below.
+
+---
+
 ## Prerequisites
 
 - Docker or Podman running (`docker ps` / `podman ps`)
@@ -97,6 +131,69 @@ You should see **4 containers** listed:
 | `task_3_m3_environ` | BPO MCP server + M3 REST API |
 | `task_5_m3_environ` | M3 REST API + ChromaDB Retriever |
 
+### Debugging containers
+
+**Tail logs for all containers at once:**
+
+```bash
+make logs
+```
+
+**Tail logs for a specific container:**
+
+```bash
+docker logs -f task_5_m3_environ
+```
+
+**Check memory and CPU usage in real time:**
+
+```bash
+docker stats task_1_m3_environ task_2_m3_environ task_3_m3_environ task_5_m3_environ
+```
+
+**Inspect a container's environment and config:**
+
+```bash
+docker inspect task_5_m3_environ
+```
+
+**Open a shell inside a running container:**
+
+```bash
+docker exec -it task_5_m3_environ bash
+```
+
+**Check if the FastAPI server is responding (Tasks 2, 3, 5):**
+
+```bash
+docker exec task_2_m3_environ curl -sf http://localhost:8000/openapi.json | head -c 200
+docker exec task_5_m3_environ curl -sf http://localhost:8001/health
+```
+
+**Send a test MCP handshake to verify the MCP server is alive:**
+
+```bash
+MCP_INIT='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.1.0"}}}'
+
+echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=address task_2_m3_environ python /app/m3-rest/mcp_server.py
+echo "$MCP_INIT" | docker exec -i task_3_m3_environ python /app/apis/bpo/mcp/server.py
+echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=address task_5_m3_environ python /app/retrievers/mcp_server.py
+echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=superhero task_1_m3_environ python -m apis.m3.python_tools.mcp
+```
+
+**Stop and restart a single container:**
+
+```bash
+docker rm -f task_5_m3_environ
+
+docker run -d --name task_5_m3_environ \
+    --memory=4g \
+    -v "$(pwd)/data/db:/app/db:ro" \
+    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+    -v "$(pwd)/data/chroma_data:/app/retrievers/chroma_data" \
+    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
+    m3_environ
+```
 
 ---
 
@@ -120,18 +217,18 @@ make start
 
 ```bash
 # Task 1 — Sel/Slot tools
-python benchmark_runner.py --m3_task_id 1 --domain superhero
+python benchmark_runner.py --m3_task_id 1 --domain authors --max-samples-per-domain 1 --provider openai
 
 # Task 2 — M3 REST SQL tools
-python benchmark_runner.py --m3_task_id 2 --domain hockey
-python benchmark_runner.py --m3_task_id 2 --domain airline
-python benchmark_runner.py --m3_task_id 2              # all domains
+python benchmark_runner.py --m3_task_id 2 --provider openai --domain address
+python benchmark_runner.py --m3_task_id 2 --provider openai --domain airline
+python benchmark_runner.py --m3_task_id 2     --provider openai          # all domains
 
 # Task 3 — BPO + M3 REST tools
-python benchmark_runner.py --m3_task_id 3 --domain airline
+python benchmark_runner.py --m3_task_id 3 --domain airline --provider openai
 
 # Task 5 — ChromaDB retriever
-python benchmark_runner.py --m3_task_id 5 --domain address
+python benchmark_runner.py --m3_task_id 5 --domain address --provider openai
 ```
 
 **Common options:**
