@@ -68,7 +68,9 @@ tasks:
       - python
       - /app/apis/bpo/mcp/task3_router.py
 
-  # Task 5: LangGraphReActAgent + RetrieverMCPServer (ChromaDB)
+  # Task 5: LangGraphReActAgent + Task5CombinedMCPServer
+  # Exposes M3 REST tools (port 8000) + Retriever query tool (port 8001)
+  # in a single MCP server so list_tools() returns both sets.
   5:
     mode: stdio
     container_name: task_5_m3_environ
@@ -78,7 +80,7 @@ tasks:
       PRELOAD_COLLECTIONS: "false"
     container_command:
       - python
-      - /app/retrievers/mcp_server.py
+      - /app/retrievers/task5_mcp_server.py
 
   # --- Per-task container setup (no unified image) ---
   # Task 1 runs as a local Python subprocess (no container needed).

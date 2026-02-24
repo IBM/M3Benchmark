@@ -104,6 +104,25 @@ def _run_benchmark(task_id: int, output_dir: Path, domain: str = "address") -> s
     )
 
 
+def _list_tools(task_id: int, domain: str = "address") -> subprocess.CompletedProcess:
+    """Invoke benchmark_runner.py --list-tools and capture its output."""
+    cmd = [
+        sys.executable,
+        str(PROJECT_ROOT / "benchmark_runner.py"),
+        "--m3_task_id", str(task_id),
+        "--domain", domain,
+        "--list-tools",
+    ]
+    print(f"\n$ {' '.join(str(c) for c in cmd)}\n", flush=True)
+    return subprocess.run(
+        cmd,
+        cwd=str(PROJECT_ROOT),
+        capture_output=True,
+        text=True,
+        timeout=120,
+    )
+
+
 def _assert_output(output_dir: Path, domain: str = "address") -> list:
     """Assert the output file is valid and return the parsed records."""
     output_file = output_dir / f"{domain}.json"
@@ -242,8 +261,78 @@ class TestBenchmarkE2E:
             + json.dumps(records, indent=2)
         )
 
+    def test_task5_combined_tools(self):
+        """Task 5: combined MCP server exposes address M3 REST tools + retriever
+        tools for address and its negative domains.
+
+        For MCP_DOMAIN=address the expected tool set is:
+          - M3 REST:  all /v1/address/* tools only  (~40 tools)
+          - Retriever: query_address, query_olympics, query_card_games,
+                       query_legislator, query_craftbeer  (5 tools from
+                       domain_negatives.json["address"])
+
+        Verifies four things:
+        1. query_address is present   — primary retriever tool included.
+        2. query_olympics is present  — negative-domain retriever tool included.
+        3. Total tool count > 1       — M3 REST tools are also included.
+        4. query_hockey is absent     — unrelated domain not leaking through.
+        """
+        result = _list_tools(task_id=5, domain="address")
+
+        print(result.stdout, flush=True)
+        if result.stderr:
+            print(result.stderr, flush=True)
+
+        assert result.returncode == 0, (
+            f"--list-tools exited with code {result.returncode}\n{result.stderr}"
+        )
+
+        # Parse "  Total tools: N" from the output
+        total_tools = None
+        for line in result.stdout.splitlines():
+            if "Total tools:" in line:
+                try:
+                    total_tools = int(line.split("Total tools:")[-1].strip())
+                except ValueError:
+                    pass
+                break
+
+        assert total_tools is not None, (
+            f"Could not find 'Total tools:' in --list-tools output:\n{result.stdout}"
+        )
+
+        # 1. Primary retriever tool must be present
+        assert "query_address" in result.stdout, (
+            "Expected 'query_address' tool from the retriever backend, "
+            f"but it was not found in --list-tools output:\n{result.stdout}"
+        )
+
+        # 2. Negative-domain retriever tools must also be present
+        assert "query_olympics" in result.stdout, (
+            "Expected 'query_olympics' (a negative domain for 'address' per "
+            "domain_negatives.json) to be exposed, but it was not found.\n"
+            f"Output:\n{result.stdout}"
+        )
+
+        # 3. M3 REST tools must be present (combined count >> retriever-only)
+        assert total_tools > 1, (
+            f"Expected more than 1 tool (got {total_tools}). "
+            "The combined server should expose M3 REST tools AND retriever tools."
+        )
+
+        # 4. Unrelated domains must not appear
+        assert "query_hockey" not in result.stdout, (
+            "Found 'query_hockey' in task 5 address output — "
+            "domain filtering is broken; unrelated tools are leaking through."
+        )
+
     def test_task5_address(self, tmp_path):
-        """Task 5: ChromaDB retriever MCP agent on 2 address-domain samples."""
+        """Task 5: combined MCP server (M3 REST + retriever) on 2 address samples.
+
+        Uses task5_mcp_server.py which merges tools from both FastAPI servers
+        running in task_5_m3_environ so the agent can use SQL/REST tools and
+        semantic search in the same session.
+        """
         output_dir = tmp_path / "task5"
         output_dir.mkdir()
 

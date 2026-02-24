@@ -54,10 +54,11 @@ async def list_tools_for_domains(
     print(f"Task ID: {task_id}")
     # Collect all tools for OpenAPI spec
     all_tools_by_domain = {}
-    if task_id in (2, 3):
-        # Task 2 and Task 3: per-domain connections.
-        # For Task 3 the router (task3_router.py) selects BPO or M3 REST
-        # automatically based on MCP_DOMAIN — no host-side routing needed.
+    if task_id in (2, 3, 5):
+        # Tasks 2, 3, 5: per-domain connections — MCP_DOMAIN must be set so
+        # the server filters to the requested domain's tools only.
+        # Task 3: task3_router.py selects BPO or M3 REST based on MCP_DOMAIN.
+        # Task 5: task5_mcp_server.py filters both M3 REST and retriever tools.
         _, domains_to_process = load_benchmark_data(
             task_id=task_id, domains=domains, domain_names_only=True
         )
@@ -66,7 +67,7 @@ async def list_tools_for_domains(
             f" {domains_to_process}"
         )
     else:
-        # Task 1: same connection for all domains
+        # Task 1: tool universe is domain-independent at the connection level
         domains_to_process = [""]
 
     for domain in domains_to_process[:5]:
