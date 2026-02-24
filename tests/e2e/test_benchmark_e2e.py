@@ -262,12 +262,13 @@ class TestBenchmarkE2E:
         )
 
     def test_task5_combined_tools(self):
-        """Task 5: combined MCP server exposes both M3 REST and retriever tools.
+        """Task 5: combined MCP server exposes address-only M3 REST + retriever tools.
 
-        The task5_mcp_server.py merges tools from the M3 REST FastAPI server
-        (port 8000) and the Retriever FastAPI server (port 8001). For the
-        'address' domain this should yield the M3 REST tools PLUS the single
-        ``query_address`` retriever tool — well more than 1 tool in total.
+        Verifies three things:
+        1. query_address is present  — retriever backend is included.
+        2. Total tool count > 1      — M3 REST tools are also included.
+        3. No cross-domain tools     — domain filter is working (e.g. no
+           query_hockey, no tools from /v1/hockey/*).
         """
         result = _list_tools(task_id=5, domain="address")
 
@@ -292,10 +293,23 @@ class TestBenchmarkE2E:
         assert total_tools is not None, (
             f"Could not find 'Total tools:' in --list-tools output:\n{result.stdout}"
         )
-        # Retriever-only would give 1 tool; combined should give M3 REST tools + 1
+
+        # 1. Retriever tool must be present for the requested domain
+        assert "query_address" in result.stdout, (
+            "Expected 'query_address' tool from the retriever backend, "
+            f"but it was not found in --list-tools output:\n{result.stdout}"
+        )
+
+        # 2. M3 REST tools must also be present (combined > retriever-only)
         assert total_tools > 1, (
             f"Expected more than 1 tool (got {total_tools}). "
             "The combined server should expose M3 REST tools AND the retriever tool."
+        )
+
+        # 3. Domain filter must be applied — no tools from other domains
+        assert "query_hockey" not in result.stdout, (
+            "Found 'query_hockey' in task 5 address output — "
+            "domain filtering is broken; all-domain tools are being returned."
         )
 
     def test_task5_address(self, tmp_path):
