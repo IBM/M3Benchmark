@@ -22,13 +22,14 @@ tasks:
   #       -e MCP_DB_ROOT=/app/db \
   #       m3_environ
 
-  # Task 1: ToolCallingAgent + SlotFillingMCPServer
+  # Task 1: ToolCallingAgent + RouterMCPServer (routes to SlotFilling or Selection per query)
   1:
     mode: stdio
     container_name: task_1_m3_environ
     container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
+      MCP_SERVER_TYPE: router
     container_command:
       - python
       - "-m"

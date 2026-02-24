@@ -15,6 +15,7 @@ from mcp.types import TextContent, Tool
 from pydantic import BaseModel, Field
 
 from ..tools.pydantic_wrapper import PeekInput
+from ..tools.pydantic_models import GetterInput
 from ..tools.dtype_utils import DTYPE_METADATA_KEY
 from ..tools.tool_registry import (
     INITIALIZE_ACTIVE_DATA,
@@ -548,6 +549,95 @@ class SelectionMCPServer(LiveMCPServer):
         logger.info(f"Regenerated {len(key_names_and_descriptions)} getter functions")
 
 
+class RouterMCPServer(LiveMCPServer):
+    """
+    MCP Server that routes tool calls to SlotFillingMCPServer or
+    SelectionMCPServer on a per-query basis.
+
+    Both tool sets are initialized at startup. When get_data() is called with
+    a tool_universe_id, the router reads the 'server_type' field from the
+    universe YAML entry (defaulting to 'slot_filling' if absent) and switches
+    the active server accordingly. list_tools and call_tool are then routed to
+    the newly active server's tool set.
+    """
+
+    def _initialize_toolbox(self) -> None:
+        """Initialize both slot-filling and selection toolboxes."""
+        self.slot_filling_tools = SlotFillingTools(
+            io_cache=self.config.cache_dir,
+            use_io_wrappers=self.config.use_io_wrappers,
+            use_pydantic_signatures=self.config.use_pydantic_signatures,
+        )
+        self.selection_tools = SelectionTools(
+            io_cache=self.config.cache_dir,
+            use_io_wrappers=self.config.use_io_wrappers,
+            use_pydantic_signatures=self.config.use_pydantic_signatures,
+        )
+        self._active_server_type = "slot_filling"
+
+    def _reload_active_data_for_universe(self, universe_id: str) -> None:
+        """Read server_type from the universe YAML and load active_data."""
+        universe_config = self.all_tool_configs.get(universe_id, {})
+        self._active_server_type = universe_config.get("server_type", "slot_filling")
+        # Data loading is identical for both server types
+        self.active_data = self.slot_filling_tools.tools[INITIALIZE_ACTIVE_DATA](
+            **self.tool_config
+        )
+
+    def _get_available_tools(self) -> Dict[str, Any]:
+        """Return the active server's tool set."""
+        if self._active_server_type == "selection":
+            return self.selection_tools.tools or {}
+        return self.slot_filling_tools.tools
+
+    def _get_tool_specs(self) -> list:
+        """Return the union of both servers' specs for tool_input_models pre-population."""
+        return SLOT_FILLING_TOOLS + SELECTION_TOOLS
+
+    def _on_universe_switch(self, universe_id: str) -> None:
+        """Switch the active tool set and update tool_input_models accordingly."""
+        _ = universe_id  # Unused but required by abstract method signature
+        if self._active_server_type == "selection":
+            self._regenerate_getters()
+            # Register getter names so list_tools exposes them
+            for name in self.selection_tools.tools:
+                if name not in self.tool_input_models:
+                    self.tool_input_models[name] = GetterInput
+        else:
+            # Remove any dynamic getter entries from a prior selection switch
+            getter_names = [
+                n for n, m in self.tool_input_models.items() if m is GetterInput
+            ]
+            for name in getter_names:
+                del self.tool_input_models[name]
+
+    def _extract_schema_from_active_data(self, active_data: dict) -> list[dict]:
+        """Extract key_names_and_descriptions from active_data."""
+        key_names_and_descriptions = []
+        dtypes = active_data.get(DTYPE_METADATA_KEY, {})
+        for key in active_data.keys():
+            if key == DTYPE_METADATA_KEY:
+                continue
+            key_names_and_descriptions.append({
+                "key_name": key,
+                "description": f"Column {key}",
+                "dtype": dtypes.get(key, "object"),
+            })
+        return key_names_and_descriptions
+
+    def _regenerate_getters(self) -> None:
+        """Regenerate getter functions based on current active_data schema."""
+        if self.active_data is None:
+            raise ValueError("Cannot regenerate getters: active_data is None")
+        key_names_and_descriptions = self._extract_schema_from_active_data(
+            self.active_data
+        )
+        self.selection_tools.tools = self.selection_tools.get_toolbox_with_schema(
+            key_names_and_descriptions
+        )
+        logger.info(f"Regenerated {len(key_names_and_descriptions)} getter functions")
+
+
 def create_server(config: MCPServerConfig, shutdown_event: Optional[asyncio.Event] = None) -> LiveMCPServer:
     """
     Factory function to create a configured server instance.
@@ -573,5 +663,9 @@ def create_server(config: MCPServerConfig, shutdown_event: Optional[asyncio.Even
         return SelectionMCPServer(config, shutdown_event)
     elif server_type == 'slot_filling':
         return SlotFillingMCPServer(config, shutdown_event)
+    elif server_type == 'router':
+        return RouterMCPServer(config, shutdown_event)
     else:
-        raise ValueError(f"Unknown server_type: {server_type}. Must be 'slot_filling' or 'selection'")
+        raise ValueError(
+            f"Unknown server_type: {server_type}. Must be 'slot_filling', 'selection', or 'router'"
+        )
