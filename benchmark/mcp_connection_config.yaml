@@ -45,13 +45,30 @@ tasks:
       - python
       - /app/m3-rest/mcp_server.py
 
-  # Task 3: LangGraphReActAgent + BPO MCP Server
-  # Uses local Python subprocess (no container needed)
+  # Task 3: LangGraphReActAgent + BPO MCP Server + M3 REST (both in task_3_m3_environ)
+  # primary   → BPO FastMCP server   (python /app/apis/bpo/mcp/server.py)
+  # secondary → M3 REST MCP server   (python /app/m3-rest/mcp_server.py)
+  # Both are launched via `docker exec -i` against the same container.
+  
+  # Use the below to connect to BPO mcp server - python code [without using the container]
+  # 3:
+  #   mode: stdio
+  #   command: python  # resolved to sys.executable at runtime
+  #   args:
+  #     - "apis/bpo/mcp/server.py"
+  
   3:
     mode: stdio
-    command: python  # resolved to sys.executable at runtime
-    args:
-      - "apis/bpo/mcp/server.py"
+    container_name: task_3_m3_environ
+    container_runtime: null
+    container_env:
+      MCP_DB_ROOT: /app/db
+    container_command:
+      - python
+      - /app/apis/bpo/mcp/server.py
+    secondary_container_command:
+      - python
+      - /app/m3-rest/mcp_server.py
 
   # Task 5: LangGraphReActAgent + RetrieverMCPServer (ChromaDB)
   5:

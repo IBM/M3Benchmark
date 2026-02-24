@@ -10,7 +10,7 @@ Tasks:
   Task 5  -> retriever-mcp-server (ChromaDB retriever)
 
 Setup:
-  pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama
+  pip install langchain-openai langchain mcp langchain-anthropic langgraph langchain-ollama sentence-transformers
 
 MCP connection settings are read from a YAML config file
 (default: benchmark/mcp_connection_config.yaml). Override with --mcp-config.
@@ -52,6 +52,7 @@ Output:
   e.g. output/task_2_feb_18_11_21am/hockey.json
 """
 import asyncio
+from contextlib import AsyncExitStack
 import json
 import argparse
 import logging
@@ -129,11 +130,34 @@ async def run_benchmark_for_domain(
     results: List[BenchmarkResult] = []
 
     try:
-        async with create_client_and_connect(cfg, domain) as session:
-            # Get tools ONCE for this domain
+        async with AsyncExitStack() as stack:
+            # Primary MCP server (always present)
+            session = await stack.enter_async_context(
+                create_client_and_connect(cfg, domain)
+            )
             wrapper = MCPToolWrapper(session)
             tools = await wrapper.get_tools()
             print(f"  Loaded {len(tools)} tools for domain '{domain}'")
+
+            # Secondary MCP server (Task 3: BPO primary + M3 REST secondary)
+            if cfg.secondary_container_command:
+                secondary_cfg = MCPConnectionConfig(
+                    mode=cfg.mode,
+                    container_name=cfg.container_name,
+                    container_runtime=cfg.container_runtime,
+                    container_env=cfg.container_env,
+                    container_command=cfg.secondary_container_command,
+                )
+                secondary_session = await stack.enter_async_context(
+                    create_client_and_connect(secondary_cfg, domain)
+                )
+                secondary_wrapper = MCPToolWrapper(secondary_session)
+                secondary_tools = await secondary_wrapper.get_tools()
+                print(
+                    f"  Loaded {len(secondary_tools)} additional tools"
+                    f" from secondary server"
+                )
+                tools = tools + secondary_tools
 
             agent = _get_agent(task_id, llm, tools, top_k_tools)
 
@@ -397,7 +421,7 @@ def main():
     parser.add_argument(
         "--top-k-tools",
         type=int,
-        default=0,
+        default=128,
         help="Enable tool shortlisting: keep top-k tools per query"
     )
     parser.add_argument(

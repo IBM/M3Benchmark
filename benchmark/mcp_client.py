@@ -29,6 +29,10 @@ class MCPConnectionConfig:
     command: Optional[str] = None
     args: Optional[List[str]] = None
     server_url: Optional[str] = None
+    # Optional second MCP server launched in the same container (e.g. Task 3:
+    # primary=BPO server, secondary=M3 REST server).  When set, benchmark_runner
+    # opens a second docker-exec session and merges the tool lists.
+    secondary_container_command: Optional[List[str]] = None
 
 
 def load_mcp_config(config_path: str) -> Dict[int, MCPConnectionConfig]:
@@ -54,6 +58,7 @@ def load_mcp_config(config_path: str) -> Dict[int, MCPConnectionConfig]:
             command=cmd,
             args=v.get("args", None),
             server_url=v.get("server_url", None),
+            secondary_container_command=v.get("secondary_container_command", None),
         )
     return result
 

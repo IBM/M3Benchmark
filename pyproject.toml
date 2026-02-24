@@ -41,17 +41,17 @@ rag = [
 agents = [
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
+    "langgraph>=1.0.9",
     "httpx",
     "litellm",
     "langchain-litellm",
     "langchain-ollama",
-    "langchain-ibm"
+    "sentence-transformers"
 ]
 
 # MCP server functionality (includes agents)
 mcp = [
     "mcp>=1.0.0",
-    "langchain-mcp>=0.1.0",
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
     "httpx",
