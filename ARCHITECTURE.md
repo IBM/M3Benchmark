@@ -47,13 +47,15 @@ invocations for that container's lifetime.
 
 ---
 
-## Task 1 — Slot-Filling (Sel/Slot MCP Server)
+## Task 1 — Slot-Filling / Selection (RouterMCPServer)
 
 ### Purpose
 
 The agent must identify the correct tool and fill its parameter slots from a
-natural-language query.  Tools are loaded from a YAML "universe" configuration
-scoped to the requested domain.
+natural-language query. A single MCP entry point exposes either a generic
+slot-filling toolset or a specialised selection toolset (with dynamically
+generated column getters), switching between them at runtime based on which
+"tool universe" the agent selects for a given query.
 
 ### Container: `task_1_m3_environ`
 
@@ -61,40 +63,92 @@ scoped to the requested domain.
 |------|--------|
 | FastAPI services | M3 REST on port 8000 (started but not used by MCP) |
 | MCP entry point | `python -m apis.m3.python_tools.mcp` |
-| MCP source | [`apis/m3/python_tools/mcp/mcp_server.py`](apis/m3/python_tools/mcp/mcp_server.py) |
+| Entry CLI | [`apis/m3/python_tools/mcp/cli.py`](apis/m3/python_tools/mcp/cli.py) |
+| Server factory | [`apis/m3/python_tools/mcp/mcp_server.py`](apis/m3/python_tools/mcp/mcp_server.py) — `create_server()` |
+| Active server class | `RouterMCPServer` (selected via `MCP_SERVER_TYPE=router`) |
 
 ### How it works
 
-`SlotFillingMCPServer` is a **declarative** MCP server — it does not wrap the
-M3 REST FastAPI. Instead it loads a YAML universe configuration that defines
-which filter / sort / aggregate / retrieval tools are available for the domain,
-and reads domain data directly in Python. No HTTP calls are made during tool
-execution.
+`cli.py` reads environment variables and calls `create_server()`, which
+instantiates a **`RouterMCPServer`** (the default when `MCP_SERVER_TYPE=router`).
+
+At startup the router:
+
+1. Reads `mcp_tool_universe_id_mapping.yaml` and filters the universe list to
+   entries whose `domain` field matches `MCP_DOMAIN`.
+2. Initialises **both** `SlotFillingTools` and `SelectionTools` in memory.
+3. Loads the first universe's data from `SQLite` (`/app/db/{domain}/{domain}.sqlite`)
+   into `active_data`.
+4. Defaults to the **slot-filling** toolset as the active tool set.
+
+The agent interacts with the server through two mechanisms:
+
+- **`list_tools()`** — returns whichever toolset is currently active.
+- **`call_tool("get_data", tool_universe_id=<uid>)`** — switches `active_data`
+  to the requested universe; if the universe's YAML entry contains
+  `server_type: selection`, the router also switches the active toolset to
+  `SelectionTools` (regenerating column-level getter functions from the new
+  schema). A subsequent `list_tools()` then returns the selection toolset.
+
+No HTTP calls are made during tool execution — all data access is direct Python
+reads from the pre-loaded SQLite database.
+
+### Tool sets
+
+| Toolset | Active when | Tools exposed |
+|---------|-------------|---------------|
+| **Slot-filling** | universe `server_type` absent or `slot_filling` | `filter_data`, `sort_data`, `aggregate_data`, `transform_data`, `retrieve_data`, `Calculator`, `concatenate_data`, `select_unique_values`, `peek_fcn`, `get_data` |
+| **Selection** | universe `server_type: selection` | 8 × `select_data_*` filters, 2 × `sort_data_*`, 8 × `compute_data_*` aggregates, `truncate`, 3 × `transform_data_to_*`, `Calculator`, `concatenate_data`, `select_unique_values`, dynamically generated `get_{column}` getters, `get_data` |
 
 ### Stack diagram
 
 ```
 Benchmark Client (host)
         │
-        │  docker exec -i -e MCP_DOMAIN=<domain>
+        │  docker exec -i
+        │    -e MCP_DOMAIN=<domain>
+        │    -e MCP_SERVER_TYPE=router
+        │    -e MCP_DB_ROOT=/app/db
         │  task_1_m3_environ
         │  python -m apis.m3.python_tools.mcp
         │
         ▼
-┌──────────────────────────────────────────────────┐
-│  task_1_m3_environ                               │
-│                                                  │
-│  ┌────────────────────────────────────────────┐  │
-│  │  SlotFillingMCPServer  (stdio)             │  │
-│  │                                            │  │
-│  │  • list_tools()  →  reads YAML universe    │  │
-│  │  • call_tool()   →  direct Python call     │  │
-│  └──────────────────┬─────────────────────────┘  │
-│                     │                            │
-│                     ▼                            │
-│         tool universe YAML + domain data         │
-│         /app/apis/configs/                       │
-└──────────────────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────┐
+│  task_1_m3_environ                                         │
+│                                                            │
+│  cli.py → create_server() → RouterMCPServer  (stdio)       │
+│                                                            │
+│  ┌─────────────────────────────────────────────────────┐   │
+│  │  RouterMCPServer                                    │   │
+│  │                                                     │   │
+│  │  startup:                                           │   │
+│  │    • load mcp_tool_universe_id_mapping.yaml         │   │
+│  │    • filter universes to MCP_DOMAIN                 │   │
+│  │    • init SlotFillingTools + SelectionTools         │   │
+│  │    • load active_data from SQLite (first universe)  │   │
+│  │    • active toolset = slot_filling                  │   │
+│  │                                                     │   │
+│  │  list_tools()                                       │   │
+│  │    → current active toolset tools                   │   │
+│  │                                                     │   │
+│  │  call_tool("get_data", tool_universe_id=<uid>)      │   │
+│  │    → reload active_data from SQLite                 │   │
+│  │    → if universe server_type == "selection":        │   │
+│  │        regenerate get_{col} getters from schema     │   │
+│  │        switch active toolset → SelectionTools       │   │
+│  │    → else: active toolset → SlotFillingTools        │   │
+│  │                                                     │   │
+│  │  call_tool(<other>, ...)                            │   │
+│  │    → direct Python call on active toolset           │   │
+│  └─────────────────────┬───────────────────────────────┘   │
+│                        │                                   │
+│            ┌───────────┴──────────────┐                    │
+│            ▼                          ▼                    │
+│  mcp_tool_universe_id_mapping.yaml    SQLite               │
+│  /app/apis/configs/                   /app/db/{domain}/    │
+│  (universe IDs, init_args,            {domain}.sqlite      │
+│   server_type per query)                                   │
+└────────────────────────────────────────────────────────────┘
 ```
 
 ---
@@ -347,7 +401,10 @@ image; takes up to 5 min to warm up on first container start).
 | [`benchmark/mcp_client.py`](benchmark/mcp_client.py) | Builds `docker exec` command; opens MCP `ClientSession` |
 | [`apis/m3/rest/app.py`](apis/m3/rest/app.py) | M3 REST FastAPI — 45+ domain routers, port 8000 |
 | [`apis/m3/rest/mcp_server.py`](apis/m3/rest/mcp_server.py) | OpenAPI→MCP wrapper for M3 REST (Tasks 2 & 3) |
-| [`apis/m3/python_tools/mcp/mcp_server.py`](apis/m3/python_tools/mcp/mcp_server.py) | Declarative Sel/Slot MCP server (Task 1) |
+| [`apis/m3/python_tools/mcp/cli.py`](apis/m3/python_tools/mcp/cli.py) | CLI entry point; reads env vars, calls `create_server()` (Task 1) |
+| [`apis/m3/python_tools/mcp/mcp_server.py`](apis/m3/python_tools/mcp/mcp_server.py) | `RouterMCPServer` / `SlotFillingMCPServer` / `SelectionMCPServer` + `create_server()` factory (Task 1) |
+| [`apis/m3/python_tools/mcp/config.py`](apis/m3/python_tools/mcp/config.py) | `MCPServerConfig` dataclass; resolves `MCP_DOMAIN` → SQLite path (Task 1) |
+| [`apis/configs/mcp_tool_universe_id_mapping.yaml`](apis/configs/mcp_tool_universe_id_mapping.yaml) | Tool universe registry — universe IDs, init args, `server_type` per query (Task 1) |
 | [`apis/bpo/mcp/server.py`](apis/bpo/mcp/server.py) | BPO FastMCP server — `@mcp.tool()` decorators (Task 3) |
 | [`apis/bpo/mcp/task3_router.py`](apis/bpo/mcp/task3_router.py) | `os.execv` router → BPO or M3 REST (Task 3) |
 | [`apis/retrievers/server.py`](apis/retrievers/server.py) | Retriever FastAPI — ChromaDB, port 8001 |
