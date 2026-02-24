@@ -196,7 +196,7 @@ class LiveMCPServer(ABC):
         self.tool_input_models[GET_DATA_FCN] = GetDataInput
 
         self.tool_docstrings = {
-            spec["name"]: spec["docstring"]
+            spec["name"]: spec.get("docstring", "")
             for spec in tool_specs
             if spec["name"] != INITIALIZE_ACTIVE_DATA
         }
@@ -599,17 +599,22 @@ class RouterMCPServer(LiveMCPServer):
         _ = universe_id  # Unused but required by abstract method signature
         if self._active_server_type == "selection":
             self._regenerate_getters()
-            # Register getter names so list_tools exposes them
-            for name in self.selection_tools.tools:
-                if name not in self.tool_input_models:
-                    self.tool_input_models[name] = GetterInput
+            # Register getter names so list_tools exposes them.
+            # tool_input_models may not exist yet on the initial __init__ call
+            # (before _build_tool_metadata runs); skip in that case.
+            if hasattr(self, 'tool_input_models'):
+                for name in self.selection_tools.tools:
+                    if name not in self.tool_input_models:
+                        self.tool_input_models[name] = GetterInput
         else:
-            # Remove any dynamic getter entries from a prior selection switch
-            getter_names = [
-                n for n, m in self.tool_input_models.items() if m is GetterInput
-            ]
-            for name in getter_names:
-                del self.tool_input_models[name]
+            # Remove any dynamic getter entries from a prior selection switch.
+            # Nothing to clean on the initial call before _build_tool_metadata runs.
+            if hasattr(self, 'tool_input_models'):
+                getter_names = [
+                    n for n, m in self.tool_input_models.items() if m is GetterInput
+                ]
+                for name in getter_names:
+                    del self.tool_input_models[name]
 
     def _extract_schema_from_active_data(self, active_data: dict) -> list[dict]:
         """Extract key_names_and_descriptions from active_data."""
