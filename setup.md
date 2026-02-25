@@ -20,7 +20,7 @@ export OPENAI_API_KEY=sk-...
 
 # 3. Download data (~30 GB), pull Docker image, start containers
 make download
-make pull
+make pull    # or: make build && docker compose up -d  (see Route B in Section 3)
 make start
 
 # 4. Verify all 4 containers are up
@@ -96,22 +96,88 @@ pip install langchain-openai langchain mcp langchain-anthropic langgraph langcha
 
 ---
 
-## 3. Download Data, Pull Image, and Start Containers
+## 3. Download Data and Start Containers
+
+Data download is required for both routes below:
 
 ```bash
 # Download benchmark data from HuggingFace (~30 GB)
-# You will be prompted for a Hugging Face token
+# You will be prompted for a HuggingFace token
 make download
-
-# Pull the m3_environ Docker image
-make pull
-
-# Start all four benchmark containers
-make start
 ```
 
 > **Warning:** `make download` fetches ~30 GB of data. This will be reduced in a future release.
-> For day-to-day restarts after first-time setup, `docker compose up -d` is a lighter alternative — see [Day-to-day container management](#day-to-day-container-management).
+
+Then choose your route:
+
+---
+
+### Route A — Pull from Docker Hub (recommended for most users)
+
+No build step required. Pulls the pre-built image and starts all containers:
+
+```bash
+make pull
+make start
+```
+
+`make start` always pulls the latest image before starting, so you're guaranteed to be on the current published version.
+
+---
+
+### Route B — Build locally and use Docker Compose (for contributors and local changes)
+
+Use this when you've made changes to server code or `docker/Dockerfile.unified` and want to test locally without pushing to Docker Hub first.
+
+```bash
+# Build the image from source
+make build
+
+# Start all four containers (uses the locally built image — no pull)
+docker compose up -d
+```
+
+Wait ~60 seconds for the internal FastAPI services to initialize, then verify:
+
+```bash
+docker compose ps
+docker compose logs -f   # Ctrl+C to exit
+```
+
+**Running e2e tests against locally built containers:**
+
+```bash
+export OPENAI_API_KEY=sk-...
+
+# Skips data download and container restart — tests against whatever is already running
+make e2e-quick
+```
+
+> `docker compose up -d` never pulls from Docker Hub. If you change server code, re-run `make build` before `docker compose up -d` to pick up the changes.
+
+**MCP config files:**
+
+The benchmark runner uses `benchmark/mcp_connection_config.yaml` by default. Two versions are available:
+
+| Config file | Requires | Use when |
+|-------------|----------|----------|
+| `benchmark/mcp_connection_config.yaml` | New image (after `make build`) | Default — uses `/app/mcp_dispatch.py` for a single unified entrypoint |
+| `benchmark/mcp_connection_config_legacy.yaml` | Any image version | You haven't rebuilt yet, or want direct server paths |
+
+To use the legacy config:
+
+```bash
+python benchmark_runner.py --mcp-config benchmark/mcp_connection_config_legacy.yaml \
+    --m3_task_id 2 --domain address --provider openai
+```
+
+**Day-to-day after initial setup (either route):**
+
+```bash
+docker compose up -d    # restart containers without pulling or rebuilding
+docker compose down     # stop and remove all containers
+docker compose logs -f  # tail logs
+```
 
 ---
 
@@ -131,26 +197,6 @@ You should see **4 containers** listed:
 | `task_2_m3_environ` | M3 REST MCP server |
 | `task_3_m3_environ` | BPO MCP server + M3 REST API |
 | `task_5_m3_environ` | M3 REST API + ChromaDB Retriever |
-
-### Day-to-day container management
-
-After first-time setup, `docker compose` is the simplest way to stop and restart containers:
-
-```bash
-# Start all containers (uses locally tagged m3_environ image — no pull)
-docker compose up -d
-
-# Start a single container
-docker compose up -d task_5_m3_environ
-
-# Stop and remove all containers
-docker compose down
-
-# Tail logs for all containers
-docker compose logs -f
-```
-
-> `docker compose` does **not** pull the latest image automatically. Use `make start` when you want to ensure you're on the current published image (it always pulls first).
 
 ### Debugging containers
 
@@ -283,15 +329,31 @@ Results are saved to `output/task_{id}_{timestamp}/{domain}.json`.
 
 ## Integration & Unit Tests
 
-### End-to-end tests (requires HuggingFace token + OpenAI key + Docker)
+### End-to-end tests
 
-These tests download data, start containers, run the benchmark pipeline, and validate output.
+Two ways to run e2e tests depending on whether containers are already running:
 
-**Step 1 — Set required env vars:**
+---
+
+**Option 1 — `make e2e-quick` (containers already running)**
+
+Use this after `make build && docker compose up -d` or `make start`. No data re-download, no container restart.
+
+```bash
+export OPENAI_API_KEY=sk-...
+make e2e-quick
+```
+
+---
+
+**Option 2 — `make e2e` (full setup from scratch)**
+
+Downloads data, starts containers, then runs tests. Requires both tokens.
 
 ```bash
 export HF_TOKEN=hf_...
 export OPENAI_API_KEY=sk-...
+make e2e
 ```
 
 Alternatively, use a `.env` file:
@@ -300,11 +362,6 @@ Alternatively, use a `.env` file:
 cp template_env .env
 # edit .env: set HF_TOKEN and OPENAI_API_KEY
 export $(grep -v '^#' .env | xargs)
-```
-
-**Step 2 — Run the full e2e suite:**
-
-```bash
 make e2e
 ```
 
