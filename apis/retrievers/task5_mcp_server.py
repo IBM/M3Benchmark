@@ -44,6 +44,7 @@ import asyncio
 import json
 import logging
 import os
+import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode
@@ -52,8 +53,39 @@ import httpx
 from mcp.server import Server
 from mcp.types import Tool, TextContent
 
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+class _JsonFormatter(logging.Formatter):
+    """Single-line JSON log records including TASK_ID and MCP_DOMAIN context."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._task_id = os.environ.get("TASK_ID", "")
+        self._domain = os.environ.get("MCP_DOMAIN", "")
+
+    def format(self, record: logging.LogRecord) -> str:
+        return json.dumps(
+            {
+                "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+                "level": record.levelname,
+                "task_id": self._task_id,
+                "domain": self._domain,
+                "logger": record.name,
+                "msg": record.getMessage(),
+            },
+            ensure_ascii=False,
+        )
+
+
+def _setup_mcp_logging() -> None:
+    """Route all logging to stderr as JSON lines (stdout is reserved for MCP)."""
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(_JsonFormatter())
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.addHandler(handler)
+    root.setLevel(logging.INFO)
 
 # domain_negatives.json lives alongside this script in the container
 _NEGATIVES_PATH = Path(__file__).parent / "domain_negatives.json"
@@ -333,6 +365,7 @@ class Task5CombinedMCPServer:
     async def call_tool(
         self, name: str, arguments: Dict[str, Any]
     ) -> List[TextContent]:
+        logger.info("tool_call tool=%s", name)
         tool = next((t for t in self.tools_cache if t.name == name), None)
         if not tool:
             raise ValueError(f"Tool '{name}' not found")
@@ -412,6 +445,7 @@ def parse_list_env(env_var: str) -> Optional[List[str]]:
 
 
 async def main():
+    _setup_mcp_logging()
     m3_rest_url = os.getenv("M3_REST_BASE_URL", "http://localhost:8000")
     retriever_url = os.getenv("RETRIEVER_BASE_URL", "http://localhost:8001")
     server_name = os.getenv("MCP_SERVER_NAME", "task5-combined-mcp")

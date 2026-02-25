@@ -32,7 +32,7 @@ python benchmark_runner.py --m3_task_id 1 --domain authors --max-samples-per-dom
 # Results land in output/task_1_<timestamp>/authors.json
 ```
 
-> If you hit issues, see [Debugging containers](#debugging-containers) below.
+> If you hit issues, see [DEBUGGING.md](DEBUGGING.md).
 
 ---
 
@@ -200,71 +200,7 @@ You should see **4 containers** listed:
 
 ### Debugging containers
 
-**Tail logs for all containers at once:**
-
-```bash
-make logs
-```
-
-**Tail logs for a specific container:**
-
-```bash
-docker logs -f task_5_m3_environ
-```
-
-**Check memory and CPU usage in real time:**
-
-```bash
-docker stats task_1_m3_environ task_2_m3_environ task_3_m3_environ task_5_m3_environ
-```
-
-**Inspect a container's environment and config:**
-
-```bash
-docker inspect task_5_m3_environ
-```
-
-**Open a shell inside a running container:**
-
-```bash
-docker exec -it task_5_m3_environ bash
-```
-
-**Check if the FastAPI server is responding (Tasks 2, 3, 5):**
-
-```bash
-docker exec task_2_m3_environ curl -sf http://localhost:8000/openapi.json | head -c 200
-docker exec task_5_m3_environ curl -sf http://localhost:8001/health
-```
-
-**Send a test MCP handshake to verify the MCP server is alive:**
-
-```bash
-MCP_INIT='{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.1.0"}}}'
-
-echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=address task_2_m3_environ python /app/m3-rest/mcp_server.py
-echo "$MCP_INIT" | docker exec -i task_3_m3_environ python /app/apis/bpo/mcp/server.py
-echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=address task_5_m3_environ python /app/retrievers/mcp_server.py
-echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=superhero task_1_m3_environ python -m apis.m3.python_tools.mcp
-```
-
-**Stop and restart a single container:**
-
-```bash
-# Simple — uses docker compose
-docker compose up -d task_5_m3_environ
-
-# Manual — if you need to override flags
-docker rm -f task_5_m3_environ
-
-docker run -d --name task_5_m3_environ \
-    --memory=4g \
-    -v "$(pwd)/data/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    -v "$(pwd)/data/chroma_data:/app/retrievers/chroma_data" \
-    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
-    m3_environ
-```
+See [DEBUGGING.md](DEBUGGING.md) for container inspection commands, benchmark run logs, MCP server log capture, and jq recipes.
 
 ---
 

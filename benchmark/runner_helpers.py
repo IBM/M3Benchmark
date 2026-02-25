@@ -4,7 +4,7 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Callable, Dict, List, Optional, Tuple
 
 from benchmark.utils import _extract_tool_response_values
 
@@ -156,36 +156,36 @@ def make_output_dir(task_id: int, output_dir: Optional[str] = None) -> Path:
     return p
 
 
-def log_trajectory(result: "BenchmarkResult") -> None:
+def log_trajectory(result: "BenchmarkResult", tlog: Callable = print) -> None:
     """Print a human-readable summary of a result's trajectory to stdout."""
     if not result.trajectory:
         return
     traj_len = len(result.trajectory)
-    print(f"    Trajectory ({traj_len} steps):")
+    tlog(f"    Trajectory ({traj_len} steps):")
     for i, step in enumerate(result.trajectory):
         step_type = step.get("type", "unknown")
         if step_type == "HumanMessage":
             content = step.get("content", "")
             suffix = "..." if len(content) > 80 else ""
-            print(f"      [{i+1}] User: {content[:80]}{suffix}")
+            tlog(f"      [{i+1}] User: {content[:80]}{suffix}")
         elif step_type == "AIMessage":
             content = step.get("content", "")
             tool_calls = step.get("tool_calls", [])
             if tool_calls:
-                print(f"      [{i+1}] AI: Calling {len(tool_calls)} tool(s)")
+                tlog(f"      [{i+1}] AI: Calling {len(tool_calls)} tool(s)")
                 for tc in tool_calls:
-                    print(f"          - {tc.get('name', 'unknown')}({tc.get('args', {})})")
+                    tlog(f"          - {tc.get('name', 'unknown')}({tc.get('args', {})})")
             else:
                 suffix = "..." if len(content) > 80 else ""
-                print(f"      [{i+1}] AI: {content[:80]}{suffix}")
+                tlog(f"      [{i+1}] AI: {content[:80]}{suffix}")
         elif step_type == "ToolMessage":
             tool_name = step.get("tool_name", "unknown")
             result_str = str(step.get("result", ""))
             suffix = "..." if len(result_str) > 80 else ""
-            print(f"      [{i+1}] Tool ({tool_name}): {result_str[:80]}{suffix}")
+            tlog(f"      [{i+1}] Tool ({tool_name}): {result_str[:80]}{suffix}")
 
 
-def log_message_history(result: "BenchmarkResult") -> None:
+def log_message_history(result: "BenchmarkResult", tlog: Callable = print) -> None:
     """Print the full message history for a completed benchmark result.
 
     Includes system prompts, user messages, tool calls with arguments,
@@ -195,9 +195,9 @@ def log_message_history(result: "BenchmarkResult") -> None:
     if not traj:
         return
 
-    print("\n    " + "-" * 56)
-    print("    MESSAGE HISTORY")
-    print("    " + "-" * 56)
+    tlog("\n    " + "-" * 56)
+    tlog("    MESSAGE HISTORY")
+    tlog("    " + "-" * 56)
 
     for entry in traj:
         msg_type = entry.get("type", "Unknown")
@@ -205,32 +205,32 @@ def log_message_history(result: "BenchmarkResult") -> None:
 
         if msg_type == "SystemMessage":
             preview = content[:300] + ("..." if len(content) > 300 else "")
-            print(f"\n    [SYSTEM]\n      {preview!r}")
+            tlog(f"\n    [SYSTEM]\n      {preview!r}")
 
         elif msg_type == "HumanMessage":
-            print(f"\n    [USER]\n      {content}")
+            tlog(f"\n    [USER]\n      {content}")
 
         elif msg_type == "AIMessage":
             tool_calls = entry.get("tool_calls", [])
             if content:
-                print(f"\n    [ASSISTANT]\n      {content}")
+                tlog(f"\n    [ASSISTANT]\n      {content}")
             for tc in tool_calls:
                 args_str = json.dumps(
                     tc.get("args", {}), ensure_ascii=False
                 )
                 if len(args_str) > 200:
                     args_str = args_str[:200] + "..."
-                print(f"\n    [TOOL CALL] {tc.get('name', '?')}({args_str})")
+                tlog(f"\n    [TOOL CALL] {tc.get('name', '?')}({args_str})")
 
         elif msg_type == "ToolMessage":
             tool_name = entry.get("tool_name", "?")
             res = str(entry.get("result", ""))
             res_preview = res[:300] + ("..." if len(res) > 300 else "")
-            print(f"\n    [TOOL RESULT] {tool_name}\n      {res_preview}")
+            tlog(f"\n    [TOOL RESULT] {tool_name}\n      {res_preview}")
 
     answer = result.answer or "(empty)"
-    print(f"\n    [FINAL ANSWER]\n      {answer}")
-    print("    " + "-" * 56)
+    tlog(f"\n    [FINAL ANSWER]\n      {answer}")
+    tlog("    " + "-" * 56)
 
 
 def save_results_ground_truth(
@@ -298,4 +298,37 @@ def save_results_ground_truth(
         print(f"  Ground truth results saved to: {output_file}")
 
 
+class TaskLogger:
+    """Tee-style logger for a single task run.
 
+    Writes every message to both stdout (prefixed with ``[task_N]`` for easy
+    identification in parallel mode) and a per-task ``run.log`` file in the
+    output directory (with a millisecond timestamp for post-hoc analysis).
+
+    Usage::
+
+        tlog = TaskLogger(task_id=2, log_path=out_dir / "run.log")
+        tlog("Starting domain: hockey")
+        tlog.close()
+
+    It is a drop-in replacement for ``print()`` — ``tlog(msg)`` behaves
+    identically to ``print(msg)`` except for the side-effects above.
+    """
+
+    def __init__(self, task_id: int, log_path: Path) -> None:
+        self._prefix = f"[task_{task_id}] "
+        log_path.parent.mkdir(parents=True, exist_ok=True)
+        self._file = log_path.open("w", buffering=1)  # line-buffered
+
+    def __call__(self, *args, **kwargs) -> None:
+        msg = " ".join(str(a) for a in args)
+        end = kwargs.get("end", "\n")
+        # stdout: prefix lets you distinguish tasks when running in parallel
+        print(f"{self._prefix}{msg}", end=end, flush=True)
+        # log file: strip the prefix and add a wall-clock timestamp
+        ts = datetime.now().strftime("%H:%M:%S.%f")[:-3]
+        self._file.write(f"[{ts}] {msg}{end}")
+        self._file.flush()
+
+    def close(self) -> None:
+        self._file.close()

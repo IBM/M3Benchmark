@@ -93,6 +93,7 @@ from benchmark.runner_helpers import (
     make_output_dir,
     BenchmarkItem,
     BenchmarkResult,
+    TaskLogger,
 )
 from benchmark.validate_clients import list_tools_for_domains
 
@@ -115,17 +116,20 @@ async def run_benchmark_for_domain(
     llm,
     max_samples: Optional[int] = None,
     top_k_tools: int = 0,
+    tlog: TaskLogger = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a single domain - starts MCP server once."""
     import time
+    if tlog is None:
+        tlog = print  # type: ignore[assignment]
 
     # Limit samples if requested
     if max_samples and max_samples < len(items):
         items = items[:max_samples]
 
-    print("\n" + "#" * 60)
-    print(f"# DOMAIN: {domain} ({len(items)} items)")
-    print("#" * 60)
+    tlog("\n" + "#" * 60)
+    tlog(f"# DOMAIN: {domain} ({len(items)} items)")
+    tlog("#" * 60)
 
     results: List[BenchmarkResult] = []
 
@@ -139,7 +143,7 @@ async def run_benchmark_for_domain(
             )
             wrapper = MCPToolWrapper(session)
             tools = await wrapper.get_tools()
-            print(f"  Loaded {len(tools)} tools for domain '{domain}'")
+            tlog(f"  Loaded {len(tools)} tools for domain '{domain}'")
 
             agent = _get_agent(task_id, llm, tools, top_k_tools)
 
@@ -152,7 +156,7 @@ async def run_benchmark_for_domain(
                 query_suffix = (
                     "..." if len(item.query) > 80 else ""
                 )
-                print(
+                tlog(
                     f"\n  [{i+1}/{len(items)}]"
                     f" Query: {item.query[:80]}{query_suffix}"
                 )
@@ -168,7 +172,7 @@ async def run_benchmark_for_domain(
 
                 try:
                     if get_data_tool:
-                        print(f"    Switching to universe: {item.uuid}")
+                        tlog(f"    Switching to universe: {item.uuid}")
                         data_result = await get_data_tool.ainvoke(
                             {"tool_universe_id": item.uuid}
                         )
@@ -193,12 +197,12 @@ async def run_benchmark_for_domain(
                                 f"Universe switch failed: {parsed_data['error']}"
                             )
 
-                        print("    Universe loaded successfully")
+                        tlog("    Universe loaded successfully")
                         assert isinstance(agent, LangGraphReActAgent)
                         assert agent.handle_manager is not None
                         handle = agent.handle_manager.store_initial_data(parsed_data)
                         agent._initial_data_handle = handle
-                        print(f"    Initial data stored as: {handle}")
+                        tlog(f"    Initial data stored as: {handle}")
 
                     response = await asyncio.wait_for(
                         agent.run(item.query),
@@ -209,7 +213,7 @@ async def run_benchmark_for_domain(
                     result.trajectory = response.trajectory
                     result.status = "success"
                     elapsed = time.perf_counter() - start_time
-                    print(
+                    tlog(
                         f"    Status: success"
                         f" | Tools: {len(result.tool_calls)}"
                         f" | Trajectory steps:"
@@ -224,36 +228,36 @@ async def run_benchmark_for_domain(
                     ans_suffix = (
                         "..." if len(result.answer) > 200 else ""
                     )
-                    print(
+                    tlog(
                         f"    Answer: {answer_preview}{ans_suffix}"
                     )
                     # Log trajectory summary
-                    log_trajectory(result)
-                    log_message_history(result)
+                    log_trajectory(result, tlog)
+                    log_message_history(result, tlog)
                 except asyncio.TimeoutError:
                     result.status = "error"
                     result.error = (
                         f"Agent timed out after"
                         f" {AGENT_TIMEOUT_SECONDS} seconds"
                     )
-                    print(
+                    tlog(
                         f"    Status: timeout after"
                         f" {AGENT_TIMEOUT_SECONDS}s"
                     )
                 except Exception as e:
                     result.status = "error"
                     result.error = str(e)
-                    print(f"    Status: error | {str(e)[:50]}")
+                    tlog(f"    Status: error | {str(e)[:50]}")
 
                 result.duration_s = time.perf_counter() - start_time
                 results.append(result)
 
-        print(f"\n  Server stopped for domain '{domain}'")
+        tlog(f"\n  Server stopped for domain '{domain}'")
     except ExceptionGroup as eg:
-        print(f"  Warning: Cleanup error (ignored): {eg}")
+        tlog(f"  Warning: Cleanup error (ignored): {eg}")
     except Exception as e:
         if "TaskGroup" in str(type(e).__name__) or "TaskGroup" in str(e):
-            print(f"  Warning: Cleanup error (ignored): {e}")
+            tlog(f"  Warning: Cleanup error (ignored): {e}")
         else:
             stop_mcp_server(cfg)
             raise
@@ -294,23 +298,27 @@ async def run_task(
         items_by_domain.setdefault(item.domain, []).append(item)
 
     domain_list = sorted(items_by_domain)
-    print(f"Task ID: {task_id}")
-    print(f"Mode: {cfg.mode}")
+
+    # Create output dir early so the log file lives alongside the results
+    out_dir = make_output_dir(task_id, output_dir)
+    tlog = TaskLogger(task_id, out_dir / "run.log")
+
+    tlog(f"Task ID: {task_id}")
+    tlog(f"Mode: {cfg.mode}")
     if not cfg.command and cfg.mode == "stdio":
-        print(f"Container name: {cfg.container_name}")
-    print(f"Processing {len(domain_list)} domain(s): {domain_list}")
+        tlog(f"Container name: {cfg.container_name}")
+    tlog(f"Processing {len(domain_list)} domain(s): {domain_list}")
 
     if max_samples_per_domain:
-        print(f"Max samples per domain: {max_samples_per_domain}")
+        tlog(f"Max samples per domain: {max_samples_per_domain}")
 
     llm = create_llm(provider=provider, model=model)
 
     # Process each domain, writing output incrementally
-    out_dir = make_output_dir(task_id, output_dir)
     all_results: List[BenchmarkResult] = []
     for domain in domain_list:
         items = items_by_domain[domain]
-        print(f"\nLoaded {len(items)} items for domain '{domain}'")
+        tlog(f"\nLoaded {len(items)} items for domain '{domain}'")
 
         domain_results = await run_benchmark_for_domain(
             domain=domain,
@@ -320,6 +328,7 @@ async def run_task(
             llm=llm,
             max_samples=max_samples_per_domain,
             top_k_tools=top_k_tools,
+            tlog=tlog,
         )
         all_results.extend(domain_results)
         save_results_ground_truth(domain_results, out_dir)
@@ -330,12 +339,14 @@ async def run_task(
     successful = [r for r in results if r.status == "success"]
     failed = [r for r in results if r.status == "error"]
 
-    print("\n" + "=" * 60)
-    print("BENCHMARK SUMMARY")
-    print("=" * 60)
-    print(f"  Total items: {len(results)}")
-    print(f"  Successful: {len(successful)}")
-    print(f"  Failed: {len(failed)}")
+    tlog("\n" + "=" * 60)
+    tlog("BENCHMARK SUMMARY")
+    tlog("=" * 60)
+    tlog(f"  Total items: {len(results)}")
+    tlog(f"  Successful: {len(successful)}")
+    tlog(f"  Failed: {len(failed)}")
+    tlog(f"  Log file: {out_dir / 'run.log'}")
+    tlog.close()
 
     return results
 

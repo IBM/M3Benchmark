@@ -8,6 +8,8 @@ If no domains are specified, all endpoints are exposed.
 import asyncio
 import json
 import logging
+import os
+import sys
 from typing import Any, Dict, List, Optional
 from urllib.parse import urlencode
 
@@ -16,9 +18,39 @@ from mcp.server import Server
 from mcp.types import Tool, TextContent
 from pydantic import AnyUrl
 
-# Configure logging
-logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+
+class _JsonFormatter(logging.Formatter):
+    """Single-line JSON log records including TASK_ID and MCP_DOMAIN context."""
+
+    def __init__(self) -> None:
+        super().__init__()
+        self._task_id = os.environ.get("TASK_ID", "")
+        self._domain = os.environ.get("MCP_DOMAIN", "")
+
+    def format(self, record: logging.LogRecord) -> str:
+        return json.dumps(
+            {
+                "ts": self.formatTime(record, "%Y-%m-%dT%H:%M:%S"),
+                "level": record.levelname,
+                "task_id": self._task_id,
+                "domain": self._domain,
+                "logger": record.name,
+                "msg": record.getMessage(),
+            },
+            ensure_ascii=False,
+        )
+
+
+def _setup_mcp_logging() -> None:
+    """Route all logging to stderr as JSON lines (stdout is reserved for MCP)."""
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(_JsonFormatter())
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.addHandler(handler)
+    root.setLevel(logging.INFO)
 
 
 class FastAPIMCPServer:
@@ -159,6 +191,7 @@ class FastAPIMCPServer:
 
     async def call_tool(self, name: str, arguments: Dict[str, Any]) -> List[TextContent]:
         """Call a FastAPI endpoint as an MCP tool"""
+        logger.info("tool_call tool=%s", name)
         # Find the tool
         tool = None
         for t in self.tools_cache:
@@ -248,7 +281,6 @@ class FastAPIMCPServer:
 
 def parse_list_env(env_var: str) -> Optional[List[str]]:
     """Parse comma-separated environment variable into list"""
-    import os
     value = os.getenv(env_var, "")
     if not value:
         return None
@@ -265,7 +297,7 @@ async def main():
                    Each domain maps to /v1/{domain}/* endpoints.
                    If not set, all endpoints are exposed.
     """
-    import os
+    _setup_mcp_logging()
 
     fastapi_url = os.getenv("FASTAPI_BASE_URL", "http://localhost:8000")
     server_name = os.getenv("MCP_SERVER_NAME", "fastapi-mcp-wrapper")
