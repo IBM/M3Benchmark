@@ -78,6 +78,9 @@ COPY apis/bpo/                  apis/bpo/
 COPY docker/entrypoint-unified.sh entrypoint.sh
 RUN chmod +x entrypoint.sh
 
+# --- MCP dispatcher (single entrypoint for all tasks, routed by TASK_ID) ---
+COPY docker/mcp_dispatch.py mcp_dispatch.py
+
 # Volume mount points (data mounted at runtime, not baked in)
 VOLUME /app/db
 VOLUME /app/apis/configs

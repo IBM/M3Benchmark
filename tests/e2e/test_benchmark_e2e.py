@@ -63,13 +63,15 @@ def containers_ready():
     Runs once for the whole module; tears down containers on exit.
     Errors immediately if required environment variables are not set.
     """
-    missing = []
-    if not (os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")):
-        missing.append("HF_TOKEN")
     if not os.environ.get("OPENAI_API_KEY"):
-        missing.append("OPENAI_API_KEY")
-    if missing:
-        pytest.fail(f"Required environment variables not set: {', '.join(missing)}")
+        pytest.fail("Required environment variable not set: OPENAI_API_KEY")
+
+    if os.environ.get("E2E_SKIP_SETUP"):
+        yield  # containers assumed to be already running
+        return
+
+    if not (os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")):
+        pytest.fail("Required environment variable not set: HF_TOKEN (or set E2E_SKIP_SETUP=1 to skip setup)")
 
     sys.path.insert(0, str(PROJECT_ROOT))
     from m3_setup import download_data, start_containers, stop_containers

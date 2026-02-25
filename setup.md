@@ -111,6 +111,7 @@ make start
 ```
 
 > **Warning:** `make download` fetches ~30 GB of data. This will be reduced in a future release.
+> For day-to-day restarts after first-time setup, `docker compose up -d` is a lighter alternative — see [Day-to-day container management](#day-to-day-container-management).
 
 ---
 
@@ -130,6 +131,26 @@ You should see **4 containers** listed:
 | `task_2_m3_environ` | M3 REST MCP server |
 | `task_3_m3_environ` | BPO MCP server + M3 REST API |
 | `task_5_m3_environ` | M3 REST API + ChromaDB Retriever |
+
+### Day-to-day container management
+
+After first-time setup, `docker compose` is the simplest way to stop and restart containers:
+
+```bash
+# Start all containers (uses locally tagged m3_environ image — no pull)
+docker compose up -d
+
+# Start a single container
+docker compose up -d task_5_m3_environ
+
+# Stop and remove all containers
+docker compose down
+
+# Tail logs for all containers
+docker compose logs -f
+```
+
+> `docker compose` does **not** pull the latest image automatically. Use `make start` when you want to ensure you're on the current published image (it always pulls first).
 
 ### Debugging containers
 
@@ -184,6 +205,10 @@ echo "$MCP_INIT" | docker exec -i -e MCP_DOMAIN=superhero task_1_m3_environ pyth
 **Stop and restart a single container:**
 
 ```bash
+# Simple — uses docker compose
+docker compose up -d task_5_m3_environ
+
+# Manual — if you need to override flags
 docker rm -f task_5_m3_environ
 
 docker run -d --name task_5_m3_environ \
@@ -399,6 +424,7 @@ make setup      # download → build → test → start → validate
 | `make stop` | Stop and remove all benchmark containers |
 | `make clean` | Stop containers and remove the local `m3_environ` Docker image |
 | `make e2e` | Run end-to-end benchmark tests (requires `HF_TOKEN` + `OPENAI_API_KEY`) |
+| `make e2e-quick` | Run e2e tests against already-running containers — skips download and container restart (requires `OPENAI_API_KEY` only) |
 | `make logs` | Last 20 log lines per container |
 
 ---

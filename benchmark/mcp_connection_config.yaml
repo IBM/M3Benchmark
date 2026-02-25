@@ -28,12 +28,12 @@ tasks:
     container_name: task_1_m3_environ
     container_runtime: null
     container_env:
+      TASK_ID: "1"
       MCP_DB_ROOT: /app/db
       MCP_SERVER_TYPE: router
     container_command:
       - python
-      - "-m"
-      - "apis.m3.python_tools.mcp"
+      - /app/mcp_dispatch.py
 
   # Task 2: LangGraphReActAgent + FastAPIMCPServer
   2:
@@ -41,10 +41,11 @@ tasks:
     container_name: task_2_m3_environ
     container_runtime: null
     container_env:
+      TASK_ID: "2"
       MCP_DB_ROOT: /app/db
     container_command:
       - python
-      - /app/m3-rest/mcp_server.py
+      - /app/mcp_dispatch.py
 
   # Task 3: LangGraphReActAgent + task3_router (routes by MCP_DOMAIN)
   # MCP_DOMAIN=bpo     → /app/apis/bpo/mcp/server.py  (BPO FastMCP server)
@@ -63,10 +64,11 @@ tasks:
     container_name: task_3_m3_environ
     container_runtime: null
     container_env:
+      TASK_ID: "3"
       MCP_DB_ROOT: /app/db
     container_command:
       - python
-      - /app/apis/bpo/mcp/task3_router.py
+      - /app/mcp_dispatch.py
 
   # Task 5: LangGraphReActAgent + Task5CombinedMCPServer
   # Exposes M3 REST tools (port 8000) + Retriever query tool (port 8001)
@@ -76,11 +78,12 @@ tasks:
     container_name: task_5_m3_environ
     container_runtime: null
     container_env:
+      TASK_ID: "5"
       MCP_DB_ROOT: /app/db
       PRELOAD_COLLECTIONS: "false"
     container_command:
       - python
-      - /app/retrievers/task5_mcp_server.py
+      - /app/mcp_dispatch.py
 
   # --- Per-task container setup (no unified image) ---
   # Task 1 runs as a local Python subprocess (no container needed).
