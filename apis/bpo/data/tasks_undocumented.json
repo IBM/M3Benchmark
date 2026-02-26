@@ -17,7 +17,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_requisition_details",
-              "args": {"requisition_id": "99999BR"}
+              "args": {
+                "requisition_id": "99999BR"
+              }
             }
           ],
           "error_handling": {
@@ -25,7 +27,16 @@
             "should_report_error": true,
             "should_retry": false,
             "expected_behavior": "Agent should parse non-standard error format and report not found"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_requisition_details",
+              "result": {
+                "err": "not_found",
+                "req": "99999BR"
+              }
+            }
+          ]
         }
       },
       {
@@ -42,7 +53,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_list_all_sources",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -50,7 +63,34 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should detect and handle pagination, noting there are more results"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_list_all_sources",
+              "result": {
+                "requisition_id": "05958BR",
+                "sources": [
+                  {
+                    "name": "CyberSec Jobs",
+                    "index": 0
+                  },
+                  {
+                    "name": "Dice",
+                    "index": 1
+                  },
+                  {
+                    "name": "GitHub",
+                    "index": 2
+                  }
+                ],
+                "total_count": 7,
+                "page_size": 3,
+                "page": 1,
+                "next_page": "eyJvZmZzZXQiOjMsInJlcV9pZCI6IjA1OTU4QlIifQ==",
+                "has_more": true
+              }
+            }
+          ]
         }
       },
       {
@@ -68,7 +108,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_batch_metrics",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -76,7 +118,56 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should process the metrics data and optionally note rate limit information"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_batch_metrics",
+              "result": {
+                "requisition_id": "05958BR",
+                "metrics": {
+                  "CyberSec Jobs": {
+                    "candidates": 200,
+                    "hires": 3,
+                    "reviewed": 161
+                  },
+                  "Dice": {
+                    "candidates": 516,
+                    "hires": 11,
+                    "reviewed": 57
+                  },
+                  "GitHub": {
+                    "candidates": 468,
+                    "hires": 10,
+                    "reviewed": 356
+                  },
+                  "Indeed": {
+                    "candidates": 410,
+                    "hires": 0,
+                    "reviewed": 316
+                  },
+                  "Internal": {
+                    "candidates": 400,
+                    "hires": 5,
+                    "reviewed": 296
+                  },
+                  "LinkedIn": {
+                    "candidates": 519,
+                    "hires": 7,
+                    "reviewed": 390
+                  },
+                  "Referral": {
+                    "candidates": 400,
+                    "hires": 4,
+                    "reviewed": 280
+                  }
+                },
+                "X-RateLimit-Limit": 100,
+                "X-RateLimit-Remaining": 97,
+                "X-RateLimit-Reset": "2025-05-01T00:00:00Z",
+                "X-RateLimit-Window": "1h"
+              }
+            }
+          ]
         }
       }
     ]

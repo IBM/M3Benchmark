@@ -17,7 +17,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_candidate_pipeline_status",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -25,7 +27,25 @@
             "should_report_error": false,
             "should_retry": true,
             "expected_behavior": "Agent should retry on 404 or report temporary unavailability"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_candidate_pipeline_status",
+              "result": {
+                "requisition_id": "05958BR",
+                "pipeline": {
+                  "CyberSec Jobs": 200,
+                  "Dice": 516,
+                  "GitHub": 468,
+                  "Indeed": 410,
+                  "Internal": 400,
+                  "LinkedIn": 519,
+                  "Referral": 400
+                },
+                "total_candidates": 2913
+              }
+            }
+          ]
         }
       },
       {
@@ -43,7 +63,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_source_sla_check",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -51,7 +73,49 @@
             "should_report_error": true,
             "should_retry": false,
             "expected_behavior": "Agent should use response body despite 500 status and optionally note the error"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_source_sla_check",
+              "result": {
+                "status_code": 500,
+                "error": true,
+                "message": "Internal server error",
+                "body": {
+                  "metrics": [
+                    {
+                      "source_name": "CyberSec Jobs",
+                      "sla_percentage": 67
+                    },
+                    {
+                      "source_name": "Dice",
+                      "sla_percentage": 95
+                    },
+                    {
+                      "source_name": "GitHub",
+                      "sla_percentage": 90
+                    },
+                    {
+                      "source_name": "Indeed",
+                      "sla_percentage": 86
+                    },
+                    {
+                      "source_name": "Internal",
+                      "sla_percentage": 95
+                    },
+                    {
+                      "source_name": "LinkedIn",
+                      "sla_percentage": 95
+                    },
+                    {
+                      "source_name": "Referral",
+                      "sla_percentage": 95
+                    }
+                  ]
+                }
+              }
+            }
+          ]
         }
       },
       {
@@ -69,7 +133,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_funnel_status",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -77,7 +143,19 @@
             "should_report_error": true,
             "should_retry": false,
             "expected_behavior": "Agent should report service unavailable with retry info"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_funnel_status",
+              "result": {
+                "status_code": 503,
+                "error": true,
+                "message": "Service temporarily unavailable. The funnel analytics engine is undergoing maintenance.",
+                "retry_after_seconds": 300,
+                "expected_recovery": "2025-05-01T12:00:00Z"
+              }
+            }
+          ]
         }
       },
       {
@@ -95,7 +173,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_bulk_source_data",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -103,7 +183,53 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should respect rate limits and use available data"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_bulk_source_data",
+              "result": {
+                "requisition_id": "05958BR",
+                "sources": {
+                  "CyberSec Jobs": {
+                    "total_candidates": 200,
+                    "total_hires": 3,
+                    "reviewed": 161
+                  },
+                  "Dice": {
+                    "total_candidates": 516,
+                    "total_hires": 11,
+                    "reviewed": 57
+                  },
+                  "GitHub": {
+                    "total_candidates": 468,
+                    "total_hires": 10,
+                    "reviewed": 356
+                  },
+                  "Indeed": {
+                    "total_candidates": 410,
+                    "total_hires": 0,
+                    "reviewed": 316
+                  },
+                  "Internal": {
+                    "total_candidates": 400,
+                    "total_hires": 5,
+                    "reviewed": 296
+                  },
+                  "LinkedIn": {
+                    "total_candidates": 519,
+                    "total_hires": 7,
+                    "reviewed": 390
+                  },
+                  "Referral": {
+                    "total_candidates": 400,
+                    "total_hires": 4,
+                    "reviewed": 280
+                  }
+                },
+                "call_number": 1
+              }
+            }
+          ]
         }
       }
     ]
