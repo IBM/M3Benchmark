@@ -16,6 +16,9 @@ Use this when you've cloned the repo and want to build and run everything locall
 
 > **Podman users:** `docker compose` is a Docker plugin and won't exist on Podman-only systems. Either alias it (`alias docker=podman`) or replace `docker compose` with `podman compose` throughout. `make` targets use `$(DOCKER)` and auto-detect the runtime, so they work without aliasing.
 
+`docker compose` can be installed from: https://github.com/docker/compose 
+Depending on the OS (RHEL/Debian/Ubuntu), starting the podman socket may be required: `systemctl --user enable --now podman.socket`
+
 ```bash
 # 1. Python environment
 python3 -m venv .venv && source .venv/bin/activate
@@ -38,7 +41,7 @@ docker compose up -d   # or: podman compose up -d
 docker compose ps      # or: podman compose ps
 
 # 6. Run a single-sample smoke test (Task 1, authors domain)
-python benchmark_runner.py --m3_task_id 1 --domain authors --max-samples-per-domain 1 --provider openai
+python benchmark_runner.py --m3_task_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
 
 # Results land in output/task_1_<timestamp>/authors.json
 ```
