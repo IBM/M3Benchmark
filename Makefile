@@ -29,7 +29,7 @@ REMOTE     := $(REGISTRY)/$(IMAGE_NAME):latest
 DOCKERFILE := docker/Dockerfile.unified
 
 # Auto-detect container runtime: prefer docker, fall back to podman
-DOCKER ?= $(shell command -v docker 2>/dev/null | head -1 || command -v podman 2>/dev/null | head -1 || echo docker)
+DOCKER ?= $(shell PATH=$$PATH:/usr/bin command -v docker 2>/dev/null || command -v podman 2>/dev/null || echo docker)
 
 # Auto-detect Python interpreter: prefer python3, fall back to python
 PYTHON ?= $(shell command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3)
