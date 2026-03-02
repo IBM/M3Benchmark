@@ -13,6 +13,7 @@
 #   make pull        Pull the m3_environ image from Docker Hub
 #   make start       Start all benchmark containers (pulls latest image)
 #   make stop        Stop and remove all benchmark containers
+#   make restart     Stop and restart all containers without re-pulling the image
 #   make logs        Tail logs for all running benchmark containers
 #   make clean       Stop containers and remove the local Docker image
 #   make e2e         Run end-to-end benchmark tests (requires HF_TOKEN + OPENAI_API_KEY)
@@ -34,7 +35,7 @@ DOCKER ?= $(shell command -v docker 2>/dev/null | head -1 || command -v podman 2
 # Auto-detect Python interpreter: prefer python3, fall back to python
 PYTHON ?= $(shell command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3)
 
-.PHONY: download build test validate tag push release setup pull start stop logs clean e2e e2e-quick \
+.PHONY: download build test validate tag push release setup pull start stop restart logs clean e2e e2e-quick \
         start-task1 start-task2 start-task3 start-task5
 
 # ---------------------------------------------------------------------------
@@ -100,6 +101,7 @@ start:
 	$(PYTHON) m3_setup.py --start-containers
 
 stop:
+	$(DOCKER) compose down --remove-orphans
 	$(PYTHON) m3_setup.py --stop-containers
 
 logs:
@@ -130,16 +132,24 @@ e2e-quick:
 # Start a single container (useful when one fails and you don't want to
 # restart all four — uses docker compose so the image must already exist)
 # ---------------------------------------------------------------------------
+restart:
+	$(DOCKER) compose down --remove-orphans
+	$(DOCKER) compose up -d
+
 start-task1:
+	-$(DOCKER) rm -f task_1_m3_environ
 	$(DOCKER) compose up -d task_1_m3_environ
 
 start-task2:
+	-$(DOCKER) rm -f task_2_m3_environ
 	$(DOCKER) compose up -d task_2_m3_environ
 
 start-task3:
+	-$(DOCKER) rm -f task_3_m3_environ
 	$(DOCKER) compose up -d task_3_m3_environ
 
 start-task5:
+	-$(DOCKER) rm -f task_5_m3_environ
 	$(DOCKER) compose up -d task_5_m3_environ
 
 # ---------------------------------------------------------------------------

@@ -2,9 +2,10 @@ task_2:
   container: task_2_m3_environ
   env:
     MCP_DB_ROOT: /app/db
+    TASK_ID: "2"
   command:
     - python
-    - /app/m3-rest/mcp_server.py
+    - /app/mcp_dispatch.py
   domains:
     - address
     - airline
