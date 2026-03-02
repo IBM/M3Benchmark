@@ -19,6 +19,43 @@
               "name": "candidate_source_sla_per_source",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_sla_per_source",
+              "result": {
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "sla_percentage": 67
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "sla_percentage": 86
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "sla_percentage": 90
+                  },
+                  {
+                    "source_name": "Dice",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "Internal",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "Referral",
+                    "sla_percentage": 95
+                  }
+                ]
+              }
+            }
           ]
         }
       },
@@ -66,6 +103,110 @@
             {
               "name": "candidate_source_source_recommendation_summary",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "result": {
+                "job_id": "05958BR",
+                "total_candidate_volume": 2913,
+                "metrics": [
+                  {
+                    "source_name": "LinkedIn",
+                    "candidate_volume": 519,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "Dice",
+                    "candidate_volume": 516,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "candidate_volume": 468,
+                    "percentage": 16
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "candidate_volume": 410,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Internal",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Referral",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "candidate_volume": 200,
+                    "percentage": 7
+                  }
+                ],
+                "heading": "For requisitions similar to 05958BR, there were 2913 candidates over the past three years. Here's how many candidates came from each source (with percentages from the total number):"
+              }
+            },
+            {
+              "name": "candidate_source_source_recommendation_summary",
+              "result": {
+                "total_requisitions": 40,
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 80,
+                    "offer_acceptance_rate": 67,
+                    "total_hires": 3
+                  },
+                  {
+                    "source_name": "Dice",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 11,
+                    "offer_acceptance_rate": 79,
+                    "total_hires": 11
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 76,
+                    "offer_acceptance_rate": 77,
+                    "total_hires": 10
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "jobs_filled_percentage": 0,
+                    "first_round_review_percentage": 77,
+                    "offer_acceptance_rate": 0,
+                    "total_hires": 0
+                  },
+                  {
+                    "source_name": "Internal",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 74,
+                    "offer_acceptance_rate": 70,
+                    "total_hires": 5
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 75,
+                    "offer_acceptance_rate": 70,
+                    "total_hires": 7
+                  },
+                  {
+                    "source_name": "Referral",
+                    "jobs_filled_percentage": 2,
+                    "first_round_review_percentage": 70,
+                    "offer_acceptance_rate": 62,
+                    "total_hires": 4
+                  }
+                ]
+              }
             }
           ]
         }
@@ -127,6 +268,138 @@
               "name": "candidate_source_funnel_conversion_by_source",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_sla_per_source",
+              "result": {
+                "metrics": [
+                  {
+                    "source_name": "Indeed",
+                    "sla_percentage": 0
+                  },
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "sla_percentage": 70
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "sla_percentage": 80
+                  },
+                  {
+                    "source_name": "Internal",
+                    "sla_percentage": 85
+                  },
+                  {
+                    "source_name": "Dice",
+                    "sla_percentage": 100
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "sla_percentage": 100
+                  },
+                  {
+                    "source_name": "Referral",
+                    "sla_percentage": 100
+                  }
+                ]
+              }
+            },
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "result": {
+                "job_id": "05959BR",
+                "total_candidate_volume": 2913,
+                "metrics": [
+                  {
+                    "source_name": "Dice",
+                    "candidate_volume": 525,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "candidate_volume": 525,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "candidate_volume": 465,
+                    "percentage": 16
+                  },
+                  {
+                    "source_name": "Internal",
+                    "candidate_volume": 403,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Referral",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "candidate_volume": 195,
+                    "percentage": 7
+                  }
+                ],
+                "heading": "For requisitions similar to 05959BR, there were 2913 candidates over the past three years. Here's how many candidates came from each source (with percentages from the total number):"
+              }
+            },
+            {
+              "name": "candidate_source_funnel_conversion_by_source",
+              "result": {
+                "job_id": "05959BR",
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "first_round_review_percentage": 80.5,
+                    "interview_rate": 18.5,
+                    "offer_acceptance_rate": 3.1
+                  },
+                  {
+                    "source_name": "Dice",
+                    "first_round_review_percentage": 76.0,
+                    "interview_rate": 9.9,
+                    "offer_acceptance_rate": 2.7
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "first_round_review_percentage": 72.0,
+                    "interview_rate": 16.6,
+                    "offer_acceptance_rate": 2.8
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "first_round_review_percentage": 72.2,
+                    "interview_rate": 14.8,
+                    "offer_acceptance_rate": 0.0
+                  },
+                  {
+                    "source_name": "Internal",
+                    "first_round_review_percentage": 76.9,
+                    "interview_rate": 19.6,
+                    "offer_acceptance_rate": 2.5
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "first_round_review_percentage": 70.1,
+                    "interview_rate": 21.0,
+                    "offer_acceptance_rate": 1.9
+                  },
+                  {
+                    "source_name": "Referral",
+                    "first_round_review_percentage": 74.5,
+                    "interview_rate": 20.5,
+                    "offer_acceptance_rate": 2.0
+                  }
+                ]
+              }
+            }
           ]
         }
       },
@@ -163,6 +436,27 @@
               "name": "candidate_source_definitions_and_methodology",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "result": {
+                "job_id": "05958BR",
+                "definitions": {
+                  "sla": "Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)",
+                  "time_to_fill": "Average time from job posting to accepted offer",
+                  "success_rate": "Ratio of candidates who accepted offers out of those interviewed"
+                },
+                "calculation_notes": "Metrics are computed from 1047 requisitions over the last 1.4 years. Funnel stats are based on system timestamps and recruiter actions in ATS.",
+                "top_metrics_considered": [
+                  "SLA %",
+                  "First round review %",
+                  "Offer acceptance rate",
+                  "Candidate volume",
+                  "Total hires"
+                ]
+              }
+            }
           ]
         }
       },
@@ -181,6 +475,27 @@
             {
               "name": "candidate_source_definitions_and_methodology",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "result": {
+                "job_id": "05958BR",
+                "definitions": {
+                  "sla": "Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)",
+                  "time_to_fill": "Average time from job posting to accepted offer",
+                  "success_rate": "Ratio of candidates who accepted offers out of those interviewed"
+                },
+                "calculation_notes": "Metrics are computed from 1047 requisitions over the last 1.4 years. Funnel stats are based on system timestamps and recruiter actions in ATS.",
+                "top_metrics_considered": [
+                  "SLA %",
+                  "First round review %",
+                  "Offer acceptance rate",
+                  "Candidate volume",
+                  "Total hires"
+                ]
+              }
             }
           ]
         }
@@ -204,6 +519,27 @@
               "name": "candidate_source_definitions_and_methodology",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "result": {
+                "job_id": "05958BR",
+                "definitions": {
+                  "sla": "Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)",
+                  "time_to_fill": "Average time from job posting to accepted offer",
+                  "success_rate": "Ratio of candidates who accepted offers out of those interviewed"
+                },
+                "calculation_notes": "Metrics are computed from 1047 requisitions over the last 1.4 years. Funnel stats are based on system timestamps and recruiter actions in ATS.",
+                "top_metrics_considered": [
+                  "SLA %",
+                  "First round review %",
+                  "Offer acceptance rate",
+                  "Candidate volume",
+                  "Total hires"
+                ]
+              }
+            }
           ]
         }
       },
@@ -224,6 +560,25 @@
               "name": "skills_data_sources_used",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "skills_data_sources_used",
+              "result": {
+                "requisition_id": "05958BR",
+                "datasets_used": [
+                  "Historical hiring success data",
+                  "Requisition skill tagging",
+                  "Funnel conversion metrics",
+                  "Candidate quality feedback"
+                ],
+                "models_involved": [
+                  "Skill relevance classifier",
+                  "SLA impact regression model",
+                  "Funnel conversion recommender"
+                ]
+              }
+            }
           ]
         }
       },
@@ -243,6 +598,25 @@
             {
               "name": "skills_data_sources_used",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "skills_data_sources_used",
+              "result": {
+                "requisition_id": "05958BR",
+                "datasets_used": [
+                  "Historical hiring success data",
+                  "Requisition skill tagging",
+                  "Funnel conversion metrics",
+                  "Candidate quality feedback"
+                ],
+                "models_involved": [
+                  "Skill relevance classifier",
+                  "SLA impact regression model",
+                  "Funnel conversion recommender"
+                ]
+              }
             }
           ]
         }
@@ -275,6 +649,54 @@
               "name": "candidate_source_definitions_and_methodology",
               "args": {}
             }
+          ],
+          "tool_call_results": [
+            {
+              "name": "skills_skill_impact_sla",
+              "result": {
+                "requisition_id": "05958BR",
+                "skill_name": "Python",
+                "sla_achievement_with_skill": 90,
+                "sla_achievement_without_skill": 90,
+                "delta": 0
+              }
+            },
+            {
+              "name": "skills_data_sources_used",
+              "result": {
+                "requisition_id": "05958BR",
+                "datasets_used": [
+                  "Historical hiring success data",
+                  "Requisition skill tagging",
+                  "Funnel conversion metrics",
+                  "Candidate quality feedback"
+                ],
+                "models_involved": [
+                  "Skill relevance classifier",
+                  "SLA impact regression model",
+                  "Funnel conversion recommender"
+                ]
+              }
+            },
+            {
+              "name": "candidate_source_definitions_and_methodology",
+              "result": {
+                "job_id": "05958BR",
+                "definitions": {
+                  "sla": "Percentage of candidates reviewed within the defined SLA window (e.g., 48 hours)",
+                  "time_to_fill": "Average time from job posting to accepted offer",
+                  "success_rate": "Ratio of candidates who accepted offers out of those interviewed"
+                },
+                "calculation_notes": "Metrics are computed from 1047 requisitions over the last 1.4 years. Funnel stats are based on system timestamps and recruiter actions in ATS.",
+                "top_metrics_considered": [
+                  "SLA %",
+                  "First round review %",
+                  "Offer acceptance rate",
+                  "Candidate volume",
+                  "Total hires"
+                ]
+              }
+            }
           ]
         }
       },
@@ -302,6 +724,84 @@
             {
               "name": "skills_data_sources_used",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "skills_skill_analysis",
+              "result": {
+                "historical_jobs": 40,
+                "input_skills": [],
+                "historical_skills_with_analysis": [
+                  {
+                    "name": "AWS",
+                    "skill_occurrence": 948,
+                    "correlation": "slightly positive impact on SLA"
+                  },
+                  {
+                    "name": "IT Support",
+                    "skill_occurrence": 868,
+                    "correlation": "slightly positive impact on SLA"
+                  },
+                  {
+                    "name": "NIST Cybersecurity Framework",
+                    "skill_occurrence": 816,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Incident Management",
+                    "skill_occurrence": 748,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Firewalls",
+                    "skill_occurrence": 744,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Cloud Security",
+                    "skill_occurrence": 592,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Risk Assessment",
+                    "skill_occurrence": 570,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Risk Analysis",
+                    "skill_occurrence": 371,
+                    "correlation": "highly negative impact on SLA"
+                  },
+                  {
+                    "name": "Microsoft PowerShell",
+                    "skill_occurrence": 289,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Python",
+                    "skill_occurrence": 200,
+                    "correlation": "slightly negative impact on SLA"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "skills_data_sources_used",
+              "result": {
+                "requisition_id": "05958BR",
+                "datasets_used": [
+                  "Historical hiring success data",
+                  "Requisition skill tagging",
+                  "Funnel conversion metrics",
+                  "Candidate quality feedback"
+                ],
+                "models_involved": [
+                  "Skill relevance classifier",
+                  "SLA impact regression model",
+                  "Funnel conversion recommender"
+                ]
+              }
             }
           ]
         }
@@ -352,6 +852,179 @@
             {
               "name": "candidate_source_sla_per_source",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "skills_skill_impact_sla",
+              "result": {
+                "requisition_id": "05958BR",
+                "skill_name": "Python",
+                "sla_achievement_with_skill": 90,
+                "sla_achievement_without_skill": 90,
+                "delta": 0
+              }
+            },
+            {
+              "name": "skills_skill_analysis",
+              "result": {
+                "historical_jobs": 40,
+                "input_skills": [],
+                "historical_skills_with_analysis": [
+                  {
+                    "name": "AWS",
+                    "skill_occurrence": 948,
+                    "correlation": "slightly positive impact on SLA"
+                  },
+                  {
+                    "name": "IT Support",
+                    "skill_occurrence": 868,
+                    "correlation": "slightly positive impact on SLA"
+                  },
+                  {
+                    "name": "NIST Cybersecurity Framework",
+                    "skill_occurrence": 816,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Incident Management",
+                    "skill_occurrence": 748,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Firewalls",
+                    "skill_occurrence": 744,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Cloud Security",
+                    "skill_occurrence": 592,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Risk Assessment",
+                    "skill_occurrence": 570,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Risk Analysis",
+                    "skill_occurrence": 371,
+                    "correlation": "highly negative impact on SLA"
+                  },
+                  {
+                    "name": "Microsoft PowerShell",
+                    "skill_occurrence": 289,
+                    "correlation": "slightly negative impact on SLA"
+                  },
+                  {
+                    "name": "Python",
+                    "skill_occurrence": 200,
+                    "correlation": "slightly negative impact on SLA"
+                  }
+                ]
+              }
+            },
+            {
+              "name": "skills_data_sources_used",
+              "result": {
+                "requisition_id": "05958BR",
+                "datasets_used": [
+                  "Historical hiring success data",
+                  "Requisition skill tagging",
+                  "Funnel conversion metrics",
+                  "Candidate quality feedback"
+                ],
+                "models_involved": [
+                  "Skill relevance classifier",
+                  "SLA impact regression model",
+                  "Funnel conversion recommender"
+                ]
+              }
+            },
+            {
+              "name": "candidate_source_funnel_conversion_by_source",
+              "result": {
+                "job_id": "05958BR",
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "first_round_review_percentage": 80.5,
+                    "interview_rate": 19.0,
+                    "offer_acceptance_rate": 3.0
+                  },
+                  {
+                    "source_name": "Dice",
+                    "first_round_review_percentage": 11.0,
+                    "interview_rate": 6.8,
+                    "offer_acceptance_rate": 2.7
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "first_round_review_percentage": 76.1,
+                    "interview_rate": 23.7,
+                    "offer_acceptance_rate": 2.8
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "first_round_review_percentage": 77.1,
+                    "interview_rate": 22.0,
+                    "offer_acceptance_rate": 0.0
+                  },
+                  {
+                    "source_name": "Internal",
+                    "first_round_review_percentage": 74.0,
+                    "interview_rate": 18.5,
+                    "offer_acceptance_rate": 2.5
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "first_round_review_percentage": 75.1,
+                    "interview_rate": 20.4,
+                    "offer_acceptance_rate": 1.9
+                  },
+                  {
+                    "source_name": "Referral",
+                    "first_round_review_percentage": 70.0,
+                    "interview_rate": 17.0,
+                    "offer_acceptance_rate": 2.0
+                  }
+                ]
+              }
+            },
+            {
+              "name": "candidate_source_sla_per_source",
+              "result": {
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "sla_percentage": 67
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "sla_percentage": 86
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "sla_percentage": 90
+                  },
+                  {
+                    "source_name": "Dice",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "Internal",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "sla_percentage": 95
+                  },
+                  {
+                    "source_name": "Referral",
+                    "sla_percentage": 95
+                  }
+                ]
+              }
             }
           ]
         }
@@ -437,6 +1110,18 @@
             {
               "name": "candidate_source_metadata_and_timeframe",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_metadata_and_timeframe",
+              "result": {
+                "job_id": "05958BR",
+                "time_frame_start": "2023-10-09",
+                "time_frame_end": "2025-03-15",
+                "data_last_updated": "2025-04-29",
+                "total_requisitions_analysed": 40
+              }
             }
           ]
         }
@@ -540,6 +1225,63 @@
             {
               "name": "candidate_source_metadata_and_timeframe",
               "args": {}
+            }
+          ],
+          "tool_call_results": [
+            {
+              "name": "candidate_source_candidate_volume_by_source",
+              "result": {
+                "job_id": "05959BR",
+                "total_candidate_volume": 2913,
+                "metrics": [
+                  {
+                    "source_name": "Dice",
+                    "candidate_volume": 525,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "candidate_volume": 525,
+                    "percentage": 18
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "candidate_volume": 465,
+                    "percentage": 16
+                  },
+                  {
+                    "source_name": "Internal",
+                    "candidate_volume": 403,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "Referral",
+                    "candidate_volume": 400,
+                    "percentage": 14
+                  },
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "candidate_volume": 195,
+                    "percentage": 7
+                  }
+                ],
+                "heading": "For requisitions similar to 05959BR, there were 2913 candidates over the past three years. Here's how many candidates came from each source (with percentages from the total number):"
+              }
+            },
+            {
+              "name": "candidate_source_metadata_and_timeframe",
+              "result": {
+                "job_id": "05959BR",
+                "time_frame_start": "2023-10-09",
+                "time_frame_end": "2025-03-15",
+                "data_last_updated": "2025-04-29",
+                "total_requisitions_analysed": 40
+              }
             }
           ]
         }
