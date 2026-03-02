@@ -256,7 +256,7 @@ def save_results_ground_truth(
         for r in domain_results:
             # Build gold_sequence from tool_calls.
             # Each tool call becomes its own entry so retries are preserved.
-            gold_sequence = []
+            tool_call_list = []
             # Internal LangChain parameters that leak into tool schemas
             _INTERNAL_KEYS = {"args", "config", "kwargs"}
             for tc in r.tool_calls:
@@ -265,15 +265,9 @@ def save_results_ground_truth(
                     k: v for k, v in raw_args.items()
                     if k not in _INTERNAL_KEYS
                 }
-                gold_sequence.append({
-                    "tool_call": [[{
+                tool_call_list.append({
                         "name": tc.get("tool_name", ""),
-                        "arguments": filtered_args,
-                    }]],
-                    "tool_response": [
-                        _extract_tool_response_values(tc.get("result", ""))
-                    ],
-                })
+                        "arguments": filtered_args})
 
             record = {
                 "uuid": r.uuid,
@@ -281,12 +275,14 @@ def save_results_ground_truth(
                 "status": r.status,
                 "error": r.error,
                 "duration_s": r.duration_s,
-                "ground_truth": [
+                "output": [
                     {
                         "turn_id": r.turn_id,
                         "query": r.query,
                         "answer": r.answer,
-                        "gold_sequence": gold_sequence,
+                        "sequence": {
+                            "tool_call": tool_call_list
+                        }, 
                     }
                 ],
             }
