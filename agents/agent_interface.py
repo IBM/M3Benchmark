@@ -36,9 +36,8 @@ from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 from langchain_core.runnables import RunnableConfig
 from langchain_core.tools import StructuredTool
-from langgraph.prebuilt import create_react_agent, ToolNode
+from langgraph.prebuilt import create_react_agent
 
-from agents.components.result_handle_manager import ResultHandleManager
 from agents.components.tool_shortlister import ToolShortlister
 from agents.llm import create_llm
 
@@ -91,7 +90,6 @@ class LangGraphReActAgent(AgentInterface):
         llm: BaseChatModel,
         tools: List[StructuredTool] | None = None,
         top_k_tools: int = 0,
-        use_handle_manager: bool = False,
         initial_data_handle: str | None = None,
         max_iterations: int | None = None,
         **kwargs,
@@ -104,12 +102,10 @@ class LangGraphReActAgent(AgentInterface):
             tools: List of LangChain StructuredTool objects to use
             top_k_tools: If > 0, shortlist to this many tools per query via
                          semantic similarity. 0 disables shortlisting.
-            use_handle_manager: If True, enables ResultHandleManager for
-                                 handle-based tool result management. Tool
-                                 results are stored with handles and the LLM
-                                 receives compact references instead of full data.
-            initial_data_handle: Handle string for pre-seeded initial dataset.
-                                  Only meaningful when use_handle_manager=True.
+            initial_data_handle: Handle string for the initial dataset (returned
+                                  by the MCP server's get_data call). When set,
+                                  a system message is injected explaining the
+                                  server-side handle system.
             max_iterations: Maximum number of agent loop iterations. Maps to
                             LangGraph's recursion_limit (×2 + 1). None uses
                             LangGraph defaults.
@@ -120,21 +116,17 @@ class LangGraphReActAgent(AgentInterface):
 
         logger.debug(
             "Initializing LangGraphReActAgent: llm=%s, tools=%d, top_k_tools=%d, "
-            "use_handle_manager=%s, initial_data_handle=%s, max_iterations=%s",
+            "initial_data_handle=%s, max_iterations=%s",
             type(llm).__name__,
             len(self._tools),
             top_k_tools,
-            use_handle_manager,
             initial_data_handle,
             max_iterations,
         )
 
-        # Handle manager (optional)
-        self.handle_manager = None
+        # Initial data handle and peek (set per-query by the benchmark runner)
         self._initial_data_handle: str | None = initial_data_handle
-        if use_handle_manager:
-            self.handle_manager = ResultHandleManager()
-            logger.debug("ResultHandleManager enabled")
+        self._initial_data_peek: dict | None = None
 
         # Tool shortlister (optional — only shortlist when limit < available tools)
         self._shortlister = None
@@ -153,148 +145,35 @@ class LangGraphReActAgent(AgentInterface):
         """Build a LangGraph ReAct agent for the given tool list."""
         tool_names = [t.name for t in tools]
         logger.debug("_build_agent: building agent with %d tools: %s", len(tools), tool_names)
-        if self.handle_manager is not None:
-            logger.debug("_build_agent: using handle-wrapped ToolNode")
-            tool_node = ToolNode(tools, awrap_tool_call=self._make_handle_wrapper(tools))
-            return create_react_agent(self._llm, tool_node)
         return create_react_agent(self._llm, tools)
 
-    def _make_handle_wrapper(self, tools):
-        """Return an async awrap_tool_call callable that integrates ResultHandleManager.
-
-        The wrapper resolves handle references in tool args before invocation,
-        then stores results and returns compact references to the LLM.
-        """
-        assert self.handle_manager is not None
-        handle_manager = self.handle_manager
-        tool_map = {t.name: t for t in tools}
-
-        async def awrap_tool_call(request, execute):
-            tool_name = request.tool_call["name"]
-            tool_args = dict(request.tool_call["args"])
-            tool_call_id = request.tool_call["id"]
-
-            logger.debug("awrap_tool_call: tool=%s id=%s args=%s", tool_name, tool_call_id, tool_args)
-
-            # Unwrap kwargs if needed (fixes LLM schema interpretation issue)
-            if len(tool_args) == 1 and "kwargs" in tool_args:
-                logger.debug("awrap_tool_call: unwrapping kwargs for %s", tool_name)
-                tool_args = tool_args["kwargs"]
-
-            # Resolve any handle references in arguments
-            resolved_args = handle_manager.resolve_args(tool_args, resolve_data=True)
-            logger.debug("awrap_tool_call: resolved args keys for %s: %s", tool_name, list(resolved_args.keys()))
-
-            # Find and invoke tool directly with resolved args
-            tool = tool_map.get(tool_name)
-            if not tool:
-                logger.warning("awrap_tool_call: tool not found: %s", tool_name)
-                return ToolMessage(
-                    content=json.dumps({"error": f"Tool {tool_name} not found"}),
-                    tool_call_id=tool_call_id,
-                    name=tool_name,
-                )
-
-            try:
-                logger.debug("awrap_tool_call: invoking tool %s", tool_name)
-                raw_result = await tool.ainvoke(resolved_args)
-                logger.debug("awrap_tool_call: raw result type=%s length=%s", type(raw_result).__name__, len(str(raw_result)))
-            except Exception as e:
-                logger.warning("awrap_tool_call: tool %s raised exception: %s", tool_name, e)
-                return ToolMessage(
-                    content=json.dumps({"error": str(e)}),
-                    tool_call_id=tool_call_id,
-                    name=tool_name,
-                )
-
-            # Parse raw result string
-            try:
-                parsed_result = json.loads(raw_result)
-            except (json.JSONDecodeError, ValueError):
-                parsed_result = raw_result
-
-            # Unwrap MCP TextContent format: {"type": ..., "text": ...}
-            if (
-                isinstance(parsed_result, dict)
-                and "type" in parsed_result
-                and "text" in parsed_result
-            ):
-                logger.debug("awrap_tool_call: unwrapping MCP TextContent for %s", tool_name)
-                parsed_result = parsed_result["text"]
-                if isinstance(parsed_result, str):
-                    try:
-                        parsed_result = json.loads(parsed_result)
-                    except (json.JSONDecodeError, ValueError):
-                        pass
-
-            # Return errors directly — don't store in handle manager
-            if isinstance(parsed_result, dict) and "error" in parsed_result:
-                logger.warning("awrap_tool_call: tool %s returned error: %s", tool_name, parsed_result["error"])
-                return ToolMessage(
-                    content=json.dumps(parsed_result),
-                    tool_call_id=tool_call_id,
-                    name=tool_name,
-                )
-            if isinstance(parsed_result, str) and "error" in parsed_result.lower():
-                logger.warning("awrap_tool_call: tool %s returned error string: %s", tool_name, parsed_result[:200])
-                return ToolMessage(
-                    content=json.dumps({"error": parsed_result}),
-                    tool_call_id=tool_call_id,
-                    name=tool_name,
-                )
-
-            # Store result and return compact handle reference
-            handle = handle_manager.store_result(tool_name, parsed_result)
-            reference = handle_manager.create_reference(handle, parsed_result)
-            logger.debug("awrap_tool_call: stored result for %s as handle=%s", tool_name, handle)
-            return ToolMessage(
-                content=reference,
-                tool_call_id=tool_call_id,
-                name=tool_name,
-            )
-
-        return awrap_tool_call
-    
-    def _build_policy_guidance(self, additional_instructions:str) -> str:
-        """Build policy guidance based on additional instructions."""
-        content=f"""You are a helpful assistant with access to tools.\n Tool Usage Constraint: {additional_instructions}."""
-        return SystemMessage(content=content)
-
     def _build_system_message(self) -> str:
-        """Build system message explaining handle system to the LLM."""
-        assert self.handle_manager is not None
+        """Build system message explaining the MCP server-side handle system to the LLM."""
         logger.debug("_build_system_message: building system message for handle=%s", self._initial_data_handle)
         initial_data_info = ""
-        try:
-            if self._initial_data_handle is None:
-                raise ValueError("No initial data handle set")
-            initial_data = self.handle_manager.get_result(self._initial_data_handle)
-            initial_data_reference = self.handle_manager.create_reference(
-                self._initial_data_handle,
-                initial_data
-            )
-            ref_dict = json.loads(initial_data_reference)
-            if ref_dict.get("type") == "data_table":
-                key_names = ref_dict.get("key_names", [])
-                preview = ref_dict.get("preview", {})
+        if self._initial_data_peek:
+            try:
+                key_details = self._initial_data_peek.get("key_details", [])
+                num_records = self._initial_data_peek.get("num_records", "?")
+                col_names = [kd["name"] for kd in key_details]
+                preview = {kd["name"]: kd["first_3_values"] for kd in key_details[:5]}
                 initial_data_info = f"""
-- Available columns (key_names): {key_names}
+- Total records: {num_records}
+- Available columns: {col_names}
 - Preview of first few rows: {json.dumps(preview, indent=2)}"""
-        except (ValueError, KeyError, json.JSONDecodeError):
-            pass
+            except (KeyError, TypeError):
+                pass
 
         return f"""
 You are a helpful data analysis assistant. Use the available tools and data to answer queries.
 Think step by step and provide reasoning for the action that you are planning to take.
 
 IMPORTANT - Tool Result Handles:
-- Tool results are returned as handles/references, not full data
-- Data tables have: {{"handle": "filtered_data_1", "type": "data_table", "key_names": [...], "preview": {{...}}}}
-- Remember that the "preview" is only the first few values of the full data_table.
+- Tool results are returned as compact peeks/handles, not full data. The actual data is stored server-side.
+- Data table results look like: {{"handle": "filtered_superhero_1", "num_records": 10, "key_details": [{{"name": "col", "dtype": "int64", "first_3_values": [1, 2, 3]}}]}}
 - To use a result in another tool, pass the handle string as the 'data' argument
 - Example: After filter_data returns {{"handle": "filtered_superhero_1", ...}}
   Call: sort_data(data="filtered_superhero_1", key_name="age", ...)
-- Scalar results include both handle and value: {{"handle": "count_1", "type": "scalar", "value": 42}}
 - Always use handles to reference previous results in tool chains
 - Make at most a single tool call per iteration. Once you have the information necessary to answer the query, return the answer with no additional tool calls.
 - If you receive an error from the tool, reason over why your previous action resulted in that error and make the appropriate fix.
@@ -391,8 +270,8 @@ INITIAL DATA:
                 lc_messages.append(self._build_policy_guidance(additional_instructions=additional_instructions))
             lc_messages.extend(self._messages_to_langchain(input))
 
-        # Inject system message when handle manager is active
-        if self.handle_manager is not None:
+        # Inject system message when using server-side handle system
+        if self._initial_data_handle is not None:
             has_system = any(m.__class__.__name__ == "SystemMessage" for m in lc_messages)
             if not has_system:
                 logger.debug("run: injecting handle-system system message")
@@ -479,7 +358,7 @@ INITIAL DATA:
 
         # FALLBACK: If no tool calls captured but final_content looks like a JSON tool call,
         # manually parse and execute it (for models that output tool calls as text)
-        if not tool_calls and final_content and self.handle_manager is None:
+        if not tool_calls and final_content and self._initial_data_handle is None:
             parsed_call = self._parse_json_tool_call(final_content)
             if parsed_call:
                 tool_name = parsed_call.get("name", "")
@@ -517,12 +396,10 @@ INITIAL DATA:
         )
 
     def restart(self):
-        """Clear handle manager state between queries. No-op if handle management is disabled."""
-        if self.handle_manager is not None:
-            logger.debug("restart: clearing handle manager state")
-            self.handle_manager.clear()
-        else:
-            logger.debug("restart: no-op (handle manager disabled)")
+        """Clear per-query state between queries."""
+        logger.debug("restart: clearing initial data handle and peek")
+        self._initial_data_handle = None
+        self._initial_data_peek = None
 
 
 def create_agent(

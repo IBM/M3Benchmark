@@ -245,10 +245,9 @@ async def run_benchmark_for_domain(
 
                         tlog("    Universe loaded successfully")
                         assert isinstance(agent, LangGraphReActAgent)
-                        assert agent.handle_manager is not None
-                        handle = agent.handle_manager.store_initial_data(parsed_data)
-                        agent._initial_data_handle = handle
-                        tlog(f"    Initial data stored as: {handle}")
+                        agent._initial_data_handle = parsed_data["handle"]
+                        agent._initial_data_peek = parsed_data
+                        tlog(f"    Initial data handle: {agent._initial_data_handle}")
 
                     if capability_id in [4]:
                         if not item.context: # Single Turn Dialogues in Capability 4
@@ -326,18 +325,11 @@ async def run_benchmark_for_domain(
 
 def _get_agent(capability_id: int, llm, tools, top_k_tools: int = 0, max_iterations: Optional[int] = None) -> AgentInterface:
     """Return the appropriate agent for the given capability_id."""
-    if capability_id == 1:
-        kwargs = dict(
-            llm=llm,
-            tools=tools,
-            use_handle_manager=True,
-            initial_data_handle="placeholder",
-            max_iterations=max_iterations if max_iterations is not None else 10,
-        )
-        return LangGraphReActAgent(**kwargs)
     kwargs = dict(llm=llm, tools=tools, top_k_tools=top_k_tools)
     if max_iterations is not None:
         kwargs["max_iterations"] = max_iterations
+    if capability_id == 1:
+        kwargs["initial_data_handle"] = "placeholder"
     return LangGraphReActAgent(**kwargs)
 
 
