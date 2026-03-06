@@ -1,761 +1,158 @@
 {
-    "address": {
-        "keywords": [
-            "congress representatives",
-            "postal points",
-            "demographics",
-            "geographic areas",
-            "payroll reports"
-        ],
-        "brief_description": "The domain is about data related to congress representatives, postal points, demographics, geographic areas, and payroll reports.",
-        "full_description": "The domain is about data related to congress representatives, including their unique identifiers, names, parties, and the states they represent. It also covers postal points, their locations, affiliated organizations, and demographic information such as population, households, income, and racial composition. Additionally, the documents contain geographic data like latitude, longitude, elevation, and land area. Payroll reports and employee information are also included for various residential areas."
-    },
     "airline": {
-        "keywords": [
-            "airlines",
-            "airports",
-            "air carriers",
-            "flight schedules",
-            "flight delays"
-        ],
-        "brief_description": "The domain is about data related to airline operations, flight schedules, delays, and airport and air carrier information.",
-        "full_description": "The domain is about data related to airline operations, including flight schedules, delays, and cancellations. The documents cover various aspects of air travel, such as operator carrier airline IDs, plane tail numbers, origin and destination airport IDs, and city market IDs. They also provide information on flight departure and arrival times, as well as different types of delays, such as carrier, weather, NAS, security, and late aircraft delays. Additionally, the documents include details about airports and air carriers, such as their IATA codes and descriptions."
-    },
-    "app_store": {
-        "keywords": [
-            "Google Play Store",
-            "User Reviews",
-            "App Metadata",
-            "Sentiment Analysis",
-            "App Categories"
-        ],
-        "brief_description": "The domain is about data related to Google Play Store applications, user reviews, and sentiment analysis.",
-        "full_description": "The domain is about data related to Google Play Store applications and user reviews. The documents contain information on app names, categories, user ratings, number of reviews, app sizes, number of installs, pricing, content ratings, and genres. Additionally, the documents include preprocessed and translated user reviews, overall user ratings, sentiment polarity scores, and sentiment subjectivity scores."
-    },
-    "authors": {
-        "keywords": [
-            "Academic Papers",
-            "Authors",
-            "Conferences",
-            "Journals",
-            "Keywords"
-        ],
-        "brief_description": "The domain is about data related to academic papers, authors, and publication venues.",
-        "full_description": "The domain is about data related to academic papers, their authors, and the venues in which they were published. The documents include information about the authors such as their names and affiliations, as well as the titles, years, and keywords of the papers. The documents also provide details about the conferences and journals in which the papers were published, including their short and full names, and homepage URLs."
-    },
-    "beer_factory": {
-        "keywords": [
-            "root beer",
-            "customer",
-            "brand",
-            "location",
-            "transaction"
-        ],
-        "brief_description": "The domain is about data related to root beer products, their brands, customer information, reviews, transactions, and geographical data.",
-        "full_description": "The domain is about data related to root beer products, their brands, and the locations where they are sold. It includes information about customers who purchase these products, their reviews, and the transactions involved. The documents also contain details about the brands, such as their brewing history, ingredients, availability, and pricing. Additionally, geographical information about the locations and customers is provided."
-    },
-    "bike_share_1": {
-        "keywords": [
-            "bike sharing",
-            "station locations",
-            "weather data",
-            "trip information",
-            "subscription types"
-        ],
-        "brief_description": "The domain is about data related to a bike-sharing system, including station locations, real-time status, trip information, and weather data.",
-        "full_description": "The domain is about data related to a bike-sharing system. The documents include information on station locations, their unique IDs, names, latitude and longitude coordinates, dock counts, and installation dates. Other documents provide real-time status data, such as the number of available bikes and docks at each station. Additionally, there are documents detailing individual trip information, including trip duration, start and end station names and IDs, start and end dates, bike IDs, subscription types, and zip codes. Lastly, there are documents containing weather data, such as temperature, humidity, sea level pressure, visibility, wind speed, precipitation, cloud cover, events, wind direction, and zip codes."
-    },
-    "book_publishing_company": {
-        "keywords": [
-            "publishing industry",
-            "publications",
-            "authors",
-            "employees",
-            "sales"
-        ],
-        "brief_description": "The domain is about data related to the publishing industry, including documents on publications, authors, employees, and sales.",
-        "full_description": "The domain is about data related to the publishing industry. It includes documents on publications, authors, employees, and sales. The publication documents contain information such as unique publication IDs, logos, and publisher's information. The author documents include author IDs, names, contact information, and contract status. The employee documents provide details on employee IDs, names, job IDs, job levels, hire dates, and publisher IDs. The sales documents contain store IDs, order numbers, order dates, quantities, payment terms, and title IDs."
-    },
-    "books": {
-        "keywords": [
-            "book orders",
-            "customer information",
-            "addresses",
-            "shipping methods",
-            "publishers"
-        ],
-        "brief_description": "The domain is about data related to book orders, customer information, addresses, shipping methods, and publishers.",
-        "full_description": "The domain is about data related to book orders, customer information, and addresses. It includes documents detailing the unique identifiers, statuses, and dates associated with customer orders, as well as the specific books ordered, their prices, and the authors who wrote them. Additionally, the domain covers information about publishers, languages, and the number of pages in each book. The documents also provide details on various shipping methods, their costs, and the unique identifiers associated with them. Furthermore, the domain includes information about customer addresses, their statuses, and the countries in which they are located."
-    },
-    "car_retails": {
-        "keywords": [
-            "customer",
-            "product",
-            "order",
-            "employee",
-            "office"
-        ],
-        "brief_description": "The domain is about data related to a business or sales organization, including customers, products, orders, employees, and offices.",
-        "full_description": "The domain is about data related to a business or sales organization. The documents include information about customers, such as their unique ID, name, contact details, and credit limit. There are also documents about products, including product code, name, line, scale, vendor, description, quantity in stock, buy price, and MSRP. Order-related documents contain details about unique order numbers, dates, status, comments, and customer numbers. Employee documents provide information about employee numbers, names, extensions, emails, office codes, job titles, and who they report to. Lastly, office documents include details about office codes, cities, phone numbers, addresses, states, countries, postal codes, and territories."
-    },
-    "cars": {
-        "keywords": [
-            "car specifications",
-            "vehicle performance",
-            "fuel efficiency",
-            "car models",
-            "country of origin"
-        ],
-        "brief_description": "The domain is about data related to car specifications, performance, and country of origin.",
-        "full_description": "The domain is about data related to various car specifications, including unique car identifiers, car prices, production details, and performance metrics. The documents cover aspects such as car mileage per gallon, number of cylinders, engine displacement, horsepower, weight, acceleration, and the year when the car model was introduced in the market. Additionally, the documents provide information on the country of origin for each car."
-    },
-    "chicago_crime": {
-        "keywords": [
-            "Crime Reports",
-            "Police Districts",
-            "FBI Crime Classification",
-            "Community Areas",
-            "Neighborhoods"
-        ],
-        "brief_description": "The domain is about data related to crime reports, police districts, FBI crime classification, community areas, and neighborhoods.",
-        "full_description": "The domain is about data related to crime reports, police districts, and community areas in a specific region. The documents include details about reported crimes, such as unique report numbers, case numbers, incident locations, and arrest information. They also provide information on police districts, including district numbers, names, addresses, and contact details. The FBI crime classification codes are used to categorize the type of crime reported. Additionally, the documents cover community areas and neighborhoods, providing information on their unique numbers, names, and populations."
+        "description": "This tool contains information related to airline operations, flight schedules, delays, and airport and air carrier information."
     },
     "citeseer": {
-        "keywords": [
-            "citation analysis",
-            "paper classification",
-            "text mining",
-            "bibliometrics",
-            "natural language processing"
-        ],
-        "brief_description": "The domain is about data related to citation analysis, paper classification, and natural language processing in the field of text mining and bibliometrics.",
-        "full_description": "The domain is about data related to citation analysis and paper classification in the field of text mining and bibliometrics. The documents include information about cited and citing papers, unique paper IDs, and class labels for each paper. Additionally, the presence or absence of specific words in the vocabulary is indicated for each paper, which can be used for natural language processing tasks."
-    },
-    "codebase_comments": {
-        "keywords": [
-            "GitHub repositories",
-            "software solutions",
-            "methods",
-            "method parameters",
-            "compilation"
-        ],
-        "brief_description": "The domain is about data related to GitHub repositories, software solutions, methods, and method parameters, including repository and solution details, method information, and parameter specifications.",
-        "full_description": "The domain is about data related to GitHub repositories, software solutions, methods, and method parameters. The documents contain information about unique repository identifiers, GitHub addresses, stars, forks, watchers, and processed time for downloading repositories. Additionally, the documents provide details on software solutions, including unique solution identifiers, repository IDs, solution paths, processed time, and whether the solution needs to be compiled. Furthermore, the documents cover method details such as unique method identifiers, method names, full comments, summaries, API calls, XML format comments, sampling time, solution IDs, language codes, and tokenized names. Lastly, the documents include information on method parameters, such as unique parameter identifiers, method IDs, parameter types, and parameter names."
-    },
-    "coinmarketcap": {
-        "keywords": [
-            "cryptocurrency",
-            "coins",
-            "market capitalization",
-            "circulating supply",
-            "price percentage change"
-        ],
-        "brief_description": "The domain is about data related to cryptocurrency coins and their historical market data.",
-        "full_description": "The domain is about data related to cryptocurrency coins, including their unique identifiers, names, symbols, categories, descriptions, and associated websites. The documents also cover historical data such as transaction dates, coin market capitalization, prices, trading volumes, and circulating supply. Additionally, the domain includes information on the coins' status, tags, and platform IDs, as well as their rankings on CoinMarketCap and the time at which they achieved their highest and lowest prices."
-    },
-    "college_completion": {
-        "keywords": [
-            "education",
-            "graduation rates",
-            "institutions",
-            "student demographics",
-            "higher education"
-        ],
-        "brief_description": "The domain is about data related to higher education institutions, including their graduation rates, student demographics, and financial information.",
-        "full_description": "The domain is about data related to higher education institutions, including their graduation rates, student demographics, and financial information. The documents cover various aspects of these institutions, such as their location, control (public, private not-for-profit, or private for-profit), and level (4-year or 2-year). They also provide details on the racial and gender composition of the student body, as well as the percentage of students who are first-time, full-time, and degree-seeking. Additionally, the documents include information on the number of students who graduate within 100 and 150 percent of normal time, as well as the percentage of students who graduate within these timeframes. Other data points include the number of institutions with data included in the cohort, the number of undergraduates in 2010, and the completions per 100 full-time equivalent undergraduate students."
-    },
-    "computer_student": {
-        "keywords": [
-            "education",
-            "academia",
-            "course levels",
-            "faculty positions",
-            "student qualifications"
-        ],
-        "brief_description": "The domain is about data related to academia, covering course levels, faculty positions, and student qualifications.",
-        "full_description": "The domain is about data related to academia, specifically focusing on courses, professors, and students. The documents cover course levels, such as basic undergraduate, high-level undergraduate, and professional or graduate courses. They also provide information on faculty positions, including affiliated faculty and faculty employees. Additionally, the documents detail student qualifications, including the phase of qualification they are undergoing and the year of the program they are in."
-    },
-    "cookbook": {
-        "keywords": [
-            "Recipe Nutrition",
-            "Ingredient Quantities",
-            "Preparation Time",
-            "Recipe Instructions",
-            "Nutritional Content"
-        ],
-        "brief_description": "The domain is about data related to recipes, their ingredients, preparation times, and nutritional content.",
-        "full_description": "The domain is about data related to recipes and their nutritional content. The documents include information on the unique identifier for each recipe, their titles, subtitles, serving sizes, preparation and cooking times, and sources. Additionally, the documents provide details on the ingredients used in each recipe, including their categories, names, and plural forms. The quantities of ingredients required for each recipe are also documented, along with their units of measurement, preparation instructions, and whether they are optional. Furthermore, the nutritional content of each recipe is outlined, including the protein, carbohydrate, alcohol, total fat, saturated fat, cholesterol, sodium, iron, vitamin C, vitamin A, and fiber content. The percentage of calories derived from carbohydrates, fat, and protein is also provided."
-    },
-    "craftbeer": {
-        "keywords": [
-            "beer",
-            "breweries",
-            "alcohol by volume",
-            "bitterness units",
-            "beer styles"
-        ],
-        "brief_description": "The domain is about data related to beers and breweries, including their identifiers, alcohol content, bitterness levels, names, styles, serving sizes, and brewery locations.",
-        "full_description": "The domain is about data related to beers and breweries. The documents contain information about unique beer identifiers, their respective breweries, alcohol content, bitterness levels, names, styles, and serving sizes. Additionally, the documents provide details about breweries, including their unique identifiers, names, and locations (cities and states)."
-    },
-    "cs_semester": {
-        "keywords": [
-            "education",
-            "academia",
-            "student performance",
-            "course evaluation",
-            "professor performance"
-        ],
-        "brief_description": "The domain is about data related to an educational institution, focusing on students, courses, professors, and research assistants, with an emphasis on performance metrics.",
-        "full_description": "The domain is about data related to an educational institution, focusing on students, courses, professors, and research assistants. The documents cover student registration, course details, professor information, student profiles, and research assistant assignments. They include data on student grades, course satisfaction, professor popularity, student intelligence, and research capabilities. Additionally, the documents provide insights into course difficulty, professor teaching ability, and student types."
+        "description": "This tool contains information related to citation analysis, paper classification, and natural language processing in the field of text mining and bibliometrics."
     },
     "disney": {
-        "keywords": [
-            "Disney movies",
-            "movie revenue",
-            "voice actors",
-            "movie characters",
-            "movie gross"
-        ],
-        "brief_description": "The domain is about data related to Disney movies, including directors, revenue, voice actors, characters, and movie gross.",
-        "full_description": "The domain is about data related to Disney movies, including their directors, revenue generated by different segments of the Walt Disney Company, voice actors, movie characters, and overall movie gross. The documents provide information on unique movie names, director names, release dates, movie titles, genres, MPAA ratings, and total gross, as well as inflation-adjusted gross. Additionally, the documents contain details about the main characters, villains, and songs associated with the movies."
-    },
-    "donor": {
-        "keywords": [
-            "donations",
-            "education resources",
-            "school projects",
-            "teacher profiles",
-            "student impact"
-        ],
-        "brief_description": "The domain is about data related to educational donations, resources, projects, and teacher profiles in the context of school projects and student impact.",
-        "full_description": "The domain is about data related to educational donations, resources, and projects. It includes documents detailing donation transactions, such as donor information, donation amounts, payment methods, and associated projects. Additionally, it covers resources requested by teachers for their classrooms, including resource types, quantities, and costs. The domain also encompasses project documents, which provide information on project details, such as the teacher's profile, school information, project focus, resource types, and the number of students impacted. Lastly, it includes essay documents containing project titles, descriptions, and statements of need."
-    },
-    "european_football_1": {
-        "keywords": [
-            "football matches",
-            "divisions",
-            "match results",
-            "team performance",
-            "season data"
-        ],
-        "brief_description": "The domain is about data related to football matches, their results, participating teams, and associated divisions, along with the season information.",
-        "full_description": "The domain is about data related to football matches, including match dates, home and away teams, final-time goals, and results. The documents also cover information about different divisions, such as division IDs, names, and countries. Additionally, the data includes the season of each match."
-    },
-    "food_inspection": {
-        "keywords": [
-            "inspection scores",
-            "violations",
-            "eateries",
-            "business certificates",
-            "owner information"
-        ],
-        "brief_description": "The domain is about data related to the inspection, regulation, and detailed information of eateries.",
-        "full_description": "The domain is about data related to the inspection and regulation of eateries. The documents contain information on unique business identifiers, inspection scores, dates, and types. Additionally, there are details on violations, including their type, risk category, and description. The documents also provide information on the eateries themselves, such as their name, address, city, postal code, latitude, longitude, phone number, tax code, business certificate number, application date, and owner information."
-    },
-    "food_inspection_2": {
-        "keywords": [
-            "food safety",
-            "inspections",
-            "employees",
-            "violations",
-            "establishments"
-        ],
-        "brief_description": "The domain is about data related to food safety inspections, employees, violations, and establishments.",
-        "full_description": "The domain is about data related to food safety inspections, employees involved in these inspections, and the establishments being inspected. The documents contain information about employee details such as their unique IDs, names, addresses, phone numbers, titles, salaries, and supervisors. The inspection documents include details about the inspection ID, date, type, results, and the employee responsible for the inspection. Violation documents provide information about the inspection point ID, fines, and inspector comments. Establishment documents contain details about the facility's license number, DBA name, AKA name, facility type, risk level, address, city, state, zip, latitude, longitude, and ward number."
-    },
-    "genes": {
-        "keywords": [
-            "gene correlation",
-            "gene localization",
-            "gene classification",
-            "gene phenotype",
-            "gene motif"
-        ],
-        "brief_description": "The domain is about data related to gene interactions, classifications, and properties, including gene correlation scores and various gene attributes.",
-        "full_description": "The domain is about data related to gene interactions, classifications, and properties. The documents contain information on gene identifiers, correlation scores indicating positive or negative correlation between genes, gene localization, and various gene attributes such as essentiality, class, complex, phenotype, motif, chromosome, and function. The correlation scores provide insights into the relationship between genes, while the other attributes offer a comprehensive understanding of individual genes."
-    },
-    "hockey": {
-        "keywords": [
-            "ice hockey",
-            "players",
-            "teams",
-            "coaches",
-            "awards"
-        ],
-        "brief_description": "The domain is about data related to ice hockey, focusing on player, team, and coach statistics, and various awards.",
-        "full_description": "The domain is about data related to ice hockey, specifically focusing on players, teams, coaches, and awards. The documents contain information about player statistics, team standings, coach records, and various awards. The data covers aspects such as games played, wins, losses, goals, assists, penalty minutes, and power play statistics. Additionally, there are details about league and team IDs, player and coach IDs, and hall of fame IDs. The documents also include information about postseason games, shootouts, and combined shutouts."
-    },
-    "human_resources": {
-        "keywords": [
-            "employee data",
-            "location data",
-            "position data",
-            "salary information",
-            "employee performance"
-        ],
-        "brief_description": "The domain is about data related to employees, their positions, and work locations, including personal details, salary information, performance levels, and location and position specifics.",
-        "full_description": "The domain is about data related to employees, their positions, and work locations. The documents contain information about employees' personal details, such as their social security numbers, names, and hire dates. Additionally, the documents provide details on employees' salaries, performance levels, and the unique identifiers for their positions and work locations. The documents also include information about the work locations, such as their unique identifiers, city, address, state, zip code, and office phone number. Furthermore, the documents provide details about the positions, including their unique identifiers, titles, required education years, and salary ranges."
-    },
-    "ice_hockey_draft": {
-        "keywords": [
-            "hockey",
-            "player statistics",
-            "draft rankings",
-            "height and weight information",
-            "game performance"
-        ],
-        "brief_description": "The domain is about data related to hockey players, their personal information, draft rankings, and game performance statistics.",
-        "full_description": "The domain is about data related to hockey players, their personal information, and performance statistics. The documents contain details about player attributes such as height, weight, birthplace, and nation. Additionally, the documents provide information on player draft rankings, positions, shooting preferences, and overall draft orders. Furthermore, the documents include game statistics such as goals, assists, points, penalty minutes, and game plays, along with the total NHL games played and time on ice in the first 7 years of a player's career."
-    },
-    "image_and_language": {
-        "keywords": [
-            "image attributes",
-            "object classes",
-            "prediction relationships",
-            "bounding boxes",
-            "image samples"
-        ],
-        "brief_description": "The domain is about data related to image attributes, object classes, and prediction relationships between objects within images, captured through image samples, bounding boxes, and unique identifiers.",
-        "full_description": "The domain is about data related to image attributes, object classes, and prediction relationships between objects within images. The documents contain unique identifiers for object classes, attribute classes, and prediction classes, along with textual descriptions for each. The data includes image samples with multiple attributes and objects, each represented by unique sample IDs. The spatial information of objects within images is captured using bounding boxes defined by their x, y coordinates, width, and height. The relationships between objects in images are also documented, including self-relations and multiple relations between two objects."
-    },
-    "language_corpus": {
-        "keywords": [
-            "Catalan language",
-            "Wikipedia pages",
-            "word occurrences",
-            "language id",
-            "word id"
-        ],
-        "brief_description": "The domain is about data related to the Catalan language, focusing on Wikipedia pages, word occurrences, and language statistics.",
-        "full_description": "The domain is about data related to the Catalan language, specifically focusing on Wikipedia pages written in this language. The documents provide information on the number of different words used in each page, the total number of pages and words in the Catalan language, and the repetition of specific words within the language. Additionally, the documents include data on biwords, or pairs of words that frequently appear together in the language."
-    },
-    "law_episode": {
-        "keywords": [
-            "Law & Order series",
-            "episodes",
-            "awards",
-            "credits",
-            "person information"
-        ],
-        "brief_description": "The domain is about data related to the Law & Order series, covering episodes, awards, credits, and personal information.",
-        "full_description": "The domain is about data related to the Law & Order series, including information about individual episodes, awards received, credits for people involved in the production, and personal information about the cast and crew. The documents cover various aspects such as episode summaries, award nominations and results, production roles, and personal details like birthplace and height."
-    },
-    "legislator": {
-        "keywords": [
-            "legislator",
-            "social media",
-            "political party",
-            "legislative service",
-            "legislator IDs"
-        ],
-        "brief_description": "The domain is about data related to legislators, their social media presence, political affiliations, and legislative service, including various IDs, personal information, and term details.",
-        "full_description": "The domain is about data related to legislators, their social media presence, political affiliations, and legislative service. The documents contain various IDs for each legislator from different sources such as GovTrack, OpenSecrets, and Wikipedia. Additionally, the documents provide information on legislators' birthdays, genders, religions, and contact information. The data also includes details about legislators' terms, such as start and end dates, chambers, and types of terms."
-    },
-    "mental_health_survey": {
-        "keywords": [
-            "Survey Data",
-            "User Responses",
-            "Question Text",
-            "Survey Descriptions",
-            "Unique Identifiers"
-        ],
-        "brief_description": "The domain is about data related to surveys, including question text, user responses, and survey descriptions, all tied together with unique identifiers.",
-        "full_description": "The domain is about data related to surveys and user responses. The documents contain detailed information about the text of each question, along with unique identifiers for both the questions and the surveys themselves. Additionally, the documents provide the specific and detailed answers given by users for each question, along with unique identifiers for each user. The documents also include descriptions of the specific surveys."
-    },
-    "menu": {
-        "keywords": [
-            "Menu",
-            "Dish",
-            "Menu Page",
-            "Menu Item",
-            "Restaurant"
-        ],
-        "brief_description": "The domain is about data related to menus, dishes, and menu items in a restaurant setting.",
-        "full_description": "The domain is about data related to menus, dishes, and menu items in a restaurant setting. The documents include information about the unique identification, name, description, and physical attributes of menus and dishes. They also contain details about the appearance of dishes on menus, including the number of times a dish appears, the first and last appearance years, and the price range. Additionally, the documents provide information about menu pages, such as their unique identifiers, page numbers, dimensions, and associated images. The data also includes details about menu items, such as their unique identifiers, menu page association, price, high price, dish association, creation and update dates, and position on the menu page."
+        "description": "This tool contains information related to Disney movies, including directors, revenue, voice actors, characters, and movie gross."
     },
     "mondial_geo": {
-        "keywords": [
-            "geography",
-            "politics",
-            "economy",
-            "religion",
-            "organizations"
-        ],
-        "brief_description": "The domain is about data related to geographical features, countries, economies, religions, languages, organizations, and cities.",
-        "full_description": "The domain is about data related to various geographical features such as islands, deserts, mountains, seas, rivers, and lakes, along with their respective locations and attributes. It also includes information about countries, their political structures, independence, and borders. The schema covers economic data like GDP, inflation, and industry sectors. Additionally, it provides details on religions, languages, and ethnic groups within countries. The schema also includes data on organizations, their abbreviations, full names, headquarters, and establishment dates. Lastly, it contains information about cities, their populations, and locations."
-    },
-    "movie": {
-        "keywords": [
-            "actor",
-            "movie",
-            "networth",
-            "rating",
-            "genre"
-        ],
-        "brief_description": "The domain is about data related to actors and movies, including their personal details, movie details, and character details.",
-        "full_description": "The domain is about data related to actors and movies. The documents provide information on actors such as their unique ID, name, birth date, birth city, birth country, height, biography, gender, ethnicity, and net worth. The documents also contain details about movies, including their unique ID, title, MPAA rating, budget, gross, release date, genre, runtime, rating, rating count, and summary. Additionally, the documents cover the characters played by actors in movies, including the character's name, credit order, salary, and screentime."
-    },
-    "movie_3": {
-        "keywords": [
-            "film",
-            "staff",
-            "customer",
-            "rental",
-            "payment"
-        ],
-        "brief_description": "The domain is about data related to a film rental business, including film details, staff and customer information, rentals, payments, and inventory.",
-        "full_description": "The domain is about data related to a film rental business. The documents include information about various films, their categories, languages, and descriptions. There are also documents detailing the staff and customers involved in the business, including their personal information, login credentials, and activity status. Additionally, there are documents tracking rentals, payments, and inventory of films in different stores."
-    },
-    "movie_platform": {
-        "keywords": [
-            "movie ratings",
-            "user subscriptions",
-            "movie lists",
-            "critics",
-            "movie directors"
-        ],
-        "brief_description": "The domain is about data related to movies, user subscriptions, movie ratings, and movie lists on Mubi.",
-        "full_description": "The domain is about data related to movies, user subscriptions, movie ratings, and movie lists on Mubi. The documents include information about movie titles, release years, URLs, and directors. Additionally, the documents contain data on user subscriptions, such as whether a user was a trialist, subscriber, or paying subscriber when they created a list or rated a movie. The documents also include details about movie ratings, such as the rating score, timestamp, and user critic. Furthermore, the documents cover movie lists, including list titles, descriptions, URLs, and the number of movies, followers, and comments on each list."
-    },
-    "movielens": {
-        "keywords": [
-            "movies",
-            "directors",
-            "actors",
-            "ratings",
-            "demographics"
-        ],
-        "brief_description": "The domain is about data related to movies, directors, actors, user interactions, and movie metadata.",
-        "full_description": "The domain is about data related to movies, including information about directors, actors, and the movies themselves. The documents contain details such as movie and director identifiers, genres, user demographics, user-movie interactions (ratings), actor and director quality, and movie-related metadata like year, language, country, and running time."
-    },
-    "movies_4": {
-        "keywords": [
-            "movie",
-            "cast",
-            "crew",
-            "genre",
-            "language"
-        ],
-        "brief_description": "The domain is about data related to movies, including information about cast, crew, genres, languages, and production companies.",
-        "full_description": "The domain is about data related to movies, including information about the cast and crew, genres, languages, and production companies. The documents contain details about the unique identifiers of movies, people, departments, languages, and countries, as well as descriptions of the roles and jobs of cast and crew members. The documents also include information about the budget, revenue, and popularity of movies, as well as their release dates, runtimes, and statuses. Additionally, the documents provide information about the languages spoken in movies and the roles they play, as well as the keywords associated with each movie."
-    },
-    "music_platform_2": {
-        "keywords": [
-            "podcasts",
-            "reviews",
-            "ratings",
-            "categories",
-            "authors"
-        ],
-        "brief_description": "The domain is about data related to podcasts and their associated reviews, including information on podcast categories, review ratings, and review creation runs.",
-        "full_description": "The domain is about data related to podcasts and their associated reviews. The documents contain information about the unique id, title, and category of each podcast, as well as the unique id, title, content, rating, author id, and creation date and time of each podcast review. Additionally, the documents include data on the date and time of each review creation run, the id of the max row of each run, and the number of reviews added in each run."
-    },
-    "music_tracker": {
-        "keywords": [
-            "release metadata",
-            "torrents",
-            "tags",
-            "music releases",
-            "release identifiers"
-        ],
-        "brief_description": "The domain is about data related to music releases, their metadata, and associated tags.",
-        "full_description": "The domain is about data related to music releases and their associated metadata. The documents contain information about release titles, artists, release types (such as albums, singles, or mixtapes), release years, and unique identifiers. Additionally, the documents provide details on the number of times a release has been downloaded and the tags associated with each release."
-    },
-    "olympics": {
-        "keywords": [
-            "Olympic Games",
-            "Competitors",
-            "Medals",
-            "Sports",
-            "Regions"
-        ],
-        "brief_description": "The domain is about data related to the Olympic Games, including games, cities, sports, events, competitors, regions, and medals.",
-        "full_description": "The domain is about data related to the Olympic Games, including the games themselves, the cities that host them, and the sports and events that take place. The documents also contain information about the competitors who participate in the games, including their personal details, the regions they represent, and the medals they win. Additionally, the documents provide information about the different sports and events that are part of the games."
-    },
-    "professional_basketball": {
-        "keywords": [
-            "basketball statistics",
-            "player performance",
-            "team performance",
-            "draft information",
-            "coach records"
-        ],
-        "brief_description": "The domain is about data related to basketball statistics, covering player and team performance, draft information, and coach records.",
-        "full_description": "The domain is about data related to basketball statistics, including player performance, team performance, draft information, and coach records. The documents cover various aspects of basketball, such as player and team statistics, draft details, and coach achievements. The data includes information on player and team performance in regular and post-season games, player draft history, and coach records in terms of wins, losses, and awards."
-    },
-    "public_review_platform": {
-        "keywords": [
-            "Yelp",
-            "business reviews",
-            "user behavior",
-            "business attributes",
-            "user engagement"
-        ],
-        "brief_description": "The domain is about data related to businesses, user interactions, and engagement metrics on a review platform, likely Yelp.",
-        "full_description": "The domain is about data related to businesses, users, and their interactions on a review platform, likely Yelp. The documents cover various aspects such as business information, user profiles, reviews, tips, check-ins, and user engagement metrics like votes and compliments. Additionally, the documents include information on business categories, hours, and attributes, as well as user elite status and the years they have been active on the platform."
-    },
-    "regional_sales": {
-        "keywords": [
-            "Sales Orders",
-            "Customers",
-            "Products",
-            "Regions",
-            "Sales Team"
-        ],
-        "brief_description": "The domain is about data related to sales orders, customers, products, regions, and sales teams, including various identifiers, names, dates, locations, and financial information.",
-        "full_description": "The domain is about data related to sales orders, customers, products, regions, and sales teams. The documents contain information about unique customer and product identifiers, customer names, state codes, full state names, regions, product names, sales channels, warehouse codes, procured dates, order dates, ship dates, delivery dates, currency codes, sales team identifiers, store identifiers, order quantities, discounts applied, unit prices, unit costs, sales team names, city names, county names, latitudes, longitudes, area codes, populations, household incomes, median incomes, land areas, water areas, and time zones."
-    },
-    "restaurant": {
-        "keywords": [
-            "restaurant",
-            "geographic location",
-            "food type",
-            "review",
-            "city"
-        ],
-        "brief_description": "The domain is about data related to restaurants, their locations, food types, and reviews.",
-        "full_description": "The domain is about data related to restaurants, their geographic locations, food types, and reviews. The documents contain information about the unique ID of each restaurant, their street numbers and names, the cities they are located in, their food types, and the reviews they have received. Additionally, the documents provide details about the corresponding regions and countries of the cities where the restaurants are located."
-    },
-    "retail_complains": {
-        "keywords": [
-            "client data",
-            "complaint data",
-            "product reviews",
-            "district information",
-            "state data"
-        ],
-        "brief_description": "The domain is about data related to clients, their demographic information, and their interactions with a company through complaints and reviews.",
-        "full_description": "The domain is about data related to clients, their demographic information, and their interactions with a company through complaints and reviews. The documents contain details about clients, including their personal information, contact details, and district and state information. Additionally, the documents cover complaint data, such as the type of complaint, the product or sub-product involved, and the outcome of the complaint. Furthermore, the documents include product reviews, detailing the date, stars, and text of the review, as well as the product being reviewed."
-    },
-    "retail_world": {
-        "keywords": [
-            "Customers",
-            "Products",
-            "Orders",
-            "Suppliers",
-            "Employees"
-        ],
-        "brief_description": "The domain is about data related to various aspects of a business, including customer, product, order, supplier, and employee information.",
-        "full_description": "The domain is about data related to various aspects of a business, including customer information, product details, order records, supplier data, and employee information. The documents contain details such as customer names, contact information, and addresses, product names, prices, and categories, order dates, required dates, and shipped dates, supplier names, contact details, and addresses, and employee personal information, job titles, and salary details."
-    },
-    "retails": {
-        "keywords": [
-            "supply chain",
-            "customer orders",
-            "product inventory",
-            "supplier information",
-            "regional data"
-        ],
-        "brief_description": "The domain is about data related to supply chain management, including customer orders, product inventory, supplier information, and regional data.",
-        "full_description": "The domain is about data related to supply chain management, including customer orders, product inventory, supplier information, and regional data. The documents contain details about orders such as order date, priority, clerk, status, and total price. They also include information about parts and their supply, such as part key, type, size, brand, name, container, manufacturer, retail price, and available quantity. Supplier data includes supply key, nation key, name, address, phone, and account balance. Additionally, the documents cover regional data with region key and name."
-    },
-    "sales": {
-        "keywords": [
-            "Customer",
-            "Product",
-            "Employee",
-            "Sales",
-            "E-commerce"
-        ],
-        "brief_description": "The domain is about data related to customers, products, employees, and sales in an e-commerce or retail business.",
-        "full_description": "The domain is about data related to customers, products, employees, and sales in an e-commerce or retail business. The documents include customer information such as their unique IDs, names, and personal details. Product documents contain unique IDs, names, and prices, with a special case for free or gift products. Employee documents store unique IDs and names. Sales documents track unique sales IDs, salesperson IDs, customer IDs, product IDs, and trading quantities, with a calculation for total price based on quantity and product price."
-    },
-    "sales_in_weather": {
-        "keywords": [
-            "sales data",
-            "weather data",
-            "store information",
-            "weather station data",
-            "climate conditions"
-        ],
-        "brief_description": "The domain is about data related to sales and weather conditions, including store and weather station information, and climate conditions.",
-        "full_description": "The domain is about data related to sales and weather conditions. The documents contain information about store numbers, item numbers, and the quantity of items sold on specific dates. Additionally, there are documents detailing weather station data, including station numbers, dates, temperature ranges, average temperatures, and other climate conditions such as dew point, wet bulb temperature, and precipitation. The documents also provide information on the relationship between stores and their corresponding weather stations."
-    },
-    "shakespeare": {
-        "keywords": [
-            "theatre works",
-            "characters",
-            "chapters",
-            "paragraphs",
-            "genres"
-        ],
-        "brief_description": "The domain is about data related to theatre works, their chapters, scenes, characters, and paragraphs.",
-        "full_description": "The domain is about data related to theatre works, including plays, films, operas, or musical theatre. The documents cover various aspects of these works, such as their titles, full titles, dates, and genres. They also provide detailed information about the chapters and scenes within these works, including unique identifiers, descriptions, and the characters involved. Additionally, the documents contain information about individual characters, such as their names, abbreviations, and descriptions. The paragraphs within these chapters are also documented, including their content, the characters mentioned, and their relation to specific chapters."
-    },
-    "shipping": {
-        "keywords": [
-            "truck",
-            "customer",
-            "shipment",
-            "driver",
-            "city"
-        ],
-        "brief_description": "The domain is about data related to the transportation industry, focusing on truck shipments, customers, cities, drivers, and shipment details.",
-        "full_description": "The domain is about data related to the transportation industry, specifically focusing on truck shipments. The documents cover information about trucks, including their unique identifiers, make, and model year. They also provide details about customers, such as their unique identifiers, business names, annual revenues, customer types, and physical addresses. The documents further include data on cities, such as their unique identifiers, names, states, populations, and areas. Information about drivers, including their unique identifiers, names, addresses, and contact details, is also provided. Lastly, the documents contain details about shipments, such as their unique identifiers, associated customers, weights, trucks, drivers, destinations, and shipment dates."
-    },
-    "shooting": {
-        "keywords": [
-            "police incidents",
-            "case number",
-            "subject statuses",
-            "officers",
-            "subject weapon"
-        ],
-        "brief_description": "The domain is about data related to police incidents, including case numbers, dates, locations, subjects, and officers.",
-        "full_description": "The domain is about data related to police incidents, including case numbers, dates, locations, and the statuses of subjects involved. The documents also contain information about the subjects themselves, such as their race, gender, names, and any weapons they may have had. Additionally, the documents include details about the officers involved in each incident."
-    },
-    "simpson_episodes": {
-        "keywords": [
-            "awards",
-            "episodes",
-            "credits",
-            "characters",
-            "votes"
-        ],
-        "brief_description": "The domain is about data related to awards, episodes, credits, characters, and votes in a television or film context.",
-        "full_description": "The domain is about data related to awards, episodes, and credits in a television or film context. The documents include information about awards such as the award category, the person who received the award, and the result of the award. The episodes documents contain details about each episode, including the season, episode number, title, summary, air date, and ratings. The credits documents list the cast and crew members involved in each episode, along with their roles and whether they were credited. The character awards documents link awards to specific characters, and the votes documents provide information about the star score and number of votes for each episode."
-    },
-    "soccer_2016": {
-        "keywords": [
-            "cricket",
-            "match",
-            "player",
-            "team",
-            "performance"
-        ],
-        "brief_description": "The domain is about data related to cricket matches, covering various aspects of the game, including teams, players, umpires, venues, and outcomes.",
-        "full_description": "The domain is about data related to cricket matches, including details about the teams, players, umpires, venues, and outcomes. The documents cover various aspects of the game, such as toss decisions, batting and bowling performances, man of the match awards, and season-wise statistics. Additionally, the data includes information on extra runs, wicket-taking, and individual player roles in a match."
-    },
-    "social_media": {
-        "keywords": [
-            "Twitter data",
-            "Location data",
-            "User data",
-            "Sentiment analysis",
-            "Social media analytics"
-        ],
-        "brief_description": "The domain is about data related to Twitter activities, user demographics, and location information.",
-        "full_description": "The domain is about data related to Twitter activities, user demographics, and location information. The documents contain details about tweets, such as their unique identifiers, timestamps, language, reshare status, reach, retweet count, likes, klout, sentiment, and text. Additionally, the documents provide information about the location of the poster, including unique location identifiers, country, state, state code, and city. Lastly, the documents include user data, such as unique user identifiers and gender."
-    },
-    "software_company": {
-        "keywords": [
-            "customer data",
-            "marketing campaigns",
-            "demographic data",
-            "sales data",
-            "geographic data"
-        ],
-        "brief_description": "The domain is about data related to customer demographics, marketing campaigns, and sales.",
-        "full_description": "The domain is about data related to customers, marketing campaigns, demographics, and sales. The documents contain information about customer demographics such as age, sex, marital status, education level, occupation, and geographic location. Additionally, the documents include data on marketing campaigns, including the date of mailings and customer responses. Lastly, the documents contain sales data, including the date and amount of sales."
-    },
-    "student_loan": {
-        "keywords": [
-            "student records",
-            "education",
-            "absence",
-            "bankruptcy",
-            "enrollment"
-        ],
-        "brief_description": "The domain is about data related to student records, including enrollment, absences, bankruptcy, and employment status.",
-        "full_description": "The domain is about data related to student records in an educational context. The documents cover various aspects such as enrollment in schools and organizations, absences from school, students who have filed for bankruptcy, and students who are unemployed. The documents also include information about students who do not have payment dues and a list of male students."
-    },
-    "superstore": {
-        "keywords": [
-            "customer",
-            "product",
-            "sales",
-            "region",
-            "shipment"
-        ],
-        "brief_description": "The domain is about data related to customer and product transactions, including sales and shipment details across various regions.",
-        "full_description": "The domain is about data related to customers, products, and their transactions across different regions. The documents include information about customer details such as their ID, name, segment, and location. They also contain details about the products, including their ID, name, category, sub-category, and region. Furthermore, the documents provide insights into the sales data, including the sales amount, quantity, discount, and profit. The shipment details, such as the ship mode and the time interval between order and shipment, are also included."
-    },
-    "synthea": {
-        "keywords": [
-            "medications",
-            "claims",
-            "allergies",
-            "procedures",
-            "conditions"
-        ],
-        "brief_description": "The domain is about data related to medical records and patient information.",
-        "full_description": "The domain is about data related to medical records and patient information. The documents include details about medications, claims, allergies, procedures, conditions, care plans, encounters, immunizations, patient demographics, and observations. These documents provide information on medication codes, descriptions, and reasons for use, as well as claim details, allergy information, procedure and condition codes, care plan details, encounter information, immunization details, patient demographics, and observation data."
-    },
-    "talkingdata": {
-        "keywords": [
-            "mobile devices",
-            "user behavior",
-            "app usage",
-            "user demographics",
-            "geolocation"
-        ],
-        "brief_description": "The domain is about data related to mobile device usage, user behavior, demographics, and geolocation.",
-        "full_description": "The domain is about data related to mobile device usage, user behavior, and demographics. The documents contain information on device models, phone brands, and unique device IDs. Additionally, there are documents detailing app usage, including app installation and activity status. User demographics, such as age and gender, are also included. Furthermore, the documents provide geolocation data, including longitude and latitude coordinates, for events associated with specific devices and apps."
-    },
-    "trains": {
-        "keywords": [
-            "train",
-            "car",
-            "direction",
-            "shape",
-            "load"
-        ],
-        "brief_description": "The domain is about data related to trains and their cars, including direction, position, physical attributes, and load information.",
-        "full_description": "The domain is about data related to trains and their constituent cars. The documents provide information on the unique identifiers of trains and cars, the direction in which the trains are running, and the position of cars within the trains. Additionally, the documents detail the physical attributes of the cars, such as their shape, length, sides, roof, wheel count, and load shape. The load number is also included, indicating the amount of load carried by each car."
-    },
-    "university": {
-        "keywords": [
-            "university rankings",
-            "ranking systems",
-            "university demographics",
-            "international students",
-            "student-staff ratio"
-        ],
-        "brief_description": "The domain is about data related to university rankings, demographics, and the countries where universities are located.",
-        "full_description": "The domain is about data related to university rankings and their respective criteria, as well as the demographic composition of universities, including the total number of students, student-staff ratio, percentage of international students, and percentage of female students. The data also includes information about the countries where these universities are located and the unique ranking systems used to evaluate them."
-    },
-    "video_games": {
-        "keywords": [
-            "game sales",
-            "game platforms",
-            "game publishers",
-            "game genres",
-            "game platforms"
-        ],
-        "brief_description": "The domain is about data related to game sales, platforms, publishers, genres, and their distribution across different regions.",
-        "full_description": "The domain is about data related to the sales and distribution of games across different regions and platforms. The documents include information on game publishers, game genres, and the unique identifiers of games, platforms, and regions. The data also provides insights into the popularity of game platforms in different regions based on the number of sales."
-    },
-    "works_cycles": {
-        "keywords": [
-            "Sales",
-            "Products",
-            "Customers",
-            "Employees",
-            "Finance"
-        ],
-        "brief_description": "The domain is about data related to business operations, including sales, products, customers, employees, and finance.",
-        "full_description": "The domain is about data related to sales, products, customers, employees, and finance in a business setting. The documents contain information on sales orders, product details, customer data, employee records, and financial transactions. The data covers various aspects of business operations, including inventory management, sales tracking, customer relationship management, and employee performance."
+        "description": "This tool contains information related to geographical features, countries, economies, religions, languages, organizations, and cities."
     },
     "world": {
-        "keywords": [
-            "Country Code",
-            "Language",
-            "City",
-            "Population",
-            "Gross National Product"
-        ],
-        "brief_description": "The domain is about data related to country and city demographics, languages, and economic indicators.",
-        "full_description": "The domain is about data related to various countries, their languages, cities, and demographic information. It includes unique country codes, country names, continents, regions, surface areas, independence years, populations, life expectancies, gross national products, local names, government forms, heads of state, capitals, and secondary country codes. Additionally, it covers city-specific data such as unique city IDs, city names, country codes, districts, and populations. The schema also includes information on the percentage of language use in each country and whether the language is official."
+        "description": "This tool contains information related to country and city demographics, languages, and economic indicators."
+    },
+    "menu": {
+        "description": "This tool contains information related to menus, dishes, and menu items in a restaurant setting."
+    },
+    "ice_hockey_draft": {
+        "description": "This tool contains information related to hockey players, their personal information, draft rankings, and game performance statistics."
+    },
+    "soccer_2016": {
+        "description": "This tool contains information related to soccer matches, covering various aspects of the game, including teams, players, umpires, venues, and outcomes."
+    },
+    "university": {
+        "description": "This tool contains information related to university rankings, demographics, and the countries where universities are located."
+    },
+    "student_loan": {
+        "description": "This tool contains information related to student records, including enrollment, absences, bankruptcy, and employment status."
+    },
+    "sales_in_weather": {
+        "description": "This tool contains information related to sales and weather conditions, including store and weather station information, and climate conditions."
+    },
+    "public_review_platform": {
+        "description": "This tool contains information related to businesses, user interactions, and engagement metrics on a review platform, likely Yelp."
+    },
+    "movies_4": {
+        "description": "This tool contains information related to movies, including information about cast, crew, genres, languages, and production companies."
+    },
+    "european_football_1": {
+        "description": "This tool contains information related to football matches, their results, participating teams, and associated divisions, along with the season information."
+    },
+    "music_platform_2": {
+        "description": "This tool contains information related to podcasts and their associated reviews, including information on podcast categories, review ratings, and review creation runs."
+    },
+    "cars": {
+        "description": "This tool contains information related to car specifications, performance, and country of origin."
+    },
+    "hockey": {
+        "description": "This tool contains information related to hockey, focusing on player, team, and coach statistics, and various awards."
     },
     "world_development_indicators": {
-        "keywords": [
-            "World Bank",
-            "Country Data",
-            "Economic Indicators",
-            "National Accounts",
-            "Development Relevance"
-        ],
-        "brief_description": "The domain is about data related to country-specific economic indicators, national accounts, and development relevance.",
-        "full_description": "The domain is about data related to various aspects of countries, including their economic indicators, national accounts, and development relevance. The documents cover topics such as country codes, series codes, indicators, and their respective values. Additionally, the documents provide information on the system of national accounts, balance of payments, external debt reporting status, and other related economic concepts. The data also includes details on the country's currency unit, region, income group, and other groups. Furthermore, the documents provide information on the country's latest population census, household survey, agricultural census, and industrial, trade, and water withdrawal data."
+        "description": "This tool contains information related to country-specific economic indicators, national accounts, and development relevance."
+    },
+    "movie_3": {
+        "description": "This tool contains information related to a film rental business, including film details, staff and customer information, rentals, payments, and inventory."
+    },
+    "trains": {
+        "description": "This tool contains information related to trains and their constituent cars, including direction, position, physical attributes, and load information."
+    },
+    "cookbook": {
+        "description": "This tool contains information related to recipes, their ingredients, preparation times, and nutritional content."
+    },
+    "computer_student": {
+        "description": "This tool contains information related to academia, covering course levels, faculty positions, and student qualifications."
+    },
+    "bike_share_1": {
+        "description": "This tool contains information related to a bike-sharing system, including station locations, real-time status, trip information, and weather data."
+    },
+    "movie": {
+        "description": "This tool contains information related to actors and movies, including their personal details, movie details, and character details."
+    },
+    "music_tracker": {
+        "description": "This tool contains information related to music releases, their metadata, and associated tags."
+    },
+    "language_corpus": {
+        "description": "This tool contains information related to the languages, focusing on Wikipedia pages, word occurrences, and language statistics."
+    },
+    "food_inspection": {
+        "description": "This tool contains information related to the inspection, regulation, and detailed information of eateries."
+    },
+    "video_games": {
+        "description": "This tool contains information related to game sales, platforms, publishers, genres, and their distribution across different regions."
+    },
+    "craftbeer": {
+        "description": "This tool contains information related to beers and breweries, including their identifiers, alcohol content, bitterness levels, names, styles, serving sizes, and brewery locations."
+    },
+    "movielens": {
+        "description": "This tool contains information related to movies, directors, actors, user interactions, and movie metadata."
+    },
+    "app_store": {
+        "description": "This tool contains information related to Google Play Store applications, user reviews, and sentiment analysis."
+    },
+    "chicago_crime": {
+        "description": "This tool contains information related to crime reports, police districts, FBI crime classification, community areas, and neighborhoods."
+    },
+    "movie_platform": {
+        "description": "This tool contains information related to movies, user subscriptions, movie ratings, and movie lists on Mubi."
+    },
+    "simpson_episodes": {
+        "description": "This tool contains information related to awards, episodes, credits, characters, and votes in a television or film context."
+    },
+    "coinmarketcap": {
+        "description": "This tool contains information related to cryptocurrency coins and their historical market data."
+    },
+    "talkingdata": {
+        "description": "This tool contains information related to mobile device usage, user behavior, demographics, and geolocation."
+    },
+    "address": {
+        "description": "This tool contains information related to postal points, demographics, geographic areas, and payroll reports."
+    },
+    "restaurant": {
+        "description": "This tool contains information related to restaurants, their locations, food types, and reviews."
+    },
+    "shakespeare": {
+        "description": "This tool contains information related to theatre works, their chapters, scenes, characters, and paragraphs."
+    },
+    "olympics": {
+        "description": "This tool contains information related to the Olympic Games, including games, cities, sports, events, competitors, regions, and medals."
+    },
+    "image_and_language": {
+        "description": "This tool contains information related to image attributes, object classes, and prediction relationships between objects within images, captured through image samples, bounding boxes, and unique identifiers."
+    },
+    "legislator": {
+        "description": "This tool contains information related to legislators, their social media presence, political affiliations, and legislative service, including various IDs, personal information, and term details."
+    },
+    "codebase_comments": {
+        "description": "This tool contains information related to GitHub repositories, software solutions, methods, and method parameters, including repository and solution details, method information, and parameter specifications."
+    },
+    "beer_factory": {
+        "description": "This tool contains information related to beer products, their brands, customer information, reviews, transactions, and geographical data."
+    },
+    "law_episode": {
+        "description": "This tool contains information related to the Law & Order series, covering episodes, awards, credits, and personal information."
+    },
+    "college_completion": {
+        "description": "This tool contains information related to higher education institutions, including their graduation rates, student demographics, and financial information."
+    },
+    "books": {
+        "description": "This tool contains information related to book orders, customer information, addresses, shipping methods, and publishers."
+    },
+    "authors": {
+        "description": "This tool contains information related to academic papers, authors, and publication venues."
+    },
+    "mental_health_survey": {
+        "description": "This tool contains information related to surveys, including question text, user responses, and survey descriptions, all tied together with unique identifiers."
+    },
+    "professional_basketball": {
+        "description": "This tool contains information related to basketball statistics, covering player and team performance, draft information, and coach records."
+    },
+    "book_publishing_company": {
+        "description": "This tool contains information related to the book publishing industry, including documents on publications, authors, employees, and sales."
+    },
+    "genes": {
+        "description": "This tool contains information related to gene interactions, classifications, and properties, including gene correlation scores and various gene attributes."
     }
 }
