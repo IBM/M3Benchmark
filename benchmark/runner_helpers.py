@@ -5,6 +5,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
+from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
 from benchmark.utils import _extract_tool_response_values
 
@@ -29,6 +30,11 @@ TASK_PATHS = {
     ),
 }
 
+@dataclass
+class Message:
+    """A single message in a conversation."""
+    role: str  # "user", "assistant", "system"
+    content: str
 
 @dataclass
 class BenchmarkItem:
@@ -40,27 +46,23 @@ class BenchmarkItem:
     tools: List[Dict[str, Any]]
     additional_instructions: str = ""
     turn_id: int = 0
-    context: Optional[List[dict]] = None
+    context: Optional[List[Message]] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "BenchmarkItem":
         """Create BenchmarkItem from JSON dict."""
         dialogue = data.get("dialogue", {})
         turns = dialogue.get("turns", [])
-        context = None
+        context = []
         # Get first turn's query — support both dialogue.turns and ground_truth formats
         if turns:
-            if len(turns)>1:
+            if len(turns) > 1:
                 for turn in turns:
-                    context.append({
-                        "role":"user",
-                        "content": turn["query"]
-                    })
-                    if "answer" in turn.keys():
-                        context.append({
-                            "role": "assistant",
-                            "content": turn["answer"],
-                        })
+                    context.append(Message(role="user", content=turn["query"]))
+
+                    answer = turn.get("answer")
+                    if answer:
+                        context.append(Message(role="assistant", content=str(answer)))
                 query = turns[-1]["query"]
                 turn_id = turns[-1].get("turn_id", 0)
             else:
@@ -80,7 +82,7 @@ class BenchmarkItem:
             tools=data.get("tools", []),
             additional_instructions=data.get("additional_instructions", ""),
             turn_id=turn_id,
-            context=context
+            context=context if len(context) !=0 else None
         )
 
 

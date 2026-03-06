@@ -310,6 +310,8 @@ INITIAL DATA:
                 lc_messages.append(AIMessage(content=m.content))
             elif m.role == "system":
                 lc_messages.append(SystemMessage(content=m.content))
+            elif m.role == "tool_call":
+                lc_messages.append(ToolMessage(content=m.content))                
         return lc_messages
 
     def _parse_json_tool_call(self, content: str) -> dict | None:
