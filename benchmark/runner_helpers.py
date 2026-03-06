@@ -5,7 +5,6 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
-from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
 
 from benchmark.utils import _extract_tool_response_values
 
@@ -56,6 +55,8 @@ class BenchmarkItem:
         context = []
         # Get first turn's query — support both dialogue.turns and ground_truth formats
         if turns:
+            query = turns[-1]["query"]
+            turn_id = turns[-1].get("turn_id", 0)
             if len(turns) > 1:
                 for turn in turns:
                     context.append(Message(role="user", content=turn["query"]))
@@ -63,8 +64,6 @@ class BenchmarkItem:
                     answer = turn.get("answer")
                     if answer:
                         context.append(Message(role="assistant", content=str(answer)))
-                query = turns[-1]["query"]
-                turn_id = turns[-1].get("turn_id", 0)
             else:
                 query = turns[-1]["query"]
                 turn_id = turns[-1].get("turn_id", 0)
