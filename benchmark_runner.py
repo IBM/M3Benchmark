@@ -167,6 +167,7 @@ async def run_benchmark_for_domain(
                     domain=domain,
                     query=item.query,
                     turn_id=item.turn_id,
+                    context=item.context
                 )
 
                 start_time = time.perf_counter()
@@ -205,10 +206,17 @@ async def run_benchmark_for_domain(
                         agent._initial_data_handle = handle
                         tlog(f"    Initial data stored as: {handle}")
 
-                    response = await asyncio.wait_for(
-                        agent.run(item.query),
-                        timeout=AGENT_TIMEOUT_SECONDS
-                    )
+                    if task_id in [4,5]:
+                        response = await asyncio.wait_for(
+                            agent.run(item.context),
+                            timeout=AGENT_TIMEOUT_SECONDS
+                        )
+                    else:
+                        response = await asyncio.wait_for(
+                            agent.run(item.query),
+                            timeout=AGENT_TIMEOUT_SECONDS
+                        )                        
+
                     result.answer = response.content
                     result.tool_calls = response.tool_calls
                     result.trajectory = response.trajectory

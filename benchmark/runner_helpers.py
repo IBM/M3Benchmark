@@ -40,16 +40,33 @@ class BenchmarkItem:
     tools: List[Dict[str, Any]]
     additional_instructions: str = ""
     turn_id: int = 0
+    context: Optional[List[dict]] = None
 
     @classmethod
     def from_dict(cls, data: Dict[str, Any]) -> "BenchmarkItem":
         """Create BenchmarkItem from JSON dict."""
         dialogue = data.get("dialogue", {})
         turns = dialogue.get("turns", [])
+        context = None
         # Get first turn's query — support both dialogue.turns and ground_truth formats
         if turns:
-            query = turns[0]["query"]
-            turn_id = turns[0].get("turn_id", 0)
+            if len(turns)>1:
+                for turn in turns:
+                    context.append({
+                        "role":"user",
+                        "content": turn["query"]
+                    })
+                    if "answer" in turn.keys():
+                        context.append({
+                            "role": "assistant",
+                            "content": turn["answer"],
+                        })
+                query = turns[-1]["query"]
+                turn_id = turns[-1].get("turn_id", 0)
+            else:
+                query = turns[-1]["query"]
+                turn_id = turns[-1].get("turn_id", 0)
+
         else:
             ground_truth = data.get("ground_truth", [])
             query = ground_truth[0]["query"] if ground_truth else ""
@@ -63,6 +80,7 @@ class BenchmarkItem:
             tools=data.get("tools", []),
             additional_instructions=data.get("additional_instructions", ""),
             turn_id=turn_id,
+            context=context
         )
 
 
@@ -73,6 +91,7 @@ class BenchmarkResult:
     domain: str
     query: str
     answer: str = ""
+    context: Optional[List[dict]] = None
     tool_calls: List[Dict] = field(default_factory=list)
     trajectory: List[Dict] = field(default_factory=list)  # Agent trajectory
     turn_id: int = 0
