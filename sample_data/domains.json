@@ -1,8 +1,8 @@
 {
-<<<<<<< HEAD
-    "num_domains": 61,
+    "num_domains": 62,
     "domains": [
         "airline",
+        "bpo",
         "citeseer",
         "disney",
         "mondial_geo",
@@ -65,9 +65,10 @@
         "genes"
     ],
     "test": {
-        "num_domains": 60,
+        "num_domains": 61,
         "domains": [
             "airline",
+            "bpo",
             "citeseer",
             "disney",
             "mondial_geo",
@@ -211,9 +212,10 @@
             ]
         },
         "capability_3_multihop_reasoning": {
-            "num_domains": 37,
+            "num_domains": 38,
             "domains": [
                 "airline",
+                "bpo",
                 "mondial_geo",
                 "student_loan",
                 "menu",
@@ -499,137 +501,6 @@
                 "book_publishing_company",
                 "genes"
             ]
-=======
-    "RED_DOMAINS": [
-        "car_retails",
-        "synthea",
-        "shipping",
-        "cs_semester",
-        "food_inspection_2",
-        "sales",
-        "software_company",
-        "social_media",
-        "human_resources",
-        "regional_sales",
-        "works_cycles",
-        "retails",
-        "retail_world",
-        "retail_complains",
-        "shooting",
-        "superstore",
-        "codebase_community",
-        "student_club"
-    ],
-    "DOMAINS_TO_KEEP": [
-        "address",
-        "airline",
-        "app_store",
-        "authors",
-        "beer_factory",
-        "bike_share_1",
-        "book_publishing_company",
-        "books",
-        "california_schools",
-        "card_games",
-        "cars",
-        "chicago_crime",
-        "citeseer",
-        "codebase_comments",
-        "coinmarketcap",
-        "college_completion",
-        "computer_student",
-        "cookbook",
-        "craftbeer",
-        "debit_card_specializing",
-        "disney",
-        "donor",
-        "european_football_1",
-        "european_football_2",
-        "financial",
-        "food_inspection",
-        "formula_1",
-        "genes",
-        "hockey",
-        "ice_hockey_draft",
-        "image_and_language",
-        "language_corpus",
-        "law_episode",
-        "legislator",
-        "mental_health_survey",
-        "menu",
-        "mondial_geo",
-        "movie",
-        "movie_3",
-        "movie_platform",
-        "movielens",
-        "movies_4",
-        "music_platform_2",
-        "music_tracker",
-        "olympics",
-        "professional_basketball",
-        "public_review_platform",
-        "restaurant",
-        "sales_in_weather",
-        "shakespeare",
-        "simpson_episodes",
-        "soccer_2016",
-        "student_loan",
-        "superhero",
-        "talkingdata",
-        "thrombosis_prediction",
-        "toxicology",
-        "trains",
-        "university",
-        "video_games",
-        "world",
-        "world_development_indicators"
-    ],
-    "DOMAINS_FAILED_MULTITURN_GENERATION":["craftbeer","donor","language_corpus","legislator","movie_platform","music_platform_2","mental_health_survey"],
-    "domain_count": {
-        "RED_DOMAINS": 18,
-        "DOMAINS_TO_KEEP": 62,
-        "BY_SPLIT": {
-            "train": {
-                "no_scenarios": {
-                    "single": 40,
-                    "multi": 39
-                },
-                "scenarios": {
-                    "single": 40,
-                    "multi": 39
-                }
-            },
-            "test": {
-                "no_scenarios": {
-                    "single": null,
-                    "multi": 39
-                },
-                "scenarios": {
-                    "single": null,
-                    "multi": 39
-                }
-            },
-            "ood": {
-                "no_scenarios": {
-                    "single": 8,
-                    "multi": 8
-                },
-                "scenarios": {
-                    "single": 8,
-                    "multi": 8
-                }
-            },
-            "SEL": {
-                "no_scenarios": {
-                    "single": 56
-                }
-            },
-            "SLOT": {
-                "no_scenarios": {
-                    "single": 56
-                }
-            }
->>>>>>> 71ca649 (Details of domain generation)
         }
     }
 }
