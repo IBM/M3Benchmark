@@ -18,7 +18,9 @@
           "tool_calls": [
             {
               "name": "skills_skill_summary",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -26,7 +28,13 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should parse the comma-separated string and present the skills"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "skills_skill_summary",
+              "result": "AWS, Cloud Security, Cyber Engineering, Firewalls, IT Support, Incident Management, Microsoft PowerShell, NIST Cybersecurity Framework, Python, Quantum Physics, Risk Analysis, Risk Assessment, Wireshark"
+            }
+          ]
         }
       },
       {
@@ -44,7 +52,10 @@
           "tool_calls": [
             {
               "name": "candidate_source_source_sla_score",
-              "args": {"requisition_id": "05958BR", "source_name": "Dice"}
+              "args": {
+                "requisition_id": "05958BR",
+                "source_name": "Dice"
+              }
             }
           ],
           "error_handling": {
@@ -52,7 +63,13 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should handle int/float correctly and present as percentage"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_source_sla_score",
+              "result": 95
+            }
+          ]
         }
       },
       {
@@ -69,7 +86,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_inactive_sources",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -77,7 +96,13 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should handle null gracefully and report no inactive sources"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_inactive_sources",
+              "result": null
+            }
+          ]
         }
       }
     ]

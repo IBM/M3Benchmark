@@ -9,7 +9,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from mcp.server.websocket import websocket_server
 
 from .config import MCPServerConfig, load_config
-from .mcp_server import SlotFillingMCPServer, SelectionMCPServer
+from .mcp_server import create_server
 
 logger = logging.getLogger(__name__)
 
@@ -35,7 +35,7 @@ def create_app(config: MCPServerConfig) -> FastAPI:
         return {
             "status": "ok",
             "server_name": config.server_name,
-            "server_type": config.server_type or "slot_filling",
+            "server_type": config.server_type or "router",
             "database": config.database_path,
         }
 
@@ -50,12 +50,8 @@ def create_app(config: MCPServerConfig) -> FastAPI:
 
         try:
             # Create appropriate server instance based on config
-            server_type = config.server_type or "slot_filling"
-            if server_type == "selection":
-                mcp_server = SelectionMCPServer(config)
-            else:
-                mcp_server = SlotFillingMCPServer(config)
-
+            mcp_server = create_server(config)
+            server_type = config.server_type or "router"
             logger.info(f"Created {server_type} MCP server instance")
 
             # Use MCP's websocket_server context manager to handle protocol

@@ -31,5 +31,16 @@
       "Single Turn|Reasoning|Policy Adherence": 0,
       "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
     }
+  },
+  {
+    "agent": "LangGraph React Agent",
+    "model": "gpt-oss-120b",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 33.39,
+      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
   }
 ]

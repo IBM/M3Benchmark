@@ -1,0 +1,113 @@
+tasks:
+  # All tasks use the unified m3_environ container via docker exec.
+  # MCP_DB_ROOT sets the parent directory for domain databases inside the container
+  # (default: "data/db"). With the volume mount below, /app/db maps to apis/m3/rest/db
+  # on the host, so MCP_DB_ROOT=/app/db is the correct value for containerised tasks.
+  # Start the containers first:
+  #   docker run -d --name task_1_m3_environ \
+  #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
+  #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
+  #       m3_environ
+  #   docker run -d --name task_2_m3_environ \
+  #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
+  #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
+  #       m3_environ
+  #   docker run -d --name task_5_m3_environ \
+  #       -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
+  #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+  #       -v "$(pwd)/apis/retrievers/chroma_data:/app/retrievers/chroma_data" \
+  #       -v "$(pwd)/apis/retrievers/queries:/app/retrievers/queries:ro" \
+  #       -e MCP_DB_ROOT=/app/db \
+  #       m3_environ
+
+  # Task 1: ToolCallingAgent + RouterMCPServer (routes to SlotFilling or Selection per query)
+  1:
+    mode: stdio
+    container_name: task_1_m3_environ
+    container_runtime: null
+    container_env:
+      TASK_ID: "1"
+      MCP_DB_ROOT: /app/db
+      MCP_SERVER_TYPE: router
+    container_command:
+      - python
+      - /app/mcp_dispatch.py
+
+  # Task 2: LangGraphReActAgent + FastAPIMCPServer
+  2:
+    mode: stdio
+    container_name: task_2_m3_environ
+    container_runtime: null
+    container_env:
+      TASK_ID: "2"
+      MCP_DB_ROOT: /app/db
+    container_command:
+      - python
+      - /app/mcp_dispatch.py
+
+  # Task 3: LangGraphReActAgent + task3_router (routes by MCP_DOMAIN)
+  # MCP_DOMAIN=bpo     → /app/apis/bpo/mcp/server.py  (BPO FastMCP server)
+  # MCP_DOMAIN=<other> → /app/m3-rest/mcp_server.py   (M3 REST MCP server)
+  # The router exec's into the target server, so no proxy overhead.
+
+  # Use the below to connect without the container (local Python subprocess):
+  # 3:
+  #   mode: stdio
+  #   command: python  # resolved to sys.executable at runtime
+  #   args:
+  #     - "apis/bpo/mcp/task3_router.py"
+
+  3:
+    mode: stdio
+    container_name: task_3_m3_environ
+    container_runtime: null
+    container_env:
+      TASK_ID: "3"
+      MCP_DB_ROOT: /app/db
+    container_command:
+      - python
+      - /app/mcp_dispatch.py
+
+  # Task 5: LangGraphReActAgent + Task5CombinedMCPServer
+  # Exposes M3 REST tools (port 8000) + Retriever query tool (port 8001)
+  # in a single MCP server so list_tools() returns both sets.
+  5:
+    mode: stdio
+    container_name: task_5_m3_environ
+    container_runtime: null
+    container_env:
+      TASK_ID: "5"
+      MCP_DB_ROOT: /app/db
+      PRELOAD_COLLECTIONS: "false"
+    container_command:
+      - python
+      - /app/mcp_dispatch.py
+
+  # --- Per-task container setup (no unified image) ---
+  # Task 1 runs as a local Python subprocess (no container needed).
+  # Tasks 2 and 5 use dedicated per-domain containers.
+  #
+  # 1:
+  #   mode: stdio
+  #   command: python  # resolved to sys.executable at runtime
+  #   args:
+  #     - "-m"
+  #     - "apis.m3.python_tools.mcp"
+  #
+  # 2:
+  #   mode: stdio
+  #   container_name: fastapi-mcp-server
+  #   container_runtime: null  # null = auto-detect (prefers podman, falls back to docker)
+  #   container_command:
+  #     - python
+  #     - mcp_server.py
+  #
+  # 5:
+  #   mode: stdio
+  #   container_name: retriever-mcp-server
+  #   container_runtime: null  # null = auto-detect (prefers podman, falls back to docker)
+  #   container_command:
+  #     - python
+  #     - mcp_server.py

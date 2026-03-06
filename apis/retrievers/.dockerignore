@@ -1,9 +1,0 @@
-chroma_data/
-chroma_data_*/
-queries/
-__pycache__/
-*.pyc
-.git/
-.gitignore
-.dockerignore
-README.md

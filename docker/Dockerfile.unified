@@ -1,0 +1,97 @@
+# Unified Dockerfile combining all MCP servers:
+#   1. M3 REST     — FastAPI (port 8000) + MCP wrapper
+#   2. Retrievers   — FastAPI (port 8001) + MCP wrapper
+#   3. Sel/Slot     — Direct MCP server (python -m apis.m3.python_tools.mcp)
+#   4. BPO         — FastMCP server (python /app/apis/bpo/mcp/server.py)
+#
+# Build (from project root):
+#   docker build -t m3_environ -f docker/Dockerfile.unified .
+#
+# Run (task_3 — M3 REST + BPO, no retriever):
+#   docker run -d --name task_3_m3_environ \
+#       -v "$(pwd)/data/db:/app/db:ro" \
+#       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
+#       -p 8000:8000 \
+#       m3_environ
+#
+# Exec MCP servers:
+#   docker exec -i -e MCP_DOMAIN=address   m3_environ python /app/m3-rest/mcp_server.py
+#   docker exec -i                          m3_environ python /app/apis/bpo/mcp/server.py
+#   docker exec -i -e MCP_DOMAIN=address   m3_environ python /app/retrievers/mcp_server.py
+#   docker exec -i -e MCP_DOMAIN=superhero m3_environ python -m apis.m3.python_tools.mcp
+# Task 3 router (routes by MCP_DOMAIN to BPO or M3 REST):
+#   docker exec -i -e MCP_DOMAIN=bpo       task_3_m3_environ python /app/apis/bpo/mcp/task3_router.py
+#   docker exec -i -e MCP_DOMAIN=airline   task_3_m3_environ python /app/apis/bpo/mcp/task3_router.py
+
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gcc curl \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies from all servers
+COPY apis/m3/rest/requirements.txt        /tmp/req-m3-rest.txt
+COPY apis/retrievers/requirements.txt     /tmp/req-retrievers.txt
+COPY apis/m3/python_tools/requirements.txt /tmp/req-python-tools.txt
+COPY apis/bpo/requirements.txt            /tmp/req-bpo.txt
+
+RUN pip install --no-cache-dir \
+    -r /tmp/req-m3-rest.txt \
+    -r /tmp/req-retrievers.txt \
+    -r /tmp/req-python-tools.txt \
+    -r /tmp/req-bpo.txt \
+    && rm /tmp/req-*.txt
+
+# Pre-download the sentence-transformers embedding model (avoids runtime download)
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('ibm-granite/granite-embedding-english-r2')"
+
+# --- M3 REST server ---
+COPY apis/m3/rest/app.py         m3-rest/app.py
+COPY apis/m3/rest/mcp_server.py  m3-rest/mcp_server.py
+COPY apis/m3/rest/server/        m3-rest/server/
+
+# Symlink so REST server's hardcoded 'db/...' paths resolve from m3-rest/ CWD
+RUN ln -s /app/db m3-rest/db
+
+# --- Retrievers server ---
+COPY apis/retrievers/server.py                      retrievers/server.py
+COPY apis/retrievers/mcp_server.py                  retrievers/mcp_server.py
+COPY apis/retrievers/task5_mcp_server.py            retrievers/task5_mcp_server.py
+COPY apis/retrievers/chromadb_retriever.py           retrievers/chromadb_retriever.py
+COPY apis/retrievers/domain_description_dict.json   retrievers/domain_description_dict.json
+COPY apis/retrievers/domain_negatives.json          retrievers/domain_negatives.json
+
+# --- Sel/Slot Python tools MCP server ---
+COPY apis/__init__.py           apis/__init__.py
+COPY apis/mcp_logging.py        apis/mcp_logging.py
+COPY apis/m3/__init__.py        apis/m3/__init__.py
+COPY apis/m3/python_tools/      apis/m3/python_tools/
+
+# --- BPO MCP server ---
+# Copies the full apis/bpo package (api/, data/, mcp/) so that imports like
+# `from apis.bpo.api.schemas import ...` resolve from WORKDIR /app.
+COPY apis/bpo/                  apis/bpo/
+
+# --- Entrypoint ---
+COPY docker/entrypoint-unified.sh entrypoint.sh
+RUN chmod +x entrypoint.sh
+
+# --- MCP dispatcher (single entrypoint for all tasks, routed by TASK_ID) ---
+COPY docker/mcp_dispatch.py mcp_dispatch.py
+
+# Volume mount points (data mounted at runtime, not baked in)
+VOLUME /app/db
+VOLUME /app/apis/configs
+VOLUME /app/retrievers/chroma_data
+VOLUME /app/retrievers/queries
+ENV MCP_DB_ROOT=/app/db
+# Ensure `from apis.*` resolves for scripts run as `python /app/.../*.py`
+# (Python only adds the script's own directory to sys.path, not /app)
+ENV PYTHONPATH=/app
+
+EXPOSE 8000 8001
+
+ENTRYPOINT ["/app/entrypoint.sh"]

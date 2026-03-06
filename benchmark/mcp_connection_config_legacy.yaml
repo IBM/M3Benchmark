@@ -1,0 +1,59 @@
+tasks:
+  # Legacy config — uses direct server paths instead of /app/mcp_dispatch.py.
+  # Works with any image version (old or new) since the original scripts are unchanged.
+  #
+  # Use this if you haven't rebuilt the image yet:
+  #   python benchmark_runner.py --mcp-config benchmark/mcp_connection_config_legacy.yaml ...
+  #
+  # The default mcp_connection_config.yaml uses the dispatcher (/app/mcp_dispatch.py)
+  # and requires the image to be rebuilt after the dispatcher was added:
+  #   make build && docker compose up -d
+
+  # Task 1: ToolCallingAgent + RouterMCPServer (routes to SlotFilling or Selection per query)
+  1:
+    mode: stdio
+    container_name: task_1_m3_environ
+    container_runtime: null
+    container_env:
+      MCP_DB_ROOT: /app/db
+      MCP_SERVER_TYPE: router
+    container_command:
+      - python
+      - "-m"
+      - "apis.m3.python_tools.mcp"
+
+  # Task 2: LangGraphReActAgent + FastAPIMCPServer
+  2:
+    mode: stdio
+    container_name: task_2_m3_environ
+    container_runtime: null
+    container_env:
+      MCP_DB_ROOT: /app/db
+    container_command:
+      - python
+      - /app/m3-rest/mcp_server.py
+
+  # Task 3: LangGraphReActAgent + task3_router (routes by MCP_DOMAIN)
+  # MCP_DOMAIN=bpo     → /app/apis/bpo/mcp/server.py  (BPO FastMCP server)
+  # MCP_DOMAIN=<other> → /app/m3-rest/mcp_server.py   (M3 REST MCP server)
+  3:
+    mode: stdio
+    container_name: task_3_m3_environ
+    container_runtime: null
+    container_env:
+      MCP_DB_ROOT: /app/db
+    container_command:
+      - python
+      - /app/apis/bpo/mcp/task3_router.py
+
+  # Task 5: LangGraphReActAgent + Task5CombinedMCPServer
+  5:
+    mode: stdio
+    container_name: task_5_m3_environ
+    container_runtime: null
+    container_env:
+      MCP_DB_ROOT: /app/db
+      PRELOAD_COLLECTIONS: "false"
+    container_command:
+      - python
+      - /app/retrievers/task5_mcp_server.py

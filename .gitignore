@@ -28,3 +28,18 @@ train/
 build/
 db/
 *chroma_data*
+
+tools_*.json
+output/
+
+parlant-data/
+
+# Ignore all data folders everywhere
+**/data/
+
+# Re-include helpers/data
+!helpers/data/
+!helpers/data/**
+
+# But still ignore any __pycache__ inside helpers/data
+helpers/data/**/__pycache__/

@@ -41,17 +41,17 @@ rag = [
 agents = [
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
+    "langgraph>=1.0.9",
     "httpx",
     "litellm",
     "langchain-litellm",
     "langchain-ollama",
-    "langchain-ibm"
+    "sentence-transformers"
 ]
 
 # MCP server functionality (includes agents)
 mcp = [
     "mcp>=1.0.0",
-    "langchain-mcp>=0.1.0",
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
     "httpx",
@@ -66,6 +66,11 @@ mcp = [
     "rapidfuzz",
 ]
 
+# Setup / init: download data from HuggingFace + manage containers
+init = [
+    "huggingface_hub",
+]
+
 # Legacy dependencies (historically included but not actively used)
 legacy = [
     "ibm-generative-ai",
@@ -76,6 +81,7 @@ all = [
     "enterprise-benchmark[rest]",
     "enterprise-benchmark[agents]",
     "enterprise-benchmark[mcp]",
+    "enterprise-benchmark[init]",
     "enterprise-benchmark[legacy]",
 ]
 
@@ -94,6 +100,7 @@ dev = [
 [project.scripts]
 slot-filling-mcp = "apis.m3.python_tools.mcp.cli:main"
 bpo-mcp = "apis.bpo.mcp.server:start_server"
+m3-setup = "m3_setup:main"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*"]
@@ -131,7 +138,7 @@ SLOT_FILLING_MCP_DATABASE = { description = "Path to SQLite database file", requ
 SLOT_FILLING_MCP_CACHE_DIR = { description = "Cache directory for IO operations", default = "./mcp_cache" }
 SLOT_FILLING_MCP_TABLES = { description = "Comma-separated list of tables to load", required = false }
 SLOT_FILLING_MCP_TOOL_UNIVERSE_ID = { description = "Unique ID for this server instance", required = false }
-SLOT_FILLING_MCP_SERVER_TYPE = { description = "Server mode: slot_filling or selection", default = "slot_filling" }
+SLOT_FILLING_MCP_SERVER_TYPE = { description = "Server mode: router, slot_filling, or selection", default = "router" }
 SLOT_FILLING_MCP_TRANSPORT = { description = "Transport protocol: stdio or websocket", default = "stdio" }
 SLOT_FILLING_MCP_HOST = { description = "Host to bind WebSocket server", default = "127.0.0.1" }
 SLOT_FILLING_MCP_PORT = { description = "Port for WebSocket server", default = "8000" }

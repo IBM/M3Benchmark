@@ -13,8 +13,28 @@ from pathlib import Path
 import yaml
 
 REPO_ROOT = Path(__file__).resolve().parent.parent.parent
-OUTPUT_DIRS_GLOB = "data/tasks/task_1/*/output"
+OUTPUT_DIRS_GLOB = "data/tasks/task_1/output"
 MAPPING_FILE = "apis/configs/mcp_tool_universe_id_mapping.yaml"
+
+# Unique to SelectionTools (not present in SlotFillingTools)
+SELECTION_ONLY_TOOLS = {
+    "select_data_equal_to", "select_data_not_equal_to",
+    "select_data_greater_than", "select_data_less_than",
+    "select_data_greater_than_equal_to", "select_data_less_than_equal_to",
+    "select_data_contains", "select_data_like",
+    "sort_data_ascending", "sort_data_descending",
+    "compute_data_min", "compute_data_max", "compute_data_sum",
+    "compute_data_mean", "compute_data_count", "compute_data_std",
+    "compute_data_argmin", "compute_data_argmax",
+    "truncate", "transform_data_to_substring",
+    "transform_data_to_absolute_value", "transform_data_to_datetime_part",
+}
+
+# Unique to SlotFillingTools (not present in SelectionTools)
+SLOT_FILLING_ONLY_TOOLS = {
+    "filter_data", "retrieve_data", "sort_data",
+    "aggregate_data", "transform_data",
+}
 
 
 def generate_mapping(dry_run: bool = False):
@@ -42,7 +62,7 @@ def generate_mapping(dry_run: bool = False):
                     duplicate_count += 1
                     continue
 
-                ground_truth = record.get("ground_truth", [])
+                ground_truth = record.get("output", [])
                 if not ground_truth:
                     print(
                         f"WARNING: No ground_truth for uuid {uuid}",
@@ -51,15 +71,14 @@ def generate_mapping(dry_run: bool = False):
                     continue
 
                 first_turn = ground_truth[0]
-                gold_sequence = first_turn.get("gold_sequence", [])
-                if not gold_sequence:
+                tool_calls = first_turn.get("sequence", []).get("tool_call", [])
+                if not tool_calls:
                     print(
-                        f"WARNING: No gold_sequence for uuid {uuid}",
+                        f"WARNING: No tool calls for uuid {uuid}",
                         file=sys.stderr,
                     )
                     continue
 
-                tool_calls = gold_sequence[0].get("tool_call", [])
                 init_call = next(
                     (c for c in tool_calls if c["name"] == "initialize_active_data"),
                     None,
@@ -71,8 +90,19 @@ def generate_mapping(dry_run: bool = False):
                     )
                     continue
 
+                server_type = "slot_filling"  # default
+                for call in tool_calls:
+                    name = call["name"]
+                    if name in SELECTION_ONLY_TOOLS:
+                        server_type = "selection"
+                        break
+                    if name in SLOT_FILLING_ONLY_TOOLS:
+                        server_type = "slot_filling"
+                        break
+
                 mapping[uuid] = {
                     "domain": domain,
+                    "server_type": server_type,
                     "init_args": init_call["arguments"],
                     "query": first_turn["query"],
                 }

@@ -178,13 +178,13 @@ class SortDataInput(BaseModel):
         )
     )
 
-
     @model_validator(mode='after')
     def validate_sort_key(self) -> 'SortDataInput':
         """Ensure either key_name or ranking_array is provided."""
         if not self.key_name and self.ranking_array is None:
             raise ValueError("Either key_name or ranking_array must be provided")
         return self
+
 
 class SortDataResult(BaseModel):
     model_config = ConfigDict(

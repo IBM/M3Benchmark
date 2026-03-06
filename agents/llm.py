@@ -1,3 +1,4 @@
+import logging
 import os
 
 from langchain_core.language_models.chat_models import BaseChatModel
@@ -12,7 +13,9 @@ from langchain_core.outputs.chat_generation import ChatGeneration
 import httpx
 from typing import Any, Sequence, Dict, Callable, Union
 
-from pydantic import Field
+from pydantic import Field, model_validator
+
+logger = logging.getLogger(__name__)
 
 
 class RITSChatModel(BaseChatModel):
@@ -21,7 +24,9 @@ class RITSChatModel(BaseChatModel):
     # Mapping from endpoint name (short) to payload model name (full)
     MODEL_NAME_MAPPING: Dict[str, str] = {
         "llama-3-3-70b-instruct": "meta-llama/llama-3-3-70b-instruct",
-        "gpt-oss-120b": "openai/gpt-oss-120b"
+        "gpt-oss-120b": "openai/gpt-oss-120b",
+        "qwen3-5-397b-a17b-fp8": "qwen/qwen3.5-397B-A17B-FP8", 
+        "mistral-large-3-675b-2512-fp4": "mistralai/Mistral-Large-3-675B-Instruct-2512-NVFP4"
     }
 
     model_name: str
@@ -29,6 +34,39 @@ class RITSChatModel(BaseChatModel):
     api_key: str
     temperature: float = 0.0
     bound_tools: Optional[List[Dict[str, Any]]] = Field(default=None)
+
+    @model_validator(mode="after")
+    def _ping_endpoint(self) -> "RITSChatModel":
+        url = f"{self.base_url}/{self.model_name}/ping"
+        headers = {"RITS_API_KEY": self.api_key}
+        try:
+            resp = httpx.get(url, headers=headers, timeout=10.0)
+            resp.raise_for_status()
+        except httpx.HTTPStatusError as e:
+            logger.error(
+                f"RITS ping failed for model '{self.model_name}' "
+                f"(HTTP {e.response.status_code}). "
+                f"Check that the model name is one of: "
+                f"{list(self.MODEL_NAME_MAPPING.keys())}. "
+                f"URL: {url}"
+            )
+            raise
+        except httpx.TimeoutException:
+            logger.error(
+                f"RITS ping timed out for model '{self.model_name}' "
+                f"at {url}. The model backend is likely not deployed "
+                f"or is unreachable. Inference calls will also hang."
+            )
+            raise
+        except httpx.RequestError as e:
+            logger.error(
+                f"RITS ping failed for model '{self.model_name}': "
+                f"could not connect to {url}. "
+                f"Check that base_url is correct: {self.base_url}. "
+                f"Error: {e}"
+            )
+            raise
+        return self
 
     async def _agenerate(
         self,

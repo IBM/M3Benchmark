@@ -1,0 +1,42 @@
+.git/
+.venv/
+__pycache__/
+*.pyc
+*.egg-info/
+
+# Data — mounted at runtime, not baked in
+data/
+apis/m3/rest/db/
+apis/retrievers/chroma_data/
+apis/retrievers/queries/
+
+# Build artifacts / outputs
+output/
+notebooks/
+*.sqlite
+build/
+parlant-data/
+
+# IDE / editor
+.vscode/
+.idea/
+*.swp
+
+# Unneeded for Docker build
+sample_data/
+ui/
+docs/
+tests/
+examples/
+helpers/
+agents/
+baselines/
+prompts/
+benchmark/
+*.json
+*.txt
+*.md
+*.cfg
+*.toml
+*.ini
+*.ipynb_checkpoints/

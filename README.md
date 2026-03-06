@@ -1,13 +1,11 @@
 # M3Benchmark
 
+> **Getting started?** See [setup.md](setup.md) for installation, container setup, and how to run benchmarks and e2e tests.
+
 ## 📊 Dataset
 
 Please find more details about the dataset (download, schema, etc.) in [docs/dataset.md](docs/dataset.md) and APIs in [apis](apis).
 
-## Download Data
-
-- **Task #1:** [Simple](https://github.com/)
-- **Task #2:** [MultiTurn](https://github.com/)
 
 ## Data Schema
 
@@ -39,92 +37,6 @@ Auto-evaluation:
 
 Please refer to [evaluation.py](evaluation.py) for more details on how the evaluation was implemented.
 
-## ✍️ How to run end-to-end evaluation?
-1. **Install** specific dependencies
-    ```bash
-    pip install -r requirements.txt
-    ```
-
-2. **Configure environment variables** by copying the provided template and filling in your credentials:
-    ```bash
-    cp example_env .env
-    ```
-    Edit `.env` and replace the placeholder values (e.g. `your-rits-api-key-here`) with your actual API keys. See `example_env` for the full list of available options.
-
-3. Test your model locally using `python evaluation.py`. This script will run answer generation and auto-evaluation.
-
-## Benchmark Runner
-
-`benchmark_runner.py` runs LLM agents against MCP tool servers and records trajectories + answers.
-
-### Tasks
-
-| Task | Container | Description |
-|------|-----------|-------------|
-| 2 | `fastapi-mcp-server` | M3 SQL tools |
-| 5 | `retriever-mcp-server` | ChromaDB retriever |
-
-### Quick Start
-
-```bash
-pip install mcp langchain-anthropic langgraph langchain-ollama
-
-# Single task
-python benchmark_runner.py --task_id 5 --run-agent --domain address
-
-# Multiple tasks, sequential (default)
-python benchmark_runner.py --task_id 2 5 --run-agent --domain address
-
-# Multiple tasks, parallel
-python benchmark_runner.py --task_id 2 5 --run-agent --domain address --parallel
-```
-
-### Common Options
-
-```bash
-# Limit samples per domain
-python benchmark_runner.py --task_id 5 --run-agent --domain address --max-samples-per-domain 5
-
-# Choose provider and model
-python benchmark_runner.py --task_id 5 --run-agent --provider anthropic --model claude-sonnet-4-5-20250929
-
-# List tools only (no agent run)
-python benchmark_runner.py --task_id 5 --list-tools --domain address
-
-# Tool shortlisting (top-k most relevant per query)
-python benchmark_runner.py --task_id 2 --run-agent --domain hockey --top-k-tools 5
-```
-
-### All Options
-
-| Flag | Description |
-|------|-------------|
-| `--task_id ID [ID ...]` | Task ID(s) to run (e.g. `2`, `5`, or `2 5`) |
-| `--parallel` | Run multiple task_ids concurrently via `asyncio.gather` |
-| `--run-agent` | Run the agent on benchmark queries |
-| `--list-tools` | List available tools and exit |
-| `--domain DOMAIN` | Filter to domain(s), repeatable |
-| `--max-samples-per-domain N` | Cap queries per domain |
-| `--provider` | `ollama` (default), `anthropic`, `openai`, `litellm`, `watsonx`, `rits` |
-| `--model MODEL` | Model name (default: provider-specific) |
-| `--top-k-tools K` | Keep top-K tools per query via embedding similarity |
-| `--container-runtime` | `docker` or `podman` (default: auto-detect) |
-| `--container-name` | Override container name from task config |
-| `--output DIR` | Override output directory |
-
-### Output
-
-Results are saved to `output/task_{id}_{timestamp}/<domain>.json` in the current working directory.
-
-```
-output/
-  task_2_feb_13_11_21am/
-    address.json
-    hockey.json
-  task_5_feb_13_11_21am/
-    address.json
-    airline.json
-```
 
 
 ## 🏁 Baselines

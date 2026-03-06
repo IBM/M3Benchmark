@@ -19,6 +19,14 @@ from chromadb_retriever import ChromaDBRetriever, GraniteEmbeddingFunction
 PERSIST_DIR = "./chroma_data"
 PRELOAD = os.environ.get("PRELOAD_COLLECTIONS", "true").lower() == "true"
 
+# Load domain descriptions for richer tool descriptions
+_desc_path = os.path.join(os.path.dirname(__file__), "domain_description_dict.json")
+try:
+    with open(_desc_path) as _f:
+        DOMAIN_DESCRIPTIONS: dict = json.load(_f)
+except FileNotFoundError:
+    DOMAIN_DESCRIPTIONS = {}
+
 
 # --------------- Pydantic models ---------------
 
@@ -93,9 +101,13 @@ def _register_domain_routes(app: FastAPI, domain: str):
         retriever.add_chunks(prepared)
         return IndexResponse(indexed=len(prepared))
 
+    domain_desc = DOMAIN_DESCRIPTIONS.get(domain, {}).get(
+        "full_description", f"Retrieve document(s) that best match the query related to {domain}."
+    )
+
     @router.post("/query", response_model=QueryResponse,
                  summary=f"Query {domain}",
-                 description=f"Retrieve document(s) that best match the query related to {domain}.")
+                 description=domain_desc)
     async def query(request: QueryRequest):
         retriever = _get_retriever(domain)
         raw = retriever.query(request.question, n_results=request.n_results)

@@ -19,7 +19,9 @@
           "tool_calls": [
             {
               "name": "skills_model_registry",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -27,7 +29,39 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should infer structure from the untyped response and present model info"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "skills_model_registry",
+              "result": {
+                "requisition_id": "05958BR",
+                "models": [
+                  {
+                    "name": "Skill relevance classifier",
+                    "version": "2.1.0",
+                    "status": "active",
+                    "last_trained": "2024-11-15",
+                    "accuracy": 0.87
+                  },
+                  {
+                    "name": "SLA impact regression model",
+                    "version": "1.4.2",
+                    "status": "active",
+                    "last_trained": "2024-10-01",
+                    "r_squared": 0.72
+                  },
+                  {
+                    "name": "Funnel conversion recommender",
+                    "version": "3.0.0-beta",
+                    "status": "staging",
+                    "last_trained": "2025-01-20",
+                    "precision": 0.81
+                  }
+                ],
+                "registry_updated": "2025-04-29"
+              }
+            }
+          ]
         }
       },
       {
@@ -45,7 +79,10 @@
           "tool_calls": [
             {
               "name": "skills_skill_lookup",
-              "args": {"requisition_id": "05958BR", "skill_name": "Python"}
+              "args": {
+                "requisition_id": "05958BR",
+                "skill_name": "Python"
+              }
             }
           ],
           "error_handling": {
@@ -53,7 +90,19 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should infer required parameters and call the tool correctly"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "skills_skill_lookup",
+              "result": {
+                "requisition_id": "05958BR",
+                "skill_name": "Python",
+                "occurrence_count": 200,
+                "total_candidates": 2913,
+                "occurrence_rate": 6.9
+              }
+            }
+          ]
         }
       },
       {
@@ -71,7 +120,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_source_metrics_lite",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -79,7 +130,53 @@
             "should_report_error": true,
             "should_retry": false,
             "expected_behavior": "Agent should handle partial data and note missing source names"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_source_metrics_lite",
+              "result": {
+                "requisition_id": "05958BR",
+                "metrics": [
+                  {
+                    "candidate_count": 200,
+                    "hire_count": 3,
+                    "sla_met_count": 108
+                  },
+                  {
+                    "candidate_count": 516,
+                    "hire_count": 11,
+                    "sla_met_count": 54
+                  },
+                  {
+                    "candidate_count": 468,
+                    "hire_count": 10,
+                    "sla_met_count": 320
+                  },
+                  {
+                    "candidate_count": 410,
+                    "hire_count": 0,
+                    "sla_met_count": 272
+                  },
+                  {
+                    "candidate_count": 400,
+                    "hire_count": 5,
+                    "sla_met_count": 281
+                  },
+                  {
+                    "candidate_count": 519,
+                    "hire_count": 7,
+                    "sla_met_count": 370
+                  },
+                  {
+                    "candidate_count": 400,
+                    "hire_count": 4,
+                    "sla_met_count": 266
+                  }
+                ],
+                "note": "Lightweight view — some fields may be omitted for performance."
+              }
+            }
+          ]
         }
       },
       {
@@ -97,7 +194,9 @@
           "tool_calls": [
             {
               "name": "candidate_source_volume_report",
-              "args": {"requisition_id": "05958BR"}
+              "args": {
+                "requisition_id": "05958BR"
+              }
             }
           ],
           "error_handling": {
@@ -105,7 +204,60 @@
             "should_report_error": false,
             "should_retry": false,
             "expected_behavior": "Agent should handle type coercion (string to int) transparently"
-          }
+          },
+          "tool_call_results": [
+            {
+              "name": "candidate_source_volume_report",
+              "result": {
+                "requisition_id": "05958BR",
+                "metrics": [
+                  {
+                    "source_name": "CyberSec Jobs",
+                    "candidate_count": "200",
+                    "hire_count": "3",
+                    "review_rate": "80.5%"
+                  },
+                  {
+                    "source_name": "Dice",
+                    "candidate_count": "516",
+                    "hire_count": "11",
+                    "review_rate": "11.0%"
+                  },
+                  {
+                    "source_name": "GitHub",
+                    "candidate_count": "468",
+                    "hire_count": "10",
+                    "review_rate": "76.1%"
+                  },
+                  {
+                    "source_name": "Indeed",
+                    "candidate_count": "410",
+                    "hire_count": "0",
+                    "review_rate": "77.1%"
+                  },
+                  {
+                    "source_name": "Internal",
+                    "candidate_count": "400",
+                    "hire_count": "5",
+                    "review_rate": "74.0%"
+                  },
+                  {
+                    "source_name": "LinkedIn",
+                    "candidate_count": "519",
+                    "hire_count": "7",
+                    "review_rate": "75.1%"
+                  },
+                  {
+                    "source_name": "Referral",
+                    "candidate_count": "400",
+                    "hire_count": "4",
+                    "review_rate": "70.0%"
+                  }
+                ],
+                "total_candidates": "2913"
+              }
+            }
+          ]
         }
       }
     ]

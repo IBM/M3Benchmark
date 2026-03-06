@@ -6,17 +6,24 @@ import logging
 import sys
 from typing import List, Optional
 
+from apis.mcp_logging import _JsonFormatter
 from .config import find_default_config, load_config
 
 
 def setup_logging(verbose: bool = False) -> None:
-    """Configure logging for the CLI."""
+    """Configure logging for the CLI.
+
+    Always writes JSON lines to stderr — stdout is reserved for the MCP protocol.
+    Each record includes ``task_id`` and ``domain`` from the environment so logs
+    from parallel runs can be filtered with ``jq``.
+    """
     level = logging.DEBUG if verbose else logging.INFO
-    logging.basicConfig(
-        level=level,
-        format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-        stream=sys.stderr,  # MCP uses stdout for protocol, stderr for logs
-    )
+    handler = logging.StreamHandler(sys.stderr)
+    handler.setFormatter(_JsonFormatter())
+    root = logging.getLogger()
+    root.handlers.clear()
+    root.addHandler(handler)
+    root.setLevel(level)
 
 
 def parse_args(args: Optional[List[str]] = None) -> argparse.Namespace:
@@ -86,9 +93,9 @@ Environment variables:
         "--mode",
         "--server-type",
         dest="server_type",
-        choices=["slot_filling", "selection"],
+        choices=["slot_filling", "selection", "router"],
         metavar="MODE",
-        help="Server mode: 'slot_filling' (generic tools) or 'selection' (specialized tools with getters)",
+        help="Server mode: 'router' (default, routes per query), 'slot_filling' (generic tools), or 'selection' (specialized tools with getters)",
     )
 
     parser.add_argument(
