@@ -1,0 +1,16 @@
+[
+    {
+        "uuid": "8a751d8b-bf2b-4cdd-bdfe-54efdb1c4be8",
+        "domain": "beer_factory",
+        "num_turns": 1,
+        "dialogue": {
+            "turns": [
+                {
+                    "turn_id": 1,
+                    "query": "How many breweries are located in North America?"
+                }
+            ]
+        },
+        "additional_instructions": ""
+    }
+]

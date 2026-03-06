@@ -1,0 +1,22 @@
+[
+    {
+        "uuid": "8a751d8b-bf2b-4cdd-bdfe-54efdb1c4be8",
+        "domain": "olympics",
+        "num_turns": 2,
+        "dialogue":{
+            "turns":[
+                {
+                    "turn_id": 0,
+                    "query":"Which Summer Olympics did the competitor who has won the most medals win four gold and two silver medals?"
+
+                },
+                {
+                    "turn_id": 1,                    
+                    "query":"What is the ratio of male to female athletes in these?"
+                }
+
+            ]
+        },
+        "additional_instructions": "Only use retrivers for Retail, Sales & Commerce, which is/are about Topics related to retail operations, customer purchases, inventory, and product ordering related questions."
+    }
+]

@@ -1,7 +1,8 @@
 {
-    "num_domains": 61,
+    "num_domains": 62,
     "domains": [
         "airline",
+        "bpo",
         "citeseer",
         "disney",
         "mondial_geo",
@@ -64,9 +65,10 @@
         "genes"
     ],
     "test": {
-        "num_domains": 60,
+        "num_domains": 61,
         "domains": [
             "airline",
+            "bpo",
             "citeseer",
             "disney",
             "mondial_geo",
@@ -210,9 +212,10 @@
             ]
         },
         "capability_3_multihop_reasoning": {
-            "num_domains": 37,
+            "num_domains": 38,
             "domains": [
                 "airline",
+                "bpo",
                 "mondial_geo",
                 "student_loan",
                 "menu",
