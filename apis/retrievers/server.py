@@ -102,7 +102,7 @@ def _register_domain_routes(app: FastAPI, domain: str):
         return IndexResponse(indexed=len(prepared))
 
     domain_desc = DOMAIN_DESCRIPTIONS.get(domain, {}).get(
-        "brief_description", f"Retrieve document(s) that best match the query related to {domain}."
+        "description", f"Retrieve document(s) that best match the query related to {domain}."
     )
 
     @router.post("/query", response_model=QueryResponse,
