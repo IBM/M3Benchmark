@@ -1,373 +1,366 @@
 {
     "student_loan": [
+        "coinmarketcap",
         "student_loan",
-        "public_review_platform",
-        "airline",
-        "cars",
-        "genes"
+        "mental_health_survey",
+        "world_development_indicators",
+        "public_review_platform"
     ],
     "university": [
-        "ice_hockey_draft",
+        "hockey",
+        "bike_share_1",
+        "university",
         "mental_health_survey",
-        "genes",
-        "public_review_platform",
-        "university"
+        "codebase_comments"
     ],
     "computer_student": [
-        "trains",
-        "computer_student",
-        "bike_share_1",
-        "movie",
-        "music_platform_2"
+        "chicago_crime",
+        "hockey",
+        "book_publishing_company",
+        "world",
+        "computer_student"
     ],
     "college_completion": [
+        "codebase_comments",
         "college_completion",
-        "ice_hockey_draft",
-        "mondial_geo",
-        "soccer_2016",
-        "european_football_1"
+        "talkingdata",
+        "movie_platform",
+        "law_episode"
     ],
     "movie": [
-        "mental_health_survey",
-        "bike_share_1",
         "world",
-        "movie",
-        "genes"
+        "trains",
+        "cars",
+        "codebase_comments",
+        "movie"
     ],
     "movie_platform": [
-        "citeseer",
-        "shakespeare",
-        "language_corpus",
-        "craftbeer",
+        "public_review_platform",
+        "coinmarketcap",
+        "world",
+        "chicago_crime",
         "movie_platform"
     ],
     "movie_3": [
-        "trains",
-        "bike_share_1",
-        "citeseer",
-        "sales_in_weather",
-        "movie_3"
+        "movie_3",
+        "authors",
+        "university",
+        "college_completion",
+        "legislator"
     ],
     "movies_4": [
-        "movies_4",
-        "genes",
-        "public_review_platform",
-        "trains",
-        "mental_health_survey"
+        "menu",
+        "cookbook",
+        "professional_basketball",
+        "coinmarketcap",
+        "movies_4"
     ],
     "simpson_episodes": [
-        "world",
-        "address",
+        "olympics",
+        "airline",
+        "university",
         "simpson_episodes",
-        "computer_student",
-        "student_loan"
+        "trains"
     ],
     "disney": [
-        "european_football_2",
-        "disney",
-        "european_football_1",
-        "world",
-        "books"
+        "college_completion",
+        "legislator",
+        "university",
+        "language_corpus",
+        "disney"
     ],
     "law_episode": [
-        "image_and_language",
-        "app_store",
-        "law_episode",
+        "restaurant",
+        "olympics",
         "university",
-        "coinmarketcap"
+        "law_episode",
+        "food_inspection"
     ],
     "movielens": [
-        "airline",
+        "genes",
+        "world",
+        "trains",
         "movielens",
-        "student_loan",
-        "cars",
-        "book_publishing_company"
+        "bike_share_1"
     ],
     "talkingdata": [
-        "citeseer",
-        "authors",
+        "image_and_language",
+        "app_store",
         "talkingdata",
-        "professional_basketball",
-        "soccer_2016"
+        "student_loan",
+        "european_football_1"
     ],
     "music_tracker": [
         "music_tracker",
-        "university",
-        "computer_student",
-        "cookbook",
-        "world"
+        "chicago_crime",
+        "legislator",
+        "book_publishing_company",
+        "public_review_platform"
     ],
     "music_platform_2": [
-        "genes",
-        "university",
-        "craftbeer",
-        "food_inspection",
-        "music_platform_2"
+        "olympics",
+        "music_platform_2",
+        "shakespeare",
+        "language_corpus",
+        "european_football_1"
     ],
     "video_games": [
-        "public_review_platform",
+        "books",
+        "shakespeare",
+        "legislator",
         "video_games",
-        "professional_basketball",
-        "hockey",
-        "olympics"
+        "computer_student"
     ],
     "professional_basketball": [
         "professional_basketball",
-        "language_corpus",
-        "menu",
-        "food_inspection",
-        "craftbeer"
+        "restaurant",
+        "student_loan",
+        "simpson_episodes",
+        "movie"
     ],
     "european_football_1": [
-        "video_games",
-        "mondial_geo",
+        "student_loan",
         "european_football_1",
-        "movie",
-        "cookbook"
-    ],
-    "european_football_2": [
-        "talkingdata",
-        "music_platform_2",
-        "food_inspection",
-        "european_football_2",
-        "genes"
-    ],
-    "olympics": [
-        "college_completion",
-        "world_development_indicators",
-        "book_publishing_company",
-        "bike_share_1",
-        "olympics"
-    ],
-    "ice_hockey_draft": [
-        "cars",
-        "craftbeer",
-        "ice_hockey_draft",
-        "mondial_geo",
-        "cookbook"
-    ],
-    "hockey": [
-        "hockey",
-        "world_development_indicators",
-        "movie",
-        "disney",
-        "movie_platform"
-    ],
-    "soccer_2016": [
-        "books",
-        "language_corpus",
-        "soccer_2016",
-        "authors",
-        "legislator"
-    ],
-    "book_publishing_company": [
-        "book_publishing_company",
-        "college_completion",
+        "trains",
         "university",
-        "address",
-        "image_and_language"
-    ],
-    "sales_in_weather": [
-        "european_football_2",
-        "sales_in_weather",
-        "world",
-        "world_development_indicators",
-        "olympics"
-    ],
-    "restaurant": [
-        "restaurant",
-        "books",
-        "music_tracker",
-        "image_and_language",
-        "codebase_comments"
-    ],
-    "food_inspection": [
-        "food_inspection",
-        "sales_in_weather",
-        "legislator",
-        "professional_basketball",
-        "soccer_2016"
-    ],
-    "cookbook": [
-        "world_development_indicators",
-        "european_football_2",
-        "hockey",
-        "chicago_crime",
-        "cookbook"
-    ],
-    "beer_factory": [
-        "image_and_language",
-        "airline",
-        "university",
-        "cars",
-        "beer_factory"
-    ],
-    "craftbeer": [
-        "language_corpus",
-        "books",
-        "coinmarketcap",
-        "app_store",
-        "craftbeer"
-    ],
-    "menu": [
-        "app_store",
-        "menu",
-        "codebase_comments",
-        "world",
-        "european_football_1"
-    ],
-    "app_store": [
-        "computer_student",
-        "college_completion",
-        "legislator",
-        "app_store",
         "chicago_crime"
     ],
-    "codebase_comments": [
-        "food_inspection",
-        "movielens",
-        "codebase_comments",
-        "world_development_indicators",
-        "european_football_2"
-    ],
-    "image_and_language": [
-        "image_and_language",
-        "coinmarketcap",
+    "olympics": [
         "address",
-        "mondial_geo",
-        "food_inspection"
-    ],
-    "mental_health_survey": [
-        "bike_share_1",
-        "mental_health_survey",
-        "trains",
-        "soccer_2016",
+        "coinmarketcap",
+        "olympics",
+        "computer_student",
         "world"
     ],
-    "genes": [
-        "world_development_indicators",
-        "law_episode",
+    "ice_hockey_draft": [
+        "college_completion",
+        "book_publishing_company",
+        "university",
+        "sales_in_weather",
+        "ice_hockey_draft"
+    ],
+    "hockey": [
+        "sales_in_weather",
+        "genes",
+        "hockey",
         "legislator",
-        "talkingdata",
-        "genes"
+        "coinmarketcap"
+    ],
+    "soccer_2016": [
+        "soccer_2016",
+        "codebase_comments",
+        "citeseer",
+        "shakespeare",
+        "image_and_language"
+    ],
+    "book_publishing_company": [
+        "genes",
+        "book_publishing_company",
+        "world",
+        "bike_share_1",
+        "cars"
+    ],
+    "sales_in_weather": [
+        "sales_in_weather",
+        "language_corpus",
+        "craftbeer",
+        "trains",
+        "disney"
+    ],
+    "restaurant": [
+        "genes",
+        "restaurant",
+        "app_store",
+        "image_and_language",
+        "mental_health_survey"
+    ],
+    "food_inspection": [
+        "citeseer",
+        "mental_health_survey",
+        "food_inspection",
+        "shakespeare",
+        "professional_basketball"
+    ],
+    "cookbook": [
+        "law_episode",
+        "cookbook",
+        "movielens",
+        "mental_health_survey",
+        "music_tracker"
+    ],
+    "beer_factory": [
+        "beer_factory",
+        "app_store",
+        "simpson_episodes",
+        "movies_4",
+        "music_platform_2"
+    ],
+    "craftbeer": [
+        "craftbeer",
+        "movie",
+        "world",
+        "law_episode",
+        "simpson_episodes"
+    ],
+    "menu": [
+        "world_development_indicators",
+        "music_tracker",
+        "genes",
+        "menu",
+        "mondial_geo"
+    ],
+    "app_store": [
+        "ice_hockey_draft",
+        "professional_basketball",
+        "app_store",
+        "computer_student",
+        "university"
+    ],
+    "codebase_comments": [
+        "cookbook",
+        "craftbeer",
+        "codebase_comments",
+        "world",
+        "menu"
+    ],
+    "image_and_language": [
+        "genes",
+        "professional_basketball",
+        "hockey",
+        "menu",
+        "image_and_language"
+    ],
+    "mental_health_survey": [
+        "computer_student",
+        "app_store",
+        "codebase_comments",
+        "disney",
+        "mental_health_survey"
+    ],
+    "genes": [
+        "genes",
+        "public_review_platform",
+        "language_corpus",
+        "disney",
+        "computer_student"
     ],
     "mondial_geo": [
-        "movies_4",
-        "authors",
-        "music_tracker",
+        "simpson_episodes",
+        "cars",
         "movie",
+        "chicago_crime",
         "mondial_geo"
     ],
     "world": [
-        "legislator",
-        "restaurant",
-        "chicago_crime",
+        "university",
+        "app_store",
         "world",
-        "food_inspection"
+        "computer_student",
+        "image_and_language"
     ],
     "address": [
-        "mental_health_survey",
-        "food_inspection",
-        "cookbook",
-        "address",
-        "restaurant"
+        "hockey",
+        "law_episode",
+        "trains",
+        "public_review_platform",
+        "address"
     ],
     "world_development_indicators": [
-        "books",
-        "music_platform_2",
-        "shakespeare",
         "world_development_indicators",
-        "talkingdata"
+        "music_tracker",
+        "movielens",
+        "simpson_episodes",
+        "video_games"
     ],
     "airline": [
         "airline",
-        "cookbook",
-        "craftbeer",
-        "image_and_language",
-        "menu"
+        "hockey",
+        "sales_in_weather",
+        "coinmarketcap",
+        "ice_hockey_draft"
     ],
     "trains": [
-        "book_publishing_company",
         "world",
+        "public_review_platform",
         "world_development_indicators",
         "trains",
-        "mental_health_survey"
+        "sales_in_weather"
     ],
     "bike_share_1": [
-        "ice_hockey_draft",
-        "bike_share_1",
-        "law_episode",
-        "coinmarketcap",
-        "olympics"
-    ],
-    "cars": [
+        "music_tracker",
+        "music_platform_2",
         "world",
         "movie_platform",
+        "bike_share_1"
+    ],
+    "cars": [
+        "genes",
         "cars",
-        "video_games",
-        "simpson_episodes"
-    ],
-    "coinmarketcap": [
-        "coinmarketcap",
-        "bike_share_1",
-        "authors",
-        "book_publishing_company",
-        "books"
-    ],
-    "legislator": [
-        "european_football_2",
-        "legislator",
-        "codebase_comments",
-        "craftbeer",
-        "restaurant"
-    ],
-    "chicago_crime": [
-        "trains",
-        "movies_4",
-        "video_games",
-        "chicago_crime",
-        "cars"
-    ],
-    "public_review_platform": [
-        "public_review_platform",
         "shakespeare",
-        "image_and_language",
-        "college_completion",
-        "codebase_comments"
-    ],
-    "books": [
         "mental_health_survey",
-        "hockey",
-        "university",
-        "ice_hockey_draft",
-        "books"
-    ],
-    "authors": [
-        "menu",
-        "soccer_2016",
-        "authors",
-        "movie_3",
-        "movielens"
-    ],
-    "shakespeare": [
-        "movies_4",
-        "bike_share_1",
-        "shakespeare",
-        "airline",
         "legislator"
     ],
-    "language_corpus": [
-        "music_tracker",
-        "video_games",
+    "coinmarketcap": [
+        "bike_share_1",
+        "airline",
+        "codebase_comments",
+        "coinmarketcap",
+        "beer_factory"
+    ],
+    "legislator": [
+        "cookbook",
+        "movie_3",
+        "legislator",
+        "restaurant",
+        "trains"
+    ],
+    "chicago_crime": [
+        "authors",
+        "genes",
+        "language_corpus",
+        "chicago_crime",
+        "beer_factory"
+    ],
+    "public_review_platform": [
+        "movie_3",
+        "public_review_platform",
+        "disney",
+        "law_episode",
+        "movies_4"
+    ],
+    "books": [
+        "books",
         "simpson_episodes",
+        "movie",
+        "talkingdata",
+        "music_tracker"
+    ],
+    "authors": [
         "professional_basketball",
-        "language_corpus"
+        "image_and_language",
+        "european_football_1",
+        "food_inspection",
+        "authors"
+    ],
+    "shakespeare": [
+        "image_and_language",
+        "movie",
+        "legislator",
+        "movielens",
+        "shakespeare"
+    ],
+    "language_corpus": [
+        "language_corpus",
+        "coinmarketcap",
+        "book_publishing_company",
+        "beer_factory",
+        "food_inspection"
     ],
     "citeseer": [
+        "european_football_1",
+        "olympics",
+        "chicago_crime",
         "citeseer",
-        "movies_4",
-        "genes",
-        "music_platform_2",
-        "trains"
+        "computer_student"
     ]
 }
