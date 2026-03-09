@@ -56,8 +56,19 @@ class ToolShortlister:
         texts = [self._tool_text(t) for t in self._tools]
         self._tool_embeddings = self.model.encode(texts, convert_to_numpy=True)
 
+    @staticmethod
+    def _tool_name(tool: Any) -> str:
+        """Extract the name from a tool (dict or StructuredTool)."""
+        if isinstance(tool, dict):
+            return tool.get("name", "")
+        return getattr(tool, "name", "")
+
     def shortlist(self, query: str, tools: list) -> list:
         """Return the *top_k* tools most similar to *query*.
+
+        Tools whose names start with ``query_`` are always included regardless
+        of their similarity score.  The remaining slots (up to *top_k*) are
+        filled by the most similar non-``query_*`` tools.
 
         If ``len(tools) <= top_k`` the original list is returned unchanged
         (no embedding computation).
@@ -77,16 +88,32 @@ class ToolShortlister:
         if len(tools) <= self.top_k:
             return tools
 
+        # Partition: query_* tools are always kept.
+        pinned = [t for t in tools if self._tool_name(t).startswith("query_")]
+        candidates = [t for t in tools if not self._tool_name(t).startswith("query_")]
+
+        remaining_slots = self.top_k - len(pinned)
+
+        if remaining_slots <= 0 or not candidates:
+            return pinned
+
+        if remaining_slots >= len(candidates):
+            return pinned + candidates
+
         # Use pre-computed embeddings when available and the catalog matches.
         if (
             self._tool_embeddings is not None
             and self._tools is not None
             and len(self._tools) == len(tools)
         ):
-            tool_embs = self._tool_embeddings
+            candidate_indices = [
+                i for i, t in enumerate(tools)
+                if not self._tool_name(t).startswith("query_")
+            ]
+            tool_embs = self._tool_embeddings[candidate_indices]
         else:
             # Fallback: compute on the fly (shouldn't normally happen).
-            texts = [self._tool_text(t) for t in tools]
+            texts = [self._tool_text(t) for t in candidates]
             tool_embs = self.model.encode(texts, convert_to_numpy=True)
 
         query_emb = self.model.encode([query], convert_to_numpy=True)
@@ -101,6 +128,6 @@ class ToolShortlister:
 
         similarities = (tool_embs_normed @ query_emb_normed.T).squeeze()
 
-        top_indices = np.argsort(similarities)[::-1][: self.top_k]
+        top_indices = np.argsort(similarities)[::-1][:remaining_slots]
 
-        return [tools[i] for i in top_indices]
+        return pinned + [candidates[i] for i in top_indices]
