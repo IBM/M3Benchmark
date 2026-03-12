@@ -1,158 +1,158 @@
 {
     "airline": {
-        "description": "This tool contains information related to airline operations, flight schedules, delays, and airport and air carrier information."
+        "description": "This tool can return documents related to airline operations, flight schedules, delays, and airport and air carrier information."
     },
     "citeseer": {
-        "description": "This tool contains information related to citation analysis, paper classification, and natural language processing in the field of text mining and bibliometrics."
+        "description": "This tool can return documents related to citation analysis, paper classification, and natural language processing in the field of text mining and bibliometrics."
     },
     "disney": {
-        "description": "This tool contains information related to Disney movies, including directors, revenue, voice actors, characters, and movie gross."
+        "description": "This tool can return documents related to Disney movies, including directors, revenue, voice actors, characters, and movie gross."
     },
     "mondial_geo": {
-        "description": "This tool contains information related to geographical features, countries, economies, religions, languages, organizations, and cities."
+        "description": "This tool can return documents related to geographical features, countries, economies, religions, languages, organizations, and cities."
     },
     "world": {
-        "description": "This tool contains information related to country and city demographics, languages, and economic indicators."
+        "description": "This tool can return documents related to country and city demographics, languages, and economic indicators."
     },
     "menu": {
-        "description": "This tool contains information related to menus, dishes, and menu items in a restaurant setting."
+        "description": "This tool can return documents related to menus, dishes, and menu items in a restaurant setting."
     },
     "ice_hockey_draft": {
-        "description": "This tool contains information related to hockey players, their personal information, draft rankings, and game performance statistics."
+        "description": "This tool can return documents related to hockey players, their personal information, draft rankings, and game performance statistics."
     },
     "soccer_2016": {
-        "description": "This tool contains information related to soccer matches, covering various aspects of the game, including teams, players, umpires, venues, and outcomes."
+        "description": "This tool can return documents related to soccer matches, covering various aspects of the game, including teams, players, umpires, venues, and outcomes."
     },
     "university": {
-        "description": "This tool contains information related to university rankings, demographics, and the countries where universities are located."
+        "description": "This tool can return documents related to university rankings, demographics, and the countries where universities are located."
     },
     "student_loan": {
-        "description": "This tool contains information related to student records, including enrollment, absences, bankruptcy, and employment status."
+        "description": "This tool can return documents related to student records, including enrollment, absences, bankruptcy, and employment status."
     },
     "sales_in_weather": {
-        "description": "This tool contains information related to sales and weather conditions, including store and weather station information, and climate conditions."
+        "description": "This tool can return documents related to sales and weather conditions, including store and weather station information, and climate conditions."
     },
     "public_review_platform": {
-        "description": "This tool contains information related to businesses, user interactions, and engagement metrics on a review platform, likely Yelp."
+        "description": "This tool can return documents related to businesses, user interactions, and engagement metrics on a review platform, likely Yelp."
     },
     "movies_4": {
-        "description": "This tool contains information related to movies, including information about cast, crew, genres, languages, and production companies."
+        "description": "This tool can return documents related to movies, including information about cast, crew, genres, languages, and production companies."
     },
     "european_football_1": {
-        "description": "This tool contains information related to football matches, their results, participating teams, and associated divisions, along with the season information."
+        "description": "This tool can return documents related to football matches, their results, participating teams, and associated divisions, along with the season information."
     },
     "music_platform_2": {
-        "description": "This tool contains information related to podcasts and their associated reviews, including information on podcast categories, review ratings, and review creation runs."
+        "description": "This tool can return documents related to podcasts and their associated reviews, including information on podcast categories, review ratings, and review creation runs."
     },
     "cars": {
-        "description": "This tool contains information related to car specifications, performance, and country of origin."
+        "description": "This tool can return documents related to car specifications, performance, and country of origin."
     },
     "hockey": {
-        "description": "This tool contains information related to hockey, focusing on player, team, and coach statistics, and various awards."
+        "description": "This tool can return documents related to hockey, focusing on player, team, and coach statistics, and various awards."
     },
     "world_development_indicators": {
-        "description": "This tool contains information related to country-specific economic indicators, national accounts, and development relevance."
+        "description": "This tool can return documents related to country-specific economic indicators, national accounts, and development relevance."
     },
     "movie_3": {
-        "description": "This tool contains information related to a film rental business, including film details, staff and customer information, rentals, payments, and inventory."
+        "description": "This tool can return documents related to a film rental business, including film details, staff and customer information, rentals, payments, and inventory."
     },
     "trains": {
-        "description": "This tool contains information related to trains and their constituent cars, including direction, position, physical attributes, and load information."
+        "description": "This tool can return documents related to trains and their constituent cars, including direction, position, physical attributes, and load information."
     },
     "cookbook": {
-        "description": "This tool contains information related to recipes, their ingredients, preparation times, and nutritional content."
+        "description": "This tool can return documents related to recipes, their ingredients, preparation times, and nutritional content."
     },
     "computer_student": {
-        "description": "This tool contains information related to academia, covering course levels, faculty positions, and student qualifications."
+        "description": "This tool can return documents related to academia, covering course levels, faculty positions, and student qualifications."
     },
     "bike_share_1": {
-        "description": "This tool contains information related to a bike-sharing system, including station locations, real-time status, trip information, and weather data."
+        "description": "This tool can return documents related to a bike-sharing system, including station locations, real-time status, trip information, and weather data."
     },
     "movie": {
-        "description": "This tool contains information related to actors and movies, including their personal details, movie details, and character details."
+        "description": "This tool can return documents related to actors and movies, including their personal details, movie details, and character details."
     },
     "music_tracker": {
-        "description": "This tool contains information related to music releases, their metadata, and associated tags."
+        "description": "This tool can return documents related to music releases, their metadata, and associated tags."
     },
     "language_corpus": {
-        "description": "This tool contains information related to the languages, focusing on Wikipedia pages, word occurrences, and language statistics."
+        "description": "This tool can return documents related to the languages, focusing on Wikipedia pages, word occurrences, and language statistics."
     },
     "food_inspection": {
-        "description": "This tool contains information related to the inspection, regulation, and detailed information of eateries."
+        "description": "This tool can return documents related to the inspection, regulation, and detailed information of eateries."
     },
     "video_games": {
-        "description": "This tool contains information related to game sales, platforms, publishers, genres, and their distribution across different regions."
+        "description": "This tool can return documents related to game sales, platforms, publishers, genres, and their distribution across different regions."
     },
     "craftbeer": {
-        "description": "This tool contains information related to beers and breweries, including their identifiers, alcohol content, bitterness levels, names, styles, serving sizes, and brewery locations."
+        "description": "This tool can return documents related to beers and breweries, including their identifiers, alcohol content, bitterness levels, names, styles, serving sizes, and brewery locations."
     },
     "movielens": {
-        "description": "This tool contains information related to movies, directors, actors, user interactions, and movie metadata."
+        "description": "This tool can return documents related to movies, directors, actors, user interactions, and movie metadata."
     },
     "app_store": {
-        "description": "This tool contains information related to Google Play Store applications, user reviews, and sentiment analysis."
+        "description": "This tool can return documents related to Google Play Store applications, user reviews, and sentiment analysis."
     },
     "chicago_crime": {
-        "description": "This tool contains information related to crime reports, police districts, FBI crime classification, community areas, and neighborhoods."
+        "description": "This tool can return documents related to crime reports, police districts, FBI crime classification, community areas, and neighborhoods."
     },
     "movie_platform": {
-        "description": "This tool contains information related to movies, user subscriptions, movie ratings, and movie lists on Mubi."
+        "description": "This tool can return documents related to movies, user subscriptions, movie ratings, and movie lists on Mubi."
     },
     "simpson_episodes": {
-        "description": "This tool contains information related to awards, episodes, credits, characters, and votes in a television or film context."
+        "description": "This tool can return documents related to awards, episodes, credits, characters, and votes in a television or film context."
     },
     "coinmarketcap": {
-        "description": "This tool contains information related to cryptocurrency coins and their historical market data."
+        "description": "This tool can return documents related to cryptocurrency coins and their historical market data."
     },
     "talkingdata": {
-        "description": "This tool contains information related to mobile device usage, user behavior, demographics, and geolocation."
+        "description": "This tool can return documents related to mobile device usage, user behavior, demographics, and geolocation."
     },
     "address": {
-        "description": "This tool contains information related to postal points, demographics, geographic areas, and payroll reports."
+        "description": "This tool can return documents related to postal points, demographics, geographic areas, and payroll reports."
     },
     "restaurant": {
-        "description": "This tool contains information related to restaurants, their locations, food types, and reviews."
+        "description": "This tool can return documents related to restaurants, their locations, food types, and reviews."
     },
     "shakespeare": {
-        "description": "This tool contains information related to theatre works, their chapters, scenes, characters, and paragraphs."
+        "description": "This tool can return documents related to theatre works, their chapters, scenes, characters, and paragraphs."
     },
     "olympics": {
-        "description": "This tool contains information related to the Olympic Games, including games, cities, sports, events, competitors, regions, and medals."
+        "description": "This tool can return documents related to the Olympic Games, including games, cities, sports, events, competitors, regions, and medals."
     },
     "image_and_language": {
-        "description": "This tool contains information related to image attributes, object classes, and prediction relationships between objects within images, captured through image samples, bounding boxes, and unique identifiers."
+        "description": "This tool can return documents related to image attributes, object classes, and prediction relationships between objects within images, captured through image samples, bounding boxes, and unique identifiers."
     },
     "legislator": {
-        "description": "This tool contains information related to legislators, their social media presence, political affiliations, and legislative service, including various IDs, personal information, and term details."
+        "description": "This tool can return documents related to legislators, their social media presence, political affiliations, and legislative service, including various IDs, personal information, and term details."
     },
     "codebase_comments": {
-        "description": "This tool contains information related to GitHub repositories, software solutions, methods, and method parameters, including repository and solution details, method information, and parameter specifications."
+        "description": "This tool can return documents related to GitHub repositories, software solutions, methods, and method parameters, including repository and solution details, method information, and parameter specifications."
     },
     "beer_factory": {
-        "description": "This tool contains information related to beer products, their brands, customer information, reviews, transactions, and geographical data."
+        "description": "This tool can return documents related to beer products, their brands, customer information, reviews, transactions, and geographical data."
     },
     "law_episode": {
-        "description": "This tool contains information related to the Law & Order series, covering episodes, awards, credits, and personal information."
+        "description": "This tool can return documents related to the Law & Order series, covering episodes, awards, credits, and personal information."
     },
     "college_completion": {
-        "description": "This tool contains information related to higher education institutions, including their graduation rates, student demographics, and financial information."
+        "description": "This tool can return documents related to higher education institutions, including their graduation rates, student demographics, and financial information."
     },
     "books": {
-        "description": "This tool contains information related to book orders, customer information, addresses, shipping methods, and publishers."
+        "description": "This tool can return documents related to book orders, customer information, addresses, shipping methods, and publishers."
     },
     "authors": {
-        "description": "This tool contains information related to academic papers, authors, and publication venues."
+        "description": "This tool can return documents related to academic papers, authors, and publication venues."
     },
     "mental_health_survey": {
-        "description": "This tool contains information related to surveys, including question text, user responses, and survey descriptions, all tied together with unique identifiers."
+        "description": "This tool can return documents related to surveys, including question text, user responses, and survey descriptions, all tied together with unique identifiers."
     },
     "professional_basketball": {
-        "description": "This tool contains information related to basketball statistics, covering player and team performance, draft information, and coach records."
+        "description": "This tool can return documents related to basketball statistics, covering player and team performance, draft information, and coach records."
     },
     "book_publishing_company": {
-        "description": "This tool contains information related to the book publishing industry, including documents on publications, authors, employees, and sales."
+        "description": "This tool can return documents related to the book publishing industry, including documents on publications, authors, employees, and sales."
     },
     "genes": {
-        "description": "This tool contains information related to gene interactions, classifications, and properties, including gene correlation scores and various gene attributes."
+        "description": "This tool can return documents related to gene interactions, classifications, and properties, including gene correlation scores and various gene attributes."
     }
 }
