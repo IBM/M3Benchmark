@@ -50,7 +50,7 @@ class IndexFileRequest(BaseModel):
 
 class QueryRequest(BaseModel):
     question: str
-    n_results: int = 3
+    n_results: int = 10
 
 
 class QueryResult(BaseModel):
@@ -102,7 +102,7 @@ def _register_domain_routes(app: FastAPI, domain: str):
         return IndexResponse(indexed=len(prepared))
 
     domain_desc = DOMAIN_DESCRIPTIONS.get(domain, {}).get(
-        "full_description", f"Retrieve document(s) that best match the query related to {domain}."
+        "description", f"Retrieve document(s) that best match the query related to {domain}."
     )
 
     @router.post("/query", response_model=QueryResponse,

@@ -2,6 +2,9 @@
 Index all domain JSON files into separate ChromaDB collections
 and generate sample query files per domain.
 
+Only domains listed as keys in domain_description_dict.json are indexed.
+Domains present in the source directory but absent from that file are skipped.
+
 Usage:
     python index_all_domains.py /path/to/docs_by_domains_20k
     python index_all_domains.py /path/to/docs_by_domains_20k --max-domains 5
@@ -11,12 +14,14 @@ import argparse
 import json
 import os
 import random
+from datetime import datetime, timezone
 from pathlib import Path
 
 from chromadb_retriever import ChromaDBRetriever
 
-PERSIST_DIR = "./chroma_data"
-QUERIES_DIR = "./queries"
+PERSIST_DIR = "./chroma_data_52_domains"
+QUERIES_DIR = "./queries_52_domains"
+DOMAIN_DESCRIPTION_FILE = Path(__file__).parent / "domain_description_dict.json"
 
 
 def extract_titles(chunks: list[dict]) -> list[str]:
@@ -180,10 +185,27 @@ def main():
     if not args.docs_directory.is_dir():
         parser.error(f"{args.docs_directory} is not a directory")
 
+    # Load the allowed domain set from domain_description_dict.json
+    with open(DOMAIN_DESCRIPTION_FILE) as f:
+        domain_descriptions = json.load(f)
+    allowed_domains = set(domain_descriptions.keys())
+    print(f"Allowed domains (from domain_description_dict.json): {len(allowed_domains)}")
+
     os.makedirs(QUERIES_DIR, exist_ok=True)
 
-    json_files = sorted(args.docs_directory.glob("*_docs.json"))
-    print(f"Found {len(json_files)} domain files")
+    all_json_files = sorted(args.docs_directory.glob("*_docs.json"))
+    print(f"Found {len(all_json_files)} domain files in source directory")
+
+    skipped_domains = []
+    json_files = []
+    for jf in all_json_files:
+        domain = jf.stem.replace("_docs", "")
+        if domain in allowed_domains:
+            json_files.append(jf)
+        else:
+            skipped_domains.append(domain)
+
+    print(f"Skipping {len(skipped_domains)} domains not in domain_description_dict.json: {skipped_domains}")
 
     if args.max_domains:
         json_files = json_files[: args.max_domains]
@@ -191,18 +213,47 @@ def main():
 
     print()
 
+    started_at = datetime.now(timezone.utc)
     total_chunks = 0
+    domain_stats = []
     for i, json_file in enumerate(json_files, 1):
         domain = json_file.stem.replace("_docs", "")
         print(f"[{i}/{len(json_files)}] Indexing domain: {domain}")
         count = index_domain(json_file, domain, max_chunks=args.max_chunks)
         total_chunks += count
+        domain_stats.append({"domain": domain, "chunks_indexed": count})
         print()
+
+    finished_at = datetime.now(timezone.utc)
 
     print("=" * 60)
     print(f"Done! Indexed {total_chunks} total chunks across {len(json_files)} domains.")
     print(f"Collections persisted to: {PERSIST_DIR}")
     print(f"Query files written to: {QUERIES_DIR}")
+
+    # Write stats file
+    stats = {
+        "started_at": started_at.isoformat(),
+        "finished_at": finished_at.isoformat(),
+        "source_directory": str(args.docs_directory),
+        "persist_directory": PERSIST_DIR,
+        "queries_directory": QUERIES_DIR,
+        "domain_description_file": str(DOMAIN_DESCRIPTION_FILE),
+        "total_domain_files_found": len(all_json_files),
+        "allowed_domains_count": len(allowed_domains),
+        "domains_indexed_count": len(json_files),
+        "domains_skipped_count": len(skipped_domains),
+        "domains_skipped": sorted(skipped_domains),
+        "total_chunks_indexed": total_chunks,
+        "max_domains_arg": args.max_domains,
+        "max_chunks_arg": args.max_chunks,
+        "domains_indexed": domain_stats,
+    }
+    stats_path = Path(PERSIST_DIR) / "indexing_stats.json"
+    os.makedirs(PERSIST_DIR, exist_ok=True)
+    with open(stats_path, "w") as f:
+        json.dump(stats, f, indent=2)
+    print(f"Stats written to: {stats_path}")
 
 
 if __name__ == "__main__":
