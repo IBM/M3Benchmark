@@ -35,8 +35,8 @@ Environment variables:
     MCP_SERVER_NAME    Name for this MCP server instance
                        (default: task5-combined-mcp)
 
-Usage (inside capability_4_multiturn_m3_environ container):
-    docker exec -i -e MCP_DOMAIN=address capability_4_multiturn_m3_environ \\
+Usage (inside capability_4_multiturn container):
+    docker exec -i -e MCP_DOMAIN=address capability_4_multiturn \\
         python /app/retrievers/task5_mcp_server.py
 """
 

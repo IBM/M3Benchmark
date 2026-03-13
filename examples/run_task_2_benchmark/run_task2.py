@@ -94,7 +94,7 @@ async def run_domain(domain: str, cfg: dict, rt: str) -> None:
 
 async def main(domain_filter: str | None, runtime: str) -> None:
     config = yaml.safe_load(CONFIG_FILE.read_text())
-    cfg = config["task_2"]
+    cfg = config["capability_2"]
     rt = get_runtime(runtime)
     domains = cfg["domains"]
 

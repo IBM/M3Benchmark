@@ -1,6 +1,6 @@
-name: m3-benchmark
+name: benchmark
 
-# Alternative to `make start` / `python m3_setup.py --start-containers`.
+# Alternative to `make start` / `python benchmark_setup.py --start-containers`.
 # Requires the image to be built or pulled first:
 #   make build          (build locally)
 #   make pull           (pull from Docker Hub)
@@ -9,13 +9,13 @@ name: m3-benchmark
 #   docker compose up -d                                        # start all capability containers
 #   docker compose down                                         # stop and remove containers
 #   docker compose logs -f                                      # tail all logs
-#   docker compose up -d capability_4_multiturn_m3_environ      # start a single capability
+#   docker compose up -d capability_4_multiturn                 # start a single capability
 #
 # The benchmark runner and MCP clients connect via docker exec (stdio),
 # not via exposed ports. No port mapping is needed here.
 
 x-base: &base
-  image: m3_environ
+  image: benchmark_environ
   environment:
     MCP_DB_ROOT: /app/db
   volumes:
@@ -23,21 +23,21 @@ x-base: &base
     - ./apis/configs:/app/apis/configs:ro
 
 services:
-  capability_1_bi_apis_m3_environ:
+  capability_1_bi_apis:
     <<: *base
-    container_name: capability_1_bi_apis_m3_environ
+    container_name: capability_1_bi_apis
 
-  capability_2_dashboard_apis_m3_environ:
+  capability_2_dashboard_apis:
     <<: *base
-    container_name: capability_2_dashboard_apis_m3_environ
+    container_name: capability_2_dashboard_apis
 
-  capability_3_multihop_reasoning_m3_environ:
+  capability_3_multihop_reasoning:
     <<: *base
-    container_name: capability_3_multihop_reasoning_m3_environ
+    container_name: capability_3_multihop_reasoning
 
-  capability_4_multiturn_m3_environ:
+  capability_4_multiturn:
     <<: *base
-    container_name: capability_4_multiturn_m3_environ
+    container_name: capability_4_multiturn
     mem_limit: 4g
     volumes:
       - ./data/databases:/app/db:ro

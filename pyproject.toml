@@ -100,7 +100,7 @@ dev = [
 [project.scripts]
 slot-filling-mcp = "apis.m3.python_tools.mcp.cli:main"
 bpo-mcp = "apis.bpo.mcp.server:start_server"
-m3-setup = "m3_setup:main"
+benchmark-setup = "benchmark_setup:main"
 
 [tool.setuptools.packages.find]
 exclude = ["tests*"]

@@ -12,7 +12,7 @@ tasks:
   # Capability 1 (bi_apis): ToolCallingAgent + RouterMCPServer
   1:
     mode: stdio
-    container_name: capability_1_bi_apis_m3_environ
+    container_name: capability_1_bi_apis
     container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
@@ -25,7 +25,7 @@ tasks:
   # Capability 2 (dashboard_apis): LangGraphReActAgent + FastAPIMCPServer
   2:
     mode: stdio
-    container_name: capability_2_dashboard_apis_m3_environ
+    container_name: capability_2_dashboard_apis
     container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
@@ -38,7 +38,7 @@ tasks:
   # MCP_DOMAIN=<other> → /app/m3-rest/mcp_server.py   (M3 REST MCP server)
   3:
     mode: stdio
-    container_name: capability_3_multihop_reasoning_m3_environ
+    container_name: capability_3_multihop_reasoning
     container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db
@@ -49,7 +49,7 @@ tasks:
   # Capability 4 (multiturn): LangGraphReActAgent + Task5CombinedMCPServer
   4:
     mode: stdio
-    container_name: capability_4_multiturn_m3_environ
+    container_name: capability_4_multiturn
     container_runtime: null
     container_env:
       MCP_DB_ROOT: /app/db

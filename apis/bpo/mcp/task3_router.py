@@ -10,9 +10,9 @@ with the target server over stdio — no proxy overhead.
   MCP_DOMAIN=bpo     → /app/apis/bpo/mcp/server.py  (BPO FastMCP server)
   MCP_DOMAIN=<other> → /app/m3-rest/mcp_server.py   (M3 REST MCP server)
 
-Usage (inside capability_3_multihop_reasoning_m3_environ container):
-  docker exec -i -e MCP_DOMAIN=bpo     capability_3_multihop_reasoning_m3_environ python /app/apis/bpo/mcp/task3_router.py
-  docker exec -i -e MCP_DOMAIN=airline capability_3_multihop_reasoning_m3_environ python /app/apis/bpo/mcp/task3_router.py
+Usage (inside capability_3_multihop_reasoning container):
+  docker exec -i -e MCP_DOMAIN=bpo     capability_3_multihop_reasoning python /app/apis/bpo/mcp/task3_router.py
+  docker exec -i -e MCP_DOMAIN=airline capability_3_multihop_reasoning python /app/apis/bpo/mcp/task3_router.py
 """
 import os
 import sys

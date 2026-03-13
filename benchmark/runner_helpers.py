@@ -161,9 +161,9 @@ def load_benchmark_data(
 
 
 def make_output_dir(capability_id: int, output_dir: Optional[str] = None) -> Path:
-    """Create a timestamped output directory for a task under CWD.
+    """Create a timestamped output directory for a capability under CWD.
 
-    Format: output/task_{id}_{Mon}_{dd}_{hh}_{mm}{am|pm}/
+    Format: output/capability_{id}_{Mon}_{dd}_{hh}_{mm}{am|pm}/
     e.g.    output/capability_4_Feb_13_11_21am/
     """
     if output_dir:
@@ -171,7 +171,7 @@ def make_output_dir(capability_id: int, output_dir: Optional[str] = None) -> Pat
     else:
         now = datetime.now()
         ts = now.strftime("%b_%d_%I_%M%p").lower()  # e.g. feb_13_11_21am
-        p = Path("output") / f"task_{capability_id}_{ts}"
+        p = Path("output") / f"capability_{capability_id}_{ts}"
     p.mkdir(parents=True, exist_ok=True)
     return p
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Setup script for the M3 Enterprise Benchmark.
+Setup script for the Enterprise Benchmark.
 
 Downloads benchmark data from HuggingFace, pulls the unified Docker image,
 and starts containers for all tasks.
@@ -10,13 +10,13 @@ Usage:
     pip install -e ".[init]"
 
     # Run full setup (download data + pull image + start containers)
-    python m3_setup.py
+    python benchmark_setup.py
 
     # Individual steps
-    python m3_setup.py --download-data
-    python m3_setup.py --pull-image
-    python m3_setup.py --start-containers
-    python m3_setup.py --stop-containers
+    python benchmark_setup.py --download-data
+    python benchmark_setup.py --pull-image
+    python benchmark_setup.py --start-containers
+    python benchmark_setup.py --stop-containers
 """
 
 import argparse
@@ -33,7 +33,7 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-DOCKER_IMAGE = "docker.io/amurthi44g1wd/m3_environ:latest"
+DOCKER_IMAGE = "docker.io/amurthi44g1wd/benchmark_environ:latest"
 PROJECT_ROOT = Path(__file__).parent.resolve()
 DATA_DIR = PROJECT_ROOT
 
@@ -44,10 +44,10 @@ HF_DATASETS = {
 
 # Container names must match benchmark/mcp_connection_config.yaml
 CONTAINERS = [
-    "capability_1_bi_apis_m3_environ",
-    "capability_2_dashboard_apis_m3_environ",
-    "capability_3_multihop_reasoning_m3_environ",   # BPO + M3 REST (no retriever)
-    "capability_4_multiturn_m3_environ",
+    "capability_1_bi_apis",
+    "capability_2_dashboard_apis",
+    "capability_3_multihop_reasoning",   # BPO + REST (no retriever)
+    "capability_4_multiturn",
 ]
 
 
@@ -160,8 +160,8 @@ def pull_image(image: str = DOCKER_IMAGE) -> None:
     rt = _runtime()
     print(f"\n=== Pulling {image} ===")
     _run([rt, "pull", image], check=True)
-    _run([rt, "tag", image, "m3_environ"], check=True)
-    print("Image pulled and tagged as 'm3_environ'.")
+    _run([rt, "tag", image, "benchmark_environ"], check=True)
+    print("Image pulled and tagged as 'benchmark_environ'.")
 
 
 def start_containers() -> None:
@@ -179,7 +179,7 @@ def start_containers() -> None:
     if not db_dir.exists() or not any(db_dir.iterdir()):
         raise SystemExit(
             f"\nERROR: Database directory '{db_dir}' is missing or empty.\n"
-            "Run 'make download' (or 'python m3_setup.py --download-data') first.\n"
+            "Run 'make download' (or 'python benchmark_setup.py --download-data') first.\n"
         )
     db_dir = str(db_dir)
     configs_dir = str(PROJECT_ROOT / "apis" / "configs")
@@ -187,12 +187,12 @@ def start_containers() -> None:
     queries_dir = str(DATA_DIR / "queries")
 
     container_extra_flags = {
-        "capability_4_multiturn_m3_environ": ["--memory=4g"],
+        "capability_4_multiturn": ["--memory=4g"],
     }
 
     # capability_4_multiturn is the only container that needs the retriever volumes
     container_extra_volumes: dict[str, list[str]] = {
-        "capability_4_multiturn_m3_environ": [
+        "capability_4_multiturn": [
             "-v", f"{chroma_dir}:/app/retrievers/chroma_data",
             "-v", f"{queries_dir}:/app/retrievers/queries:ro",
         ],
@@ -206,7 +206,7 @@ def start_containers() -> None:
             "-v", f"{db_dir}:/app/db:ro",
             "-v", f"{configs_dir}:/app/apis/configs:ro",
             *container_extra_volumes.get(name, []),
-            "m3_environ",
+            "benchmark_environ",
         ], check=True)
         print(f"  Started {name}")
 
@@ -252,7 +252,7 @@ def stop_containers() -> None:
 # ---------------------------------------------------------------------------
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Setup the M3 Enterprise Benchmark environment",
+        description="Setup the Enterprise Benchmark environment",
     )
     parser.add_argument(
         "--download-data", action="store_true",
@@ -299,16 +299,16 @@ def main() -> None:
         print("=" * 60)
         print()
         print("  # Single task, single domain")
-        print("  python benchmark_runner.py --m3_capability_id 2 --run-agent --domain address")
+        print("  python benchmark_runner.py --capability_id 2 --run-agent --domain address")
         print()
         print("  # All three tasks for one domain")
-        print("  python benchmark_runner.py --m3_capability_id 1 2 4 --run-agent --domain address")
+        print("  python benchmark_runner.py --capability_id 1 2 4 --run-agent --domain address")
         print()
         print("  # Parallel execution")
-        print("  python benchmark_runner.py --m3_capability_id 1 2 4 --run-agent --domain address --parallel")
+        print("  python benchmark_runner.py --capability_id 1 2 4 --run-agent --domain address --parallel")
         print()
         print("  # Stop containers when done")
-        print("  python m3_setup.py --stop-containers")
+        print("  python benchmark_setup.py --stop-containers")
         print()
 
 

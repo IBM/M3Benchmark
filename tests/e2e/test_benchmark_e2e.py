@@ -74,7 +74,7 @@ def containers_ready():
         pytest.fail("Required environment variable not set: HF_TOKEN (or set E2E_SKIP_SETUP=1 to skip setup)")
 
     sys.path.insert(0, str(PROJECT_ROOT))
-    from m3_setup import download_data, start_containers, stop_containers
+    from benchmark_setup import download_data, start_containers, stop_containers
 
     download_data()
     start_containers()
@@ -91,7 +91,7 @@ def _run_benchmark(task_id: int, output_dir: Path, domain: str = "address") -> s
     cmd = [
         sys.executable,
         str(PROJECT_ROOT / "benchmark_runner.py"),
-        "--m3_capability_id", str(task_id),
+        "--capability_id", str(task_id),
         "--domain", domain,
         "--provider", "openai",
         "--max-samples-per-domain", "2",
@@ -111,7 +111,7 @@ def _list_tools(task_id: int, domain: str = "address") -> subprocess.CompletedPr
     cmd = [
         sys.executable,
         str(PROJECT_ROOT / "benchmark_runner.py"),
-        "--m3_capability_id", str(task_id),
+        "--capability_id", str(task_id),
         "--domain", domain,
         "--list-tools",
     ]
@@ -224,7 +224,7 @@ class TestBenchmarkE2E:
     def test_task3_airline(self, tmp_path):
         """Task 3: M3 REST MCP agent on 2 airline-domain samples.
 
-        Uses capability_3_multihop_reasoning_m3_environ container via task3_router.py. Since "airline"
+        Uses capability_3_multihop_reasoning container via task3_router.py. Since "airline"
         is an M3 REST domain, the router exec's into /app/m3-rest/mcp_server.py.
         """
         output_dir = tmp_path / "task3_airline"
@@ -245,7 +245,7 @@ class TestBenchmarkE2E:
     def test_task3_bpo(self, tmp_path):
         """Task 3: BPO MCP agent on 2 BPO-domain samples.
 
-        Uses capability_3_multihop_reasoning_m3_environ container via task3_router.py. Since "bpo"
+        Uses capability_3_multihop_reasoning container via task3_router.py. Since "bpo"
         is the BPO domain, the router exec's into /app/apis/bpo/mcp/server.py.
         """
         output_dir = tmp_path / "task3_bpo"
@@ -332,7 +332,7 @@ class TestBenchmarkE2E:
         """Task 5: combined MCP server (M3 REST + retriever) on 2 address samples.
 
         Uses task5_mcp_server.py which merges tools from both FastAPI servers
-        running in capability_4_multiturn_m3_environ so the agent can use SQL/REST tools and
+        running in capability_4_multiturn so the agent can use SQL/REST tools and
         semantic search in the same session.
         """
         output_dir = tmp_path / "task5"

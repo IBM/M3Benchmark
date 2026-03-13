@@ -37,7 +37,7 @@ async def connect_to_server(
     mode: str,
     server_url: str | None = None,
     container_runtime: str | None = None,
-    container_name: str = "m3_environ",
+    container_name: str = "benchmark_environ",
     domain: str | None = None,
 ):
     """Connect to MCP server using specified mode.
@@ -46,7 +46,7 @@ async def connect_to_server(
         mode: "stdio" (subprocess), "docker" (container exec), or "websocket"
         server_url: WebSocket URL (required for websocket mode)
         container_runtime: "docker" or "podman" (auto-detected if None)
-        container_name: Container name for docker mode (default: m3_environ)
+        container_name: Container name for docker mode (default: benchmark_environ)
         domain: Domain for MCP_DOMAIN env var (default: from MCP_DOMAIN env or "superhero")
 
     Yields:
@@ -98,7 +98,7 @@ async def run_single_server_with_instances(
     server_url: str | None = None,
     max_samples_per_domain: int | None = None,
     container_runtime: str | None = None,
-    container_name: str = "m3_environ",
+    container_name: str = "benchmark_environ",
     domain: str | None = None,
 ):
     """Run queries against a single MCP server, switching universes for each instance.
@@ -111,7 +111,7 @@ async def run_single_server_with_instances(
         server_url: WebSocket URL (required for websocket mode)
         max_samples_per_domain: Maximum number of instances to process (None = all)
         container_runtime: "docker" or "podman" (auto-detected if None; docker mode only)
-        container_name: Container name (docker mode only, default: m3_environ)
+        container_name: Container name (docker mode only, default: benchmark_environ)
         domain: Domain for MCP_DOMAIN env var (docker mode only)
     """
     print(f"\n{'='*60}")
@@ -215,7 +215,7 @@ async def main(
     server_url=None,
     max_samples_per_domain=None,
     container_runtime=None,
-    container_name="m3_environ",
+    container_name="benchmark_environ",
     domain=None,
 ):
     """Main async entry point with single server for all instances.
@@ -227,7 +227,7 @@ async def main(
         server_url: WebSocket URL (required for websocket mode)
         max_samples_per_domain: Maximum number of instances to process (None = all)
         container_runtime: "docker" or "podman" (auto-detected if None; docker mode only)
-        container_name: Container name (docker mode only, default: m3_environ)
+        container_name: Container name (docker mode only, default: benchmark_environ)
         domain: Domain for MCP_DOMAIN env var (docker mode only)
     """
 
@@ -257,12 +257,12 @@ async def main(
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
-        description="MCP Demo (unified image) — run LLM agents against the sel/slot MCP server in the m3_environ container.",
+        description="MCP Demo (unified image) — run LLM agents against the sel/slot MCP server in the benchmark_environ container.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Connection modes:
   stdio      Launch MCP server as a local subprocess (default)
-  docker     Exec into the unified Docker/Podman container (m3_environ)
+  docker     Exec into the unified Docker/Podman container (benchmark_environ)
   websocket  Connect to an external WebSocket server
 
 Examples:
@@ -270,7 +270,7 @@ Examples:
   python examples/demo_single_docker_image.py --provider openai --model gpt-4o
 
   # Unified Docker container (see docker/Dockerfile.unified for build + run)
-  python examples/demo_single_docker_image.py --mode docker --container-name m3_environ --domain superhero \\
+  python examples/demo_single_docker_image.py --mode docker --container-name benchmark_environ --domain superhero \\
       --provider openai --model gpt-4o --max-samples-per-domain 1
 
   # WebSocket
@@ -323,8 +323,8 @@ Examples:
     docker_group.add_argument(
         "--container-name",
         type=str,
-        default="m3_environ",
-        help="Name of the running container (default: m3_environ)"
+        default="benchmark_environ",
+        help="Name of the running container (default: benchmark_environ)"
     )
     docker_group.add_argument(
         "--domain",

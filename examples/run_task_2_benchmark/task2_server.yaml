@@ -1,5 +1,5 @@
-task_2:
-  container: capability_2_dashboard_apis_m3_environ
+capability_2:
+  container: capability_2_dashboard_apis
   env:
     MCP_DB_ROOT: /app/db
     CAPABILITY_ID: "2"

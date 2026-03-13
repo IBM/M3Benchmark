@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # =============================================================================
-# smoke_test.sh — Validate a locally built m3_environ Docker image
+# smoke_test.sh — Validate a locally built benchmark_environ Docker image
 #
 # Usage (from project root):
 #   bash docker/smoke_test.sh [image_name]
 #
 # Defaults:
-#   image_name = m3_environ
+#   image_name = benchmark_environ
 #
 # What it checks:
 #   1. Required files exist inside the image
@@ -18,8 +18,8 @@
 # =============================================================================
 set -euo pipefail
 
-IMAGE="${1:-m3_environ}"
-CONTAINER="m3_smoke_$$"
+IMAGE="${1:-benchmark_environ}"
+CONTAINER="benchmark_smoke_$$"
 PASS=0
 FAIL=0
 

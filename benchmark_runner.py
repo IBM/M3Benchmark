@@ -17,39 +17,39 @@ MCP connection settings are read from a YAML config file
 
 Usage:
   # Single task, single domain
-  python benchmark_runner.py --m3_capability_id 2 --domain hockey
+  python benchmark_runner.py --capability_id 2 --domain hockey
 
   # Single task, multiple domains
-  python benchmark_runner.py --m3_capability_id 2 --domain hockey --domain address
+  python benchmark_runner.py --capability_id 2 --domain hockey --domain address
 
   # Multiple tasks (sequential, default)
-  python benchmark_runner.py --m3_capability_id 2 4
+  python benchmark_runner.py --capability_id 2 4
 
   # Multiple tasks in parallel
-  python benchmark_runner.py --m3_capability_id 2 4 --parallel
+  python benchmark_runner.py --capability_id 2 4 --parallel
 
   # Limit samples per domain
-  python benchmark_runner.py --m3_capability_id 2 --max-samples-per-domain 5
+  python benchmark_runner.py --capability_id 2 --max-samples-per-domain 5
 
   # Choose provider/model
-  python benchmark_runner.py --m3_capability_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
-  python benchmark_runner.py --m3_capability_id 2 --provider ollama --model llama3.1:8b
+  python benchmark_runner.py --capability_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
+  python benchmark_runner.py --capability_id 2 --provider ollama --model llama3.1:8b
 
   # Enable tool shortlisting (top-k tools per query)
-  python benchmark_runner.py --m3_capability_id 2 --top-k-tools 10
+  python benchmark_runner.py --capability_id 2 --top-k-tools 10
 
   # Custom output directory
-  python benchmark_runner.py --m3_capability_id 2 --output my_results/
+  python benchmark_runner.py --capability_id 2 --output my_results/
 
   # Use a custom MCP connection config
-  python benchmark_runner.py --m3_capability_id 2 --mcp-config my_mcp_config.yaml
+  python benchmark_runner.py --capability_id 2 --mcp-config my_mcp_config.yaml
 
   # List available tools for a domain (does not run the benchmark)
-  python benchmark_runner.py --m3_capability_id 2 --domain hockey --list-tools
+  python benchmark_runner.py --capability_id 2 --domain hockey --list-tools
 
 Output:
-  Results saved to: output/task_{id}_{timestamp}/<domain>.json
-  e.g. output/task_2_feb_18_11_21am/hockey.json
+  Results saved to: output/capability_{id}_{timestamp}/<domain>.json
+  e.g. output/capability_2_feb_18_11_21am/hockey.json
 """
 import asyncio
 from contextlib import AsyncExitStack
@@ -371,12 +371,12 @@ def main():
         description="Benchmark Runner for MCP Server"
     )
     parser.add_argument(
-        "--m3_capability_id",
+        "--capability_id",
         type=int,
         nargs="+",
         choices=[1, 2, 3, 4],
         required=True,
-        help="M3 Capability ID to run, must be one of [1, 2, 3, 4]"
+        help="Capability ID to run, must be one of [1, 2, 3, 4]"
     )
     parser.add_argument(
         "--domain",
@@ -396,7 +396,7 @@ def main():
     parser.add_argument(
         "--parallel",
         action="store_true",
-        help="Run multiple m3_capability_ids in parallel using asyncio.gather (default: sequential)"
+        help="Run multiple capability_ids in parallel using asyncio.gather (default: sequential)"
     )
     parser.add_argument(
         "--max-samples-per-domain",
@@ -408,7 +408,7 @@ def main():
         "--output",
         type=str,
         default=None,
-        help="Output directory (default: output/task_{id}_{timestamp}/ in CWD)"
+        help="Output directory (default: output/capability_{id}_{timestamp}/ in CWD)"
     )
     parser.add_argument(
         "--provider",
@@ -449,7 +449,7 @@ def main():
     )
 
     args = parser.parse_args()
-    capability_ids = args.m3_capability_id  # list of ints now
+    capability_ids = args.capability_id  # list of ints now
 
     mode = "parallel" if args.parallel and len(capability_ids) > 1 else "sequential"
     print("="*60)

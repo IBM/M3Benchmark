@@ -1,30 +1,30 @@
 tasks:
-  # All tasks use the unified m3_environ container via docker exec.
+  # All tasks use the unified benchmark_environ container via docker exec.
   # CAPABILITY_ID selects the MCP server inside the container via mcp_dispatch.py.
   # MCP_DB_ROOT sets the parent directory for domain databases inside the container.
   # Start the containers first:
-  #   docker run -d --name capability_1_bi_apis_m3_environ \
+  #   docker run -d --name capability_1_bi_apis \
   #       -v "$(pwd)/data/databases:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
   #       -e MCP_DB_ROOT=/app/db \
-  #       m3_environ
-  #   docker run -d --name capability_2_dashboard_apis_m3_environ \
+  #       benchmark_environ
+  #   docker run -d --name capability_2_dashboard_apis \
   #       -v "$(pwd)/data/databases:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
   #       -e MCP_DB_ROOT=/app/db \
-  #       m3_environ
-  #   docker run -d --name capability_4_multiturn_m3_environ \
+  #       benchmark_environ
+  #   docker run -d --name capability_4_multiturn \
   #       -v "$(pwd)/data/databases:/app/db:ro" \
   #       -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
   #       -v "$(pwd)/indexed_documents:/app/retrievers/chroma_data" \
   #       -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
   #       -e MCP_DB_ROOT=/app/db \
-  #       m3_environ
+  #       benchmark_environ
 
   # Capability 1 (bi_apis): ToolCallingAgent + RouterMCPServer (routes to SlotFilling or Selection per query)
   1:
     mode: stdio
-    container_name: capability_1_bi_apis_m3_environ
+    container_name: capability_1_bi_apis
     container_runtime: null
     container_env:
       CAPABILITY_ID: "1"
@@ -37,7 +37,7 @@ tasks:
   # Capability 2 (dashboard_apis): LangGraphReActAgent + FastAPIMCPServer
   2:
     mode: stdio
-    container_name: capability_2_dashboard_apis_m3_environ
+    container_name: capability_2_dashboard_apis
     container_runtime: null
     container_env:
       CAPABILITY_ID: "2"
@@ -60,7 +60,7 @@ tasks:
 
   3:
     mode: stdio
-    container_name: capability_3_multihop_reasoning_m3_environ
+    container_name: capability_3_multihop_reasoning
     container_runtime: null
     container_env:
       CAPABILITY_ID: "3"
@@ -74,7 +74,7 @@ tasks:
   # in a single MCP server so list_tools() returns both sets.
   4:
     mode: stdio
-    container_name: capability_4_multiturn_m3_environ
+    container_name: capability_4_multiturn
     container_runtime: null
     container_env:
       CAPABILITY_ID: "4"
