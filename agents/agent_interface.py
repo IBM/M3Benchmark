@@ -254,6 +254,12 @@ class LangGraphReActAgent(AgentInterface):
             )
 
         return awrap_tool_call
+    
+    def _build_policy_guidance(self, additional_instructions:str) -> str:
+        """Build policy guidance based on additional instructions."""
+        if (not additional_instructions) or (additional_instructions in ["", " "]):
+            content=f"""You are a helpful assistant with access to tools.\n Tool Usage Constraint: {additional_instructions}."""
+        return SystemMessage(content=content)
 
     def _build_system_message(self) -> str:
         """Build system message explaining handle system to the LLM."""
@@ -349,6 +355,7 @@ INITIAL DATA:
     async def run(
         self,
         input: Union[str, List[Message]],
+        additional_instructions: str = None,
     ) -> AgentResponse:
         """Run the ReAct agent with given input."""
         query_preview = input if isinstance(input, str) else next(
@@ -377,10 +384,13 @@ INITIAL DATA:
         tool_map = {t.name: t for t in active_tools}
 
         # Convert input to LangChain messages
+        lc_messages=[]
         if isinstance(input, str):
-            lc_messages = [HumanMessage(content=input)]
+            lc_messages.append(HumanMessage(content=input))
         else:
-            lc_messages = self._messages_to_langchain(input)
+            if additional_instructions:
+                lc_messages.append(self._build_policy_guidance(additional_instructions=additional_instructions))
+            lc_messages.append(self._messages_to_langchain(input))
 
         # Inject system message when handle manager is active
         if self.handle_manager is not None:
