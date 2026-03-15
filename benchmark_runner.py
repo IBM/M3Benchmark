@@ -208,10 +208,16 @@ async def run_benchmark_for_domain(
                         tlog(f"    Initial data stored as: {handle}")
 
                     if task_id in [4,5]:
-                        response = await asyncio.wait_for(
-                            agent.run(input=item.context,additional_instructions=item.additional_instructions),
-                            timeout=AGENT_TIMEOUT_SECONDS
-                        )
+                        if not item.context: # Single Turn Dialogues in Capability 4
+                            response = await asyncio.wait_for(
+                                agent.run(input=item.query, additional_instructions=item.additional_instructions),
+                                timeout=AGENT_TIMEOUT_SECONDS
+                            )
+                        else:
+                            response = await asyncio.wait_for(
+                                agent.run(input=item.context, additional_instructions=item.additional_instructions),
+                                timeout=AGENT_TIMEOUT_SECONDS
+                            )                            
                     else:
                         response = await asyncio.wait_for(
                             agent.run(item.query),
