@@ -38,7 +38,7 @@ services:
   capability_4_multiturn:
     <<: *base
     container_name: capability_4_multiturn
-    mem_limit: 4g
+    mem_limit: 8g
     volumes:
       - ./data/databases:/app/db:ro
       - ./environment/configs:/app/environment/configs:ro
