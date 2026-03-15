@@ -60,6 +60,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 from dotenv import load_dotenv
+from tqdm import tqdm
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -153,7 +154,7 @@ async def run_benchmark_for_domain(
             )
 
             # Run all queries for this domain
-            for i, item in enumerate(items):
+            for i, item in enumerate(tqdm(items,desc=f"[{task_id}|{domain}]")):
                 query_suffix = (
                     "..." if len(item.query) > 80 else ""
                 )
@@ -207,10 +208,16 @@ async def run_benchmark_for_domain(
                         tlog(f"    Initial data stored as: {handle}")
 
                     if task_id in [4,5]:
-                        response = await asyncio.wait_for(
-                            agent.run(item.context),
-                            timeout=AGENT_TIMEOUT_SECONDS
-                        )
+                        if not item.context: # Single Turn Dialogues in Capability 4
+                            response = await asyncio.wait_for(
+                                agent.run(input=item.query, additional_instructions=item.additional_instructions),
+                                timeout=AGENT_TIMEOUT_SECONDS
+                            )
+                        else:
+                            response = await asyncio.wait_for(
+                                agent.run(input=item.context, additional_instructions=item.additional_instructions),
+                                timeout=AGENT_TIMEOUT_SECONDS
+                            )                            
                     else:
                         response = await asyncio.wait_for(
                             agent.run(item.query),
