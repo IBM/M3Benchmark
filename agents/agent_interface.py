@@ -171,9 +171,9 @@ Think step by step and provide reasoning for the action that you are planning to
 IMPORTANT - Tool Result Handles:
 - Tool results are returned as compact peeks/handles, not full data. The actual data is stored server-side.
 - Data table results look like: {{"handle": "filtered_superhero_1", "num_records": 10, "key_details": [{{"name": "col", "dtype": "int64", "first_3_values": [1, 2, 3]}}]}}
-- To use a result in another tool, pass the handle string as the 'data' argument
+- To use a result in another tool, pass the handle string as the 'data_label' argument
 - Example: After filter_data returns {{"handle": "filtered_superhero_1", ...}}
-  Call: sort_data(data="filtered_superhero_1", key_name="age", ...)
+  Call: sort_data(data_label="filtered_superhero_1", key_name="age", ...)
 - Always use handles to reference previous results in tool chains
 - Make at most a single tool call per iteration. Once you have the information necessary to answer the query, return the answer with no additional tool calls.
 - If you receive an error from the tool, reason over why your previous action resulted in that error and make the appropriate fix.

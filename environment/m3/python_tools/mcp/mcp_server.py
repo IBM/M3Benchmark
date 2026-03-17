@@ -33,6 +33,9 @@ logger = logging.getLogger(__name__)
 
 GET_DATA_FCN = "get_data"
 
+_DATA_FIELD_RENAMES = {"data": "data_label", "data_1": "data_label_1", "data_2": "data_label_2"}
+_DATA_LABEL_RENAMES = {"data_label": "data", "data_label_1": "data_1", "data_label_2": "data_2"}
+
 
 class KeyDetail(TypedDict):
     name: str
@@ -228,10 +231,38 @@ class LiveMCPServer(ABC):
 
         return {"handle": handle, "num_records": num_records, "key_details": key_details}
 
+    _HANDLE_FIELD_SCHEMA = {
+        "type": "string",
+        "description": "Handle string referencing a stored data table (e.g. 'retrieved_data_1'). Pass the handle returned by a previous tool call.",
+    }
+
+    def _rename_schema_fields(self, schema: dict) -> dict:
+        """Return a copy of schema with data/data_1/data_2 renamed to data_label variants.
+
+        The renamed fields also have their type changed to 'string' so the LLM
+        knows to pass a handle string, not a data object.
+        """
+        schema = dict(schema)
+        props = schema.get("properties", {})
+        new_props = {}
+        renamed = False
+        for k, v in props.items():
+            new_key = _DATA_FIELD_RENAMES.get(k, k)
+            if new_key != k:
+                new_props[new_key] = self._HANDLE_FIELD_SCHEMA
+                renamed = True
+            else:
+                new_props[k] = v
+        if renamed:
+            schema["properties"] = new_props
+            required = schema.get("required", [])
+            schema["required"] = [_DATA_FIELD_RENAMES.get(r, r) for r in required]
+        return schema
+
     def _resolve_handles(self, arguments: dict) -> dict:
         """Replace handle strings in tool arguments with the stored data dicts."""
         resolved = dict(arguments)
-        for key in ("data", "data_1", "data_2"):
+        for key in ("data", "data_1", "data_2", "data_label", "data_label_1", "data_label_2"):
             if key in resolved and isinstance(resolved[key], str):
                 if resolved[key] in self._handle_store:
                     resolved[key] = self._handle_store[resolved[key]]
@@ -334,7 +365,7 @@ class LiveMCPServer(ABC):
 
                 if input_model:
                     # Get the input schema
-                    input_schema = input_model.model_json_schema()
+                    input_schema = self._rename_schema_fields(input_model.model_json_schema())
 
                     # DEBUG LOGGING: Capture schema for retrieve_data
                     if name == "retrieve_data":
@@ -368,6 +399,7 @@ class LiveMCPServer(ABC):
 
         @self.server.call_tool()
         async def call_tool(name: str, arguments: dict[str, Any]):
+            logger.info("call_tool: %s", name)
             # Handle get_data tool with optional universe switching
             if name == GET_DATA_FCN:
                 # Parse input with optional tool_universe_id
@@ -413,6 +445,28 @@ class LiveMCPServer(ABC):
 
             # Resolve any handle references in arguments to actual data dicts
             resolved_arguments = self._resolve_handles(arguments)
+
+            # Remap data_label* → data* for underlying tool functions
+            resolved_arguments = {
+                _DATA_LABEL_RENAMES.get(k, k): v
+                for k, v in resolved_arguments.items()
+            }
+
+            # Check that required data argument is present (LLM may omit data_label)
+            input_model = self.tool_input_models.get(name)
+            if (
+                input_model
+                and "data" in input_model.model_fields
+                and "data" not in resolved_arguments
+                and "data_1" not in resolved_arguments
+            ):
+                available_handles = list(self._handle_store.keys())
+                error_msg = (
+                    f"Missing required argument 'data_label'. "
+                    f"Pass the handle string returned by a previous tool call as data_label=<handle>. "
+                    f"Available handles: {available_handles}"
+                )
+                return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
 
             # Validate key_name against the resolved source data (not always active_data)
             if "key_name" in resolved_arguments:

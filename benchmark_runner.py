@@ -304,9 +304,11 @@ async def run_benchmark_for_domain(
                         f" {AGENT_TIMEOUT_SECONDS}s"
                     )
                 except Exception as e:
+                    import traceback
                     result.status = "error"
                     result.error = str(e)
-                    tlog(f"    Status: error | {str(e)[:50]}")
+                    tlog(f"    Status: error | {type(e).__name__}: {str(e)[:200]}")
+                    tlog(f"    Traceback: {traceback.format_exc()}")
 
                 result.duration_s = time.perf_counter() - start_time
                 results.append(result)
