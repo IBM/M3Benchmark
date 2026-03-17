@@ -1,0 +1,1308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP Tools Explorer</title>
+<style>
+/* ── Reset & base ──────────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --sidebar-w: 220px;
+  --tools-w:   300px;
+
+  --c-sidebar:   #16192b;
+  --c-sidebar2:  #1e2238;
+  --c-surface:   #ffffff;
+  --c-bg:        #f0f2f8;
+  --c-border:    #e2e6f0;
+  --c-accent:    #4a7cf6;
+  --c-accent-h:  #3566e8;
+  --c-success:   #22c55e;
+  --c-error:     #ef4444;
+  --c-warn:      #f59e0b;
+  --c-text:      #1e2238;
+  --c-muted:     #8892b0;
+  --c-tag-bg:    #eef2ff;
+  --c-tag-text:  #4a7cf6;
+
+  --radius:   8px;
+  --shadow-s: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-m: 0 4px 16px rgba(0,0,0,.12);
+  --font-mono: 'SF Mono', 'Fira Code', 'Cascadia Code', monospace;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: var(--c-bg);
+  color: var(--c-text);
+  height: 100vh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+/* ── Header ────────────────────────────────────────────────────────────── */
+.header {
+  height: 52px;
+  background: var(--c-sidebar);
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #0d0f1c;
+}
+
+.header-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #fff;
+  font-weight: 600;
+  font-size: 15px;
+  letter-spacing: -0.3px;
+}
+
+.header-logo svg { opacity: .85; }
+
+.header-breadcrumb {
+  margin-left: auto;
+  color: var(--c-muted);
+  font-size: 12px;
+  font-family: var(--font-mono);
+}
+
+.header-breadcrumb span { color: #7aa2f7; }
+
+/* ── Layout ────────────────────────────────────────────────────────────── */
+.layout {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* ── Sidebar ────────────────────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--c-sidebar);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  border-right: 1px solid #0d0f1c;
+}
+
+.sidebar-section {
+  padding: 16px 12px 8px;
+  color: var(--c-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.cap-card {
+  margin: 2px 8px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background .15s;
+  border: 1px solid transparent;
+}
+
+.cap-card:hover { background: var(--c-sidebar2); }
+
+.cap-card.active {
+  background: rgba(74, 124, 246, .15);
+  border-color: rgba(74, 124, 246, .4);
+}
+
+.cap-card-id {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  font-size: 11px;
+  font-weight: 700;
+  background: var(--c-sidebar2);
+  color: var(--c-muted);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.cap-card.active .cap-card-id {
+  background: var(--c-accent);
+  color: #fff;
+}
+
+.cap-card-name {
+  color: #cdd6f4;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.cap-card-sub {
+  color: var(--c-muted);
+  font-size: 11px;
+  margin-top: 2px;
+  margin-left: 30px;
+  line-height: 1.3;
+}
+
+.domain-section {
+  padding: 12px 8px 8px;
+  margin-top: auto;
+  border-top: 1px solid #2a2e45;
+}
+
+.domain-label {
+  color: var(--c-muted);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+  padding: 0 4px;
+}
+
+.domain-row {
+  display: flex;
+  gap: 6px;
+}
+
+.domain-select {
+  flex: 1;
+  background: var(--c-sidebar2);
+  border: 1px solid #2d3450;
+  color: #cdd6f4;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  appearance: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.domain-select:focus { border-color: var(--c-accent); }
+
+.domain-input {
+  flex: 1;
+  background: var(--c-sidebar2);
+  border: 1px solid #2d3450;
+  color: #cdd6f4;
+  padding: 7px 10px;
+  border-radius: 6px;
+  font-size: 13px;
+  outline: none;
+}
+
+.domain-input:focus { border-color: var(--c-accent); }
+
+.domain-input::placeholder { color: #4a5175; }
+
+.btn-load {
+  width: 100%;
+  margin-top: 8px;
+  padding: 9px;
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, opacity .15s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.btn-load:hover { background: var(--c-accent-h); }
+.btn-load:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ── Tools panel ────────────────────────────────────────────────────────── */
+.tools-panel {
+  width: var(--tools-w);
+  background: var(--c-surface);
+  border-right: 1px solid var(--c-border);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+}
+
+.tools-header {
+  padding: 14px 14px 10px;
+  border-bottom: 1px solid var(--c-border);
+  flex-shrink: 0;
+}
+
+.search-box {
+  width: 100%;
+  padding: 8px 12px 8px 34px;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 13px;
+  background: var(--c-bg) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%238892b0' stroke-width='2'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cpath d='m21 21-4.35-4.35'/%3E%3C/svg%3E") no-repeat 10px center;
+  outline: none;
+  color: var(--c-text);
+}
+
+.search-box:focus { border-color: var(--c-accent); }
+
+.tools-meta {
+  padding: 6px 14px 0;
+  color: var(--c-muted);
+  font-size: 11px;
+}
+
+.tools-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 6px 0;
+}
+
+.tool-item {
+  padding: 10px 14px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: background .12s;
+}
+
+.tool-item:hover { background: var(--c-bg); }
+
+.tool-item.active {
+  background: var(--c-tag-bg);
+  border-left-color: var(--c-accent);
+}
+
+.tool-item-name {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-text);
+  word-break: break-all;
+}
+
+.tool-item.active .tool-item-name { color: var(--c-accent); }
+
+.tool-item-desc {
+  color: var(--c-muted);
+  font-size: 11px;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tools-empty {
+  padding: 40px 20px;
+  text-align: center;
+  color: var(--c-muted);
+}
+
+.tools-empty svg { opacity: .3; margin-bottom: 12px; }
+
+/* ── Detail panel ────────────────────────────────────────────────────────── */
+.detail-panel {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.detail-empty {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--c-muted);
+  gap: 10px;
+}
+
+.detail-empty svg { opacity: .2; }
+
+.detail-content {
+  padding: 24px 28px;
+  max-width: 780px;
+}
+
+.detail-title {
+  font-family: var(--font-mono);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--c-text);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+  font-family: -apple-system, sans-serif;
+}
+
+.badge-cap { background: var(--c-tag-bg); color: var(--c-accent); }
+.badge-domain { background: #f0fdf4; color: #16a34a; }
+
+.detail-desc {
+  color: var(--c-muted);
+  font-size: 13px;
+  margin-bottom: 24px;
+  line-height: 1.6;
+}
+
+/* ── Parameter form ────────────────────────────────────────────────────── */
+.params-section {
+  margin-bottom: 20px;
+}
+
+.params-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .8px;
+  color: var(--c-muted);
+}
+
+.toggle-raw {
+  font-size: 11px;
+  color: var(--c-accent);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 0;
+  font-weight: 500;
+}
+
+.toggle-raw:hover { text-decoration: underline; }
+
+.param-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.param-row {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 12px;
+  align-items: start;
+}
+
+.param-label {
+  padding-top: 8px;
+}
+
+.param-name {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--c-text);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.required-star {
+  color: var(--c-error);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.param-type {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .5px;
+  color: var(--c-muted);
+  margin-top: 2px;
+}
+
+.param-hint {
+  font-size: 11px;
+  color: var(--c-muted);
+  margin-top: 3px;
+  line-height: 1.4;
+}
+
+.param-input {
+  width: 100%;
+  padding: 8px 11px;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-size: 13px;
+  font-family: inherit;
+  color: var(--c-text);
+  background: var(--c-surface);
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+
+.param-input:focus {
+  border-color: var(--c-accent);
+  box-shadow: 0 0 0 3px rgba(74,124,246,.12);
+}
+
+.param-input.mono { font-family: var(--font-mono); font-size: 12px; }
+
+textarea.param-input { resize: vertical; min-height: 70px; }
+
+select.param-input { appearance: none; cursor: pointer; }
+
+.param-input.error { border-color: var(--c-error); }
+
+/* ── Raw args textarea ────────────────────────────────────────────────── */
+.raw-args {
+  width: 100%;
+  min-height: 120px;
+  padding: 10px 12px;
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--c-text);
+  background: var(--c-bg);
+  outline: none;
+  resize: vertical;
+}
+
+.raw-args:focus { border-color: var(--c-accent); box-shadow: 0 0 0 3px rgba(74,124,246,.12); }
+
+/* ── Invoke button ───────────────────────────────────────────────────── */
+.invoke-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.btn-invoke {
+  padding: 9px 22px;
+  background: var(--c-accent);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  transition: background .15s, opacity .15s;
+}
+
+.btn-invoke:hover { background: var(--c-accent-h); }
+.btn-invoke:disabled { opacity: .5; cursor: not-allowed; }
+
+.invoke-status {
+  font-size: 12px;
+  color: var(--c-muted);
+}
+
+/* ── Result ────────────────────────────────────────────────────────────── */
+.result-section { margin-bottom: 32px; }
+
+.result-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.result-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.result-badge {
+  padding: 2px 8px;
+  border-radius: 100px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.result-badge.ok { background: #f0fdf4; color: #16a34a; }
+.result-badge.err { background: #fef2f2; color: #dc2626; }
+
+.result-time { font-size: 11px; color: var(--c-muted); }
+
+.btn-copy {
+  font-size: 11px;
+  color: var(--c-muted);
+  background: none;
+  border: 1px solid var(--c-border);
+  border-radius: 5px;
+  padding: 3px 10px;
+  cursor: pointer;
+  transition: color .15s, border-color .15s;
+}
+
+.btn-copy:hover { color: var(--c-accent); border-color: var(--c-accent); }
+
+.result-box {
+  background: #1a1d27;
+  border-radius: 8px;
+  padding: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  line-height: 1.6;
+  color: #cdd6f4;
+  overflow-x: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+/* JSON syntax highlight */
+.jk { color: #7aa2f7; }   /* key */
+.js { color: #9ece6a; }   /* string */
+.jn { color: #ff9e64; }   /* number */
+.jb { color: #bb9af7; }   /* bool/null */
+
+/* ── Schema viewer ────────────────────────────────────────────────────── */
+.schema-section {
+  margin-bottom: 24px;
+}
+
+.schema-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: var(--c-muted);
+  font-size: 12px;
+  font-weight: 500;
+  user-select: none;
+  margin-bottom: 8px;
+}
+
+.schema-toggle svg {
+  transition: transform .2s;
+}
+
+.schema-toggle.open svg { transform: rotate(90deg); }
+
+.schema-box {
+  background: var(--c-bg);
+  border: 1px solid var(--c-border);
+  border-radius: 6px;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--c-muted);
+  white-space: pre-wrap;
+  overflow-x: auto;
+  display: none;
+}
+
+.schema-box.open { display: block; }
+
+/* ── Divider ─────────────────────────────────────────────────────────── */
+.divider {
+  border: none;
+  border-top: 1px solid var(--c-border);
+  margin: 20px 0;
+}
+
+/* ── Spinner ─────────────────────────────────────────────────────────── */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+
+.spinner.dark {
+  border-color: rgba(74,124,246,.2);
+  border-top-color: var(--c-accent);
+}
+
+/* ── Scrollbar ───────────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+.sidebar ::-webkit-scrollbar-thumb { background: #2d3450; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-logo">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#7aa2f7" stroke-width="2">
+      <polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/>
+    </svg>
+    MCP Tools Explorer
+  </div>
+  <div class="header-breadcrumb" id="breadcrumb">
+    select a capability
+  </div>
+</div>
+
+<!-- Main layout -->
+<div class="layout">
+
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Capabilities</div>
+    <div id="cap-list">
+      <!-- rendered by JS -->
+      <div style="padding:20px 16px; color:#4a5175; font-size:12px;">Loading…</div>
+    </div>
+
+    <div class="domain-section">
+      <div class="domain-label">Domain</div>
+      <div class="domain-row">
+        <select class="domain-select" id="domain-select" style="display:none"></select>
+        <input  class="domain-input" id="domain-input" placeholder="e.g. address" />
+      </div>
+      <button class="btn-load" id="btn-load" onclick="loadTools()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+          <polyline points="7 10 12 15 17 10"/>
+          <line x1="12" y1="15" x2="12" y2="3"/>
+        </svg>
+        Load Tools
+      </button>
+    </div>
+  </aside>
+
+  <!-- Tools list -->
+  <div class="tools-panel">
+    <div class="tools-header">
+      <input class="search-box" id="search-box" type="text"
+             placeholder="Filter tools…" oninput="filterTools()" />
+    </div>
+    <div class="tools-meta" id="tools-meta"></div>
+    <div class="tools-list" id="tools-list">
+      <div class="tools-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <div>Select a capability and domain,<br>then click <b>Load Tools</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Detail panel -->
+  <div class="detail-panel" id="detail-panel">
+    <div class="detail-empty">
+      <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+      </svg>
+      <div style="font-size:14px;">Select a tool to inspect and invoke it</div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── State ─────────────────────────────────────────────────────────────────────
+const state = {
+  capabilities: [],
+  selectedCap: null,
+  selectedDomain: '',
+  tools: [],
+  filteredTools: [],
+  selectedTool: null,
+  rawMode: false,
+};
+
+// ── Delegated clicks ──────────────────────────────────────────────────────────
+document.getElementById('tools-list').addEventListener('click', e => {
+  const item = e.target.closest('[data-tool]');
+  if (item) selectTool(item.dataset.tool);
+});
+
+document.getElementById('cap-list').addEventListener('click', e => {
+  const card = e.target.closest('[data-cap]');
+  if (card) selectCap(Number(card.dataset.cap));
+});
+
+// ── Boot ──────────────────────────────────────────────────────────────────────
+(async function init() {
+  const caps = await apiFetch('/api/capabilities').catch(() => []);
+  state.capabilities = caps || [];
+  renderCapabilities();
+})();
+
+async function loadDomainsForCap(capId) {
+  const sel = document.getElementById('domain-select');
+  const inp = document.getElementById('domain-input');
+
+  const domains = await apiFetch(`/api/domains?capability_id=${capId}`).catch(() => []);
+  const known = domains || [];
+
+  // Rebuild the select
+  sel.innerHTML = '';
+  if (known.length) {
+    known.forEach(d => {
+      const o = document.createElement('option');
+      o.value = d; o.textContent = d;
+      sel.appendChild(o);
+    });
+    const other = document.createElement('option');
+    other.value = '__other__'; other.textContent = '✏ type custom…';
+    sel.appendChild(other);
+
+    sel.onchange = () => {
+      if (sel.value === '__other__') {
+        sel.style.display = 'none';
+        inp.style.display = '';
+        inp.focus();
+      } else {
+        inp.value = sel.value;
+      }
+    };
+
+    sel.style.display = '';
+    inp.style.display = 'none';
+    sel.value = known[0];
+    inp.value = known[0];
+  } else {
+    sel.style.display = 'none';
+    inp.style.display = '';
+    inp.value = '';
+  }
+}
+
+// ── API helpers ────────────────────────────────────────────────────────────────
+// Returns { data } on success or throws Error with .message from the API detail.
+async function apiFetch(url, opts = {}) {
+  const r = await fetch(url, opts);
+  if (!r.ok) {
+    const err = await r.json().catch(() => ({ detail: r.statusText }));
+    throw new Error(err.detail || r.statusText);
+  }
+  return r.json();
+}
+
+// ── Capabilities ──────────────────────────────────────────────────────────────
+function renderCapabilities() {
+  const el = document.getElementById('cap-list');
+  el.innerHTML = state.capabilities.map(cap => `
+    <div class="cap-card ${state.selectedCap === cap.id ? 'active' : ''}"
+         data-cap="${cap.id}">
+      <div style="display:flex;align-items:center">
+        <span class="cap-card-id">${cap.id}</span>
+        <span class="cap-card-name">${capShortName(cap.id)}</span>
+      </div>
+      <div class="cap-card-sub">${escHtml(cap.container_name)}</div>
+    </div>
+  `).join('');
+}
+
+function capShortName(id) {
+  return { 1:'BI APIs', 2:'Dashboard APIs', 3:'Multihop', 4:'Multiturn' }[id] || `Cap ${id}`;
+}
+
+function selectCap(id) {
+  state.selectedCap = id;
+  state.tools = [];
+  state.selectedTool = null;
+  renderCapabilities();
+  renderToolsList();
+  renderDetail();
+  updateBreadcrumb();
+  loadDomainsForCap(id);
+}
+
+// ── Load tools ────────────────────────────────────────────────────────────────
+async function loadTools() {
+  const inp = document.getElementById('domain-input');
+  const sel = document.getElementById('domain-select');
+  const domain = (inp.style.display !== 'none' ? inp.value : sel.value).trim();
+
+  if (!state.selectedCap) {
+    alert('Please select a capability first.');
+    return;
+  }
+  if (!domain || domain === '__other__') {
+    alert('Please enter a domain name.');
+    return;
+  }
+
+  state.selectedDomain = domain;
+  state.selectedTool = null;
+
+  const btn = document.getElementById('btn-load');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Loading…';
+
+  document.getElementById('tools-list').innerHTML = `
+    <div class="tools-empty">
+      <div class="spinner dark" style="width:24px;height:24px;margin:0 auto 12px"></div>
+      <div>Connecting to container…</div>
+    </div>`;
+
+  let tools;
+  try {
+    tools = await apiFetch(
+      `/api/tools?capability_id=${state.selectedCap}&domain=${encodeURIComponent(domain)}`
+    );
+  } catch (e) {
+    btn.disabled = false;
+    btn.innerHTML = loadToolsBtnHtml();
+    document.getElementById('tools-list').innerHTML = errorPanel(e.message);
+    return;
+  }
+
+  btn.disabled = false;
+  btn.innerHTML = loadToolsBtnHtml();
+
+  state.tools = tools;
+  state.filteredTools = tools;
+  document.getElementById('search-box').value = '';
+  renderToolsList();
+  updateBreadcrumb();
+}
+
+// ── Tools list ─────────────────────────────────────────────────────────────────
+function renderToolsList() {
+  const list = document.getElementById('tools-list');
+  const meta = document.getElementById('tools-meta');
+
+  if (!state.tools.length) {
+    list.innerHTML = `
+      <div class="tools-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+        </svg>
+        <div>Select a capability and domain,<br>then click <b>Load Tools</b></div>
+      </div>`;
+    meta.textContent = '';
+    return;
+  }
+
+  const tools = state.filteredTools;
+  meta.textContent = tools.length === state.tools.length
+    ? `${tools.length} tools`
+    : `${tools.length} / ${state.tools.length} tools`;
+
+  list.innerHTML = tools.map(t => `
+    <div class="tool-item ${state.selectedTool === t.name ? 'active' : ''}"
+         data-tool="${escAttr(t.name)}">
+      <div class="tool-item-name">${escHtml(t.name)}</div>
+      <div class="tool-item-desc">${escHtml(t.description)}</div>
+    </div>
+  `).join('');
+}
+
+function filterTools() {
+  const q = document.getElementById('search-box').value.toLowerCase();
+  state.filteredTools = state.tools.filter(t =>
+    t.name.toLowerCase().includes(q) ||
+    t.description.toLowerCase().includes(q)
+  );
+  renderToolsList();
+}
+
+// ── Tool detail ────────────────────────────────────────────────────────────────
+function selectTool(name) {
+  state.selectedTool = name;
+  state.rawMode = false;
+  renderToolsList();
+  renderDetail();
+}
+
+function renderDetail() {
+  const panel = document.getElementById('detail-panel');
+
+  if (!state.selectedTool) {
+    panel.innerHTML = `
+      <div class="detail-empty">
+        <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+        </svg>
+        <div style="font-size:14px;">Select a tool to inspect and invoke it</div>
+      </div>`;
+    return;
+  }
+
+  const tool = state.tools.find(t => t.name === state.selectedTool);
+  if (!tool) return;
+
+  const schema = tool.inputSchema || {};
+  const props  = schema.properties || {};
+  const req    = schema.required   || [];
+
+  const formHtml = state.rawMode
+    ? renderRawMode()
+    : renderFormMode(props, req);
+
+  panel.innerHTML = `
+    <div class="detail-content">
+
+      <div class="detail-title">
+        ${escHtml(tool.name)}
+        <span class="badge badge-cap">cap ${state.selectedCap}</span>
+        <span class="badge badge-domain">${escHtml(state.selectedDomain)}</span>
+      </div>
+      <div class="detail-desc">${escHtml(tool.description || 'No description provided.')}</div>
+
+      <div class="params-section">
+        <div class="params-header">
+          <span class="section-title">Parameters</span>
+          <button class="toggle-raw" onclick="toggleRawMode()">
+            ${state.rawMode ? '← Form view' : '{ } Raw JSON'}
+          </button>
+        </div>
+        ${formHtml}
+      </div>
+
+      <div class="invoke-row">
+        <button class="btn-invoke" id="btn-invoke" onclick="invokeTool()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polygon points="5 3 19 12 5 21 5 3"/>
+          </svg>
+          Invoke
+        </button>
+        <span class="invoke-status" id="invoke-status"></span>
+      </div>
+
+      <hr class="divider">
+
+      <div class="schema-section">
+        <div class="schema-toggle" id="schema-toggle" onclick="toggleSchema()">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="9 18 15 12 9 6"/>
+          </svg>
+          Input Schema
+        </div>
+        <pre class="schema-box" id="schema-box">${escHtml(JSON.stringify(schema, null, 2))}</pre>
+      </div>
+
+      <div class="result-section" id="result-section" style="display:none"></div>
+
+    </div>`;
+}
+
+function renderFormMode(props, req) {
+  if (!Object.keys(props).length) {
+    return `<div style="color:var(--c-muted);font-size:13px;padding:8px 0;">
+      This tool takes no parameters.
+    </div>`;
+  }
+
+  const rows = Object.entries(props).map(([name, def]) => {
+    const isReq = req.includes(name);
+    const typeLabel = getTypeLabel(def);
+    const hint = def.description || '';
+    const input = buildInput(name, def);
+
+    return `
+      <div class="param-row">
+        <div class="param-label">
+          <div class="param-name">
+            ${escHtml(name)}
+            ${isReq ? '<span class="required-star">*</span>' : ''}
+          </div>
+          <div class="param-type">${typeLabel}</div>
+          ${hint ? `<div class="param-hint">${escHtml(hint)}</div>` : ''}
+        </div>
+        <div>${input}</div>
+      </div>`;
+  }).join('');
+
+  return `<div class="param-grid" id="param-form">${rows}</div>`;
+}
+
+function renderRawMode() {
+  // Try to preserve existing form values as JSON
+  let prefill = '{}';
+  try {
+    const existing = collectFormArgs();
+    if (Object.keys(existing).length) prefill = JSON.stringify(existing, null, 2);
+  } catch {}
+  return `<textarea class="raw-args" id="raw-args-input" spellcheck="false">${prefill}</textarea>
+    <div style="margin-top:6px;font-size:11px;color:var(--c-muted)">
+      Enter arguments as a JSON object.
+    </div>`;
+}
+
+function buildInput(name, def) {
+  const type = getBaseType(def);
+  const dataAttr = `data-param="${escAttr(name)}" data-type="${type}"`;
+
+  if (def.enum) {
+    const opts = def.enum.map(v =>
+      `<option value="${escAttr(String(v))}">${escHtml(String(v))}</option>`
+    ).join('');
+    return `<select class="param-input" ${dataAttr}>
+      <option value="">— select —</option>${opts}</select>`;
+  }
+
+  if (type === 'boolean') {
+    return `<select class="param-input" ${dataAttr}>
+      <option value="">— select —</option>
+      <option value="true">true</option>
+      <option value="false">false</option>
+    </select>`;
+  }
+
+  if (type === 'integer' || type === 'number') {
+    const step = type === 'integer' ? 'step="1"' : 'step="any"';
+    const min = def.minimum !== undefined ? `min="${def.minimum}"` : '';
+    const max = def.maximum !== undefined ? `max="${def.maximum}"` : '';
+    return `<input class="param-input" type="number" ${dataAttr} ${step} ${min} ${max} />`;
+  }
+
+  if (type === 'array') {
+    return `<textarea class="param-input mono" ${dataAttr} rows="3"
+      placeholder='["item1", "item2"]'></textarea>`;
+  }
+
+  if (type === 'object') {
+    return `<textarea class="param-input mono" ${dataAttr} rows="3"
+      placeholder='{"key": "value"}'></textarea>`;
+  }
+
+  // string / any
+  const placeholder = def.example ? String(def.example) : '';
+  return `<input class="param-input" type="text" ${dataAttr}
+    placeholder="${escAttr(placeholder)}" />`;
+}
+
+function getBaseType(def) {
+  if (def.type) return def.type;
+  if (def.anyOf)  return def.anyOf[0]?.type || 'string';
+  if (def.oneOf)  return def.oneOf[0]?.type || 'string';
+  return 'string';
+}
+
+function getTypeLabel(def) {
+  if (def.enum) return 'enum';
+  const t = getBaseType(def);
+  return t;
+}
+
+// ── Toggle modes ───────────────────────────────────────────────────────────────
+function toggleRawMode() {
+  state.rawMode = !state.rawMode;
+  renderDetail();
+}
+
+function toggleSchema() {
+  const toggle = document.getElementById('schema-toggle');
+  const box    = document.getElementById('schema-box');
+  if (!toggle || !box) return;
+  const open = box.classList.toggle('open');
+  toggle.classList.toggle('open', open);
+}
+
+// ── Collect args ───────────────────────────────────────────────────────────────
+function collectFormArgs() {
+  const args = {};
+  document.querySelectorAll('[data-param]').forEach(el => {
+    const name = el.dataset.param;
+    const type = el.dataset.type;
+    const raw  = el.value.trim();
+    if (raw === '' || raw === '— select —') return;
+
+    if (type === 'integer') {
+      const v = parseInt(raw, 10);
+      if (!isNaN(v)) args[name] = v;
+    } else if (type === 'number') {
+      const v = parseFloat(raw);
+      if (!isNaN(v)) args[name] = v;
+    } else if (type === 'boolean') {
+      args[name] = raw === 'true';
+    } else if (type === 'array' || type === 'object') {
+      try { args[name] = JSON.parse(raw); }
+      catch { args[name] = raw; }
+    } else {
+      args[name] = raw;
+    }
+  });
+  return args;
+}
+
+function collectRawArgs() {
+  const ta = document.getElementById('raw-args-input');
+  if (!ta) return {};
+  return JSON.parse(ta.value.trim() || '{}');
+}
+
+// ── Invoke ─────────────────────────────────────────────────────────────────────
+async function invokeTool() {
+  let args;
+  try {
+    args = state.rawMode ? collectRawArgs() : collectFormArgs();
+  } catch (e) {
+    alert(`Invalid JSON in raw args: ${e.message}`);
+    return;
+  }
+
+  const btn = document.getElementById('btn-invoke');
+  const status = document.getElementById('invoke-status');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Running…';
+  status.textContent = '';
+
+  const t0 = Date.now();
+
+  let result;
+  try {
+    result = await apiFetch('/api/invoke', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        capability_id: state.selectedCap,
+        domain: state.selectedDomain,
+        tool: state.selectedTool,
+        args,
+      }),
+    });
+  } catch (e) {
+    result = { isError: true, content: [{ type: 'text', data: e.message }] };
+  }
+
+  const elapsed = ((Date.now() - t0) / 1000).toFixed(2);
+
+  btn.disabled = false;
+  btn.innerHTML = `
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <polygon points="5 3 19 12 5 21 5 3"/>
+    </svg> Invoke`;
+
+  renderResult(result, elapsed);
+}
+
+function renderResult(result, elapsed) {
+  const section = document.getElementById('result-section');
+  if (!section) return;
+  section.style.display = '';
+
+  if (!result) {
+    section.innerHTML = `
+      <div class="section-title" style="margin-bottom:10px">Result</div>
+      <div class="result-box" style="color:#ef4444">Request failed — check console for details.</div>`;
+    return;
+  }
+
+  const isErr = result.isError;
+  const badgeClass = isErr ? 'err' : 'ok';
+  const badgeText  = isErr ? 'Error' : 'OK';
+
+  // Build formatted output
+  const parts = (result.content || []).map(item => {
+    if (item.type === 'json') return syntaxHighlight(JSON.stringify(item.data, null, 2));
+    return escHtml(String(item.data));
+  });
+
+  const formatted = parts.join('\n\n');
+  const raw = (result.content || []).map(i =>
+    i.type === 'json' ? JSON.stringify(i.data, null, 2) : String(i.data)
+  ).join('\n\n');
+
+  section.innerHTML = `
+    <div class="result-header">
+      <div class="result-meta">
+        <span class="section-title">Result</span>
+        <span class="result-badge ${badgeClass}">${badgeText}</span>
+        <span class="result-time">${elapsed}s</span>
+      </div>
+      <button class="btn-copy" data-copy="${escAttr(raw)}" onclick="copyResult(this)">Copy</button>
+    </div>
+    <div class="result-box" id="result-box">${formatted || '(empty response)'}</div>`;
+
+  // Scroll result into view
+  section.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+async function copyResult(btn) {
+  await navigator.clipboard.writeText(btn.dataset.copy || '').catch(() => {});
+  btn.textContent = 'Copied!';
+  setTimeout(() => { btn.textContent = 'Copy'; }, 1500);
+}
+
+// ── Breadcrumb ─────────────────────────────────────────────────────────────────
+function updateBreadcrumb() {
+  const el = document.getElementById('breadcrumb');
+  if (state.selectedCap && state.selectedDomain) {
+    el.innerHTML = `capability <span>${state.selectedCap}</span> / <span>${escHtml(state.selectedDomain)}</span>`;
+  } else if (state.selectedCap) {
+    el.innerHTML = `capability <span>${state.selectedCap}</span>`;
+  } else {
+    el.textContent = 'select a capability';
+  }
+}
+
+// ── JSON syntax highlight ──────────────────────────────────────────────────────
+function syntaxHighlight(json) {
+  return escHtml(json)
+    .replace(/"([^"]+)":/g, '<span class="jk">"$1"</span>:')
+    .replace(/: "([^"]*)"/g, ': <span class="js">"$1"</span>')
+    .replace(/: (-?\d+\.?\d*)/g, ': <span class="jn">$1</span>')
+    .replace(/: (true|false|null)/g, ': <span class="jb">$1</span>');
+}
+
+// ── UI helpers ────────────────────────────────────────────────────────────────
+function loadToolsBtnHtml() {
+  return `
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+      <polyline points="7 10 12 15 17 10"/>
+      <line x1="12" y1="15" x2="12" y2="3"/>
+    </svg>
+    Load Tools`;
+}
+
+function errorPanel(msg) {
+  return `
+    <div class="tools-empty" style="color:#ef4444; padding:24px 16px">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:10px">
+        <circle cx="12" cy="12" r="10"/>
+        <line x1="12" y1="8" x2="12" y2="12"/>
+        <line x1="12" y1="16" x2="12.01" y2="16"/>
+      </svg>
+      <div style="font-weight:600; margin-bottom:6px">Connection failed</div>
+      <div style="font-size:11px; color:#9ca3af; font-family:var(--font-mono);
+                  white-space:pre-wrap; text-align:left; max-width:240px; line-height:1.5">
+        ${escHtml(msg)}
+      </div>
+    </div>`;
+}
+
+// ── Utils ─────────────────────────────────────────────────────────────────────
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function escAttr(s) { return String(s).replace(/"/g, '&quot;'); }
+function esc(v)     { return JSON.stringify(v); }
+</script>
+</body>
+</html>

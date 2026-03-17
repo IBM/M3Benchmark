@@ -6,6 +6,7 @@
 #   make build       Build the benchmark_environ image from source
 #   make test        Smoke-test the locally built image (file checks + MCP handshakes)
 #   make validate    Validate live MCP connections against running containers
+#   make validate-output FILES=<path>  Validate output JSON files match submission schema
 #   make tag         Tag the local image for Docker Hub
 #   make push        Push the tagged image to Docker Hub
 #   make release     build → test → tag → push  (full publish workflow)
@@ -16,8 +17,12 @@
 #   make restart     Stop and restart all containers without re-pulling the image
 #   make logs        Tail logs for all running benchmark containers
 #   make clean       Stop containers and remove the local Docker image
-#   make e2e         Run end-to-end benchmark tests (requires HF_TOKEN + OPENAI_API_KEY)
-#   make e2e-quick   Run e2e tests against already-running containers (no download/restart)
+#   make e2e              Run end-to-end benchmark tests (requires HF_TOKEN + OPENAI_API_KEY)
+#   make e2e-quick        Run e2e tests against already-running containers — OpenAI provider
+#   make e2e-quick-rits   Run e2e tests against already-running containers — RITS provider
+#   make e2e-quick-watsonx Run e2e tests against already-running containers — WatsonX provider
+#   make e2e-quick-litellm Run e2e tests against already-running containers — LiteLLM provider
+#   make e2e-quick-anthropic Run e2e tests against already-running containers — Anthropic provider
 #
 # Override variables (optional):
 #   DOCKER=podman make build    Force use of podman
@@ -32,10 +37,18 @@ DOCKERFILE := docker/Dockerfile.unified
 # Auto-detect container runtime: prefer docker, fall back to podman
 DOCKER ?= $(shell PATH=$$PATH:/usr/bin command -v docker 2>/dev/null || command -v podman 2>/dev/null || echo docker)
 
-# Auto-detect Python interpreter: prefer python3, fall back to python
-PYTHON ?= $(shell command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3)
+# Auto-detect Python interpreter: prefer the active virtualenv, then python3, then python
+PYTHON ?= $(shell \
+  if [ -n "$$VIRTUAL_ENV" ] && [ -x "$$VIRTUAL_ENV/bin/python" ]; then \
+    echo "$$VIRTUAL_ENV/bin/python"; \
+  elif [ -x ".venv/bin/python" ]; then \
+    echo ".venv/bin/python"; \
+  else \
+    command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3; \
+  fi)
 
-.PHONY: download build test validate tag push release setup pull start stop restart logs clean e2e e2e-quick \
+.PHONY: download build test validate validate-output tag push release setup pull start stop restart logs clean e2e \
+        e2e-quick e2e-quick-rits e2e-quick-watsonx e2e-quick-litellm e2e-quick-anthropic \
         start-capability1 start-capability2 start-capability3 start-capability4
 
 # ---------------------------------------------------------------------------
@@ -63,6 +76,14 @@ test:
 # ---------------------------------------------------------------------------
 validate:
 	$(PYTHON) benchmark/validate_clients.py
+
+# ---------------------------------------------------------------------------
+# Validate output files — check submission JSON files match the required schema
+# Usage: make validate-output FILES="results/address.json results/hockey.json"
+#        make validate-output FILES=results/   (all .json files in a directory)
+# ---------------------------------------------------------------------------
+validate-output:
+	$(PYTHON) validate_output.py $(FILES)
 
 # ---------------------------------------------------------------------------
 # Tag
@@ -121,12 +142,32 @@ e2e:
 	$(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
 
 # ---------------------------------------------------------------------------
-# e2e-quick: run e2e tests against already-running containers
+# e2e-quick variants: run e2e tests against already-running containers
 # Skips data download and container restart. Requires: make start first.
+# Each target validates the required credentials for that provider.
 # ---------------------------------------------------------------------------
 e2e-quick:
 	@if [ -z "$(OPENAI_API_KEY)" ]; then echo "ERROR: OPENAI_API_KEY is not set."; exit 1; fi
 	E2E_SKIP_SETUP=1 $(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+e2e-quick-rits:
+	@if [ -z "$(RITS_API_KEY)" ]; then echo "ERROR: RITS_API_KEY is not set."; exit 1; fi
+	E2E_SKIP_SETUP=1 $(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+e2e-quick-watsonx:
+	@if [ -z "$(WATSONX_APIKEY)" ]; then echo "ERROR: WATSONX_APIKEY is not set."; exit 1; fi
+	@if [ -z "$(WATSONX_PROJECT_ID)" ] && [ -z "$(WATSONX_SPACE_ID)" ]; then \
+		echo "ERROR: WATSONX_PROJECT_ID or WATSONX_SPACE_ID must be set."; exit 1; fi
+	E2E_SKIP_SETUP=1 $(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+e2e-quick-litellm:
+	@if [ -z "$(LITELLM_API_KEY)" ]; then echo "ERROR: LITELLM_API_KEY is not set."; exit 1; fi
+	@if [ -z "$(LITELLM_BASE_URL)" ]; then echo "ERROR: LITELLM_BASE_URL is not set."; exit 1; fi
+	E2E_SKIP_SETUP=1 E2E_PROVIDER=litellm $(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
+
+e2e-quick-anthropic:
+	@if [ -z "$(ANTHROPIC_API_KEY)" ]; then echo "ERROR: ANTHROPIC_API_KEY is not set."; exit 1; fi
+	E2E_SKIP_SETUP=1 E2E_PROVIDER=anthropic $(PYTHON) -m pytest tests/e2e/test_benchmark_e2e.py -v -s
 
 # ---------------------------------------------------------------------------
 # Start a single container (useful when one fails and you don't want to

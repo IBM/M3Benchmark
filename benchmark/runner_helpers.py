@@ -302,7 +302,7 @@ def save_results_ground_truth(
                         "answer": r.answer,
                         "sequence": {
                             "tool_call": tool_call_list
-                        }, 
+                        },
                     }
                 ],
             }

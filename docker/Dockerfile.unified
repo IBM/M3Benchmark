@@ -67,6 +67,7 @@ COPY environment/retrievers/domain_negatives.json          retrievers/domain_neg
 # --- Sel/Slot Python tools MCP server ---
 COPY environment/__init__.py           environment/__init__.py
 COPY environment/mcp_logging.py        environment/mcp_logging.py
+COPY environment/tool_checksums.py     environment/tool_checksums.py
 COPY environment/m3/__init__.py        environment/m3/__init__.py
 COPY environment/m3/python_tools/      environment/m3/python_tools/
 
@@ -87,7 +88,8 @@ VOLUME /app/db
 VOLUME /app/environment/configs
 VOLUME /app/retrievers/chroma_data
 VOLUME /app/retrievers/queries
-ENV MCP_DB_ROOT=/app/db
+ENV MCP_DB_ROOT=/app/db \
+    PRELOAD_COLLECTIONS=false
 # Ensure `from environment.*` resolves for scripts run as `python /app/.../*.py`
 # (Python only adds the script's own directory to sys.path, not /app)
 ENV PYTHONPATH=/app

@@ -1,0 +1,38 @@
+# Docker Compose override — exposes FastAPI ports for browser access.
+#
+# Use this when you want to browse the Swagger UI, ReDoc, or fetch the
+# OpenAPI spec directly from your host without going through `docker exec`.
+#
+# MCP clients (benchmark_runner.py, mcp_tool_wrapper.py) connect via
+# docker exec stdio and do NOT need these ports.
+#
+# Usage:
+#   docker compose -f docker-compose.yml -f docker-compose.ports.yml up -d
+#
+# Then open in your browser:
+#   Capability 1:  http://localhost:8010/docs   (M3 REST / slot-filling)
+#   Capability 2:  http://localhost:8020/docs   (M3 REST / SQL)
+#   Capability 3:  http://localhost:8030/docs   (M3 REST / multihop)
+#   Capability 4:  http://localhost:8040/docs   (M3 REST)
+#              :   http://localhost:8041/docs   (Retriever / ChromaDB)
+#
+# You can also download the spec with:
+#   curl http://localhost:8020/openapi.json | python -m json.tool
+
+services:
+  capability_1_bi_apis:
+    ports:
+      - "8010:8000"
+
+  capability_2_dashboard_apis:
+    ports:
+      - "8020:8000"
+
+  capability_3_multihop_reasoning:
+    ports:
+      - "8030:8000"
+
+  capability_4_multiturn:
+    ports:
+      - "8040:8000"   # M3 REST server
+      - "8041:8001"   # Retriever (ChromaDB) server

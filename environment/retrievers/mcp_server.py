@@ -183,6 +183,8 @@ class FastAPIMCPServer:
         """List all available tools."""
         if not self.tools_cache:
             await self.initialize()
+
+
         return self.tools_cache
 
     async def call_tool(self, name: str, arguments: Dict[str, Any]) -> List[TextContent]:
