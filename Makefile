@@ -36,8 +36,15 @@ DOCKERFILE := docker/Dockerfile.unified
 # Auto-detect container runtime: prefer docker, fall back to podman
 DOCKER ?= $(shell PATH=$$PATH:/usr/bin command -v docker 2>/dev/null || command -v podman 2>/dev/null || echo docker)
 
-# Auto-detect Python interpreter: prefer python3, fall back to python
-PYTHON ?= $(shell command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3)
+# Auto-detect Python interpreter: prefer the active virtualenv, then python3, then python
+PYTHON ?= $(shell \
+  if [ -n "$$VIRTUAL_ENV" ] && [ -x "$$VIRTUAL_ENV/bin/python" ]; then \
+    echo "$$VIRTUAL_ENV/bin/python"; \
+  elif [ -x ".venv/bin/python" ]; then \
+    echo ".venv/bin/python"; \
+  else \
+    command -v python3 2>/dev/null | head -1 || command -v python 2>/dev/null | head -1 || echo python3; \
+  fi)
 
 .PHONY: download build test validate tag push release setup pull start stop restart logs clean e2e \
         e2e-quick e2e-quick-rits e2e-quick-watsonx e2e-quick-litellm e2e-quick-anthropic \

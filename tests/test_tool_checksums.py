@@ -7,6 +7,7 @@ Tests verify:
   4. verify_checksum raises ValueError on mismatch (wrong domain guard).
   5. verify_checksum warns but does NOT raise when no checksum is registered.
   6. Pydantic-model inputSchema is handled correctly.
+  7. The committed tool_checksums.json is structurally valid and complete.
 
 These tests are fully self-contained — no Docker containers required.
 
@@ -17,6 +18,7 @@ Usage:
 import json
 import logging
 import os
+import re
 import tempfile
 from pathlib import Path
 from types import SimpleNamespace
@@ -295,3 +297,177 @@ class TestVerifyChecksum:
         # Capability 4 address does NOT match (different stored value)
         with pytest.raises(ValueError):
             verify_checksum(4, "address", tools, checksums_path=p)
+
+
+# ---------------------------------------------------------------------------
+# Committed tool_checksums.json — structural and content validation
+# ---------------------------------------------------------------------------
+
+COMMITTED_CHECKSUMS_PATH = Path(__file__).parent.parent / "tool_checksums.json"
+
+# Expected capabilities and a representative sample of domains per capability.
+# These must be present in the committed file.
+_EXPECTED_CAP2_DOMAINS = {
+    "california_schools", "card_games", "chicago_crime", "debit_card_specializing",
+    "european_football_2", "financial", "formula_1", "movie", "movie_3",
+    "movielens", "movies_4", "public_review_platform", "simpson_episodes",
+    "superhero", "thrombosis_prediction", "toxicology", "video_games",
+}
+
+_EXPECTED_CAP3_DOMAINS = {
+    "address", "airline", "app_store", "beer_factory", "bike_share_1",
+    "books", "cars", "chicago_crime", "codebase_comments", "coinmarketcap",
+    "computer_student", "cookbook", "european_football_1", "food_inspection",
+    "genes", "hockey", "ice_hockey_draft", "law_episode", "menu", "mondial_geo",
+    "movie", "movie_3", "movielens", "movies_4", "olympics",
+    "professional_basketball", "public_review_platform", "restaurant",
+    "sales_in_weather", "shakespeare", "simpson_episodes", "soccer_2016",
+    "student_loan", "talkingdata", "university", "video_games",
+    "world_development_indicators",
+}
+
+_EXPECTED_CAP4_DOMAINS = {
+    "address", "authors", "beer_factory", "bike_share_1", "book_publishing_company",
+    "books", "chicago_crime", "citeseer", "codebase_comments", "coinmarketcap",
+    "college_completion", "computer_student", "cookbook", "disney",
+    "european_football_1", "food_inspection", "hockey", "ice_hockey_draft",
+    "image_and_language", "law_episode", "menu", "mondial_geo", "movie",
+    "movie_3", "movielens", "movies_4", "music_tracker", "olympics",
+    "professional_basketball", "public_review_platform", "restaurant",
+    "shakespeare", "simpson_episodes", "soccer_2016", "student_loan",
+    "talkingdata", "trains", "university", "video_games", "world",
+    "world_development_indicators",
+}
+
+_SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
+
+
+class TestCommittedChecksums:
+    """Validate the committed tool_checksums.json without needing Docker."""
+
+    @pytest.fixture(scope="class")
+    def checksums(self):
+        assert COMMITTED_CHECKSUMS_PATH.exists(), (
+            f"tool_checksums.json not found at {COMMITTED_CHECKSUMS_PATH}. "
+            "Run generate_checksums.py to create it."
+        )
+        with open(COMMITTED_CHECKSUMS_PATH) as f:
+            return json.load(f)
+
+    def test_file_is_valid_json(self):
+        with open(COMMITTED_CHECKSUMS_PATH) as f:
+            data = json.load(f)
+        assert isinstance(data, dict)
+
+    def test_all_supported_capabilities_present(self, checksums):
+        for cap in ("2", "3", "4"):
+            assert cap in checksums, f"capability '{cap}' missing from tool_checksums.json"
+
+    def test_no_empty_capability(self, checksums):
+        for cap in ("2", "3", "4"):
+            assert checksums[cap], f"capability '{cap}' has no domains in tool_checksums.json"
+
+    def test_all_checksums_are_sha256_hex(self, checksums):
+        for cap, domains in checksums.items():
+            if cap == "_comment":
+                continue
+            for domain, checksum in domains.items():
+                assert _SHA256_RE.match(checksum), (
+                    f"capability {cap}, domain '{domain}': "
+                    f"checksum '{checksum}' is not a valid 64-char hex SHA-256"
+                )
+
+    def test_no_duplicate_checksums_within_capability(self, checksums):
+        """Every domain within a capability should have a unique checksum.
+
+        A duplicate strongly suggests a copy-paste error or that the same
+        server responded for two different domains.
+        """
+        for cap, domains in checksums.items():
+            if cap == "_comment":
+                continue
+            seen: dict[str, str] = {}
+            for domain, checksum in domains.items():
+                assert checksum not in seen, (
+                    f"capability {cap}: domains '{seen[checksum]}' and '{domain}' "
+                    f"share the same checksum ({checksum[:16]}…) — likely a generation error"
+                )
+                seen[checksum] = domain
+
+    def test_capability_2_expected_domains_present(self, checksums):
+        present = set(checksums["2"].keys())
+        missing = _EXPECTED_CAP2_DOMAINS - present
+        assert not missing, f"capability 2 missing domains: {sorted(missing)}"
+
+    def test_capability_3_expected_domains_present(self, checksums):
+        present = set(checksums["3"].keys())
+        missing = _EXPECTED_CAP3_DOMAINS - present
+        assert not missing, f"capability 3 missing domains: {sorted(missing)}"
+
+    def test_capability_4_expected_domains_present(self, checksums):
+        present = set(checksums["4"].keys())
+        missing = _EXPECTED_CAP4_DOMAINS - present
+        assert not missing, f"capability 4 missing domains: {sorted(missing)}"
+
+    def test_shared_domains_have_independent_checksums(self, checksums):
+        """Domains that appear in multiple capabilities should NOT share a checksum
+        unless the tool sets are genuinely identical (e.g. same SQL tools reused).
+
+        This test flags same-name/same-checksum pairs across capabilities so they
+        can be reviewed, but does not hard-fail — the real tools may legitimately
+        share a definition.
+        """
+        # Domains present in both cap 2 and cap 3 with the same checksum are
+        # expected (same M3 REST server, same tools). Between cap 3 and cap 4
+        # the retriever is added, so checksums should differ.
+        cap3 = checksums.get("3", {})
+        cap4 = checksums.get("4", {})
+        shared = set(cap3.keys()) & set(cap4.keys())
+        same = [d for d in shared if cap3[d] == cap4[d]]
+        assert not same, (
+            f"These domains have identical checksums in cap 3 and cap 4 "
+            f"(cap 4 should include retriever tools): {sorted(same)}"
+        )
+
+    def test_verify_checksum_accepts_committed_value(self, checksums, monkeypatch):
+        """verify_checksum should not raise when we pass the stored checksum back.
+
+        We reconstruct a fake tool-list whose checksum equals the stored one —
+        this validates that load_checksums + verify_checksum round-trip correctly
+        using the real file, without needing Docker.
+        """
+        monkeypatch.setenv("MCP_VERIFY_CHECKSUMS", "1")
+
+        # Pick the first domain from capability 2 as a representative sample.
+        cap2 = checksums["2"]
+        domain, expected_checksum = next(iter(cap2.items()))
+
+        # Build a synthetic tool list that produces the same checksum.
+        # We can't reverse a SHA-256, so instead we patch compute_tool_checksum
+        # to return the stored value and confirm verify_checksum accepts it.
+        with patch(
+            "environment.tool_checksums.compute_tool_checksum",
+            return_value=expected_checksum,
+        ):
+            verify_checksum(
+                2, domain, _make_tools(["placeholder"]),
+                checksums_path=COMMITTED_CHECKSUMS_PATH,
+            )
+
+    def test_verify_checksum_rejects_tampered_value(self, checksums, monkeypatch):
+        """verify_checksum must raise ValueError if the checksum doesn't match
+        the committed value — simulates a wrong-domain connection.
+        """
+        monkeypatch.setenv("MCP_VERIFY_CHECKSUMS", "1")
+        cap2 = checksums["2"]
+        domain = next(iter(cap2))
+
+        with patch(
+            "environment.tool_checksums.compute_tool_checksum",
+            return_value="a" * 64,  # deliberately wrong checksum
+        ):
+            with pytest.raises(ValueError, match="checksum mismatch"):
+                verify_checksum(
+                    2, domain, _make_tools(["placeholder"]),
+                    checksums_path=COMMITTED_CHECKSUMS_PATH,
+                )

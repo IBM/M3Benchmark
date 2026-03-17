@@ -246,7 +246,7 @@ def _assert_output(output_dir: Path, domain: str = "address") -> list:
         ctx = f"records[{i}]"
 
         # Required top-level keys
-        for key in ("uuid", "domain", "status", "duration_s", "ground_truth"):
+        for key in ("uuid", "domain", "status", "duration_s", "output"):
             assert key in record, f"{ctx}: missing key '{key}'"
 
         # Domain matches what we requested
@@ -264,18 +264,24 @@ def _assert_output(output_dir: Path, domain: str = "address") -> list:
             f"{ctx}: 'duration_s' must be numeric, got {type(record['duration_s'])}"
         )
 
-        # ground_truth is a non-empty list of turn records
-        gt_list = record["ground_truth"]
-        assert isinstance(gt_list, list) and len(gt_list) >= 1, (
-            f"{ctx}: 'ground_truth' must be a non-empty list"
+        # output is a non-empty list of turn records
+        out_list = record["output"]
+        assert isinstance(out_list, list) and len(out_list) >= 1, (
+            f"{ctx}: 'output' must be a non-empty list"
         )
 
-        for j, gt in enumerate(gt_list):
-            gt_ctx = f"{ctx}.ground_truth[{j}]"
-            for key in ("query", "answer", "gold_sequence"):
-                assert key in gt, f"{gt_ctx}: missing key '{key}'"
-            assert isinstance(gt["gold_sequence"], list), (
-                f"{gt_ctx}: 'gold_sequence' must be a list"
+        for j, turn in enumerate(out_list):
+            turn_ctx = f"{ctx}.output[{j}]"
+            for key in ("query", "answer", "sequence"):
+                assert key in turn, f"{turn_ctx}: missing key '{key}'"
+            assert isinstance(turn["sequence"], dict), (
+                f"{turn_ctx}: 'sequence' must be a dict"
+            )
+            assert "tool_call" in turn["sequence"], (
+                f"{turn_ctx}: 'sequence' must contain 'tool_call'"
+            )
+            assert isinstance(turn["sequence"]["tool_call"], list), (
+                f"{turn_ctx}: 'sequence.tool_call' must be a list"
             )
 
     return records
@@ -305,17 +311,17 @@ class TestBenchmarkE2E:
             + json.dumps(records, indent=2)
         )
 
-    def test_capability2_address(self, tmp_path):
-        """Capability 2: SQL MCP agent on 2 address-domain samples."""
+    def test_capability2_movie(self, tmp_path):
+        """Capability 2: SQL MCP agent on 2 movie-domain samples."""
         output_dir = tmp_path / "cap2"
         output_dir.mkdir()
 
-        result = _run_benchmark(capability_id=2, output_dir=output_dir, domain="address")
+        result = _run_benchmark(capability_id=2, output_dir=output_dir, domain="movie")
 
         assert result.returncode == 0, (
             f"benchmark_runner.py exited with code {result.returncode} (see output above)"
         )
-        records = _assert_output(output_dir, domain="address")
+        records = _assert_output(output_dir, domain="movie")
         successful = [r for r in records if r["status"] == "success"]
         assert len(successful) >= 1, (
             "Expected at least 1 successful record for capability 2.\n"
@@ -343,24 +349,20 @@ class TestBenchmarkE2E:
             + json.dumps(records, indent=2)
         )
 
-    def test_capability3_bpo(self, tmp_path):
-        """Capability 3: BPO MCP agent on 2 BPO-domain samples.
-
-        Uses capability_3_multihop_reasoning container via bpo_router.py. Since "bpo"
-        is the BPO domain, the router exec's into the BPO FastMCP server.
-        """
-        output_dir = tmp_path / "cap3_bpo"
+    def test_capability3_hockey(self, tmp_path):
+        """Capability 3: multihop reasoning agent on 2 hockey-domain samples."""
+        output_dir = tmp_path / "cap3_hockey"
         output_dir.mkdir()
 
-        result = _run_benchmark(capability_id=3, output_dir=output_dir, domain="bpo")
+        result = _run_benchmark(capability_id=3, output_dir=output_dir, domain="hockey")
 
         assert result.returncode == 0, (
             f"benchmark_runner.py exited with code {result.returncode} (see output above)"
         )
-        records = _assert_output(output_dir, domain="bpo")
+        records = _assert_output(output_dir, domain="hockey")
         successful = [r for r in records if r["status"] == "success"]
         assert len(successful) >= 1, (
-            "Expected at least 1 successful record for capability 3 (bpo).\n"
+            "Expected at least 1 successful record for capability 3 (hockey).\n"
             + json.dumps(records, indent=2)
         )
 
@@ -373,9 +375,11 @@ class TestBenchmarkE2E:
 
         Verifies four things:
         1. query_address is present   — primary retriever tool included.
-        2. query_olympics is present  — negative-domain retriever tool included.
+        2. query_hockey is present    — negative-domain retriever tool included
+                                        (address negatives: hockey, law_episode,
+                                         trains, public_review_platform).
         3. Total tool count > 1       — M3 REST tools are also included.
-        4. query_hockey is absent     — unrelated domain not leaking through.
+        4. query_airline is absent    — unrelated domain not leaking through.
         """
         result = _list_tools(capability_id=4, domain="address")
 
@@ -408,8 +412,8 @@ class TestBenchmarkE2E:
         )
 
         # 2. Negative-domain retriever tools must also be present
-        assert "query_olympics" in result.stdout, (
-            "Expected 'query_olympics' (a negative domain for 'address' per "
+        assert "query_hockey" in result.stdout, (
+            "Expected 'query_hockey' (a negative domain for 'address' per "
             "domain_negatives.json) to be exposed, but it was not found.\n"
             f"Output:\n{result.stdout}"
         )
@@ -421,8 +425,8 @@ class TestBenchmarkE2E:
         )
 
         # 4. Unrelated domains must not appear
-        assert "query_hockey" not in result.stdout, (
-            "Found 'query_hockey' in capability 4 address output — "
+        assert "query_airline" not in result.stdout, (
+            "Found 'query_airline' in capability 4 address output — "
             "domain filtering is broken; unrelated tools are leaking through."
         )
 
