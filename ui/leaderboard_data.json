@@ -1,22 +1,44 @@
 [
   {
     "agent": "LangGraph React Agent",
-    "model": "llama-3-3-70b-instruct",
+    "model": "llama-405b",
     "scores": {
       "Single Turn|API Styles|Business Intelligence": 0,
-      "Single Turn|API Styles|Dashboard APIs": 44.02,
-      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0.54,
+      "Single Turn|Reasoning|Multi-hop": 0.275,
       "Single Turn|Reasoning|Policy Adherence": 0,
       "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
     }
   },
   {
     "agent": "LangGraph React Agent",
-    "model": "claude-opus-4-5-20251101",
+    "model": "gemini-flash-3-preview",
     "scores": {
       "Single Turn|API Styles|Business Intelligence": 0,
-      "Single Turn|API Styles|Dashboard APIs": 0,
-      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0.0,
+      "Single Turn|Reasoning|Multi-hop": 0.0,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
+  },
+  {
+    "agent": "LangGraph React Agent",
+    "model": "qwen 3.5",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0.45,
+      "Single Turn|Reasoning|Multi-hop": 0.102,
+      "Single Turn|Reasoning|Policy Adherence": 0,
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+    }
+  },
+  {
+    "agent": "LangGraph React Agent",
+    "model": "claude-sonnet-4-5",
+    "scores": {
+      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0.49,
+      "Single Turn|Reasoning|Multi-hop": 0.06,
       "Single Turn|Reasoning|Policy Adherence": 0,
       "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
     }
@@ -37,10 +59,10 @@
     "model": "gpt-oss-120b",
     "scores": {
       "Single Turn|API Styles|Business Intelligence": 0,
-      "Single Turn|API Styles|Dashboard APIs": 33.39,
-      "Single Turn|Reasoning|Multi-hop": 0,
+      "Single Turn|API Styles|Dashboard APIs": 0.504,
+      "Single Turn|Reasoning|Multi-hop": 0.272,
       "Single Turn|Reasoning|Policy Adherence": 0,
-      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0
+      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 0.10
     }
   }
 ]

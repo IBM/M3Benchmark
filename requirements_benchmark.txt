@@ -84,3 +84,13 @@ sentence-transformers>=2.0.0
 huggingface_hub
 pytest
 sentence-transformers
+
+# ----------------------------------------------------------------------------
+# Optional: Phoenix / Arize OTEL tracing
+# ----------------------------------------------------------------------------
+# Uncomment to enable --phoenix flag in benchmark_runner.py
+# Start Phoenix with: docker compose --profile phoenix up -d
+# Then run with:      python benchmark_runner.py --capability_id 2 --phoenix
+#
+# arize-phoenix-otel
+# openinference-instrumentation-langchain

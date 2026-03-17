@@ -1,341 +1,112 @@
-# Examples Directory
+# Examples
 
-This directory contains examples demonstrating how to use the M3Benchmark tool-calling agent framework with the slot-filling MCP server.
+Scripts for connecting to the benchmark environment, exploring tools, and running your agent against benchmark data.
 
-## Overview
+---
 
-The main example script (`demo.py`) demonstrates:
-- **Agent-based query execution** using LangChain with MCP tools
-- **Multiple LLM providers** (RITS/OpenAI-compatible API and Ollama)
-- **Two connection modes** (stdio subprocess and WebSocket)
-- **Handle-based result management** to efficiently process large datasets
-- **127 test queries** from the superhero database
+## How the environment works
 
-## Prerequisites
+The benchmark runs four capability containers, each exposing an MCP server. Your agent connects to a container, receives a set of tools, and must answer natural-language questions by calling the right tools with the right arguments.
 
-- **Python Version**: 3.11 or higher
-- **LLM Provider** (choose one):
-  - RITS API (OpenAI-compatible) with API key
-  - Ollama (local, no API key needed)
-- **Database**: SQLite database (superhero database included at `db/dev_databases/superhero/superhero.sqlite`)
+| Capability | Container | What it tests |
+|---|---|---|
+| 1 | `capability_1_bi_apis` | Tool selection and slot filling — choosing the right tool from a large set and supplying correct parameter values |
+| 2 | `capability_2_dashboard_apis` | SQL query construction — 83 domains, each an independent SQLite DB exposed as REST/MCP tools |
+| 3 | `capability_3_multihop_reasoning` | Multi-hop reasoning — routes to BPO analytics tools (`domain=bpo`) or SQL tools (other domains) |
+| 4 | `capability_4_multiturn` | Multi-turn retrieval — combines SQL tools with a ChromaDB semantic retriever; agent must choose between lookup and vector search |
 
-## Installation
+The runner connects via `docker exec` (stdio transport) — no ports need to be exposed. Domain is passed as the `MCP_DOMAIN` environment variable, which filters the tools the server exposes.
 
-### Dependency Groups
-
-The project uses pyproject.toml dependency groups for modular installation:
-
-| Group | Purpose | When to Use |
-|-------|---------|-------------|
-| `core` | Basic data tools (pandas, numpy, sqlglot, pydantic, jinja2, dotenv) | Always installed |
-| `mcp` | MCP server + LangChain (includes agents) | **Required for demo.py** |
-| `agents` | LangChain only | Included in mcp |
-| `rest` | FastAPI REST API server | Not needed for examples |
-| `rag` | RAG capabilities | Optional |
-| `dev` | Development tools (black, pytest, etc.) | Development only |
-| `all` | All dependencies | Full installation |
-
-### Installation Commands
-
-**Recommended (minimal for examples):**
+**Setup:**
 ```bash
-pip install -e ".[mcp]"
+make build          # build the benchmark_environ image (or: make pull)
+make download       # download benchmark data into data/
+docker compose up -d        # start all four capability containers
 ```
 
-**Full installation:**
+---
+
+## 1. Explore tools interactively
+
+These scripts let you poke at the environment before writing an agent.
+
+**Connect via Docker and list tools** ([`quick_start_benchmark/simple_docker.py`](quick_start_benchmark/simple_docker.py)):
 ```bash
-pip install -e ".[all]"
+python examples/quick_start_benchmark/simple_docker.py --capability-id 2 --domain hockey
+python examples/quick_start_benchmark/simple_docker.py --capability-id 3 --domain bpo
+python examples/quick_start_benchmark/simple_docker.py --capability-id 1 --domain superhero
 ```
+Opens an MCP session via `docker exec`, prints all available tools with descriptions, and includes a commented-out example showing how to call a tool directly with `session.call_tool(name, args)`.
 
-**Core only:**
+**CLI — list tools for a capability** ([`quick_start_mcp_tools/list_tools.py`](quick_start_mcp_tools/list_tools.py)):
 ```bash
-pip install -e .
+python examples/quick_start_mcp_tools/list_tools.py --capability-id 2 --domain hockey
+python examples/quick_start_mcp_tools/list_tools.py --capability-id 2 --domain hockey --verbose   # include parameter details
+python examples/quick_start_mcp_tools/list_tools.py --capability-id 2 --domain hockey --json      # machine-readable output
 ```
 
-**Additional for Ollama:**
+**CLI — call a specific tool** ([`quick_start_mcp_tools/invoke_tool.py`](quick_start_mcp_tools/invoke_tool.py)):
 ```bash
-pip install langchain-ollama
+# See what tools are available first
+python examples/quick_start_mcp_tools/invoke_tool.py --capability-id 2 --domain hockey --list
+
+# Call a tool with no arguments
+python examples/quick_start_mcp_tools/invoke_tool.py --capability-id 2 --domain hockey --tool <tool_name>
+
+# Call a tool with JSON arguments
+python examples/quick_start_mcp_tools/invoke_tool.py --capability-id 2 --domain hockey \
+    --tool <tool_name> --args '{"param": "value"}'
 ```
 
-### Verify Installation
-
+**CLI — fetch the OpenAPI spec from a container** ([`quick_start_mcp_tools/download_spec.py`](quick_start_mcp_tools/download_spec.py)):
 ```bash
-# Check MCP server command is available
-slot-filling-mcp --version
-
-# Verify Python imports
-python -c "from agents.tool_calling_agent import ToolCallingAgent; print('✓ Imports successful')"
+python examples/quick_start_mcp_tools/download_spec.py --capability-id 2           # print a summary
+python examples/quick_start_mcp_tools/download_spec.py --capability-id 2 --out spec.json   # save to file
+python examples/quick_start_mcp_tools/download_spec.py --capability-id 4 --port 8001       # retriever backend
 ```
+The capability containers run a FastAPI server internally. This script fetches its `/openapi.json` via `docker exec` — useful for understanding the full API surface before the MCP layer filters it by domain.
 
-## Database Setup
+---
 
-### Directory Structure
+## 2. Run the benchmark with your own agent
 
-The project follows this database directory pattern:
+The [`quick_start_benchmark/`](quick_start_benchmark/) directory contains a benchmark runner that iterates over every domain for a capability, starts the MCP server, lists available tools, and calls a placeholder where you drop in your agent.
 
-```
-db/
-└── dev_databases/
-    └── {database_name}/
-        ├── {database_name}.sqlite       # The actual database file
-        └── database_description/        # Schema documentation (optional)
-```
-
-### Default Database
-
-- **Location**: `db/dev_databases/superhero/superhero.sqlite`
-- **Status**: Included in repository
-- **Pattern**: `db/dev_databases/{database_name}/{database_name}.sqlite`
-
-### Using a Different Domain
-
-Set the MCP_DOMAIN environment variable to choose a different database domain:
-
+**Run it:**
 ```bash
-export MCP_DOMAIN="hockey"  # Uses db/hockey/hockey.sqlite
-export MCP_DOMAIN="movie"   # Uses db/movie/movie.sqlite
+# All domains for a capability
+python examples/quick_start_benchmark/run_benchmark.py --capability 2
+
+# Single domain smoke test
+python examples/quick_start_benchmark/run_benchmark.py --capability 2 --domain hockey
+
+# Use podman instead of docker
+python examples/quick_start_benchmark/run_benchmark.py --capability 1 --runtime podman
 ```
 
-## Configuration
-
-### Environment Variables
-
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| `MCP_DOMAIN` | Database domain name (constructs path as db/{domain}/{domain}.sqlite) | No | `superhero` |
-| `RITS_API_KEY` | API key for RITS/OpenAI-compatible API | Yes (for --llm openai) | None |
-
-### API Key Setup
-
-**For RITS/OpenAI:**
-```bash
-export RITS_API_KEY="your-api-key-here"
+**Plug in your agent** by replacing the placeholder in `run_benchmark.py`:
+```python
+# --- Agent call placeholder ---
+# result = await agent.run(domain=domain, tools=tools, session=session)
+print("\n[placeholder] Agent called with tools")
 ```
 
-**For Ollama:**
-No API key needed (runs locally)
+The `session` object is a standard `mcp.ClientSession`. Call `session.list_tools()` to discover tools and `session.call_tool(name, args)` to invoke them.
 
-### Test Data
+Container and command config for each capability (including per-capability domain lists) lives in [`quick_start_benchmark/server.yaml`](quick_start_benchmark/server.yaml).
 
-- **Location**: `apis/configs/mcp_tool_universe_id_mapping.json`
-- **Contents**: 127 test instances with queries, expected answers, and initialization arguments
+---
 
-## Usage
+## File map
 
-### Command-Line Parameters
-
-| Parameter | Type | Choices | Default | Description |
-|-----------|------|---------|---------|-------------|
-| `--llm` | string | `openai`, `ollama` | `openai` | LLM provider to use |
-| `--model` | string | Any | `llama-3-3-70b-instruct` (openai)<br>`llama3.3` (ollama) | Model name |
-| `--ollama-base-url` | string | URL | `http://localhost:11434` | Ollama server URL |
-| `--mode` | string | `stdio`, `websocket` | `stdio` | Connection mode to MCP server |
-| `--server-url` | string | WebSocket URL | None | WebSocket URL (required for websocket mode) |
-
-### Connection Modes Explained
-
-- **stdio** (default): Launches MCP server as subprocess with auto-start/stop. Easiest for local development.
-- **websocket**: Connects to external MCP server. Requires `--server-url`. Useful for remote or persistent servers.
-
-## Usage Examples
-
-### Basic Usage (RITS + stdio)
-
-```bash
-export RITS_API_KEY="your-key-here"
-cd /path/to/enterprise-benchmark
-python examples/demo.py
 ```
-
-### Ollama (Local Models)
-
-**Start Ollama and run demo:**
-```bash
-# Terminal 1: Start Ollama server
-ollama serve
-
-# Terminal 2: Pull model and run demo
-ollama pull llama3.3
-python examples/demo.py --llm ollama
+examples/
+├── quick_start_benchmark/
+│   ├── run_benchmark.py    Benchmark runner — iterates all domains, lists tools, agent placeholder
+│   ├── server.yaml         Container + command config and domain lists for all 4 capabilities
+│   └── simple_docker.py    Connect via docker exec (stdio) — list and call tools interactively
+└── quick_start_mcp_tools/
+    ├── list_tools.py        CLI: list MCP tools for a capability + domain
+    ├── invoke_tool.py       CLI: call a specific tool and print the result
+    └── download_spec.py     CLI: fetch the OpenAPI spec from a capability container
 ```
-
-**With different model:**
-```bash
-python examples/demo.py --llm ollama --model llama3.1:8b
-```
-
-**With custom Ollama server URL:**
-```bash
-python examples/demo.py --llm ollama --ollama-base-url http://192.168.1.100:11434
-```
-
-### Custom OpenAI Models
-
-```bash
-export RITS_API_KEY="your-key-here"
-python examples/demo.py --llm openai --model gpt-oss-120b
-```
-
-### WebSocket Mode (Two Terminals)
-
-**Terminal 1 - Start MCP server:**
-```bash
-slot-filling-mcp \
-  --db db/dev_databases/superhero/superhero.sqlite \
-  --transport websocket \
-  --port 8000 \
-  --host 127.0.0.1
-```
-
-**Terminal 2 - Run demo:**
-```bash
-export RITS_API_KEY="your-key-here"
-python examples/demo.py \
-  --mode websocket \
-  --server-url ws://localhost:8000/mcp
-```
-
-### Custom Database Domain
-
-```bash
-export MCP_DOMAIN="hockey"
-export RITS_API_KEY="your-key-here"
-python examples/demo.py
-```
-
-### Full Custom Configuration
-
-```bash
-export RITS_API_KEY="your-key-here"
-export MCP_DOMAIN="superhero"
-python examples/demo.py \
-  --llm openai \
-  --model llama-3-3-70b-instruct \
-  --mode stdio
-```
-
-## How It Works
-
-The demo script follows this workflow:
-
-1. **Setup**: Creates an LLM instance based on the provider choice (OpenAI-compatible or Ollama)
-
-2. **Load Test Cases**: Reads 127 test queries from `apis/configs/mcp_tool_universe_id_mapping.json`
-
-3. **Connect to MCP Server**:
-   - **stdio mode**: Launches MCP server as subprocess
-   - **websocket mode**: Connects to external MCP server
-
-4. **Initialize Session**: Creates MCP client session and toolkit with available tools
-
-5. **For Each Test Instance**:
-   - Calls `get_data` tool with `tool_universe_id` to switch data universe
-   - Loads pre-joined data for that specific query
-   - Stores initial data in handle manager
-   - Runs agent with the query
-   - Agent uses tools (filter, sort, aggregate, transform, etc.) to answer
-
-6. **Handle-Based Results**: Manages large datasets using handles (e.g., `filtered_data_1`, `sorted_superhero_2`) to avoid overwhelming LLM context with full data
-
-### Tool Universe System
-
-- Each test instance has a unique **tool universe ID** (e.g., `superhero_0`, `superhero_1`)
-- The ID determines which tables to join and how
-- Allows different queries against the same database with different starting configurations
-- Provides flexibility for complex multi-table scenarios
-
-## Troubleshooting
-
-### ModuleNotFoundError: No module named 'mcp'
-
-**Solution:**
-```bash
-pip install -e ".[mcp]"
-```
-
-### ValueError: You need to set the env var RITS_API_KEY
-
-**Solution:**
-```bash
-export RITS_API_KEY="your-api-key-here"
-```
-
-### Ollama Connection Errors
-
-**Solution:**
-```bash
-# Start Ollama server
-ollama serve
-
-# Verify Ollama is running
-curl http://localhost:11434/api/tags
-
-# Pull required model
-ollama pull llama3.3
-```
-
-### Database Not Found
-
-**Solution 1 - Run from project root:**
-```bash
-cd /path/to/enterprise-benchmark
-python examples/demo.py
-```
-
-**Solution 2 - Ensure you're in the project root:**
-```bash
-cd /path/to/enterprise-benchmark
-export MCP_DOMAIN="superhero"
-python examples/demo.py
-```
-
-### WebSocket Connection Failed
-
-**Check these:**
-- MCP server is running in websocket mode
-- Port and host match between server and client
-- Firewall settings allow the connection
-- URL format is correct: `ws://host:port/mcp`
-
-### Python Version Issues
-
-**Check version:**
-```bash
-python --version  # Should be 3.11+
-```
-
-**Use specific version:**
-```bash
-python3.11 -m pip install -e ".[mcp]"
-python3.11 examples/demo.py
-```
-
-### langchain-ollama Not Found
-
-**Solution:**
-```bash
-pip install langchain-ollama
-```
-
-### Import Errors After Installation
-
-**Solution - Reinstall in development mode:**
-```bash
-pip uninstall enterprise-benchmark invocable-api-hub
-pip install -e ".[mcp]"
-```
-
-## Next Steps
-
-- **Explore Tools**: Check `apis/m3/python_tools/tools/slot_filling_tools.py` for available data manipulation functions
-- **Custom Queries**: Modify test queries in `apis/configs/mcp_tool_universe_id_mapping.json`
-- **Agent Customization**: Review `agents/tool_calling_agent.py` for agent implementation details
-- **Add Your Database**: Follow the database directory structure to add custom databases
-- **REST API**: See `apis/m3/rest/README.md` for exposing databases via REST endpoints
-
-## Additional Resources
-
-- **Project Root**: See `/CLAUDE.md` for complete project documentation
-- **Tool Registry**: `apis/m3/python_tools/tools/tool_registry.py`
-- **MCP Server**: `apis/m3/python_tools/mcp/mcp_server.py`
-- **Handle Manager**: `agents/result_handle_manager.py`

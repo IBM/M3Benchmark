@@ -76,6 +76,12 @@ legacy = [
     "ibm-generative-ai",
 ]
 
+# Phoenix / Arize OTEL tracing (optional — for benchmark_runner.py --phoenix)
+phoenix = [
+    "arize-phoenix-otel",
+    "openinference-instrumentation-langchain",
+]
+
 # All optional dependencies combined
 all = [
     "enterprise-benchmark[rest]",
@@ -83,6 +89,7 @@ all = [
     "enterprise-benchmark[mcp]",
     "enterprise-benchmark[init]",
     "enterprise-benchmark[legacy]",
+    "enterprise-benchmark[phoenix]",
 ]
 
 # Development dependencies

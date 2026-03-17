@@ -17,7 +17,7 @@ name: benchmark
 x-base: &base
   image: benchmark_environ
   environment:
-    MCP_DB_ROOT: /app/db
+    MCP_VERIFY_CHECKSUMS: "1"
   volumes:
     - ./data/databases:/app/db:ro
     - ./environment/configs:/app/environment/configs:ro
@@ -44,3 +44,24 @@ services:
       - ./environment/configs:/app/environment/configs:ro
       - ./data/indexed_documents:/app/retrievers/chroma_data
       - ./data/queries:/app/retrievers/queries:ro
+
+  # ---------------------------------------------------------------------------
+  # Phoenix / Arize — optional observability UI for LLM traces
+  # Start with:  docker compose --profile phoenix up -d
+  # UI:          http://localhost:6006
+  # OTLP HTTP:   http://localhost:6006/v1/traces  (used by benchmark_runner.py)
+  # ---------------------------------------------------------------------------
+  phoenix:
+    image: arizephoenix/phoenix:latest
+    profiles: [phoenix]
+    container_name: m3_phoenix
+    ports:
+      - "6006:6006"
+    environment:
+      PHOENIX_WORKING_DIR: /phoenix
+    volumes:
+      - phoenix_data:/phoenix
+    restart: unless-stopped
+
+volumes:
+  phoenix_data:

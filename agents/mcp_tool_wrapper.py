@@ -63,6 +63,8 @@ class MCPToolWrapper:
         profile_callback: Optional[Callable[[Dict[str, Any]], None]] = None,
         current_query_index: Optional[int] = None,
         cache_tools: bool = True,
+        capability_id: Optional[int] = None,
+        domain: Optional[str] = None,
     ):
         """Initialize MCPToolWrapper.
 
@@ -79,6 +81,8 @@ class MCPToolWrapper:
                     - query_index: Optional[int]
             current_query_index: Query index for profiling context
             cache_tools: Cache tool list to avoid repeated fetches
+            capability_id: Unused; kept for backwards compatibility.
+            domain: Unused; kept for backwards compatibility.
         """
         self.session = session
         self.use_openai_restrictions = use_openai_restrictions
@@ -86,6 +90,8 @@ class MCPToolWrapper:
         self.profile_callback = profile_callback
         self.current_query_index = current_query_index
         self.cache_tools = cache_tools
+        self.capability_id = capability_id
+        self.domain = domain
         self._tools_cache: Optional[List[StructuredTool]] = None
 
     async def get_tools(self) -> List[StructuredTool]:

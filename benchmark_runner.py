@@ -62,6 +62,43 @@ from typing import Dict, List, Optional
 from dotenv import load_dotenv
 from tqdm import tqdm
 
+
+def _setup_phoenix(endpoint: str, project_name: str = "enterprise-benchmark") -> bool:
+    """Configure Phoenix/Arize OTEL tracing for LangChain.
+
+    Returns True if tracing was successfully enabled, False otherwise
+    (missing packages or Phoenix unreachable — benchmark still runs).
+    """
+    try:
+        from phoenix.otel import register  # type: ignore[import]
+        from openinference.instrumentation.langchain import LangChainInstrumentor  # type: ignore[import]
+    except ImportError:
+        logging.getLogger(__name__).warning(
+            "Phoenix packages not installed. "
+            "Run: pip install arize-phoenix-otel openinference-instrumentation-langchain"
+            "\nContinuing without tracing."
+        )
+        return False
+
+    try:
+        tracer_provider = register(
+            project_name=project_name,
+            endpoint=endpoint,
+        )
+        LangChainInstrumentor().instrument(tracer_provider=tracer_provider)
+        logging.getLogger(__name__).info(
+            "Phoenix tracing enabled → %s (project: %s)", endpoint, project_name
+        )
+        return True
+    except Exception as exc:
+        logging.getLogger(__name__).warning(
+            "Failed to connect to Phoenix at %s: %s\nContinuing without tracing.",
+            endpoint,
+            exc,
+        )
+        return False
+
+
 logging.basicConfig(
     level=logging.DEBUG,
     format="%(asctime)s %(levelname)-8s %(name)s: %(message)s",
@@ -143,6 +180,12 @@ async def run_benchmark_for_domain(
             session = await stack.enter_async_context(
                 create_client_and_connect(cfg, domain)
             )
+            # Client-side checksum verification: confirm the server returned
+            # the expected tools for this (capability_id, domain) pair.
+            from environment.tool_checksums import verify_checksum
+            raw_tools = (await session.list_tools()).tools
+            verify_checksum(capability_id, domain, raw_tools)
+
             wrapper = MCPToolWrapper(session)
             tools = await wrapper.get_tools()
             tlog(f"  Loaded {len(tools)} tools for domain '{domain}'")
@@ -454,6 +497,31 @@ def main():
             f" (default: {DEFAULT_MCP_CONFIG})"
         ),
     )
+    parser.add_argument(
+        "--phoenix",
+        action="store_true",
+        default=False,
+        help=(
+            "Enable Phoenix/Arize OTEL tracing. "
+            "Requires arize-phoenix-otel and openinference-instrumentation-langchain. "
+            "Start Phoenix with: docker compose --profile phoenix up -d"
+        ),
+    )
+    parser.add_argument(
+        "--phoenix-endpoint",
+        type=str,
+        default="http://localhost:6006/v1/traces",
+        help=(
+            "Phoenix OTLP HTTP endpoint (default: http://localhost:6006/v1/traces). "
+            "Only used when --phoenix is set."
+        ),
+    )
+    parser.add_argument(
+        "--phoenix-project",
+        type=str,
+        default="enterprise-benchmark",
+        help="Phoenix project name for grouping traces (default: enterprise-benchmark)",
+    )
 
     args = parser.parse_args()
     capability_ids = args.capability_id  # list of ints now
@@ -462,6 +530,16 @@ def main():
     print("="*60)
     print(f"Benchmark Runner ({mode}, capabilities: {capability_ids})")
     print("="*60)
+
+    if args.phoenix:
+        tracing_ok = _setup_phoenix(
+            endpoint=args.phoenix_endpoint,
+            project_name=args.phoenix_project,
+        )
+        if tracing_ok:
+            print(f"Phoenix tracing enabled → {args.phoenix_endpoint}")
+        else:
+            print("Phoenix tracing unavailable — continuing without it.")
 
     # Load MCP connection config from YAML
     mcp_configs = load_mcp_config(args.mcp_config)
