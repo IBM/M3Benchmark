@@ -8,7 +8,7 @@ saves results in the required submission format.
 
 Usage:
     python run_benchmark.py --capability 2                       # all domains
-    python run_benchmark.py --capability 2 --domain airline      # one domain
+    python run_benchmark.py --capability 2 --domain card_games      # one domain
     python run_benchmark.py --capability 2 --out results.json    # save output
     python run_benchmark.py --capability 1 --runtime podman      # use podman
     python run_benchmark.py --capability 2 --data-dir /path/to/data/test
@@ -33,7 +33,12 @@ PROJECT_ROOT = Path(__file__).parent
 CONFIG_FILE = PROJECT_ROOT / "server.yaml"
 
 # Default data location: <repo_root>/data/test
-DEFAULT_DATA_DIR = PROJECT_ROOT.parent.parent / "data" / "test"
+REPO_ROOT = PROJECT_ROOT.parent.parent
+DEFAULT_DATA_DIR = REPO_ROOT / "data" / "test"
+
+# Make repo root importable so environment.tool_checksums resolves.
+sys.path.insert(0, str(REPO_ROOT))
+from environment.tool_checksums import verify_checksum  # noqa: E402
 
 CAPABILITY_DIRS = {
     1: "capability_1_bi_apis",
@@ -131,6 +136,7 @@ async def run_domain(
     cfg: dict,
     rt: str,
     questions: list[dict],
+    capability: int,
 ) -> list[OutputRecord]:
     """
     Connect to the MCP server for `domain`, answer each question, and return
@@ -162,6 +168,7 @@ async def run_domain(
             await session.initialize()
 
             tools = (await session.list_tools()).tools
+            verify_checksum(capability, domain, tools)
             print(f"Tools available: {len(tools)}")
             print_tools(tools)
 
@@ -267,7 +274,7 @@ async def main(
     all_results: list[OutputRecord] = []
     for domain in domains:
         questions = questions_by_domain.get(domain, [])
-        records = await run_domain(domain, cfg, rt, questions)
+        records = await run_domain(domain, cfg, rt, questions, capability)
         all_results.extend(records)
 
     print(f"\nFinished: {len(all_results)} record(s) across {len(domains)} domain(s).")

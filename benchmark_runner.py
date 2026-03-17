@@ -180,7 +180,13 @@ async def run_benchmark_for_domain(
             session = await stack.enter_async_context(
                 create_client_and_connect(cfg, domain)
             )
-            wrapper = MCPToolWrapper(session, capability_id=capability_id, domain=domain)
+            # Client-side checksum verification: confirm the server returned
+            # the expected tools for this (capability_id, domain) pair.
+            from environment.tool_checksums import verify_checksum
+            raw_tools = (await session.list_tools()).tools
+            verify_checksum(capability_id, domain, raw_tools)
+
+            wrapper = MCPToolWrapper(session)
             tools = await wrapper.get_tools()
             tlog(f"  Loaded {len(tools)} tools for domain '{domain}'")
 
