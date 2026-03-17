@@ -36,6 +36,12 @@ async def _run(capability_id: int, domain: str, tool_name: str,
             f"Available: {sorted(configs.keys())}"
         )
 
+    # Collect output outside the context manager so that errors raised here
+    # are not misreported as "Failed to connect to MCP server via stdio".
+    _user_error: Exception | None = None
+    _result = None
+    _tool_info: dict | None = None
+
     async with create_client_and_connect(cfg, domain) as session:
         tools_result = await session.list_tools()
         tools = {t.name: t for t in tools_result.tools}
@@ -51,45 +57,53 @@ async def _run(capability_id: int, domain: str, tool_name: str,
 
         if tool_name not in tools:
             close = [n for n in tools if tool_name.lower() in n.lower()]
-            hint = f"  Did you mean: {close}" if close else ""
-            raise ValueError(
+            hint = f"\n  Did you mean: {close}" if close else ""
+            # Store error — raise after context exits to avoid confusing wrapper
+            _user_error = ValueError(
                 f"Tool {tool_name!r} not found.{hint}\n"
                 f"Available tools: {sorted(tools.keys())}"
             )
-
-        tool = tools[tool_name]
-        schema = tool.inputSchema or {}
-        props = schema.get("properties", {})
-        required = set(schema.get("required", []))
-
-        print(f"Tool:   {tool_name}")
-        if tool.description:
-            print(f"Desc:   {tool.description.strip().split(chr(10))[0]}")
-        if props:
-            print(f"Params: {json.dumps({k: v.get('type', '?') for k, v in props.items()}, indent=2)}")
-        if required:
-            print(f"Required: {sorted(required)}")
-        print(f"\nCalling with args: {json.dumps(tool_args, indent=2)}\n")
-
-        result = await session.call_tool(tool_name, tool_args)
-
-        print("Result:")
-        if result.content:
-            for item in result.content:
-                if hasattr(item, "text"):
-                    # Try to pretty-print JSON
-                    try:
-                        parsed = json.loads(item.text)
-                        print(json.dumps(parsed, indent=2))
-                    except (json.JSONDecodeError, TypeError):
-                        print(item.text)
-                else:
-                    print(repr(item))
         else:
-            print("(empty response)")
+            tool = tools[tool_name]
+            schema = tool.inputSchema or {}
+            props = schema.get("properties", {})
+            required = set(schema.get("required", []))
+            _tool_info = {"tool": tool, "props": props, "required": required}
+            _result = await session.call_tool(tool_name, tool_args)
 
-        if result.isError:
-            print("\nNote: tool returned an error flag", file=sys.stderr)
+    # Raise user-facing errors now that the connection is cleanly closed
+    if _user_error is not None:
+        raise _user_error
+
+    tool = _tool_info["tool"]
+    props = _tool_info["props"]
+    required = _tool_info["required"]
+
+    print(f"Tool:   {tool_name}")
+    if tool.description:
+        print(f"Desc:   {tool.description.strip().split(chr(10))[0]}")
+    if props:
+        print(f"Params: {json.dumps({k: v.get('type', '?') for k, v in props.items()}, indent=2)}")
+    if required:
+        print(f"Required: {sorted(required)}")
+    print(f"\nCalling with args: {json.dumps(tool_args, indent=2)}\n")
+
+    print("Result:")
+    if _result.content:
+        for item in _result.content:
+            if hasattr(item, "text"):
+                try:
+                    parsed = json.loads(item.text)
+                    print(json.dumps(parsed, indent=2))
+                except (json.JSONDecodeError, TypeError):
+                    print(item.text)
+            else:
+                print(repr(item))
+    else:
+        print("(empty response)")
+
+    if _result.isError:
+        print("\nNote: tool returned an error flag", file=sys.stderr)
 
 
 def main():
@@ -101,16 +115,19 @@ Examples:
   # List available tools first
   python examples/invoke_tool.py --capability-id 2 --domain hockey --list
 
+  # List tools first to find the right name
+  python examples/invoke_tool.py --capability-id 2 --domain hockey --list
+
   # Call a tool with no arguments
-  python examples/invoke_tool.py --capability-id 2 --domain hockey --tool get_hockey_teams
+  python examples/invoke_tool.py --capability-id 2 --domain hockey --tool <tool_name>
 
   # Call a tool with JSON arguments
   python examples/invoke_tool.py --capability-id 2 --domain hockey \\
-      --tool get_hockey_schedule --args '{"season": "2023", "team_id": 5}'
+      --tool <tool_name> --args '{"param": "value"}'
 
   # Pipe args from a file
   python examples/invoke_tool.py --capability-id 3 --domain bpo \\
-      --tool get_sla_report --args "$(cat args.json)"
+      --tool <tool_name> --args "$(cat args.json)"
         """,
     )
     parser.add_argument("--capability-id", type=int, required=True,
