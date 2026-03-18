@@ -153,13 +153,13 @@ def rank_class(rank: int) -> str:
 def render_score(val) -> str:
     if val is None:
         return "—"
-    return f'<span class="{score_class(val)}">{val:.1f}</span>'
+    return f'<span class="{score_class(val)}">{val:.3f}</span>'
 
 
 def render_overall(val) -> str:
     if val is None:
         return "—"
-    return f'<span class="{score_class(val)}" style="font-size:15px">{val:.2f}</span>'
+    return f'<span class="{score_class(val)}" style="font-size:15px">{val:.3f}</span>'
 
 
 # ---------------------------------------------------------------------------
@@ -200,6 +200,15 @@ def build_leaderboard_html(df: pd.DataFrame, hierarchy: list) -> str:
 
     col_map = _col_index_map(hierarchy)
     overall_idx = col_map["Overall"]
+
+    # Compute per-column max values
+    col_maxes = {}
+    for turn, task, metric in hierarchy:
+        col_vals = df[(turn, task, metric)].dropna()
+        if len(col_vals) > 0:
+            col_maxes[(turn, task, metric)] = col_vals.max()
+    overall_vals = df[("", "", "Overall")].dropna()
+    overall_max = overall_vals.max() if len(overall_vals) > 0 else None
 
     # Inline styles — st.components.v1.html renders in its own iframe,
     # so we must embed CSS directly in the HTML fragment.
@@ -255,6 +264,7 @@ body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "S
 .agent-name { text-align: left !important; font-weight: 600; }
 .model-name { text-align: left !important; color: #64748b; font-size: 13px; }
 .col-overall { background: #f9fafb !important; font-weight: 700; }
+.col-max { background: #fef9c3 !important; outline: 2px solid #f59e0b; outline-offset: -2px; }
 </style>
 """
 
@@ -310,9 +320,14 @@ body { margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "S
 
         for turn, task, metric in hierarchy:
             val = row.get((turn, task, metric))
-            html += f"<td>{render_score(val)}</td>"
+            max_val = col_maxes.get((turn, task, metric))
+            is_max = val is not None and max_val is not None and val == max_val
+            td_class = ' class="col-max"' if is_max else ''
+            html += f"<td{td_class}>{render_score(val)}</td>"
 
-        html += f'<td class="col-overall">{render_overall(overall)}</td>'
+        is_max_overall = overall is not None and overall_max is not None and overall == overall_max
+        overall_cls = "col-overall col-max" if is_max_overall else "col-overall"
+        html += f'<td class="{overall_cls}">{render_overall(overall)}</td>'
         html += "</tr>\n"
 
     html += "</tbody>\n</table>"
