@@ -373,6 +373,14 @@ async def run_capability(
         tlog(f"Container name: {cfg.container_name}")
     tlog(f"Processing {len(domain_list)} domain(s): {domain_list}")
 
+    # Skip domains that already have output files (resume support)
+    completed = {p.stem for p in out_dir.glob("*.json")}
+    if completed:
+        skipped = [d for d in domain_list if d in completed]
+        domain_list = [d for d in domain_list if d not in completed]
+        tlog(f"Skipping {len(skipped)} already-completed domain(s): {skipped}")
+        tlog(f"Remaining domain(s) to run: {domain_list}")
+
     if max_samples_per_domain:
         tlog(f"Max samples per domain: {max_samples_per_domain}")
 
