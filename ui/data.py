@@ -78,7 +78,7 @@ def build_dataframe(agents: Optional[list] = None) -> pd.DataFrame:
             v for k, v in row.items()
             if k not in ("Agent", "Model") and v is not None and isinstance(v, (int, float))
         ]
-        row[("", "", "Overall")] = round(sum(metric_vals) / len(metric_vals), 2) if metric_vals else 0.0
+        row[("", "", "Overall")] = round(sum(metric_vals) / len(metric_vals), 3) if metric_vals else 0.0
         rows.append(row)
 
     # Sort by Overall descending
