@@ -141,6 +141,11 @@ class LangGraphReActAgent(AgentInterface):
         logger.debug("Building default agent with %d tools", len(self._tools))
         self._agent = self._build_agent(self._tools)
 
+    def _build_policy_guidance(self, additional_instructions:str) -> SystemMessage:
+        """Build policy guidance based on additional instructions."""
+        content = f"""You are a helpful assistant with access to tools.\n Tool Usage Constraint: {additional_instructions}."""
+        return SystemMessage(content=content)
+    
     def _build_agent(self, tools):
         """Build a LangGraph ReAct agent for the given tool list."""
         tool_names = [t.name for t in tools]
