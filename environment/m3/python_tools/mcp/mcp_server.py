@@ -6,7 +6,7 @@ import logging
 import os
 import yaml
 from abc import ABC, abstractmethod
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, TypedDict
 import pathlib
 
 from mcp.server import Server
@@ -32,6 +32,21 @@ from .config import MCPServerConfig
 logger = logging.getLogger(__name__)
 
 GET_DATA_FCN = "get_data"
+
+_DATA_FIELD_RENAMES = {"data": "data_label", "data_1": "data_label_1", "data_2": "data_label_2"}
+_DATA_LABEL_RENAMES = {"data_label": "data", "data_label_1": "data_1", "data_label_2": "data_2"}
+
+
+class KeyDetail(TypedDict):
+    name: str
+    dtype: str
+    first_3_values: list
+
+
+class DataPeek(TypedDict):
+    handle: str  # Use this string to reference the stored data in subsequent tool calls
+    num_records: int
+    key_details: list[KeyDetail]
 
 
 class GetDataInput(BaseModel):
@@ -88,6 +103,10 @@ class LiveMCPServer(ABC):
         self.tool_universe_id = self.domain_universe_ids[0]
         self._universe_lock = asyncio.Lock()  # Thread safety
         self.active_data: Optional[dict] = None  # Will be set by _load_tool_universe
+
+        # Server-side handle store: avoids passing large data over MCP
+        self._handle_store: dict[str, Any] = {}
+        self._handle_counter: dict[str, int] = {}
 
         # Initialize toolbox (subclass-specific)
         self._initialize_toolbox()
@@ -148,10 +167,121 @@ class LiveMCPServer(ABC):
         """
         pass
 
+    # ------------------------------------------------------------------
+    # Server-side handle management
+    # ------------------------------------------------------------------
+
+    _HANDLE_OP_MAP: dict[str, str] = {
+        GET_DATA_FCN: "initial",
+        "filter_data": "filtered",
+        "sort_data": "sorted",
+        "retrieve_data": "retrieved",
+        "transform_data": "transformed",
+        "transform_data_to_substring": "transformed",
+        "transform_data_to_absolute_value": "transformed",
+        "transform_data_to_datetime_part": "transformed",
+        "aggregate_data": "aggregated",
+        "concatenate_data": "concatenated",
+        "select_unique_values": "unique",
+        "truncate": "truncated",
+        "group_data_by": "grouped",
+    }
+
+    def _generate_handle(self, op_name: str, data: Any) -> str:
+        """Generate a short, descriptive handle string."""
+        if op_name.startswith("select_data_"):
+            prefix = "filtered"
+        elif op_name.startswith("compute_data_"):
+            prefix = "aggregated"
+        elif op_name.startswith("sort_data_"):
+            prefix = "sorted"
+        elif op_name.startswith("get_"):
+            prefix = "retrieved"
+        else:
+            prefix = self._HANDLE_OP_MAP.get(op_name, "result")
+
+        self._handle_counter[prefix] = self._handle_counter.get(prefix, 0) + 1
+
+        suffix = "data"
+        if isinstance(data, dict):
+            keys = [k for k in data.keys() if k != DTYPE_METADATA_KEY]
+            if keys and "_" in keys[0]:
+                suffix = keys[0].split("_")[0]
+
+        return f"{prefix}_{suffix}_{self._handle_counter[prefix]}"
+
+    def _store_handle(self, op_name: str, data: Any) -> str:
+        """Store data in the handle store and return the handle string."""
+        handle = self._generate_handle(op_name, data)
+        self._handle_store[handle] = data
+        return handle
+
+    def _make_data_peek(self, handle: str, data: dict) -> DataPeek:
+        """Build a compact peek dict for a data-table result."""
+        dtypes = data.get(DTYPE_METADATA_KEY, {})
+        data_keys = [k for k in data.keys() if k != DTYPE_METADATA_KEY]
+        num_records = len(data[data_keys[0]]) if data_keys else 0
+
+        key_details = []
+        for key in data_keys:
+            vals = data[key]
+            first_3 = list(vals[:3]) if vals else []
+            dtype = dtypes.get(key, type(first_3[0]).__name__ if first_3 else "unknown")
+            key_details.append({"name": key, "dtype": str(dtype), "first_3_values": first_3})
+
+        return {"handle": handle, "num_records": num_records, "key_details": key_details}
+
+    _HANDLE_FIELD_SCHEMA = {
+        "type": "string",
+        "description": "Handle string referencing a stored data table (e.g. 'retrieved_data_1'). Pass the handle returned by a previous tool call.",
+    }
+
+    def _rename_schema_fields(self, schema: dict) -> dict:
+        """Return a copy of schema with data/data_1/data_2 renamed to data_label variants.
+
+        The renamed fields also have their type changed to 'string' so the LLM
+        knows to pass a handle string, not a data object.
+        """
+        schema = dict(schema)
+        props = schema.get("properties", {})
+        new_props = {}
+        renamed = False
+        for k, v in props.items():
+            new_key = _DATA_FIELD_RENAMES.get(k, k)
+            if new_key != k:
+                new_props[new_key] = self._HANDLE_FIELD_SCHEMA
+                renamed = True
+            else:
+                new_props[k] = v
+        if renamed:
+            schema["properties"] = new_props
+            required = schema.get("required", [])
+            schema["required"] = [_DATA_FIELD_RENAMES.get(r, r) for r in required]
+        return schema
+
+    def _resolve_handles(self, arguments: dict) -> dict:
+        """Replace handle strings in tool arguments with the stored data dicts."""
+        resolved = dict(arguments)
+        for key in ("data", "data_1", "data_2", "data_label", "data_label_1", "data_label_2"):
+            if key in resolved and isinstance(resolved[key], str):
+                if resolved[key] in self._handle_store:
+                    resolved[key] = self._handle_store[resolved[key]]
+        return resolved
+
+    def _clear_handles(self) -> None:
+        """Clear handle store on universe switch so stale handles can't be used."""
+        self._handle_store.clear()
+        self._handle_counter.clear()
+
+    # ------------------------------------------------------------------
+
     def _load_tool_universe(self, universe_id: str) -> None:
         """Load a specific tool universe's active_data."""
         if universe_id not in self.all_tool_configs:
             raise ValueError(f"Unknown universe ID: {universe_id}")
+
+        # Invalidate all handles from the previous universe
+        self._clear_handles()
 
         self.tool_universe_id = universe_id
         self.tool_config = self.all_tool_configs[universe_id]["init_args"]
@@ -235,7 +365,7 @@ class LiveMCPServer(ABC):
 
                 if input_model:
                     # Get the input schema
-                    input_schema = input_model.model_json_schema()
+                    input_schema = self._rename_schema_fields(input_model.model_json_schema())
 
                     # DEBUG LOGGING: Capture schema for retrieve_data
                     if name == "retrieve_data":
@@ -269,6 +399,7 @@ class LiveMCPServer(ABC):
 
         @self.server.call_tool()
         async def call_tool(name: str, arguments: dict[str, Any]):
+            logger.info("call_tool: %s", name)
             # Handle get_data tool with optional universe switching
             if name == GET_DATA_FCN:
                 # Parse input with optional tool_universe_id
@@ -302,42 +433,79 @@ class LiveMCPServer(ABC):
                             error_msg = f"Error switching to universe: {str(e)}"
                             return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
 
-                # Return active data for current universe
-                result = self.active_data
-            # Handle standard tools
-            else:
-                available_tools = self._get_available_tools()
-                if name not in available_tools:
-                    raise ValueError(f"Unknown tool: {name}")
+                # Store active_data server-side; return compact peek over MCP
+                handle = self._store_handle(GET_DATA_FCN, self.active_data)
+                peek = self._make_data_peek(handle, self.active_data)
+                return [TextContent(type="text", text=json.dumps(peek))]
 
-                # Validate key_name if present in arguments
-                if "key_name" in arguments:
-                    key_name = arguments["key_name"]
-                    valid_keys = [k for k in self.active_data.keys() if k != DTYPE_METADATA_KEY]
-                    if key_name not in valid_keys:
+            # Handle standard tools
+            available_tools = self._get_available_tools()
+            if name not in available_tools:
+                raise ValueError(f"Unknown tool: {name}")
+
+            # Resolve any handle references in arguments to actual data dicts
+            resolved_arguments = self._resolve_handles(arguments)
+
+            # Remap data_label* → data* for underlying tool functions
+            resolved_arguments = {
+                _DATA_LABEL_RENAMES.get(k, k): v
+                for k, v in resolved_arguments.items()
+            }
+
+            # Check that required data argument is present (LLM may omit data_label)
+            input_model = self.tool_input_models.get(name)
+            if (
+                input_model
+                and "data" in input_model.model_fields
+                and "data" not in resolved_arguments
+                and "data_1" not in resolved_arguments
+            ):
+                available_handles = list(self._handle_store.keys())
+                error_msg = (
+                    f"Missing required argument 'data_label'. "
+                    f"Pass the handle string returned by a previous tool call as data_label=<handle>. "
+                    f"Available handles: {available_handles}"
+                )
+                return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
+
+            # Validate key_name against the resolved source data (not always active_data)
+            if "key_name" in resolved_arguments:
+                key_name = resolved_arguments["key_name"]
+                source_data = (
+                    resolved_arguments.get("data")
+                    or resolved_arguments.get("data_1")
+                    or self.active_data
+                )
+                if isinstance(source_data, dict):
+                    valid_keys = [k for k in source_data.keys() if k != DTYPE_METADATA_KEY]
+                    invalid = (
+                        [key_name] if isinstance(key_name, str) and key_name not in valid_keys
+                        else [k for k in key_name if k not in valid_keys] if isinstance(key_name, list)
+                        else []
+                    )
+                    if invalid:
                         error_msg = (
-                            f"Invalid key_name '{key_name}'. "
+                            f"Invalid key_name {invalid}. "
                             f"Valid keys in current universe ('{self.tool_universe_id}'): {valid_keys}"
                         )
                         logger.error(error_msg)
                         return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
 
-                tool_func = available_tools[name]
+            tool_func = available_tools[name]
 
-                if name == PEEK_FCN:
-                    input_model = self.tool_input_models[name]
-                    inputs = input_model(**arguments)
-                    result = tool_func(inputs)
-                else:
-                    # Call tool (Pydantic wrapper will handle _dtypes stripping if present)
-                    try:
-                        result = tool_func(**arguments)
-                    except Exception as e:
-                        # Catch validation errors and return as JSON error
-                        error_msg = f"Input validation error: {str(e)}"
-                        logger.error(f"{name} failed: {error_msg}", exc_info=True)
-
-                        return [TextContent(type="text", text=error_msg)]
+            if name == PEEK_FCN:
+                input_model = self.tool_input_models[name]
+                inputs = input_model(**resolved_arguments)
+                result = tool_func(inputs)
+            else:
+                # Call tool (Pydantic wrapper will handle _dtypes stripping if present)
+                try:
+                    result = tool_func(**resolved_arguments)
+                except Exception as e:
+                    # Catch validation errors and return as JSON error
+                    error_msg = f"Input validation error: {str(e)}"
+                    logger.error(f"{name} failed: {error_msg}", exc_info=True)
+                    return [TextContent(type="text", text=error_msg)]
 
             # Check for None result
             if result is None:
@@ -345,9 +513,16 @@ class LiveMCPServer(ABC):
                 logger.error(error_msg)
                 return [TextContent(type="text", text=json.dumps({"error": error_msg}))]
 
+            # Data-table results: store server-side and return compact peek over MCP
+            if isinstance(result, dict):
+                handle = self._store_handle(name, result)
+                peek = self._make_data_peek(handle, result)
+                return [TextContent(type="text", text=json.dumps(peek))]
+
+            # Scalar / array results: pass through directly (they are small)
             if hasattr(result, "model_dump_json"):
                 result_text = result.model_dump_json()
-            elif isinstance(result, (dict, list)):
+            elif isinstance(result, (list,)):
                 result_text = json.dumps(result)
             else:
                 result_text = str(result)

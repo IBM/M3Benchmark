@@ -98,6 +98,14 @@ def data_join(data_a: pd.DataFrame, data_b: pd.DataFrame, left_column_name: str,
             A new DataFrame resulting from the join.
     """
     if left_column_name is not None and right_column_name is not None:
+        left_key = data_a[left_column_name]
+        right_key = data_b[right_column_name]
+        if left_key.dtype != right_key.dtype:
+            try:
+                data_b = data_b.assign(**{right_column_name: right_key.astype(left_key.dtype)})
+            except (ValueError, TypeError):
+                data_a = data_a.assign(**{left_column_name: left_key.astype(str)})
+                data_b = data_b.assign(**{right_column_name: right_key.astype(str)})
         joined_df = pd.merge(data_a, data_b, left_on=left_column_name, right_on=right_column_name, how=join_type)
     elif left_column_name is None and right_column_name is not None:
         joined_df = pd.merge(data_a, data_b, left_index=True, right_on=right_column_name, how=join_type)
@@ -131,68 +139,77 @@ def initialize_active_data(condition_sequence: list, alias_to_table_dict: dict, 
     if not os.path.isfile(database_path):
         raise Exception(f"failed, can't find database at location ({database_path})")
 
-    # load tables and prefix column names
     connection = database_get_connection(database_path)
-    
-    tables_dict = {}
-    for alias, table_data in alias_to_table_dict.items():
-        table = database_get_table(connection, table_data['original_table_name'])
-        table = safe_name_columns(table)
-        modified_table = table.add_prefix(table_data['modified_table_name']+"_")
-        tables_dict[alias] = modified_table
-    
-    database_close_connection(connection)
 
     if len(condition_sequence) == 0:
+        # Single-table path: preserve original behavior
+        for alias, table_data in alias_to_table_dict.items():
+            table = database_get_table(connection, table_data['original_table_name'])
+            table = safe_name_columns(table)
+            modified_table = table.add_prefix(table_data['modified_table_name'] + "_")
+        database_close_connection(connection)
         if alias == '':
             return preserve_dtypes_in_dict(table)
         else:
             return preserve_dtypes_in_dict(modified_table)
 
-    current_table = None
+    # Multi-table: push joins into SQLite to avoid loading full tables into memory.
+    # Use PRAGMA to fetch actual column names for case-insensitive resolution.
+    cursor = connection.cursor()
+    table_columns: dict[str, list[str]] = {}
+    for alias, table_data in alias_to_table_dict.items():
+        cursor.execute(f'PRAGMA table_info("{table_data["original_table_name"]}")')
+        table_columns[alias] = [row[1] for row in cursor.fetchall()]
+
+    # SELECT "alias"."col" AS "prefix_safe_col" for every column of every table
+    select_parts = []
+    for alias, table_data in alias_to_table_dict.items():
+        prefix = table_data['modified_table_name']
+        for col in table_columns[alias]:
+            select_parts.append(f'"{alias}"."{col}" AS "{prefix}_{make_safe(col)}"')
+
+    # FROM clause anchored on the first alias
+    first_alias = list(alias_to_table_dict.keys())[0]
+    first_orig = alias_to_table_dict[first_alias]['original_table_name']
+    from_clause = f'"{first_orig}" AS "{first_alias}"'
+
+    # Build INNER JOIN clauses from condition_sequence
+    joined_aliases = {first_alias}
+    join_clauses = []
     for j in condition_sequence:
-        left_table, left_col = rewrite_table_alias_column(j[0], alias_to_table_dict)
-        if current_table is None:
-            current_table = tables_dict[left_table]
-        right_table, right_col = rewrite_table_alias_column(j[1], alias_to_table_dict)
+        left_alias, left_col_raw = j[0].split('.', 1)
+        right_alias, right_col_raw = j[1].split('.', 1)
 
-        # The order of the terms in the join condition may be flipped
-        # from the order of the tables in the sequence
-        try:
-            left_col = get_best_key(list(current_table.columns), left_col)
-            right_col = get_best_key(list(tables_dict[right_table].columns), right_col)
-        except:
-            pass
-        if left_col in current_table.columns and right_col in tables_dict[right_table].columns:
-            current_table = data_join(
-                data_a=current_table, 
-                data_b=tables_dict[right_table], 
-                left_column_name=left_col, 
-                right_column_name=right_col, 
-                join_type='inner'
-            )  # TODO: make this work with the type from data
-        elif right_col in current_table.columns and left_col in tables_dict[left_table].columns:
-            current_table = data_join(
-                data_a=current_table, 
-                data_b=tables_dict[left_table], 
-                left_column_name=right_col, 
-                right_column_name=left_col, 
-                join_type='inner'
-            )  # TODO: make this work with the type from data
-        elif right_col in current_table.columns and left_col in tables_dict[right_table].columns:
-            left_col, right_col = right_col, left_col
-            current_table = data_join(
-                data_a=current_table, 
-                data_b=tables_dict[right_table], 
-                left_column_name=left_col, 
-                right_column_name=right_col, 
-                join_type='inner'
-            )  # TODO: make this work with the type from data
+        # Case-insensitive resolution of column names against actual schema
+        left_col = next(
+            (c for c in table_columns.get(left_alias, []) if c.lower() == left_col_raw.lower()),
+            left_col_raw,
+        )
+        right_col = next(
+            (c for c in table_columns.get(right_alias, []) if c.lower() == right_col_raw.lower()),
+            right_col_raw,
+        )
 
-    if current_table is None:
-        current_table = list(tables_dict.values())[0]
-    current_table = safe_name_columns(current_table)
-    return preserve_dtypes_in_dict(current_table)
+        if right_alias not in joined_aliases and right_alias in alias_to_table_dict:
+            join_table = alias_to_table_dict[right_alias]['original_table_name']
+            join_clauses.append(
+                f'INNER JOIN "{join_table}" AS "{right_alias}"'
+                f' ON "{left_alias}"."{left_col}" = "{right_alias}"."{right_col}"'
+            )
+            joined_aliases.add(right_alias)
+        elif left_alias not in joined_aliases and left_alias in alias_to_table_dict:
+            join_table = alias_to_table_dict[left_alias]['original_table_name']
+            join_clauses.append(
+                f'INNER JOIN "{join_table}" AS "{left_alias}"'
+                f' ON "{right_alias}"."{right_col}" = "{left_alias}"."{left_col}"'
+            )
+            joined_aliases.add(left_alias)
+
+    query = f'SELECT {", ".join(select_parts)} FROM {from_clause} {" ".join(join_clauses)}'
+    df = pd.read_sql_query(query, connection)
+    database_close_connection(connection)
+
+    return preserve_dtypes_in_dict(df)
 
 
 def set_query_specific_columns_and_descriptions(join_sequence: list, alias_dict: dict, database_path: str, table_descriptions: dict) -> list[dict]:

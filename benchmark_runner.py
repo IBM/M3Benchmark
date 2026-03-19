@@ -135,6 +135,7 @@ from benchmark.runner_helpers import (
     CapabilityLogger,
 )
 from benchmark.validate_clients import list_tools_for_domains
+from environment.m3.python_tools.mcp.mcp_server import DataPeek
 
 load_dotenv()
 
@@ -232,7 +233,7 @@ async def run_benchmark_for_domain(
                         data_result = await get_data_tool.ainvoke(
                             {"tool_universe_id": item.uuid}
                         )
-                        parsed_data = json.loads(data_result)
+                        parsed_data: DataPeek = json.loads(data_result)
 
                         # Handle MCP TextContent format
                         if isinstance(parsed_data, list) and parsed_data:
@@ -255,10 +256,9 @@ async def run_benchmark_for_domain(
 
                         tlog("    Universe loaded successfully")
                         assert isinstance(agent, LangGraphReActAgent)
-                        assert agent.handle_manager is not None
-                        handle = agent.handle_manager.store_initial_data(parsed_data)
-                        agent._initial_data_handle = handle
-                        tlog(f"    Initial data stored as: {handle}")
+                        agent._initial_data_handle = parsed_data["handle"]
+                        agent._initial_data_peek = parsed_data
+                        tlog(f"    Initial data handle: {agent._initial_data_handle}")
 
                     if capability_id in [4]:
                         if not item.context: # Single Turn Dialogues in Capability 4
@@ -314,9 +314,11 @@ async def run_benchmark_for_domain(
                         f" {AGENT_TIMEOUT_SECONDS}s"
                     )
                 except Exception as e:
+                    import traceback
                     result.status = "error"
                     result.error = str(e)
-                    tlog(f"    Status: error | {str(e)[:50]}")
+                    tlog(f"    Status: error | {type(e).__name__}: {str(e)[:200]}")
+                    tlog(f"    Traceback: {traceback.format_exc()}")
 
                 result.duration_s = time.perf_counter() - start_time
                 results.append(result)
@@ -336,18 +338,11 @@ async def run_benchmark_for_domain(
 
 def _get_agent(capability_id: int, llm, tools, top_k_tools: int = 0, max_iterations: Optional[int] = None) -> AgentInterface:
     """Return the appropriate agent for the given capability_id."""
-    if capability_id == 1:
-        kwargs = dict(
-            llm=llm,
-            tools=tools,
-            use_handle_manager=True,
-            initial_data_handle="placeholder",
-            max_iterations=max_iterations if max_iterations is not None else 10,
-        )
-        return LangGraphReActAgent(**kwargs)
     kwargs = dict(llm=llm, tools=tools, top_k_tools=top_k_tools)
     if max_iterations is not None:
         kwargs["max_iterations"] = max_iterations
+    if capability_id == 1:
+        kwargs["initial_data_handle"] = "placeholder"
     return LangGraphReActAgent(**kwargs)
 
 
@@ -361,6 +356,7 @@ async def run_capability(
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
     max_iterations: Optional[int] = None,
+    restart: bool = False,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given capability_id, iterating over all domain files."""
 
@@ -393,6 +389,13 @@ async def run_capability(
 
     if max_samples_per_domain:
         tlog(f"Max samples per domain: {max_samples_per_domain}")
+
+    # Skip already-completed domains when restarting
+    if restart:
+        completed = {p.stem for p in out_dir.glob("*.json")}
+        if completed:
+            tlog(f"Restart mode: skipping {len(completed)} already-completed domain(s): {sorted(completed)}")
+            domain_list = [d for d in domain_list if d not in completed]
 
     llm = create_llm(provider=provider, model=model)
 
@@ -508,6 +511,15 @@ def main():
         help="Maximum agent iterations per query (default: 10 for task 1, provider default otherwise)"
     )
     parser.add_argument(
+        "--restart",
+        action="store_true",
+        help=(
+            "Resume a previous run: skip domains whose output file already"
+            " exists in the output directory (requires --output to point"
+            " to a previous run's directory)"
+        ),
+    )
+    parser.add_argument(
         "--mcp-config",
         type=str,
         default=DEFAULT_MCP_CONFIG,
@@ -575,6 +587,7 @@ def main():
             domains=args.domain,
             top_k_tools=args.top_k_tools,
             max_iterations=args.max_iterations,
+            restart=args.restart,
         )
 
     def _make_list_tools_coro(tid: int):

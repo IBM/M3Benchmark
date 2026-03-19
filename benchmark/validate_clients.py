@@ -67,8 +67,13 @@ async def list_tools_for_domains(
             f" {domains_to_process}"
         )
     else:
-        # Task 1: tool universe is domain-independent at the connection level
-        domains_to_process = [""]
+        # Task 1: tool universe is domain-independent at the connection level,
+        # but if the user specified domains, honour them so MCP_DOMAIN is set
+        # and the server loads the correct database.
+        if domains:
+            domains_to_process = domains
+        else:
+            domains_to_process = [""]
 
     for domain in domains_to_process[:5]:
         print("\n" + "=" * 60)
