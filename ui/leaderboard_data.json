@@ -5,7 +5,7 @@
     "agent_url": "https://github.com/IBM/M3Benchmark",
     "date": "Mar 24, 2026",
     "scores": {
-      "api": 0.0,
+      "api": 0.457,
       "tool": 50.46,
       "multihop": 27.14,
       "multiturn": 40.00
@@ -29,7 +29,7 @@
     "agent_url": "https://github.com/IBM/M3Benchmark",
     "date": "Mar 19, 2026",
     "scores": {
-      "api": 0.0,
+      "api": 0.419,
       "tool": 49.5,
       "multihop": 30.08,
       "multiturn": 0.0
@@ -41,7 +41,7 @@
     "agent_url": "https://github.com/IBM/M3Benchmark",
     "date": "Mar 19, 2026",
     "scores": {
-      "api": 0.0,
+      "api": 0.427,
       "tool": 0.0,
       "multihop": 0.0,
       "multiturn": 0.0
