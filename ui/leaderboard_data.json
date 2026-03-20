@@ -14,7 +14,7 @@
     "agent": "LangGraph React Agent",
     "model": "gemini-flash-3-preview",
     "scores": {
-      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Business Intelligence": 0.427,
       "Single Turn|API Styles|Dashboard APIs": 0.0,
       "Single Turn|Reasoning|Multi-hop": 0.0,
       "Single Turn|Reasoning|Policy Adherence": 0,
@@ -36,7 +36,7 @@
     "agent": "LangGraph React Agent",
     "model": "claude-sonnet-4-5",
     "scores": {
-      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Business Intelligence": 0.419,
       "Single Turn|API Styles|Dashboard APIs": 0.49,
       "Single Turn|Reasoning|Multi-hop": 0.06,
       "Single Turn|Reasoning|Policy Adherence": 0,
@@ -58,7 +58,7 @@
     "agent": "LangGraph React Agent",
     "model": "gpt-oss-120b",
     "scores": {
-      "Single Turn|API Styles|Business Intelligence": 0,
+      "Single Turn|API Styles|Business Intelligence": 0.457,
       "Single Turn|API Styles|Dashboard APIs": 0.504,
       "Single Turn|Reasoning|Multi-hop": 0.272,
       "Single Turn|Reasoning|Policy Adherence": 0,
