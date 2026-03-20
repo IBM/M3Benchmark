@@ -1,5 +1,5 @@
 ---
-title: Agent Performance Leaderboard
+title: µ³-Bench Leaderboard
 emoji: 🏆
 colorFrom: indigo
 colorTo: green
@@ -7,56 +7,139 @@ sdk: docker
 pinned: false
 ---
 
-# Agent Performance Leaderboard UI
+# µ³-Bench Leaderboard UI
 
-A Streamlit dashboard for comparing agent performance across benchmark task types.
+FastAPI backend + static HTML frontend for the µ³-Bench agent leaderboard.
+The frontend (`ui.html`) fetches live data from `/api/leaderboard`; no data is hardcoded in the HTML.
 
 ## Quick Start (local, no Docker)
 
 ```bash
-pip install -r ui/requirements.txt
-cd ui && streamlit run app.py
+cd ui
+pip install -r requirements.txt
+uvicorn app:app --reload --port 8000
 ```
 
-Opens at http://localhost:8501.
+Opens at http://localhost:8000.
 
-## Quick Start (Docker)
+## Docker
 
-### 1. Build
+### 1. Build (multi-arch with buildx)
 
 ```bash
 cd ui
-docker build -t agent-leaderboard .
+
+# One-time setup: create a multi-arch builder if you don't have one
+docker buildx create --name multiarch --use
+
+# Build in one step (amd64 + arm64)
+docker buildx build \
+  --platform linux/amd64,linux/arm64 \
+  -t docker.io/amurthi44g1wd/agent-leaderboard:latest \
+  .
 ```
 
-### 2. Test locally
+> **Single-platform local test** (no registry needed):
+> ```bash
+> docker buildx build --platform linux/amd64 \
+>   -t agent-leaderboard --load .
+> ```
+
+### 2. Run locally
 
 ```bash
-docker run -d --name leaderboard-test -p 7860:7860 agent-leaderboard
-curl http://localhost:7860/_stcore/health   # expect: ok
+docker run -d --name leaderboard -p 8000:8000 agent-leaderboard
+curl http://localhost:8000/api/leaderboard   # expect JSON array
 ```
 
-Clean up: `docker stop leaderboard-test && docker rm leaderboard-test`
+Clean up: `docker stop leaderboard && docker rm leaderboard`
+
+### 3. Push to Docker Hub
+
+```bash
+docker login docker.io
+# If you used --push in the buildx step above, it's already pushed.
+# To push a locally loaded image:
+docker push docker.io/amurthi44g1wd/agent-leaderboard:latest
+```
+
+### Podman (alternative)
+
+```bash
+cd ui
+
+# Build per-arch
+podman build --platform linux/amd64 \
+  -t docker.io/amurthi44g1wd/agent-leaderboard:amd64 .
+podman build --platform linux/arm64 \
+  -t docker.io/amurthi44g1wd/agent-leaderboard:arm64 .
+
+# Assemble and push a multi-arch manifest
+podman manifest create docker.io/amurthi44g1wd/agent-leaderboard
+podman manifest add docker.io/amurthi44g1wd/agent-leaderboard \
+  docker.io/amurthi44g1wd/agent-leaderboard:amd64
+podman manifest add docker.io/amurthi44g1wd/agent-leaderboard \
+  docker.io/amurthi44g1wd/agent-leaderboard:arm64
+podman manifest push docker.io/amurthi44g1wd/agent-leaderboard
+```
 
 ## Deploy to Hugging Face Spaces
 
-Push the source files and let HF build for you:
+### Option A — Push source files (HF builds for you)
 
 ```bash
 git clone https://huggingface.co/spaces/<your-username>/agent-leaderboard
 cd agent-leaderboard
-cp /path/to/enterprise-benchmark-mar13/ui/{Dockerfile,app.py,data.py,requirements.txt,leaderboard_data.json,README.md} .
-git add -A && git commit -m "Initial deploy" && git push
+cp /path/to/enterprise-benchmark-mar13/ui/{Dockerfile,app.py,data.py,leaderboard_data.json,ui.html,requirements.txt,README.md} .
+git add -A && git commit -m "deploy" && git push
 ```
 
-HF detects the Dockerfile, builds on amd64, and serves at `https://huggingface.co/spaces/<your-username>/agent-leaderboard`.
+HF detects the `Dockerfile`, builds on `amd64`, and serves at
+`https://huggingface.co/spaces/<your-username>/agent-leaderboard`.
 
-The `README.md` **must** have the YAML frontmatter at the top (`sdk: docker`) — already included in this file.
+The `README.md` **must** keep the YAML frontmatter at the top (`sdk: docker`) — already present in this file.
+
+### Option B — Pre-built image from Docker Hub
+
+Create a one-line `Dockerfile` in the Space repo:
+
+```dockerfile
+FROM docker.io/amurthi44g1wd/agent-leaderboard:latest
+```
+
+Push it. HF pulls the image directly with no build step.
 
 ### Redeploy
 
-- **Any `git push`** to the Space repo triggers a rebuild.
-- **Factory reboot**: Space Settings → Factory reboot (clears cache).
+- Any `git push` to the Space repo triggers a rebuild.
+- **Factory reboot**: Space Settings → Factory reboot (clears build cache).
+
+## API
+
+| Method | Path | Description |
+|--------|------|-------------|
+| `GET` | `/` | Serves `ui.html` |
+| `GET` | `/api/leaderboard` | Returns leaderboard rows as JSON, sorted by overall score |
+| `POST` | `/api/leaderboard` | Adds a new agent entry, returns updated leaderboard |
+
+### POST body schema
+
+```json
+{
+  "model":     "My-Model-v2",
+  "agent":     "ReAct (Prompt)",
+  "agent_url": "https://github.com/...",
+  "date":      "Mar 20, 2026",
+  "scores": {
+    "api":      0.0,
+    "tool":     52.3,
+    "multihop": 28.1,
+    "multiturn": 41.5
+  }
+}
+```
+
+Scores are on a **0–100 scale**. `overall` is computed server-side as the mean of the four scores.
 
 ## Data Format
 
@@ -65,33 +148,34 @@ Agent data lives in `leaderboard_data.json`:
 ```json
 [
   {
-    "agent": "LangGraph React Agent",
-    "model": "gpt-4o",
+    "model":     "GPT-OSS-120B",
+    "agent":     "ReAct (Prompt)",
+    "agent_url": "https://github.com/IBM/M3Benchmark",
+    "date":      "Mar 24, 2026",
     "scores": {
-      "Single Turn|API Styles|Business Intelligence": 90.0,
-      "Single Turn|API Styles|Dashboard APIs": 87.0,
-      "Single Turn|Reasoning|Multi-hop": 82.0,
-      "Single Turn|Reasoning|Policy Adherence": 91.0,
-      "Multi-turn|Joint Structured/ Unstructured Reasoning|Multi-hop": 85.0
+      "api":       0.0,
+      "tool":      50.46,
+      "multihop":  27.14,
+      "multiturn": 40.00
     }
   }
 ]
 ```
 
-Score keys are pipe-delimited: `Turn Type|Task Type|Metric`, matching `COLUMN_HIERARCHY` in `data.py`.
-
 ## File Structure
 
 ```
 ui/
-  app.py                  # Streamlit app (entry point)
-  data.py                 # Data layer: schema, DataFrame builder, load/save
-  leaderboard_data.json   # Agent scores
-  requirements.txt        # Python dependencies
-  Dockerfile              # Container image
+  app.py                  # FastAPI app — serves HTML and /api/leaderboard
+  data.py                 # Data layer: load/save JSON, compute overall scores
+  leaderboard_data.json   # Agent scores (source of truth)
+  ui.html                 # Frontend — fetches data from /api/leaderboard at load
+  requirements.txt        # Python dependencies (fastapi, uvicorn, pydantic)
+  Dockerfile              # Container image (python:3.12-slim, port 8000)
   README.md               # This file
 ```
 
-## Customization
+## Adding a New Entry
 
-Add a new metric: append a tuple to `COLUMN_HIERARCHY` in `data.py` and add the matching score key to your agents in `leaderboard_data.json`. Everything else derives from the hierarchy automatically.
+Edit `leaderboard_data.json` directly and restart the server, or `POST /api/leaderboard` with the JSON body above.
+To add a new score column, add the key to the `scores` object in the JSON and update the table headers in `ui.html` and the `SCORE_KEYS` list in `data.py`.
