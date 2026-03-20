@@ -2,19 +2,18 @@
 """
 Setup script for the Enterprise Benchmark.
 
-Downloads benchmark data from HuggingFace, pulls the unified Docker image,
-and starts containers for all tasks.
+Downloads benchmark data from HuggingFace and manages benchmark containers
+via docker compose.
 
 Usage:
     # Install with init dependencies
     pip install -e ".[init]"
 
-    # Run full setup (download data + pull image + start containers)
+    # Run full setup (download data + start containers)
     python benchmark_setup.py
 
     # Individual steps
     python benchmark_setup.py --download-data
-    python benchmark_setup.py --pull-image
     python benchmark_setup.py --start-containers
     python benchmark_setup.py --stop-containers
 """
@@ -33,7 +32,6 @@ from pathlib import Path
 # ---------------------------------------------------------------------------
 # Configuration
 # ---------------------------------------------------------------------------
-DOCKER_IMAGE = "docker.io/amurthi44g1wd/benchmark_environ:latest"
 PROJECT_ROOT = Path(__file__).parent.resolve()
 DATA_DIR = PROJECT_ROOT
 
@@ -155,23 +153,8 @@ def download_data() -> None:
     print("\nData sync complete.")
 
 
-def pull_image(image: str = DOCKER_IMAGE) -> None:
-    """Pull the unified Docker image and tag it locally."""
-    rt = _runtime()
-    print(f"\n=== Pulling {image} ===")
-    _run([rt, "pull", image], check=True)
-    _run([rt, "tag", image, "benchmark_environ"], check=True)
-    print("Image pulled and tagged as 'benchmark_environ'.")
-
-
 def start_containers() -> None:
-    """Start one container per task (names match mcp_connection_config.yaml)."""
-    # Stop and remove all benchmark containers before starting fresh
-    stop_containers()
-
-    # Always pull the latest image before starting containers
-    pull_image()
-
+    """Start all benchmark containers via docker compose."""
     rt = _runtime()
     print("\n=== Starting containers ===")
 
@@ -181,34 +164,8 @@ def start_containers() -> None:
             f"\nERROR: Database directory '{db_dir}' is missing or empty.\n"
             "Run 'make download' (or 'python benchmark_setup.py --download-data') first.\n"
         )
-    db_dir = str(db_dir)
-    configs_dir = str(PROJECT_ROOT / "environment" / "configs")
-    chroma_dir = str(DATA_DIR / "indexed_documents")
-    queries_dir = str(DATA_DIR / "queries")
 
-    container_extra_flags = {
-        "capability_4_multiturn": ["--memory=4g"],
-    }
-
-    # capability_4_multiturn is the only container that needs the retriever volumes
-    container_extra_volumes: dict[str, list[str]] = {
-        "capability_4_multiturn": [
-            "-v", f"{chroma_dir}:/app/retrievers/chroma_data",
-            "-v", f"{queries_dir}:/app/retrievers/queries:ro",
-        ],
-    }
-
-    for name in CONTAINERS:
-        _run([
-            rt, "run", "-d",
-            "--name", name,
-            *container_extra_flags.get(name, []),
-            "-v", f"{db_dir}:/app/db:ro",
-            "-v", f"{configs_dir}:/app/environment/configs:ro",
-            *container_extra_volumes.get(name, []),
-            "benchmark_environ",
-        ], check=True)
-        print(f"  Started {name}")
+    _run([rt, "compose", "up", "-d"], check=True)
 
     # Wait for the internal FastAPI servers to come up
     print("\nWaiting for services to initialize (up to 120s) ...")
@@ -240,10 +197,7 @@ def stop_containers() -> None:
     """Stop and remove all benchmark containers."""
     rt = _runtime()
     print("\n=== Stopping and removing benchmark containers ===")
-    for name in CONTAINERS:
-        _run([rt, "kill", name], capture_output=True)
-        _run([rt, "rm", "-f", name], capture_output=True)
-        print(f"  Removed {name}")
+    _run([rt, "compose", "down", "--remove-orphans"], capture_output=True)
     print("Done.")
 
 
@@ -259,26 +213,18 @@ def main() -> None:
         help="Download benchmark data from HuggingFace",
     )
     parser.add_argument(
-        "--pull-image", action="store_true",
-        help="Pull the unified Docker image",
-    )
-    parser.add_argument(
         "--start-containers", action="store_true",
-        help="Start Docker containers for all tasks",
+        help="Start Docker containers for all tasks via docker compose",
     )
     parser.add_argument(
         "--stop-containers", action="store_true",
         help="Stop and remove all benchmark containers",
     )
-    parser.add_argument(
-        "--docker-image", type=str, default=DOCKER_IMAGE,
-        help=f"Docker image to pull (default: {DOCKER_IMAGE})",
-    )
 
     args = parser.parse_args()
 
     # If no specific step requested, run all setup steps
-    explicit = args.download_data or args.pull_image or args.start_containers or args.stop_containers
+    explicit = args.download_data or args.start_containers or args.stop_containers
 
     if args.stop_containers:
         stop_containers()
@@ -286,9 +232,6 @@ def main() -> None:
 
     if not explicit or args.download_data:
         download_data()
-
-    if args.pull_image:
-        pull_image(args.docker_image)
 
     if not explicit or args.start_containers:
         start_containers()

@@ -138,41 +138,6 @@ connects to FastAPI on port 8000 and exposes only the matching tools.
 | 39 | legislator | 79 | world_development_indicators |
 | 40 | mental_health_survey | | |
 
-## Push to Docker Hub
-
-### Step 1 — Log in to Docker Hub
-
-```bash
-docker login docker.io -u <your-dockerhub-username>
-```
-
-### Step 2 — Build the image
-
-```bash
-cd /path/to/rest
-docker build -t docker.io/<your-dockerhub-username>/m3:latest .
-```
-
-### Step 3 — Push the image
-
-```bash
-docker push docker.io/<your-dockerhub-username>/m3:latest
-```
-
-### Step 4 — Pull and run on another machine
-
-```bash
-docker pull docker.io/<your-dockerhub-username>/m3:latest
-
-docker run -d -p 8000:8000 \
-  -v ./db:/app/db:ro \
-  --name fastapi-mcp-server \
-  docker.io/<your-dockerhub-username>/m3:latest \
-  bash -c "uvicorn app:app --host 0.0.0.0 --port 8000"
-```
-
----
-
 ## Quick Start: Docker
 
 ### Step 1 — Build and start the container
@@ -390,7 +355,7 @@ curl http://localhost:8000/metrics
 
 ## Quick Test
 
-Run the Docker image from Docker Hub and test with a LangChain agent.
+Build and run the Docker image and test with a LangChain agent.
 
 ### Step 1 — Free port 8000 (if in use) and copy db files from Bird Bench
 
@@ -408,22 +373,8 @@ Copy the databases from the train and dev set into m3/rest/db. The folder struct
 
 ### Step 2 — Start the container
 
-```
-podman init
-podman machine init
-podman machine start
-podman ps
-alias docker=podman
-```
-
 ```bash
-cd ./apis/m3/rest/
-docker rm -f fastapi-mcp-server
-docker run -d -p 8000:8000 \
-  -v ./db:/app/db:ro \
-  --name fastapi-mcp-server \
-  docker.io/amurthi44g1wd/m3:latest \
-  bash -c "uvicorn app:app --host 0.0.0.0 --port 8000"
+docker compose up -d
 ```
 
 ### Step 3 — Verify it's running

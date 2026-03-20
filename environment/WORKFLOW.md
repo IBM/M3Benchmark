@@ -6,16 +6,16 @@ This document describes the full lifecycle: from raw data to running benchmarks.
  PRODUCER (one-time)                          CONSUMER (usage)
  ==================                           ================
 
- Raw data                                     Docker Hub
+ Raw data                                     Source repo
    |                                             |
    v                                             v
- 1. Index documents ──> ChromaDB data         4. Pull container image
+ 1. Index documents ──> ChromaDB data         4. Build image from source
    |                                             |
    v                                             v
  2. Push data ──────> HuggingFace             5. Download data from HF
    |                                             |
    v                                             v
- 3. Build + push ───> Docker Hub              6. Start containers
+ 3. Build + push ───> HuggingFace             6. docker compose up -d
                                                  |
                                                  v
                                               7. Verify + test
@@ -34,8 +34,8 @@ This document describes the full lifecycle: from raw data to running benchmarks.
 | **Tools per domain** | 6–441 (9,891 total) | 6 per domain (query, chunks, count, etc.) |
 | **Data source** | [BIRD-Bench](https://bird-bench.github.io/) train + dev SQLite files | Domain document JSONs, indexed with Granite embeddings |
 | **Data location** | `apis/m3/rest/db/` | `apis/retrievers/chroma_data/` |
-| **Docker image** | `docker.io/amurthi44g1wd/m3:latest` | `docker.io/amurthi44g1wd/retriever-mcp:latest` |
-| **Container name** | `fastapi-mcp-server` | `retriever-mcp-server` |
+| **Docker image** | `benchmark_environ` (built from source) | `benchmark_environ` (built from source) |
+| **Container name** | `capability_2_dashboard_apis` | `capability_4_multiturn` |
 
 Both services follow the same pattern: **FastAPI** serves REST endpoints, **MCP Server** wraps them via OpenAPI auto-discovery, and `MCP_DOMAIN` filters tools per domain.
 
@@ -77,21 +77,13 @@ python hf_sync.py upload --repo anupamamurthi/retriever-chroma-data
 
 This uploads `chroma_data/` and `queries/` to the HF dataset repo.
 
-### Step 3 — Build and push Docker images
+### Step 3 — Build Docker image
 
 ```bash
-# --- Retrievers ---
-cd apis/retrievers
-docker build -t docker.io/amurthi44g1wd/retriever-mcp:latest .
-docker push docker.io/amurthi44g1wd/retriever-mcp:latest
-
-# --- M3 Tools ---
-cd apis/m3/rest
-docker build -t docker.io/amurthi44g1wd/m3:latest .
-docker push docker.io/amurthi44g1wd/m3:latest
+make build
 ```
 
-The container images contain the server code and dependencies but NOT the data. Data is bind-mounted at runtime.
+The container image contains the server code and dependencies but NOT the data. Data is bind-mounted at runtime.
 
 ---
 
@@ -115,30 +107,7 @@ python hf_sync.py download --repo anupamamurthi/retriever-chroma-data
 ### Step 5 — Start the containers
 
 ```bash
-# --- M3 Tools (port 8000) ---
-cd apis/m3/rest
-docker run -d -p 8000:8000 \
-  -v ./db:/app/db:ro \
-  --name fastapi-mcp-server \
-  docker.io/amurthi44g1wd/m3:latest \
-  bash -c "uvicorn app:app --host 0.0.0.0 --port 8000"
-
-# --- Retrievers (port 8001) ---
-cd apis/retrievers
-docker run -d \
-  --name retriever-mcp-server \
-  -p 8001:8001 \
-  -e PRELOAD_COLLECTIONS=true \
-  -v ./chroma_data:/app/chroma_data \
-  -v ./queries:/app/queries:ro \
-  -i -t \
-  docker.io/amurthi44g1wd/retriever-mcp:latest
-```
-
-Or use docker compose in each directory:
-```bash
-cd apis/m3/rest && docker compose up -d
-cd apis/retrievers && docker compose up -d
+docker compose up -d
 ```
 
 ### Step 6 — Verify both services
@@ -201,11 +170,7 @@ python benchmark_runner.py --capability_id 2 --run-agent
 ## Stopping
 
 ```bash
-# Stop retrievers
-docker stop retriever-mcp-server && docker rm retriever-mcp-server
-
-# Stop M3 tools
-docker stop fastapi-mcp-server && docker rm fastapi-mcp-server
+docker compose down
 ```
 
 ---

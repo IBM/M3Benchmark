@@ -2,11 +2,9 @@
 
 An MCP (Model Context Protocol) server that exposes slot-filling and selection data manipulation tools for AI agents. Supports running locally as a subprocess or inside a Docker/Podman container.
 
-**Docker image:** `docker.io/amurthi44g1wd/m3-sel-slot-server:latest`
-
 ## Quick Test
 
-Run the published Docker image and verify the MCP server works end-to-end.
+Verify the MCP server works end-to-end.
 
 ### 1. Download databases
 
@@ -15,10 +13,7 @@ The server needs the Bird-Bench SQLite databases. Download train and dev sets fr
 ### 2. Start the container
 
 ```bash
-docker run -d --name m3-sel-slot-server \
-    -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    docker.io/amurthi44g1wd/m3-sel-slot-server:latest
+docker compose up -d
 ```
 
 ### 3. Verify it's running
@@ -174,18 +169,12 @@ Configuration priority (highest to lowest):
 
 ## Docker Container Details
 
-### Building and Pushing
+### Building
 
 ```bash
 # Build (from apis/m3/python_tools/)
 cd apis/m3/python_tools
 docker build -t m3-sel-slot-server .
-
-# Tag for registry
-docker tag m3-sel-slot-server docker.io/amurthi44g1wd/m3-sel-slot-server:latest
-
-# Push
-docker push docker.io/amurthi44g1wd/m3-sel-slot-server:latest
 ```
 
 The image contains only the Python code and dependencies (~200 MB). Databases (32 GB, 84 domains) and universe configs are mounted at runtime.
@@ -193,10 +182,7 @@ The image contains only the Python code and dependencies (~200 MB). Databases (3
 ### Running
 
 ```bash
-docker run -d --name m3-sel-slot-server \
-    -v "/path/to/db:/app/db:ro" \
-    -v "/path/to/apis/configs:/app/apis/configs:ro" \
-    docker.io/amurthi44g1wd/m3-sel-slot-server:latest
+docker compose up -d
 ```
 
 | Volume mount | Container path | Contents |

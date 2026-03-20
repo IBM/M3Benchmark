@@ -201,7 +201,7 @@ async def get_count_genes_by_interaction_type_phenotype_class_essentiality(inter
     return {"count": result[0]}
 
 # Endpoint to get the percentage of genes with positive expression correlation based on phenotype and motif
-@app.get("/v1/genes/percentage_positive_expression_correlation_by_phenotype_motif", operation_id="get_percentage_positive_expression_correlation_by_phenotype_motif", summary="Retrieves the percentage of genes that exhibit a positive correlation in expression, filtered by a specific phenotype and motif. The phenotype and motif parameters are used to narrow down the selection of genes for analysis.")
+@app.get("/v1/genes/percentage_positive_expression_correlation_by_phenotype_motif", operation_id="get_pct_positive_expression_correlation_by_phenotype_motif", summary="Retrieves the percentage of genes that exhibit a positive correlation in expression, filtered by a specific phenotype and motif. The phenotype and motif parameters are used to narrow down the selection of genes for analysis.")
 async def get_percentage_positive_expression_correlation_by_phenotype_motif(phenotype: str = Query(..., description="Phenotype"), motif: str = Query(..., description="Motif")):
     cursor.execute("SELECT CAST(SUM(IIF(T2.Expression_Corr > 0, 1, 0)) AS REAL) * 100 / COUNT(T2.GeneID1) FROM Genes AS T1 INNER JOIN Interactions AS T2 ON T1.GeneID = T2.GeneID1 WHERE T1.Phenotype = ? AND T1.Motif = ?", (phenotype, motif))
     result = cursor.fetchone()
@@ -210,7 +210,7 @@ async def get_percentage_positive_expression_correlation_by_phenotype_motif(phen
     return {"percentage": result[0]}
 
 # Endpoint to get the percentage of non-essential genes with negative expression correlation
-@app.get("/v1/genes/percentage_non_essential_genes_negative_expression_correlation", operation_id="get_percentage_non_essential_genes_negative_expression_correlation", summary="Retrieves the percentage of non-essential genes that exhibit a negative correlation in their expression. The essentiality parameter is used to filter the genes based on their essentiality status.")
+@app.get("/v1/genes/percentage_non_essential_genes_negative_expression_correlation", operation_id="get_pct_non_essential_genes_negative_expression_correlation", summary="Retrieves the percentage of non-essential genes that exhibit a negative correlation in their expression. The essentiality parameter is used to filter the genes based on their essentiality status.")
 async def get_percentage_non_essential_genes_negative_expression_correlation(essentiality: str = Query(..., description="Essentiality")):
     cursor.execute("SELECT CAST(COUNT(T1.GeneID) AS REAL) * 100 / ( SELECT COUNT(T1.GeneID) FROM Genes AS T1 INNER JOIN Interactions AS T2 ON T1.GeneID = T2.GeneID1 WHERE T2.Expression_Corr < 0 ) FROM Genes AS T1 INNER JOIN Interactions AS T2 ON T1.GeneID = T2.GeneID1 WHERE T2.Expression_Corr < 0 AND T1.Essential = ?", (essentiality,))
     result = cursor.fetchone()

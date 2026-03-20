@@ -1696,7 +1696,7 @@ async def get_top_salesperson_by_sales_quota(year: str = Query(..., description=
     return {"top_salesperson": {"BusinessEntityID": result[0], "SalesQuota": result[1]}}
 
 # Endpoint to get the count of employees based on first name, marital status, and organization level
-@app.get("/v1/works_cycles/employee_count_by_first_name_marital_status_organization_level", operation_id="get_employee_count_by_first_name_marital_status_organization_level", summary="Retrieves the total number of employees who share a specific first name, marital status, and organization level. This operation provides a count of employees based on the provided first name, marital status, and organization level parameters.")
+@app.get("/v1/works_cycles/employee_count_by_first_name_marital_status_organization_level", operation_id="get_employee_count_by_first_name_marital_status_org_level", summary="Retrieves the total number of employees who share a specific first name, marital status, and organization level. This operation provides a count of employees based on the provided first name, marital status, and organization level parameters.")
 async def get_employee_count_by_first_name_marital_status_organization_level(first_name: str = Query(..., description="First name of the employee"), marital_status: str = Query(..., description="Marital status of the employee"), organization_level: int = Query(..., description="Organization level of the employee")):
     cursor.execute("SELECT COUNT(T1.BusinessEntityID) FROM Employee AS T1 INNER JOIN Person AS T2 ON T1.BusinessEntityID = T2.BusinessEntityID WHERE T2.FirstName = ? AND T1.MaritalStatus = ? AND T1.OrganizationLevel = ?", (first_name, marital_status, organization_level))
     result = cursor.fetchone()

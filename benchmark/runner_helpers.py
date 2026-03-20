@@ -99,6 +99,8 @@ class BenchmarkResult:
     status: str = "pending"
     error: str = ""
     duration_s: float = 0.0
+    all_tools: List[str] = field(default_factory=list)           # All tool names available for the domain before shortlisting
+    shortlisted_tools: List[str] = field(default_factory=list)  # Tool names actually presented to the agent after shortlisting
 
 
 def load_benchmark_data(
@@ -312,6 +314,54 @@ def save_results_ground_truth(
         with open(output_file, "w") as f:
             json.dump(records, f, indent=2)
         print(f"  Ground truth results saved to: {output_file}")
+
+
+def save_tools_log(results: List[BenchmarkResult], output_dir: Path) -> None:
+    """Save per-item shortlisted tool lists to parallel {domain}_tools.json files.
+
+    Writes one file per domain alongside the main result files. Each entry records
+    the uuid, domain, query, and the tools that were presented to the agent after
+    shortlisting (or all tools when shortlisting is disabled).
+
+    Example output (address_tools.json):
+        [
+          {
+            "uuid": "abc123",
+            "domain": "address",
+            "query": "Find all addresses in New York",
+            "all_tools": ["query_address", "filter_by_city", "get_zip_codes", ...],
+            "shortlisted_tools": ["query_address", "filter_by_city", ...]
+          },
+          ...
+        ]
+
+    When shortlisting is disabled, ``shortlisted_tools`` equals ``all_tools``.
+    On error/timeout, ``shortlisted_tools`` will be empty while ``all_tools``
+    is always populated (captured before the agent runs).
+    """
+    by_domain: Dict[str, List[BenchmarkResult]] = {}
+    for r in results:
+        if r.domain not in by_domain:
+            by_domain[r.domain] = []
+        by_domain[r.domain].append(r)
+
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    for domain, domain_results in by_domain.items():
+        records = [
+            {
+                "uuid": r.uuid,
+                "domain": r.domain,
+                "query": r.query,
+                "all_tools": r.all_tools,
+                "shortlisted_tools": r.shortlisted_tools,
+            }
+            for r in domain_results
+        ]
+        output_file = output_dir / f"{domain}_tools.json"
+        with open(output_file, "w") as f:
+            json.dump(records, f, indent=2)
+        print(f"  Tools log saved to: {output_file}")
 
 
 class CapabilityLogger:

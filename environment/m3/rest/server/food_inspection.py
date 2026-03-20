@@ -93,7 +93,7 @@ async def get_violation_descriptions_by_date_business_name_risk_category(date: s
     return {"descriptions": [row[0] for row in result]}
 
 # Endpoint to get distinct violation descriptions based on risk category and business name
-@app.get("/v1/food_inspection/distinct_violation_descriptions_by_risk_category_business_name", operation_id="get_distinct_violation_descriptions_by_risk_category_business_name", summary="Retrieves unique descriptions of violations associated with a given risk category and business name. This operation filters the violations based on the specified risk category and business name, ensuring that only distinct violation descriptions are returned.")
+@app.get("/v1/food_inspection/distinct_violation_descriptions_by_risk_category_business_name", operation_id="get_distinct_violation_descriptions_by_risk_business", summary="Retrieves unique descriptions of violations associated with a given risk category and business name. This operation filters the violations based on the specified risk category and business name, ensuring that only distinct violation descriptions are returned.")
 async def get_distinct_violation_descriptions_by_risk_category_business_name(risk_category: str = Query(..., description="Risk category of the violation"), business_name: str = Query(..., description="Name of the business")):
     cursor.execute("SELECT DISTINCT T1.description FROM violations AS T1 INNER JOIN businesses AS T2 ON T1.business_id = T2.business_id WHERE T1.risk_category = ? AND T2.name = ?", (risk_category, business_name))
     result = cursor.fetchall()

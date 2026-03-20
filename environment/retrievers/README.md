@@ -16,7 +16,7 @@ LLM Agent ──MCP stdio──> MCP Server (mcp_server.py)
 
 ## For Users (Consumer)
 
-You need two things: **data from HuggingFace** and the **Docker container from Docker Hub**.
+You need two things: **data from HuggingFace** and the **Docker image built from source**.
 
 ### 1. Download data
 
@@ -32,11 +32,6 @@ Creates `chroma_data/` (~2 GB) and `queries/`.
 
 ```bash
 docker compose up -d
-# or
-docker run -d --name retriever-mcp-server -p 8001:8001 \
-  -e PRELOAD_COLLECTIONS=true \
-  -v ./chroma_data:/app/chroma_data -v ./queries:/app/queries:ro \
-  -i -t docker.io/amurthi44g1wd/retriever-mcp:latest
 ```
 
 ### 3. Verify
@@ -87,11 +82,10 @@ huggingface-cli login
 python hf_sync.py upload --repo anupamamurthi/retriever-chroma-data
 ```
 
-### 3. Build and push Docker image
+### 3. Build Docker image
 
 ```bash
-docker build -t docker.io/amurthi44g1wd/retriever-mcp:latest .
-docker push docker.io/amurthi44g1wd/retriever-mcp:latest
+docker build -t retriever-mcp:latest .
 ```
 
 The image contains code and dependencies only — data is bind-mounted at runtime.

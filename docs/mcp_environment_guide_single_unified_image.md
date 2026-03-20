@@ -4,27 +4,23 @@ This guide covers how to set up and run the MCP tool servers that power the M3 B
 
 ## Docker Image
 
-| Image | Docker Hub |
-|-------|-----------|
-| `m3_environ` | `docker.io/amurthi44g1wd/m3_environ:latest` |
+Build the `benchmark_environ` image from source:
+
+```bash
+make build
+```
 
 ## Quick Start
 
 ```bash
-# 1. Pull the image
-docker pull docker.io/amurthi44g1wd/m3_environ:latest
-docker tag docker.io/amurthi44g1wd/m3_environ:latest m3_environ
+# 1. Build the image
+make build
 
-# 2. Start the container
-docker run -d --name m3_environ \
-    -v "$(pwd)/apis/m3/rest/db:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    -v "$(pwd)/apis/retrievers/chroma_data:/app/retrievers/chroma_data" \
-    -v "$(pwd)/apis/retrievers/queries:/app/retrievers/queries:ro" \
-    m3_environ
+# 2. Start containers
+docker compose up -d
 
 # 3. Verify (wait ~30s for startup)
-docker logs m3_environ 2>&1 | tail -5
+docker logs capability_1_bi_apis 2>&1 | tail -5
 # Should show: "=== All services running. Container ready for exec. ==="
 ```
 
@@ -159,18 +155,16 @@ python benchmark_runner_single_docker_image.py \
 
 Results are saved to `output/task_{id}_{timestamp}/<domain>.json`.
 
-## Building from Source (optional)
+## Rebuilding
 
-If you need to modify the servers or rebuild the image:
+To rebuild the image after modifying server code:
 
 ```bash
-docker build -t m3_environ -f docker/Dockerfile.unified .
-docker tag m3_environ docker.io/amurthi44g1wd/m3_environ:latest
-docker push docker.io/amurthi44g1wd/m3_environ:latest
+make build
 ```
 
 ## Cleanup
 
 ```bash
-docker stop m3_environ && docker rm m3_environ
+docker compose down
 ```

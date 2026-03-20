@@ -60,6 +60,8 @@ class AgentResponse:
     messages: List[Message] = field(default_factory=list)
     metadata: dict = field(default_factory=dict)
     trajectory: List[dict] = field(default_factory=list)  # Full agent trajectory
+    all_tools: List[str] = field(default_factory=list)           # All tool names available before shortlisting
+    shortlisted_tools: List[str] = field(default_factory=list)  # Tool names after shortlisting (subset of all_tools)
 
 
 class AgentInterface(ABC):
@@ -263,6 +265,9 @@ INITIAL DATA:
             agent = self._agent
             logger.debug("run: using all %d tools (shortlisting disabled)", len(active_tools))
 
+        all_tool_names = [t.name for t in self._tools]
+        active_tool_names = [t.name for t in active_tools]
+
         # Build tool map for fallback manual execution
         tool_map = {t.name: t for t in active_tools}
 
@@ -398,6 +403,8 @@ INITIAL DATA:
             messages=response_messages,
             metadata={},
             trajectory=trajectory,
+            all_tools=all_tool_names,
+            shortlisted_tools=active_tool_names,
         )
 
     def restart(self):

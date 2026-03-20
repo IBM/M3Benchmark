@@ -16,15 +16,10 @@ This guide covers the **two-container** approach where each task runs in its own
 
 ## Docker Image
 
-Both containers use the **same image** — no separate builds needed.
-
-| Image | Docker Hub |
-|-------|-----------|
-| `m3_environ` | `docker.io/amurthi44g1wd/m3_environ:latest` |
+Both containers use the **same image** — build it once from source:
 
 ```bash
-docker pull docker.io/amurthi44g1wd/m3_environ:latest
-docker tag docker.io/amurthi44g1wd/m3_environ:latest m3_environ
+make build
 ```
 
 ## Container Configurations
@@ -201,49 +196,32 @@ python benchmark_runner_one_per_task.py --capability_id 5 --list-tools --domain 
 ## Quick Start (Full Walkthrough)
 
 ```bash
-# 1. Pull the image
-docker pull docker.io/amurthi44g1wd/m3_environ:latest
-docker tag docker.io/amurthi44g1wd/m3_environ:latest m3_environ
+# 1. Build the image
+make build
 
-# 2. Start both containers
-docker run -d --name capability_1_bi_apis_m3_environ \
-    -v "$(pwd)/data/databases:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    m3_environ
-
-docker run -d --name capability_2_dashboard_apis_m3_environ \
-    -v "$(pwd)/data/databases:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    m3_environ
-
-docker run -d --name capability_4_multiturn_m3_environ \
-    -v "$(pwd)/data/databases:/app/db:ro" \
-    -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
-    -v "$(pwd)/indexed_documents:/app/retrievers/chroma_data" \
-    -v "$(pwd)/data/queries:/app/retrievers/queries:ro" \
-    m3_environ
+# 2. Start all containers
+docker compose up -d
 
 # 3. Wait for readiness (~30s for capability_2, ~60-120s for capability_4)
-docker logs -f capability_2_dashboard_apis_m3_environ   # wait for "All services running"
-docker logs -f capability_4_multiturn_m3_environ   # wait for "All services running"
+docker logs -f capability_2_dashboard_apis   # wait for "All services running"
+docker logs -f capability_4_multiturn        # wait for "All services running"
 
 # 4. Verify
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.1.0"}}}' \
-  | docker exec -i -e MCP_DOMAIN=address capability_2_dashboard_apis_m3_environ python /app/m3-rest/mcp_server.py
+  | docker exec -i -e MCP_DOMAIN=address capability_2_dashboard_apis python /app/m3-rest/mcp_server.py
 
 echo '{"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"2024-11-05","capabilities":{},"clientInfo":{"name":"test","version":"0.1.0"}}}' \
-  | docker exec -i -e MCP_DOMAIN=address capability_4_multiturn_m3_environ python /app/retrievers/mcp_server.py
+  | docker exec -i -e MCP_DOMAIN=address capability_4_multiturn python /app/retrievers/mcp_server.py
 
 # 5. Run benchmark
-python benchmark_runner_one_per_task.py --capability_id 2 5 --run-agent --domain address --parallel \
+python benchmark_runner.py --capability_id 2 4 --run-agent --domain address --parallel \
     --provider openai --model gpt-4o
 ```
 
 ## Cleanup
 
 ```bash
-docker stop capability_2_dashboard_apis_m3_environ capability_4_multiturn_m3_environ
-docker rm capability_2_dashboard_apis_m3_environ capability_4_multiturn_m3_environ
+docker compose down
 ```
 
 ## Resource Limits (Optional)

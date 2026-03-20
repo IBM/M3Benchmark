@@ -795,7 +795,7 @@ async def get_percentage_cities_in_district_by_government_form(district: str = Q
     return {"percentage": result[0]}
 
 # Endpoint to get the names of countries with cities in a specific population range and below-average life expectancy
-@app.get("/v1/world/countries_with_cities_in_population_range_and_low_life_expectancy", operation_id="get_countries_with_cities_in_population_range_and_low_life_expectancy", summary="Retrieve the names of countries that have cities with populations between the specified range and a life expectancy lower than 80% of the global average. The population range is defined by the minimum and maximum population parameters.")
+@app.get("/v1/world/countries_with_cities_in_population_range_and_low_life_expectancy", operation_id="get_countries_with_cities_in_population_range_and_low_life", summary="Retrieve the names of countries that have cities with populations between the specified range and a life expectancy lower than 80% of the global average. The population range is defined by the minimum and maximum population parameters.")
 async def get_countries_with_cities_in_population_range_and_low_life_expectancy(min_population: int = Query(..., description="Minimum population of the city"), max_population: int = Query(..., description="Maximum population of the city")):
     cursor.execute("SELECT T2.Name FROM City AS T1 INNER JOIN Country AS T2 ON T1.CountryCode = T2.Code WHERE T1.Population BETWEEN ? AND ? GROUP BY T2.Name, LifeExpectancy HAVING LifeExpectancy < ( SELECT AVG(LifeExpectancy) FROM Country ) * 0.8", (min_population, max_population))
     result = cursor.fetchall()

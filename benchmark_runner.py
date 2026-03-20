@@ -125,6 +125,7 @@ from benchmark.mcp_client import (
     )
 from benchmark.runner_helpers import (
     save_results_ground_truth,
+    save_tools_log,
     load_benchmark_data,
     log_trajectory,
     log_message_history,
@@ -207,12 +208,21 @@ async def run_benchmark_for_domain(
                     f" Query: {item.query[:80]}{query_suffix}"
                 )
 
+                # Pre-compute shortlisted tools before the agent runs so the
+                # list is captured even when the agent times out or errors.
+                if hasattr(agent, '_shortlister') and agent._shortlister is not None:
+                    _shortlisted = [t.name for t in agent._shortlister.shortlist(item.query, agent._tools)]
+                else:
+                    _shortlisted = [t.name for t in tools]
+
                 result = BenchmarkResult(
                     uuid=item.uuid,
                     domain=domain,
                     query=item.query,
                     turn_id=item.turn_id,
-                    context=item.context
+                    context=item.context,
+                    all_tools=[t.name for t in tools],
+                    shortlisted_tools=_shortlisted,
                 )
 
                 start_time = time.perf_counter()
@@ -369,6 +379,14 @@ async def run_capability(
         tlog(f"Container name: {cfg.container_name}")
     tlog(f"Processing {len(domain_list)} domain(s): {domain_list}")
 
+    # Skip domains that already have output files (resume support)
+    completed = {p.stem for p in out_dir.glob("*.json")}
+    if completed:
+        skipped = [d for d in domain_list if d in completed]
+        domain_list = [d for d in domain_list if d not in completed]
+        tlog(f"Skipping {len(skipped)} already-completed domain(s): {skipped}")
+        tlog(f"Remaining domain(s) to run: {domain_list}")
+
     if max_samples_per_domain:
         tlog(f"Max samples per domain: {max_samples_per_domain}")
 
@@ -400,6 +418,7 @@ async def run_capability(
         )
         all_results.extend(domain_results)
         save_results_ground_truth(domain_results, out_dir)
+        save_tools_log(domain_results, out_dir)
 
     results = all_results
 

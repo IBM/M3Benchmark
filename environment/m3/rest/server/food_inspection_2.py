@@ -1038,7 +1038,7 @@ async def get_distinct_point_levels_by_fine(fine: int = Query(..., description="
     return {"point_levels": [row[0] for row in result]}
 
 # Endpoint to get distinct facility types and license numbers based on risk level and inspection results
-@app.get("/v1/food_inspection_2/distinct_facility_types_and_license_nos_by_risk_level_and_results", operation_id="get_distinct_facility_types_and_license_nos_by_risk_level_and_results", summary="Retrieves unique facility types and their corresponding license numbers, filtered by a specified risk level and inspection result. This operation provides a concise overview of establishments that meet the given criteria, aiding in targeted analysis and decision-making.")
+@app.get("/v1/food_inspection_2/distinct_facility_types_and_license_nos_by_risk_level_and_results", operation_id="get_facility_types_and_license_nos_by_risk_and_result", summary="Retrieves unique facility types and their corresponding license numbers, filtered by a specified risk level and inspection result. This operation provides a concise overview of establishments that meet the given criteria, aiding in targeted analysis and decision-making.")
 async def get_distinct_facility_types_and_license_nos_by_risk_level_and_results(risk_level: int = Query(..., description="Risk level of the establishment"), results: str = Query(..., description="Inspection results")):
     cursor.execute("SELECT DISTINCT T1.facility_type, T1.license_no FROM establishment AS T1 INNER JOIN inspection AS T2 ON T1.license_no = T2.license_no WHERE T1.risk_level = ? AND T2.results = ?", (risk_level, results))
     result = cursor.fetchall()
