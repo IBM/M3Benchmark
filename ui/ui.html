@@ -494,6 +494,58 @@
     .resource-card { display: block; }
     .resource-card:hover { border-color: #bad1ed; transform: translateY(-1px); }
 
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef4fb;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .submission-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
     .footer {
       margin-top: 24px;
       color: var(--muted);
@@ -521,7 +573,7 @@
       }
       .top-links { justify-content: space-between; }
       .hero, .section { padding: 20px; }
-      .grid-2, .grid-3, .grid-4, .bench-layout, .compare, .stats { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4, .bench-layout, .compare, .stats, .submission-layout { grid-template-columns: 1fr; }
       .section-title { font-size: 28px; }
     }
     /* Center all columns EXCEPT Overall (column 3) */
@@ -611,7 +663,7 @@
         <a href="#overview">Overview</a>
         <a href="https://huggingface.co/datasets/ibm-research/M3Benchmark">Dataset</a>        
         <a href="#leaderboard">Leaderboard</a>
-        <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml">Submission</a>
+        <a href="#submission">Submission</a>
         <a href="#resources">Blog</a>
       </nav>
 
@@ -625,11 +677,11 @@
       <nav class="toc">
         <a href="#overview">About</a>
         <a href="#leaderboard">Leaderboard</a>
+        <a href="#submission">Submission</a>
         <a href="#capabilities">Core capabilities</a>        
         <a href="#resources">Get started</a>
         <a href="#why">Benchmark Description</a>
         <a href="#api-styles">Evaluation</a>
-        <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml">Submission</a>
         <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.md">Contact Us</a>        
         <!-- <a href="#reasoning">Reasoning tasks</a> -->
       </nav>
@@ -762,6 +814,74 @@
             <div class="icon-badge">04</div>
             <h3>MultiTurn with Policy adherence</h3>
             <p>Combine API outputs with document retrieval and reconcile differences in naming and format. Interpret natural-language constraints governing which tools or sources may be used.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="submission">
+        <div class="section-header">
+          <div>
+            <div class="kicker">Submission</div>
+            <h2 class="section-title">Submit to the live leaderboard</h2>
+            <p class="section-desc">
+              Ready to add your model to the public VAKRA leaderboard? Follow the submission flow below and use the GitHub template to send us your run details.
+            </p>
+          </div>
+          <div class="leaderboard-badges">
+            <div class="badge">Public</div>
+            <div class="badge">Reproducible</div>
+            <div class="badge">Issue-based review</div>
+          </div>
+        </div>
+
+        <div class="submission-layout">
+          <div class="step-list">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div>
+                <h3>Run the benchmark</h3>
+                <p>
+                  Evaluate your agent on the released VAKRA capabilities using the benchmark runner and keep the output artifacts, model name, agent setup, and score breakdowns you want listed publicly.
+                </p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div>
+                <h3>Open the submission template</h3>
+                <p>
+                  Use the leaderboard submission issue template to share your model, agent description, code or system link, and capability-level results in the expected format.
+                </p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div>
+                <h3>Track review and publication</h3>
+                <p>
+                  Once reviewed, approved submissions can be added to the live leaderboard so others can compare systems on the same executable benchmark.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="kicker">Quick links</div>
+            <h3>Submission resources</h3>
+            <p>
+              Everything needed to prepare a leaderboard entry is linked here.
+            </p>
+            <div class="submission-actions">
+              <a class="btn primary" href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml" target="_blank">Open submission template</a>
+              <a class="btn secondary" href="https://github.com/IBM/M3Benchmark" target="_blank">View benchmark repo</a>
+              <a class="btn secondary" href="https://huggingface.co/datasets/ibm-research/M3Benchmark" target="_blank">View dataset</a>
+            </div>
+            <div class="pill-row">
+              <div class="pill">Model name</div>
+              <div class="pill">Agent setup</div>
+              <div class="pill">Capability scores</div>
+              <div class="pill">Run details</div>
+            </div>
           </div>
         </div>
       </section>
