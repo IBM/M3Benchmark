@@ -64,7 +64,6 @@ High-level test split statistics from the dataset card:
 | 3 | Multi-hop reasoning | 38 | 869 |
 | 4 | Multi-turn, multi-source reasoning with policies | 41 | 1,676 |
 
-![image](https://github.ibm.com/user-attachments/assets/5f8009ba-d9d5-4218-ab9d-ef7fd3391af3)
 
 ## Repository Layout
 
