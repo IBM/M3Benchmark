@@ -492,8 +492,8 @@ Submission flow:
 Submission links:
 
 - Leaderboard: [https://huggingface.co/spaces/ibm-research/VAKRA](https://huggingface.co/spaces/ibm-research/VAKRA)
-- Submission template: [https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml](https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml)
-- Repository: [https://github.com/IBM/VAKRA](https://github.com/IBM/VAKRA)
+- Submission template: [https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml](https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml)
+- Repository: [https://github.com/IBM/vakra](https://github.com/IBM/vakra)
 
 We recommend including:
 
@@ -521,7 +521,7 @@ VAKRA is designed for:
 
 Found a bug or have a question about the benchmark environment, runner, or evaluation? Open an issue on GitHub:
 
-[https://github.com/IBM/M3Benchmark/issues/new](https://github.com/IBM/M3Benchmark/issues/new)
+[https://github.com/IBM/vakra/issues/new](https://github.com/IBM/vakra/issues/new)
 
 ## Acknowledgments
 
