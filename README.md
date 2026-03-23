@@ -12,7 +12,9 @@ Rather than testing isolated skills, **VAKRA** measures compositional reasoning 
 - Tasks that require 3-7 step reasoning chains across APIs, documents, and natural-language tool-use constraints
 - Deterministic evaluation with live tool replay and trajectory-level verification
 - Open-source code to run agents, reproduce results, and evaluate new systems end to end
-![image](https://github.ibm.com/user-attachments/assets/4b08df40-e730-4a04-aec4-19c57b3c14d2)
+
+![Gemini_Generated_Image_7mh1e37mh1e37mh1](https://github.ibm.com/user-attachments/assets/c9a6768d-6dc2-4ced-9e41-8fbcd42e0ff4)
+
 
 ## Why This Benchmark Matters
 
