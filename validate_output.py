@@ -113,17 +113,27 @@ def validate_file(path: Path) -> list[str]:
 
 
 def collect_files(targets: list[str]) -> list[Path]:
-    """Expand file paths and directories into a flat list of .json files."""
+    """Expand file paths and directories into a flat list of .json files.
+
+    When scanning a directory, *_tools.json sidecar files are skipped — they
+    use a different schema (tool shortlisting logs) and are not submission
+    output.
+    """
     paths: list[Path] = []
     for t in targets:
         p = Path(t)
         if p.is_dir():
-            found = sorted(p.glob("*.json"))
+            found = sorted(
+                f for f in p.glob("*.json") if not f.name.endswith("_tools.json")
+            )
             if not found:
-                print(f"  Warning: no .json files found in {p}")
+                print(f"  Warning: no output .json files found in {p}")
             paths.extend(found)
         elif p.exists():
-            paths.append(p)
+            if p.name.endswith("_tools.json"):
+                print(f"  Skipping tool-log file: {p}")
+            else:
+                paths.append(p)
         else:
             print(f"  Warning: path not found: {p}")
     return paths

@@ -284,6 +284,103 @@ See:
 - [evaluator/README.md](evaluator/README.md)
 - [evaluator/evaluator.py](evaluator/evaluator.py)
 
+## Output Format and Directory Structure
+
+### Directory layout
+
+Output mirrors the input layout under `data/test/`. One  directory per capability:
+
+```
+data/test/                                    # input (read-only)
+└── capability_2_dashboard_apis/
+    └── input/
+        ├── hockey.json
+        ├── card_games.json
+        └── ...
+
+output/                                       # your results
+└── capability_2_dashboard_apis/              # one dir per run
+    ├── hockey.json                           # one file per domain
+    ├── card_games.json
+    ├── hockey_tools.json                     # tool-log sidecar (not for submission)
+    └── run.log
+```
+
+The directory name is generated automatically as `capability_{}/`. Override it with `--output my_results/`.
+
+### Output file schema
+
+Each `<domain>.json` is a JSON array — one record per question:
+
+```json
+[
+  {
+    "uuid":       "8a751d8b-...",
+    "domain":     "hockey",
+    "status":     "success",
+    "error":      "",
+    "duration_s": 3.14,
+    "output": [
+      {
+        "turn_id":  1,
+        "query":    "How many teams played in the 2018 playoffs?",
+        "answer":   "16",
+        "sequence": {
+          "tool_call": [
+            {"name": "get_hockey_teams", "arguments": {"season": 2018}},
+            {"name": "compute_data_count", "arguments": {"key_name": "team_id"}}
+          ]
+        }
+      }
+    ]
+  }
+]
+```
+
+If you modify the benchmark_runner.py, `*_tools.json` sidecars in the same directory record which tools were shortlisted per query — they are not part of the submission schema and are automatically skipped by `validate_output.py`.
+
+### Validating output
+
+```bash
+# Validate a single domain file
+python validate_output.py output/capability_2_mar_22_11_30am/hockey.json
+
+# Validate an entire capability run directory
+python validate_output.py output/capability_2_mar_22_11_30am/
+
+# Validate multiple files at once
+python validate_output.py output/capability_2_mar_22_11_30am/*.json
+```
+
+### Do's and don'ts
+
+**Running tasks and domains in parallel**
+
+| What | OK? | Notes |
+|---|---|---|
+| Multiple capabilities at the same time | Yes | Each capability has its own container — no conflict |
+| Multiple domains for the same capability, in parallel | Careful | Runs fine, but spawns one Python process per domain. If you hit OOM inside the container, increase the container's memory limit in [docker-compose.yml](docker-compose.yml) |
+| Same capability run multiple times concurrently | Careful | Same as above — extra Python processes share the container's memory budget. Increase the limit in [docker-compose.yml](docker-compose.yml) if needed |
+| Multiple domains sequentially (default) | Yes | Default behaviour; domains run one after another within a single process |
+
+To increase a container's memory limit, edit [docker-compose.yml](docker-compose.yml) and add or raise the `mem_limit` for the relevant service, then restart:
+
+```yaml
+capability_2_dashboard_apis_m3_environ:
+  mem_limit: 4g   # raise as needed
+```
+
+```bash
+docker compose up -d capability_2_dashboard_apis_m3_environ
+```
+
+**General do's and don'ts**
+
+- Do run `make download` once before any benchmark run — results will silently error without the data
+- Do validate output with `validate_output.py` before submitting — the evaluator will reject malformed files
+- Don't share containers between different benchmark configurations — restart with `make start` if you change `docker-compose.yml`
+- Don't interrupt a run mid-domain; partial domain files are valid JSON but may have fewer records than expected. Use `--resume` to continue a previous run from where it left off
+
 ## Submitting to the Live Leaderboard
 
 You can submit results to the public VAKRA leaderboard hosted on Hugging Face Spaces.
@@ -307,7 +404,7 @@ We recommend including:
 - capability-wise scores
 - code, configuration, or run details needed to reproduce the submission
 
-## Who This Is For
+## Who Is This For
 
 VAKRA is designed for:
 
