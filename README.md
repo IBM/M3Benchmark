@@ -81,55 +81,142 @@ enterprise-benchmark/
 └── docker-compose.yml       # Container orchestration for local benchmark services
 ```
 
+## Workflow Overview
+
+The diagram below shows the end-to-end flow — from setup through to leaderboard submission — and marks the three points where you can plug in your own agent.
+
+```
+  ┌──────────────────────────────────────────────────────────────┐
+  │  1. SETUP                                                     │
+  │     make download  →  data/test/capability_{N}_*/input/      │
+  │     make build     →  Docker image: benchmark_environ         │
+  │     docker compose up -d  →  4 containers (one per cap.)     │
+  └──────────────────────────────┬───────────────────────────────┘
+                                 │
+  ┌──────────────────────────────▼───────────────────────────────┐
+  │  2. CHOOSE YOUR INTEGRATION POINT                             │
+  │                                                               │
+  │  ① Zero code — use the built-in runner as-is                  │
+  │      python benchmark_runner.py \                             │
+  │        --capability 2 --domain hockey --provider openai       │
+  │                                                               │
+  │  ② Extend AgentInterface  (swap in your own agent)            │
+  │      class MyAgent(AgentInterface):                           │
+  │          async def run(input, tools) -> AgentResponse: ...    │
+  │      # pass to benchmark_runner via --agent-module            │
+  │                                                               │
+  │  ③ Fork the minimal runner  (full control over the loop)      │
+  │      examples/quick_start_benchmark/run_benchmark.py          │
+  │      → implement the TODO block with your own agent logic     │
+  └──────────────────────────────┬───────────────────────────────┘
+                                 │
+  ┌──────────────────────────────▼───────────────────────────────┐
+  │  3. BENCHMARK LOOP  (per capability · per domain · per query) │
+  │                                                               │
+  │  query ──► agent.run(query)                                   │
+  │                 │                                             │
+  │        ┌────────┴────────────────────────┐                   │
+  │        │                                 │                    │
+  │   LLM reasoning                    MCP tool call              │
+  │   HTTPS to provider API            docker exec -i \           │
+  │   (OpenAI / Anthropic /              -e CAPABILITY_ID=N \    │
+  │    Ollama / ...)                      -e MCP_DOMAIN=hockey \  │◄─ must be a
+  │                                       <container> \           │   real domain
+  │                                       mcp_dispatch.py         │   name from
+  │                                          │                    │   data/test/
+  │                                     MCP server (stdio)        │
+  │                                          │                    │
+  │                                    SQLite / ChromaDB          │
+  │                 ◄──── tool result ───────┘                    │
+  │                 │                                             │
+  │           final answer                                        │
+  └──────────────────────────────┬───────────────────────────────┘
+                                 │
+  ┌──────────────────────────────▼───────────────────────────────┐
+  │  4. OUTPUT  (one JSON file per domain)                        │
+  │     output/capability_N_*/                                    │
+  │       {domain}.json  →  [ { uuid, answer, tool_call[] } ]    │
+  └──────────────────────────────┬───────────────────────────────┘
+                                 │
+  ┌──────────────────────────────▼───────────────────────────────┐
+  │  5. VALIDATE & SUBMIT                                         │
+  │     python validate_output.py --capability N                  │
+  │     → submit output/ to the leaderboard                       │
+  └──────────────────────────────────────────────────────────────┘
+```
+
+> **`MCP_DOMAIN`** must exactly match a domain name that exists under `data/test/capability_N_*/input/` (e.g. `hockey`, `card_games`, `airline`). The MCP server uses this value to scope its SQLite database and, for capability 4, its ChromaDB collection. Passing an unknown domain name will cause the server to fail silently or return empty results.
+
 ## Environment Architecture
 
-The benchmark runs entirely inside Docker. One image (`benchmark_environ`) is built and started as four named containers — one per capability. The benchmark runner communicates with each container over MCP stdio (via `docker exec`), never over a network socket.
+The benchmark runner communicates with containers exclusively over MCP stdio (via `docker exec`), never over a network socket. One Docker image (`benchmark_environ`) is built and run as four named containers — one per capability. Each container hosts long-lived FastAPI background services and an on-demand MCP server process started per benchmark call.
 
 ```
-                +------------------------------------------+
-                |          LLM Provider API                |
-                |  OpenAI | Anthropic | Ollama | LiteLLM  |
-                +-------------------+----------------------+
-                                    | HTTPS
-= = = = = = = = = = = = = = = = = = + = = = HOST = = = = =
-                                    |
-              +─────────────────────+──────────────────────+
-              |           benchmark_runner.py              |
-              |  · Reads questions from data/              |
-              |  · Runs a ReAct agent loop (LangGraph)     |
-              |  · Calls LLM API for reasoning             |
-              |  · Calls MCP tools for data access         |
-              |  · Scores answers → output/{task}/*.json   |
-              +─────────────────────+──────────────────────+
-                                    |
-                       docker exec -i  (MCP stdio)
-                       CAPABILITY_ID=N, MCP_DOMAIN=<domain>
-                                    |
-= = = = = = = = = = = = = = = = = = + = = CONTAINERS = = =
-                                    |
-     +──────────────────────────────+──────────────────────+
-     |                    image: benchmark_environ                 |
-     |                                                      |
-     |  cap_1_bi_apis   cap_2_dashboard   cap_3_multihop   |
-     |  cap_4_multiturn                                     |
-     |                                                      |
-     |   mcp_dispatch.py  (os.execv → per-task MCP server) |
-     |                                                      |
-     |   FastAPI :8000 — M3 REST API      FastAPI :8001     |
-     |   SQLite /app/db/ (60+ databases)  ChromaDB (cap 4) |
-     +──────────────────────────────────────────────────────+
+                 ┌──────────────────────────────────────┐
+                 │          LLM Provider API             │
+                 │  OpenAI · Anthropic · Ollama · RITS   │
+                 └─────────────────┬────────────────────┘
+                                   │ HTTPS / chat completions
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ HOST ─ ─ ┼ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+                                   │
+       ┌───────────────────────────▼──────────────────────┐
+       │              benchmark_runner.py                  │
+       │                                                   │
+       │  data/test/capability_N/input/{domain}.json       │
+       │                  │                                │
+       │                  └──► LangGraphReActAgent          │
+       │                       (or AgentInterface subclass) │
+       │                            │                      │
+       │                   ┌────────┴─────────┐            │
+       │              LLM call            MCP tool call     │
+       │         (chat completions)   mcp_client.py         │
+       │                              ClientSession         │
+       │                              .call_tool(name, args)│
+       │                                   │               │
+       │  output/capability_N_*/{domain}.json ◄── answer   │
+       └───────────────────────────┬──────────────────────┘
+                                   │
+                    docker exec -i \
+                      -e CAPABILITY_ID=N \
+                      -e MCP_DOMAIN=<domain> \
+                      <container> python /app/mcp_dispatch.py
+                         │
+                         │  stdin/stdout  (MCP stdio protocol)
+─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ┼ ─ CONTAINERS ─ ─ ─ ─ ─ ─ ─ ─ ─ ─
+                         │
+       ┌─────────────────▼────────────────────────────────┐
+       │    image: benchmark_environ  (4 containers)        │
+       │                                                   │
+       │  mcp_dispatch.py — reads $CAPABILITY_ID           │
+       │    └─ os.execv() into the right MCP server:       │
+       │                                                   │
+       │  cap 1  RouterMCPServer        (direct SQLite)    │
+       │  cap 2  FastAPIMCPServer       (HTTP → :8000)     │
+       │  cap 3  bpo_router.py ──► BPO FastMCP             │
+       │                      └──► FastAPIMCPServer         │
+       │  cap 4  Capability4CombinedMCPServer               │
+       │                       (HTTP → :8000 + :8001)      │
+       │                                                   │
+       │  ┌─────────────────────┐  ┌────────────────────┐  │
+       │  │   M3 REST FastAPI   │  │  Retriever FastAPI  │  │
+       │  │   uvicorn  :8000    │  │  uvicorn  :8001     │  │
+       │  │   (capabilities 1–4)│  │  (capability 4 only)│  │
+       │  └──────────┬──────────┘  └─────────┬──────────┘  │
+       │  ┌──────────▼──────────┐  ┌─────────▼──────────┐  │
+       │  │  SQLite  /app/db/   │  │  ChromaDB           │  │
+       │  │  62 domain databases│  │  62 collections     │  │
+       │  └─────────────────────┘  └────────────────────┘  │
+       └───────────────────────────────────────────────────┘
 ```
 
-Each container starts the same long-lived FastAPI services (port 8000 for M3 REST, port 8001 for the retriever in capability 4). When the benchmark needs a tool call, it runs `mcp_dispatch.py` inside the appropriate container; the dispatcher reads `CAPABILITY_ID` and `os.execv()`s into the right MCP server:
-
-| Capability | MCP server | Data source |
+| Capability | MCP server | Data backend |
 |---|---|---|
-| 1 — Slot-filling / Selection | `RouterMCPServer` (Python tools) | SQLite (direct) |
-| 2 — M3 REST SQL tools | `FastAPIMCPServer` → M3 REST :8000 | SQLite (via HTTP) |
-| 3 — BPO / M3 REST router | BPO FastMCP **or** `FastAPIMCPServer` | BPO in-process / SQLite |
-| 4 — M3 REST + Retriever | `Capability4CombinedMCPServer` | SQLite + ChromaDB |
+| 1 — Slot-filling / Selection | `RouterMCPServer` | SQLite (direct Python read) |
+| 2 — M3 REST SQL tools | `FastAPIMCPServer` | SQLite via M3 REST :8000 |
+| 3 — BPO / M3 REST router | `BPO FastMCP` or `FastAPIMCPServer` | BPO in-process / SQLite via :8000 |
+| 4 — M3 REST + Retriever | `Capability4CombinedMCPServer` | SQLite via :8000 + ChromaDB via :8001 |
 
-See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full per-capability diagrams.
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full per-capability stack diagrams.
 
 ## Requirements
 
