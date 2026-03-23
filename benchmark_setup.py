@@ -19,9 +19,7 @@ Usage:
 """
 
 import argparse
-import getpass
 import json
-import os
 import shutil
 import subprocess
 import sys
@@ -37,7 +35,7 @@ DATA_DIR = PROJECT_ROOT
 
 # Each HuggingFace dataset repo maps to a subdirectory under data/
 HF_DATASETS = {
-    "ibm-research/M3Benchmark": "data"
+    "ibm-research/VAKRA": "data"
 }
 
 # Container names must match benchmark/mcp_connection_config.yaml
@@ -70,22 +68,6 @@ def _run(cmd: list[str], **kwargs) -> subprocess.CompletedProcess:
 # ---------------------------------------------------------------------------
 # Steps
 # ---------------------------------------------------------------------------
-def _ensure_hf_token() -> str:
-    """Return a HuggingFace token, prompting the user if not already set."""
-    token = os.environ.get("HF_TOKEN") or os.environ.get("HUGGING_FACE_HUB_TOKEN")
-    if token:
-        print("Using HuggingFace token from environment.")
-        return token
-
-    print("\nA HuggingFace token is required to download the benchmark data.")
-    print("You can create one at: https://huggingface.co/settings/tokens")
-    token = getpass.getpass("Enter your HuggingFace token: ").strip()
-    if not token:
-        print("Error: no token provided.")
-        sys.exit(1)
-    return token
-
-
 def _load_metadata(path: Path) -> dict:
     """Load locally stored file metadata (filename -> blob sha)."""
     if path.exists():
@@ -102,8 +84,7 @@ def download_data() -> None:
         print("  pip install -e '.[init]'")
         sys.exit(1)
 
-    token = _ensure_hf_token()
-    api = HfApi(token=token)
+    api = HfApi()
 
     print(f"\n=== Syncing data into {DATA_DIR} ===")
     print(f"Repos: {len(HF_DATASETS)}")
@@ -124,8 +105,16 @@ def download_data() -> None:
 
         local_metadata = _load_metadata(metadata_path)
 
-        to_download = [p for p, sha in remote_files.items() if local_metadata.get(p) != sha]
-        to_delete = [p for p in local_metadata if p not in remote_files]
+        # Skip files inside a "train" directory (HuggingFace train split)
+        def _in_train_dir(path: str) -> bool:
+            parts = Path(path).parts
+            return len(parts) > 0 and parts[0] == "train"
+
+        to_download = [
+            p for p, sha in remote_files.items()
+            if local_metadata.get(p) != sha and not _in_train_dir(p)
+        ]
+        to_delete = [p for p in local_metadata if p not in remote_files and not _in_train_dir(p)]
 
         if not to_download and not to_delete:
             print(f"  [up to date] {subdir}/")
@@ -144,7 +133,7 @@ def download_data() -> None:
                 filename=path,
                 repo_type="dataset",
                 local_dir=str(target),
-                token=token,
+
             )
             print(f"  [ok] {path}")
 

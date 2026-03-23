@@ -1,5 +1,5 @@
 """
-µ³-Bench Leaderboard — FastAPI backend
+VAKRA Leaderboard — FastAPI backend
 
 Run locally:
     uvicorn app:app --reload --port 8000
@@ -14,7 +14,7 @@ from pathlib import Path
 
 from data import load_agents, save_agents, compute_rows, AgentEntry
 
-app = FastAPI(title="µ³-Bench Leaderboard")
+app = FastAPI(title="VAKRA Leaderboard")
 
 STATIC_DIR = Path(__file__).parent
 

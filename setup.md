@@ -22,25 +22,26 @@ Depending on the OS (RHEL/Debian/Ubuntu), starting the podman socket may be requ
 ```bash
 # 1. Python environment
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[init]"
 pip install -r requirements_benchmark.txt
 
-# 2. Set required tokens
-export HF_TOKEN=hf_...
-export OPENAI_API_KEY=sk-...
-
-# 3. Download benchmark data (~30 GB)
+# 2. Download benchmark data (~30 GB)
 make download
 
-# 4. Stop any existing containers, build the image, and start all 4 containers
+# 3. Stop any existing containers, build the image, and start all 4 containers
 docker compose down    # or: podman compose down
 make build
 docker compose up -d   # or: podman compose up -d
 
-# 5. Wait ~60 s for internal services to initialize, then verify
+# 4. Wait ~60 s for internal services to initialize, then verify
 docker compose ps      # or: podman compose ps
 
-# 6. Run a single-sample smoke test (Task 1, authors domain)
+# 5. Run a single-sample smoke test (Task 1, authors domain)
+
+# 2. (optional) Set required tokens based on the LLM Provided
+
+# Optional step based on the LLM provider you would like to use
+export OPENAI_API_KEY=sk-...
+
 python benchmark_runner.py --m3_capability_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
 
 # Results land in output/task_1_<timestamp>/authors.json
@@ -55,32 +56,6 @@ export OPENAI_API_KEY=sk-...
 make e2e-quick
 ```
 ---
-
-### Option 2 — Pull pre-built image from Docker Hub
-
-Use this if you just want to run the benchmark without building anything.
-
-```bash
-# 1. Python environment
-python3 -m venv .venv && source .venv/bin/activate
-pip install -e ".[init]"
-pip install -r requirements_benchmark.txt
-
-# 2. Set required tokens
-export HF_TOKEN=hf_...
-export OPENAI_API_KEY=sk-...
-
-# 3. Download benchmark data (~30 GB), pull the image, and start all 4 containers
-#    (make start stops existing containers before starting fresh ones)
-make download
-make pull
-make start
-
-# 4. Run a single-sample smoke test (Task 1, authors domain)
-python benchmark_runner.py --m3_capability_id 1 --domain authors --max-samples-per-domain 1 --provider openai
-
-# Results land in output/task_1_<timestamp>/authors.json
-```
 
 
 > If you hit issues, see [DEBUGGING.md](DEBUGGING.md).
@@ -126,8 +101,8 @@ Verify with: `podman info | grep -i memTotal`
 ## 1. Clone the Repository
 
 ```bash
-git clone git@github.ibm.com:AI4BA/enterprise-benchmark.git
-cd enterprise-benchmark
+git clone git@github.com:IBM/vakra.git
+cd vakra
 ```
 
 ---

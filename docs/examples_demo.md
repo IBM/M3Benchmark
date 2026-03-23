@@ -1,6 +1,6 @@
 # Examples Directory
 
-This directory contains examples demonstrating how to use the M3Benchmark tool-calling agent framework with the slot-filling MCP server.
+This directory contains examples demonstrating how to use the VAKRA tool-calling agent framework with the slot-filling MCP server.
 
 ## Overview
 

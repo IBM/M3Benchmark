@@ -38,7 +38,7 @@ class Scores(BaseModel):
 class AgentEntry(BaseModel):
     model: str
     agent: str = "ReAct (Prompt)"
-    agent_url: str = "https://github.com/IBM/M3Benchmark"
+    agent_url: str = "https://github.com/IBM/vakra"
     date: str = ""
     scores: Scores
 
@@ -65,7 +65,7 @@ def compute_rows(agents: list) -> list:
         rows.append({
             "model":     entry.get("model", ""),
             "agent":     entry.get("agent", ""),
-            "agent_url": entry.get("agent_url", "https://github.com/IBM/M3Benchmark"),
+            "agent_url": entry.get("agent_url", "https://github.com/IBM/vakra"),
             "date":      entry.get("date", ""),
             "scores": {k: s.get(k, 0.0) for k in SCORE_KEYS},
             "overall":   overall,
