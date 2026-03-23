@@ -142,6 +142,29 @@ See:
 - [evaluator/README.md](evaluator/README.md)
 - [evaluator/evaluator.py](evaluator/evaluator.py)
 
+## Submitting to the Live Leaderboard
+
+You can submit results to the public VAKRA leaderboard hosted on Hugging Face Spaces.
+
+Submission flow:
+
+1. Run the benchmark on the released VAKRA tasks and save your final outputs.
+2. Gather the metadata for your entry, including the model name, agent setup, code or system link, and any relevant reproducibility details.
+3. Open the GitHub submission template and send your results for review.
+
+Submission links:
+
+- Leaderboard: `https://huggingface.co/spaces/ibm-research/VAKRA`
+- Submission template: `https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml`
+- Repository: `https://github.com/IBM/VAKRA`
+
+We recommend including:
+
+- model name and version
+- agent type or prompting setup
+- capability-wise scores
+- code, configuration, or run details needed to reproduce the submission
+
 ## Who This Is For
 
 VAKRA is designed for:
