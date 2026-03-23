@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>(µ³) — Multi-Hop, Multi-Source, Multi-Tool Agent Benchmark</title>
-  <meta name="description" content="(µ³- Bench) is a public benchmark for evaluating Enterprise AI agents across multi-hop, multi-source, and multi-tool reasoning in executable environments." />
+  <title>VAKRA — Multi-Hop, Multi-Source, Multi-Tool Agent Benchmark</title>
+  <meta name="description" content="VAKRA is a public benchmark for evaluating enterprise AI agents across multi-hop, multi-source, and multi-tool reasoning in executable environments." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -75,15 +75,29 @@
     }
 
     .brand-mark {
-      width: 38px;
-      height: 38px;
+      width: 58px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex: 0 0 auto;
       border-radius: 12px;
-      display: grid;
-      place-items: center;
-      color: white;
-      font-weight: 800;
-      background: linear-gradient(135deg, var(--blue), var(--blue-2));
-      box-shadow: 0 8px 18px rgba(49,120,222,0.18);
+      overflow: hidden;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .brand-copy {
+      min-width: 0;
+    }
+
+    .brand-copy div {
+      line-height: 1;
     }
 
     .brand-copy small {
@@ -92,6 +106,10 @@
       color: var(--muted);
       font-size: 12px;
       font-weight: 600;
+      max-width: 270px;
+      line-height: 1.2;
+      white-space: normal;
+      text-wrap: balance;
     }
 
     .top-links {
@@ -277,6 +295,41 @@
     }
 
     .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .hero-logo {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 6px;
+    }
+
+    .hero-logo-mark {
+      width: 138px;
+      height: 138px;
+      display: block;
+      filter: drop-shadow(0 18px 34px rgba(8, 24, 54, 0.28));
+    }
+
+    .hero-logo-copy {
+      text-align: center;
+    }
+
+    .hero-logo-image {
+      display: block;
+      width: min(560px, 72vw);
+      height: auto;
+    }
 
     .btn {
       display: inline-flex;
@@ -494,6 +547,58 @@
     .resource-card { display: block; }
     .resource-card:hover { border-color: #bad1ed; transform: translateY(-1px); }
 
+    .submission-layout {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 16px;
+    }
+
+    .step-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .step {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr);
+      gap: 14px;
+      align-items: start;
+      padding: 16px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: white;
+    }
+
+    .step-num {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: grid;
+      place-items: center;
+      background: #eef4fb;
+      color: var(--blue);
+      font-weight: 800;
+    }
+
+    .step h3 {
+      margin: 0 0 8px;
+      font-size: 18px;
+      letter-spacing: -0.03em;
+    }
+
+    .step p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .submission-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 18px;
+    }
+
     .footer {
       margin-top: 24px;
       color: var(--muted);
@@ -521,8 +626,11 @@
       }
       .top-links { justify-content: space-between; }
       .hero, .section { padding: 20px; }
-      .grid-2, .grid-3, .grid-4, .bench-layout, .compare, .stats { grid-template-columns: 1fr; }
+      .grid-2, .grid-3, .grid-4, .bench-layout, .compare, .stats, .submission-layout { grid-template-columns: 1fr; }
       .section-title { font-size: 28px; }
+      .hero-logo-image {
+        width: min(460px, 88vw);
+      }
     }
     /* Center all columns EXCEPT Overall (column 3) */
     .leaderboard-table th:not(:nth-child(3)),
@@ -600,10 +708,12 @@
   <header class="topbar">
     <div class="topbar-inner">
       <a class="brand" href="#top">
-        <div class="brand-mark">µ³</div>
+        <div class="brand-mark">
+          <img src="/static/brand-mark.png" alt="VAKRA brand mark">
+        </div>
         <div class="brand-copy">
-          <div>Benchmark</div>
-          <small>Multi-Hop · Multi-Source · Multi-Tool</small>
+          <div>VAKRA</div>
+          <small>eValuating Agentic Knowledge Reasoning Across multi-source dialogues</small>
         </div>
       </a>
 
@@ -611,7 +721,7 @@
         <a href="#overview">Overview</a>
         <a href="https://huggingface.co/datasets/ibm-research/M3Benchmark">Dataset</a>        
         <a href="#leaderboard">Leaderboard</a>
-        <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml">Submission</a>
+        <a href="#submission">Submission</a>
         <a href="#resources">Blog</a>
       </nav>
 
@@ -625,11 +735,11 @@
       <nav class="toc">
         <a href="#overview">About</a>
         <a href="#leaderboard">Leaderboard</a>
+        <a href="#submission">Submission</a>
         <a href="#capabilities">Core capabilities</a>        
         <a href="#resources">Get started</a>
         <a href="#why">Benchmark Description</a>
         <a href="#api-styles">Evaluation</a>
-        <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml">Submission</a>
         <a href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.md">Contact Us</a>        
         <!-- <a href="#reasoning">Reasoning tasks</a> -->
       </nav>
@@ -640,24 +750,30 @@
 
     <main class="content">
       <section class="hero" id="overview">
-        <div class="eyebrow">Public benchmark for enterprise AI agents</div>
-        <h1>What is <span class="accent">µ³-Bench?</span></h1>
-        <p>
-          Public benchmark for evaluating <strong>multi-hop, multi-source,
-          multi-tool AI agents</strong> in realistic enterprise workflows with executable APIs,
-          document retrieval, and policy-constrained interaction.
-        </p>
-        <div class="hero-actions">
-          <a class="btn primary" href="https://huggingface.co/datasets/ibm-research/M3Benchmark">View dataset</a>
-          <a class="btn secondary" href="https://github.com/IBM/M3Benchmark" target="_blank">GitHub repo</a>
-          <a class="btn secondary" href="#resources">Blog (Coming Soon)</a>
-          <a class="btn secondary" href="#leaderboard">Explore results</a>          
+        <div class="hero-inner">
+          <div class="eyebrow">Public benchmark for enterprise AI agents</div>
+          <div class="hero-logo" aria-label="VAKRA logo">
+            <div class="hero-logo-copy">
+              <img class="hero-logo-image" src="/static/image.png" alt="VAKRA logo">
+            </div>
+          </div>
+          <p>
+            Public benchmark for evaluating <strong>multi-hop, multi-source,
+            multi-tool AI agents</strong> in realistic enterprise workflows with executable APIs,
+            document retrieval, and policy-constrained interaction.
+          </p>
+          <div class="hero-actions">
+            <a class="btn primary" href="https://huggingface.co/datasets/ibm-research/M3Benchmark">View dataset</a>
+            <a class="btn secondary" href="https://github.com/IBM/M3Benchmark" target="_blank">GitHub repo</a>
+            <a class="btn secondary" href="#resources">Blog (Coming Soon)</a>
+            <a class="btn secondary" href="#leaderboard">Explore results</a>          
+          </div>
         </div>
       </section>
 
       <!-- <section class="hero" id="overview">
 
-        <h1 class="hero-title">µ³-Bench</h1>
+        <h1 class="hero-title">VAKRA</h1>
 
         <p class="hero-desc">
           Evaluating <strong>multi-hop, multi-source,
@@ -738,7 +854,7 @@
           <div>
             <div class="kicker">Core benchmark capabilities</div>
             <h2 class="section-title">Four increasingly difficult competencies</h2>
-            <p class="section-desc"> µ³-Bench is designed to test four increasingly difficult competencies that reflect enterprise reasoning behaviors.</p>
+            <p class="section-desc"> VAKRA is designed to test four increasingly difficult competencies that reflect enterprise reasoning behaviors.</p>
           </div>
         </div>
         <div class="grid-4">
@@ -762,6 +878,74 @@
             <div class="icon-badge">04</div>
             <h3>MultiTurn with Policy adherence</h3>
             <p>Combine API outputs with document retrieval and reconcile differences in naming and format. Interpret natural-language constraints governing which tools or sources may be used.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="submission">
+        <div class="section-header">
+          <div>
+            <div class="kicker">Submission</div>
+            <h2 class="section-title">Submit to the live leaderboard</h2>
+            <p class="section-desc">
+              Ready to add your model to the public VAKRA leaderboard? Follow the submission flow below and use the GitHub template to send us your run details.
+            </p>
+          </div>
+          <div class="leaderboard-badges">
+            <div class="badge">Public</div>
+            <div class="badge">Reproducible</div>
+            <div class="badge">Issue-based review</div>
+          </div>
+        </div>
+
+        <div class="submission-layout">
+          <div class="step-list">
+            <div class="step">
+              <div class="step-num">01</div>
+              <div>
+                <h3>Run the benchmark</h3>
+                <p>
+                  Evaluate your agent on the released VAKRA capabilities using the benchmark runner and keep the output artifacts, model name, agent setup, and score breakdowns you want listed publicly.
+                </p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">02</div>
+              <div>
+                <h3>Open the submission template</h3>
+                <p>
+                  Use the leaderboard submission issue template to share your model, agent description, code or system link, and capability-level results in the expected format.
+                </p>
+              </div>
+            </div>
+            <div class="step">
+              <div class="step-num">03</div>
+              <div>
+                <h3>Track review and publication</h3>
+                <p>
+                  Once reviewed, approved submissions can be added to the live leaderboard so others can compare systems on the same executable benchmark.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="kicker">Quick links</div>
+            <h3>Submission resources</h3>
+            <p>
+              Everything needed to prepare a leaderboard entry is linked here.
+            </p>
+            <div class="submission-actions">
+              <a class="btn primary" href="https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml" target="_blank">Open submission template</a>
+              <a class="btn secondary" href="https://github.com/IBM/M3Benchmark" target="_blank">View benchmark repo</a>
+              <a class="btn secondary" href="https://huggingface.co/datasets/ibm-research/M3Benchmark" target="_blank">View dataset</a>
+            </div>
+            <div class="pill-row">
+              <div class="pill">Model name</div>
+              <div class="pill">Agent setup</div>
+              <div class="pill">Capability scores</div>
+              <div class="pill">Run details</div>
+            </div>
           </div>
         </div>
       </section>
@@ -808,7 +992,7 @@
       <section class="section" id="why">
         <div class="section-header">
           <div>
-            <div class="kicker">Why µ³-Bench</div>
+            <div class="kicker">Why VAKRA</div>
             <h2 class="section-title">Benchmarks the reasoning stack, not just the final answer</h2>
 
             <p class="section-desc">
@@ -872,7 +1056,7 @@
             <div class="kicker">Evaluation</div>
             <h2 class="section-title">Same underlying data, different interface abstractions</h2>
             <p class="section-desc">
-              µ³-Bench supports multiple API interaction styles so evaluation can separate planning difficulty,
+              VAKRA supports multiple API interaction styles so evaluation can separate planning difficulty,
               tool selection burden, and endpoint interpretation.
             </p>
           </div>
@@ -924,7 +1108,7 @@
             <div class="kicker">How it works</div>
             <h2 class="section-title">Deterministic, executable, reproducible evaluation</h2>
             <p class="section-desc">
-              µ³-Bench verifies full execution traces by replaying tool calls against persistent backends.
+              VAKRA verifies full execution traces by replaying tool calls against persistent backends.
             </p>
           </div>
         </div>
@@ -938,7 +1122,7 @@
 
 
       <div class="footer">
-        (µ³) is built for reproducible evaluation of multi-hop, multi-source, multi-tool agents.
+        VAKRA is built for reproducible evaluation of multi-hop, multi-source, multi-tool agents.
       </div>
     </main>
   </div>

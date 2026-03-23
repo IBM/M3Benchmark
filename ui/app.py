@@ -18,6 +18,8 @@ app = FastAPI(title="µ³-Bench Leaderboard")
 
 STATIC_DIR = Path(__file__).parent
 
+app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+
 
 @app.get("/", response_class=FileResponse)
 def index():
