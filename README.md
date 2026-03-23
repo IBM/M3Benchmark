@@ -4,6 +4,7 @@
 
 Rather than testing isolated skills, **VAKRA** measures compositional reasoning across APIs and documents, using full execution traces to assess whether agents can reliably complete multi-step workflows, not just individual steps. **VAKRA** provides an executable environment where agents interact with over 8,000 locally hosted APIs backed by real databases spanning 62 domains, along with domain-aligned document collections.
 
+![image](https://github.ibm.com/user-attachments/assets/5f8009ba-d9d5-4218-ab9d-ef7fd3391af3)
 
 ## What VAKRA Provides
 
