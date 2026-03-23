@@ -84,7 +84,7 @@ sentence-transformers>=2.0.0
 huggingface_hub
 pytest
 sentence-transformers
-
+huggingface_hub
 # ----------------------------------------------------------------------------
 # Optional: Phoenix / Arize OTEL tracing
 # ----------------------------------------------------------------------------

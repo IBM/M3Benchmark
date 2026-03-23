@@ -1,17 +1,19 @@
 # 🔷 VAKRA: A Benchmark for Evaluating Multi-Hop, Multi-Source Tool-Calling in AI Agents
+**VAKRA** (eValuating Agentic Knowledge Reasoning Across multi-hop, multi-source dialogues) is a tool-grounded, executable benchmark designed to evaluate how well AI agents reason end-to-end in enterprise-like settings.
 
-**VARKA** (eValuating Agentic Knowledge Reasoning Across multi-hop, multi-source dialogues) is a tool-grounded, executable benchmark designed to evaluate how well AI agents reason end-to-end in enterprise-like settings.
-
-Rather than testing isolated skills, **VARKA** measures compositional reasoning across APIs and documents, using full execution traces to assess whether agents can reliably complete multi-step workflows, not just individual steps. **VARKA** provides an executable environment where agents interact with over 8,000 locally hosted APIs backed by real databases spanning 62 domains, along with domain-aligned document collections.
+Rather than testing isolated skills, **VAKRA** measures compositional reasoning across APIs and documents, using full execution traces to assess whether agents can reliably complete multi-step workflows, not just individual steps. **VAKRA** provides an executable environment where agents interact with over 8,000 locally hosted APIs backed by real databases spanning 62 domains, along with domain-aligned document collections.
 
 
 ## What VAKRA Provides
 
-- An executable benchmark environment with 8,000+ locally hosted APIs backed by real databases across 62 domains
+- An *executable benchmark environment* with *8,000+* locally hosted APIs backed by real databases across 62 domains
 - Domain-aligned document collections for retrieval-augmented, cross-source reasoning
 - Tasks that require 3-7 step reasoning chains across APIs, documents, and natural-language tool-use constraints
 - Deterministic evaluation with live tool replay and trajectory-level verification
 - Open-source code to run agents, reproduce results, and evaluate new systems end to end
+
+![Gemini_Generated_Image_7mh1e37mh1e37mh1](https://github.ibm.com/user-attachments/assets/c9a6768d-6dc2-4ced-9e41-8fbcd42e0ff4)
+
 
 ## Why This Benchmark Matters
 
@@ -61,6 +63,7 @@ High-level test split statistics from the dataset card:
 | 3 | Multi-hop reasoning | 38 | 869 |
 | 4 | Multi-turn, multi-source reasoning with policies | 41 | 1,676 |
 
+
 ## Repository Layout
 
 This repository includes the benchmark runtime, evaluation harness, examples, and supporting environment code.
@@ -81,6 +84,154 @@ enterprise-benchmark/
 └── docker-compose.yml       # Container orchestration for local benchmark services
 ```
 
+## Workflow In a Nutshell
+
+The diagram below shows the end-to-end flow — from setup through to leaderboard submission — and marks the three points where you can plug in your own agent.
+
+```text
+  +--------------------------------------------------------------+
+  |  1. SETUP                                                    |
+  |     make download  ->  data/test/capability_{N}_*/input/     |
+  |     make build     ->  Docker image: benchmark_environ       |
+  |     docker compose up -d  ->  4 containers (one per cap.)   |
+  +------------------------------+-------------------------------+
+                                 |
+  +------------------------------v-------------------------------+
+  |  2. CHOOSE YOUR INTEGRATION POINT                           |
+  |                                                             |
+  |  [1] Zero code -- use the built-in runner as-is            |
+  |      python benchmark_runner.py \                           |
+  |        --capability 2 --domain hockey --provider openai     |
+  |                                                             |
+  |  [2] Extend AgentInterface  (swap in your own agent)        |
+  |      class MyAgent(AgentInterface):                         |
+  |          async def run(input, tools) -> AgentResponse: ...  |
+  |      # pass to benchmark_runner via --agent-module          |
+  |                                                             |
+  |  [3] Fork the minimal runner  (full control over the loop)  |
+  |      examples/quick_start_benchmark/run_benchmark.py        |
+  |      -> implement the TODO block with your own agent logic  |
+  +------------------------------+-------------------------------+
+                                 |
+  +------------------------------v-------------------------------+
+  |  3. BENCHMARK LOOP  (per capability / per domain / per query)|
+  |                                                             |
+  |  query --> agent.run(query)                                 |
+  |                 |                                           |
+  |        +--------+-----------------------------+            |
+  |        |                                      |            |
+  |   LLM reasoning                         MCP tool call      |
+  |   HTTPS to provider API                 docker exec -i \   |
+  |   (OpenAI / Anthropic / Ollama / ...)     -e CAPABILITY_ID=N \
+  |                                           -e MCP_DOMAIN=<domain> \
+  |                                           <container> \    |
+  |                                           mcp_dispatch.py  |
+  |                                              |             |
+  |                                         MCP server (stdio) |
+  |                                              |             |
+  |                                        SQLite / ChromaDB   |
+  |                 <---- tool result -----------+             |
+  |                 |                                           |
+  |           final answer                                      |
+  +------------------------------+-------------------------------+
+                                 |
+  +------------------------------v-------------------------------+
+  |  4. OUTPUT  (one JSON file per domain)                      |
+  |     output/capability_N_*/                                  |
+  |       {domain}.json  ->  [ { uuid, answer, tool_call[] } ] |
+  +------------------------------+-------------------------------+
+                                 |
+  +------------------------------v-------------------------------+
+  |  5. VALIDATE & SUBMIT                                       |
+  |     python validate_output.py --capability N                |
+  |     -> submit output/ to the leaderboard                    |
+  +-------------------------------------------------------------+
+```
+
+> **`MCP_DOMAIN`** must exactly match a domain name that exists under `data/test/capability_N_*/input/` (e.g. `hockey`, `card_games`, `airline`). The MCP server uses this value to scope its SQLite database and, for capability 4, its ChromaDB collection. Passing an unknown domain name will cause the server to fail silently or return empty results.
+
+## Environment Architecture
+
+The benchmark runner communicates with containers exclusively over MCP stdio (via `docker exec`), never over a network socket. One Docker image (`benchmark_environ`) is built and run as four named containers — one per capability. Each container hosts long-lived FastAPI background services and an on-demand MCP server process started per benchmark call.
+
+```text
+                 +--------------------------------------+
+                 |         LLM Provider API             |
+                 |  OpenAI / Anthropic / Ollama / RITS  |
+                 +----------------+---------------------+
+                                  | HTTPS / chat completions
+- - - - - - - - - - - HOST - - - + - - - - - - - - - - -
+                                  |
+       +-------------------------+v------------------------+
+       |             benchmark_runner.py                   |
+       |                                                   |
+       |  data/test/capability_N/input/{domain}.json       |
+       |                   |                               |
+       |                   +--> LangGraphReActAgent        |
+       |                        (or AgentInterface subclass)|
+       |                              |                    |
+       |                   +----------+---------+          |
+       |              LLM call              MCP tool call  |
+       |         (chat completions)     mcp_client.py      |
+       |                                ClientSession      |
+       |                                .call_tool(n, args)|
+       |                                     |             |
+       |  output/capability_N_*/{domain}.json <-- answer  |
+       +-------------------------+--------------------------+
+                                 |
+                    docker exec -i \
+                      -e CAPABILITY_ID=N \
+                      -e MCP_DOMAIN=<domain> \
+                      <container> python /app/mcp_dispatch.py
+                                 |
+                                 | stdin/stdout (MCP stdio)
+- - - - - - - - - CONTAINERS - - + - - - - - - - - - - - -
+                                 |
+       +--------------------------v-----------------------+
+       |   image: benchmark_environ  (4 containers)       |
+       |                                                   |
+       |  mcp_dispatch.py -- reads $CAPABILITY_ID         |
+       |    +-- os.execv() into the right MCP server:     |
+       |                                                   |
+       |  cap 1  RouterMCPServer        (direct SQLite)   |
+       |  cap 2  FastAPIMCPServer       (HTTP -> :8000)   |
+       |  cap 3  bpo_router.py --> BPO FastMCP            |
+       |                      +-> FastAPIMCPServer        |
+       |  cap 4  Capability4CombinedMCPServer             |
+       |                       (HTTP -> :8000 + :8001)   |
+       |                                                   |
+       |  +--------------------+  +-------------------+   |
+       |  |  M3 REST FastAPI   |  | Retriever FastAPI  |   |
+       |  |  uvicorn  :8000    |  | uvicorn  :8001     |   |
+       |  |  (caps 1-4)        |  | (cap 4 only)       |   |
+       |  +---------+----------+  +--------+-----------+   |
+       |  +---------v----------+  +--------v-----------+   |
+       |  |  SQLite  /app/db/  |  | ChromaDB            |   |
+       |  |  62 domain DBs     |  | 62 collections      |   |
+       |  +--------------------+  +-------------------+    |
+       +---------------------------------------------------+
+```
+
+| Capability | MCP server | Data backend |
+|---|---|---|
+| 1 — Slot-filling / Selection | `RouterMCPServer` | SQLite (direct Python read) |
+| 2 — M3 REST SQL tools | `FastAPIMCPServer` | SQLite via M3 REST :8000 |
+| 3 — BPO / M3 REST router | `BPO FastMCP` or `FastAPIMCPServer` | BPO in-process / SQLite via :8000 |
+| 4 — M3 REST + Retriever | `Capability4CombinedMCPServer` | SQLite via :8000 + ChromaDB via :8001 |
+
+See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full per-capability stack diagrams.
+
+## Requirements
+
+| Requirement | Details |
+|---|---|
+| **Python** | 3.11 or later |
+| **Container runtime** | Docker (with the `docker compose` plugin) or Podman (with `podman-compose`) |
+| **`make`** | Used for data download, image build, and container lifecycle targets |
+| **LLM provider** | At least one of: `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `WATSONX_APIKEY`, or a `LITELLM_BASE_URL` — or run [Ollama](https://ollama.com) locally (no API key required) |
+| **Memory (container runtime)** | 8 GB+ allocated to Docker/Podman — capability 4 (ChromaDB) will OOM with the default 2 GB |
+| **Disk space** | ~35 GB for benchmark data downloaded via `make download` |
+
 ## Quick Start
 
 The full setup guide lives in [setup.md](setup.md). The shortest path to a working local run is:
@@ -88,28 +239,36 @@ The full setup guide lives in [setup.md](setup.md). The shortest path to a worki
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e ".[init]"
 pip install -r requirements_benchmark.txt
 
-export HF_TOKEN=hf_...
-
 make download
-make pull
-make start
+
+docker compose down # optional step
+make build
+docker compose up -d
+
+# Note: various providers are supported. Refer to "agents" directory for additional details.
 
 export OPENAI_API_KEY=sk-...
 python benchmark_runner.py \
   --m3_capability_id 1 \
-  --domain authors \
-  --max-samples-per-domain 1 \
+  --domain card_games \
+  --max-samples-per-domain 5 \
   --provider openai
 ```
 
-For local image development instead of using the prebuilt image:
+**No API key? Try Ollama:**
 
 ```bash
-make build
-docker compose up -d
+# Install Ollama from https://ollama.com, then pull a model
+ollama pull llama3.1:8b
+
+python benchmark_runner.py \
+  --m3_capability_id 1 \
+  --domain card_games \
+  --max-samples-per-domain 5 \
+  --provider ollama \
+  --model llama3.1:8b
 ```
 
 Useful follow-up docs:
@@ -121,11 +280,84 @@ Useful follow-up docs:
 
 ## Running Your Own Agent
 
-You can benchmark either the built-in runner or a custom agent implementation.
+There are three levels of integration depending on how much you want to customise.
 
-- Start from [examples/quick_start_benchmark/run_benchmark.py](examples/quick_start_benchmark/run_benchmark.py) for a minimal benchmark integration
-- Use [examples/quick_start_mcp_tools/list_tools.py](examples/quick_start_mcp_tools/list_tools.py) and [examples/quick_start_mcp_tools/invoke_tool.py](examples/quick_start_mcp_tools/invoke_tool.py) to inspect and test tools directly
-- See [agents/](agents/) for the built-in agent interface and components
+### Option 1 — Use `benchmark_runner.py` with a different provider or model
+
+The built-in runner uses `LangGraphReActAgent` out of the box. Swap provider and model without touching any code:
+
+```bash
+python benchmark_runner.py \
+  --m3_capability_id 2 \
+  --domain hockey \
+  --provider anthropic \
+  --model claude-sonnet-4-6
+
+python benchmark_runner.py \
+  --m3_capability_id 2 \
+  --domain hockey \
+  --provider ollama \
+  --model llama3.1:8b
+```
+
+### Option 2 — Extend the agent interface
+
+[agents/agent_interface.py](agents/agent_interface.py) defines an `AgentInterface` ABC with a single method to implement:
+
+```python
+from agents.agent_interface import AgentInterface, AgentResponse, Message
+from typing import List, Union
+
+class MyAgent(AgentInterface):
+    async def run(
+        self,
+        input: Union[str, List[Message]],
+        additional_instructions: str = None,
+    ) -> AgentResponse:
+        # call your LLM / tools here
+        ...
+        return AgentResponse(content=answer, tool_calls=tool_calls, ...)
+```
+
+The built-in `LangGraphReActAgent` (also in [agents/agent_interface.py](agents/agent_interface.py)) is a good reference — it wraps a LangGraph ReAct loop and supports optional tool shortlisting via embedding similarity (`--top-k-tools`).
+
+Use the `create_agent()` factory for quick instantiation without subclassing:
+
+```python
+from agents.agent_interface import create_agent
+
+agent = create_agent(provider="ollama", model="llama3.1:8b")
+```
+
+### Option 3 — Start from the minimal example runner
+
+[examples/quick_start_benchmark/run_benchmark.py](examples/quick_start_benchmark/run_benchmark.py) is a self-contained runner that handles MCP connection, data loading, and output formatting. It contains a clearly marked `TODO` block where you drop in your agent:
+
+```python
+# ----------------------------------------------------------
+# TODO: replace this block with your agent implementation.
+#
+# Your agent should:
+#   1. Call session.call_tool(name, args) as needed.
+#   2. Append each call to tool_calls_made.
+#   3. Return the final answer string.
+# ----------------------------------------------------------
+answer = "[TODO: agent answer]"
+```
+
+Run it with:
+
+```bash
+python examples/quick_start_benchmark/run_benchmark.py \
+  --capability 2 --domain card_games --out results.json
+```
+
+To inspect available tools before writing your agent:
+
+```bash
+python examples/quick_start_mcp_tools/list_tools.py    # list tools for a capability/domain
+python examples/quick_start_mcp_tools/invoke_tool.py   # call a single tool interactively
+```
 
 ## Evaluation
 
@@ -142,6 +374,111 @@ See:
 - [evaluator/README.md](evaluator/README.md)
 - [evaluator/evaluator.py](evaluator/evaluator.py)
 
+## Output Format and Directory Structure
+
+### Directory layout
+
+Output mirrors the input layout under `data/test/`. One  directory per capability:
+
+```
+data/test/                                    # input (read-only)
+└── capability_2_dashboard_apis/
+    └── input/
+        ├── hockey.json
+        ├── card_games.json
+        └── ...
+
+output/                                       # your results
+└── capability_2_dashboard_apis/              # one dir per run
+    ├── hockey.json                           # one file per domain
+    ├── card_games.json
+    ├── hockey_tools.json                     # tool-log sidecar (not for submission)
+    └── run.log
+```
+
+The directory name is generated automatically as `capability_{}/`. Override it with `--output my_results/`.
+
+### Output file schema
+
+Each `<domain>.json` is a JSON array — one record per question:
+
+```json
+[
+  {
+    "uuid":       "8a751d8b-...",
+    "domain":     "hockey",
+    "status":     "success",
+    "error":      "",
+    "duration_s": 3.14,
+    "output": [
+      {
+        "turn_id":  1,
+        "query":    "How many teams played in the 2018 playoffs?",
+        "answer":   "16",
+        "sequence": {
+          "tool_call": [
+            {"name": "get_hockey_teams", "arguments": {"season": 2018}},
+            {"name": "compute_data_count", "arguments": {"key_name": "team_id"}}
+          ]
+        }
+      }
+    ]
+  }
+]
+```
+
+If you modify the benchmark_runner.py, `*_tools.json` sidecars in the same directory record which tools were shortlisted per query — they are not part of the submission schema and are automatically skipped by `validate_output.py`.
+
+### Validating output
+
+```bash
+# Validate all four capabilities under output/
+python validate_output.py --all
+
+# Validate a single capability (finds all output/capability_2_*/ dirs automatically)
+python validate_output.py --capability 2
+
+# Validate a specific run directory directly
+python validate_output.py output/capability_2_dashboard_apis/
+
+# Validate a single domain file
+python validate_output.py output/capability_2_dashboard_apis/hockey.json
+
+# Use a non-default output root
+python validate_output.py --all --output-dir my_results/
+```
+
+`*_tools.json` sidecar files are automatically skipped — they record tool shortlisting logs and are not part of the submission schema.
+
+### Do's and don'ts
+
+**Running tasks and domains in parallel**
+
+| What | OK? | Notes |
+|---|---|---|
+| Multiple capabilities at the same time | Yes | Each capability has its own container — no conflict |
+| Multiple domains for the same capability, in parallel | Careful | Runs fine, but spawns one Python process per domain. If you hit OOM inside the container, increase the container's memory limit in [docker-compose.yml](docker-compose.yml) |
+| Same capability run multiple times concurrently | Careful | Same as above — extra Python processes share the container's memory budget. Increase the limit in [docker-compose.yml](docker-compose.yml) if needed |
+| Multiple domains sequentially (default) | Yes | Default behaviour; domains run one after another within a single process |
+
+To increase a container's memory limit, edit [docker-compose.yml](docker-compose.yml) and add or raise the `mem_limit` for the relevant service, then restart:
+
+```yaml
+capability_2_dashboard_apis_m3_environ:
+  mem_limit: 4g   # raise as needed
+```
+
+```bash
+docker compose up -d capability_2_dashboard_apis_m3_environ
+```
+
+**General do's and don'ts**
+
+- Do run `make download` once before any benchmark run — results will silently error without the data
+- Do validate output with `validate_output.py` before submitting — the evaluator will reject malformed files
+- Don't share containers between different benchmark configurations — restart with `make start` if you change `docker-compose.yml`
+- Don't interrupt a run mid-domain; partial domain files are valid JSON but may have fewer records than expected. Use `--resume` to continue a previous run from where it left off
+
 ## Submitting to the Live Leaderboard
 
 You can submit results to the public VAKRA leaderboard hosted on Hugging Face Spaces.
@@ -154,9 +491,9 @@ Submission flow:
 
 Submission links:
 
-- Leaderboard: `https://huggingface.co/spaces/ibm-research/VAKRA`
-- Submission template: `https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml`
-- Repository: `https://github.com/IBM/VAKRA`
+- Leaderboard: [https://huggingface.co/spaces/ibm-research/VAKRA](https://huggingface.co/spaces/ibm-research/VAKRA)
+- Submission template: [https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml](https://github.com/IBM/M3Benchmark/issues/new?template=leaderboard_submission.yml)
+- Repository: [https://github.com/IBM/VAKRA](https://github.com/IBM/VAKRA)
 
 We recommend including:
 
@@ -165,7 +502,7 @@ We recommend including:
 - capability-wise scores
 - code, configuration, or run details needed to reproduce the submission
 
-## Who This Is For
+## Who Is This For
 
 VAKRA is designed for:
 
@@ -177,12 +514,18 @@ VAKRA is designed for:
 ## Public Availability
 
 - Dataset: Hugging Face dataset release for VAKRA
-- Leaderboard: `https://huggingface.co/spaces/ibm-research/VAKRA`
+- Leaderboard: [https://huggingface.co/spaces/ibm-research/VAKRA](https://huggingface.co/spaces/ibm-research/VAKRA)
 - Code and environment: this repository
+
+## Reporting Issues
+
+Found a bug or have a question about the benchmark environment, runner, or evaluation? Open an issue on GitHub:
+
+[https://github.com/IBM/M3Benchmark/issues/new](https://github.com/IBM/M3Benchmark/issues/new)
 
 ## Acknowledgments
 
-We especially acknowledge Hamid Adebayo, Himanshu Gupta, Renuka Sindhgatta, Sameep Mehta, Huaiyu Zhu, Chulaka Gunasekara, Jaydeep Sen, and Sara Rosenthal for their contributions and insights. We also thank our interns, Raavi Gupta and Abhinav Jain, for their efforts in benchmark generation and development.
+We especially acknowledge (in alphabetical order) Chulaka Gunasekara, Hamid Adebayo, Harold Ship, Himanshu Gupta, Huaiyu Zhu, Jaydeep Sen, Nir Mashkif, Renuka Sindhgatta, Sameep Mehta, Sara Rosenthal, and Segev Shlomov for their contributions and insights. We also thank our interns, Raavi Gupta and Abhinav Jain, for their efforts in benchmark generation and development.
 
 ## Citation
 
