@@ -101,8 +101,8 @@ Verify with: `podman info | grep -i memTotal`
 ## 1. Clone the Repository
 
 ```bash
-git clone git@github.ibm.com:AI4BA/enterprise-benchmark.git
-cd enterprise-benchmark
+git clone git@github.com:IBM/vakra.git
+cd vakra
 ```
 
 ---
