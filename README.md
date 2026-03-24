@@ -271,6 +271,16 @@ python benchmark_runner.py \
   --model llama3.1:8b
 ```
 
+## Exploring Available Tools
+
+Once the containers are up, you can use `tools_explorer` to browse and inspect all available tools interactively before running any benchmarks:
+
+```bash
+uvicorn tools_explorer.app:app --reload --port 7861
+```
+
+This is useful for understanding what tools are available in a given capability and domain, inspecting their schemas, and experimenting with calls before wiring up an agent.
+
 Useful follow-up docs:
 
 - [setup.md](setup.md)
