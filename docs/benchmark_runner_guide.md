@@ -81,8 +81,8 @@ flowchart TD
     AGENT_CHOICE -->|Custom agent| CUSTOM
 
     subgraph BUILTIN["⑦a Use Built-in Agent"]
-        BI1["Smoke test — 1 sample\npython benchmark_runner.py\n--m3_capability_id 1\n--domain california_schools\n--max-samples-per-domain 1\n--provider openai"]
-        BI2["Full run\npython benchmark_runner.py\n--m3_capability_id 1 2 3 4\n--provider openai --model gpt-4o"]
+        BI1["Smoke test — 1 sample\npython benchmark_runner.py\n--capability_id 1\n--domain california_schools\n--max-samples-per-domain 1\n--provider openai"]
+        BI2["Full run\npython benchmark_runner.py\n--capability_id 1 2 3 4\n--provider openai --model gpt-4o"]
         BI1 --> BI2
     end
 
@@ -152,22 +152,22 @@ flowchart TD
 
 ```bash
 # Smoke test — 1 sample, 1 domain
-python benchmark_runner.py --m3_capability_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
+python benchmark_runner.py --capability_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
 
 # Full run across all capabilities
-python benchmark_runner.py --m3_capability_id 1 2 3 4 --provider openai --model gpt-4o
+python benchmark_runner.py --capability_id 1 2 3 4 --provider openai --model gpt-4o
 
 # Run capabilities in parallel
-python benchmark_runner.py --m3_capability_id 2 4 --parallel
+python benchmark_runner.py --capability_id 2 4 --parallel
 
 # Use Anthropic instead
-python benchmark_runner.py --m3_capability_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
+python benchmark_runner.py --capability_id 2 --provider anthropic --model claude-sonnet-4-5-20250929
 
 # Enable top-k tool shortlisting
-python benchmark_runner.py --m3_capability_id 2 --top-k-tools 10
+python benchmark_runner.py --capability_id 2 --top-k-tools 10
 
 # Custom output directory
-python benchmark_runner.py --m3_capability_id 2 --output my_results/
+python benchmark_runner.py --capability_id 2 --output my_results/
 ```
 
 ---

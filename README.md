@@ -239,6 +239,7 @@ The full setup guide lives in [setup.md](setup.md). The shortest path to a worki
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
+pip install -e ".[init]"
 pip install -r requirements_benchmark.txt
 
 make download
@@ -246,30 +247,33 @@ make download
 docker compose down # optional step
 make build
 docker compose up -d
-
-# Note: various providers are supported. Refer to "agents" directory for additional details.
-
-export OPENAI_API_KEY=sk-...
-python benchmark_runner.py \
-  --m3_capability_id 1 \
-  --domain card_games \
-  --max-samples-per-domain 5 \
-  --provider openai
 ```
-
 **No API key? Try Ollama:**
 
-```bash
+```
 # Install Ollama from https://ollama.com, then pull a model
 ollama pull llama3.1:8b
 
 python benchmark_runner.py \
-  --m3_capability_id 1 \
+  --capability_id 1 \
   --domain card_games \
   --max-samples-per-domain 5 \
   --provider ollama \
   --model llama3.1:8b
 ```
+
+
+```
+# Note: various providers are supported. Refer to "agents" directory for additional details.
+export OPENAI_API_KEY=sk-...
+python benchmark_runner.py \
+  --capability_id 1 \
+  --domain card_games \
+  --max-samples-per-domain 5 \
+  --provider openai
+```
+
+
 
 ## Exploring Available Tools
 
@@ -301,13 +305,13 @@ The built-in runner uses `LangGraphReActAgent` out of the box. Swap provider and
 
 ```bash
 python benchmark_runner.py \
-  --m3_capability_id 2 \
+  --capability_id 2 \
   --domain hockey \
   --provider anthropic \
   --model claude-sonnet-4-6
 
 python benchmark_runner.py \
-  --m3_capability_id 2 \
+  --capability_id 2 \
   --domain hockey \
   --provider ollama \
   --model llama3.1:8b

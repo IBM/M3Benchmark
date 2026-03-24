@@ -22,6 +22,7 @@ Depending on the OS (RHEL/Debian/Ubuntu), starting the podman socket may be requ
 ```bash
 # 1. Python environment
 python3 -m venv .venv && source .venv/bin/activate
+pip install -e ".[init]"
 pip install -r requirements_benchmark.txt
 
 # 2. Download benchmark data (~30 GB)
@@ -37,12 +38,13 @@ docker compose ps      # or: podman compose ps
 
 # 5. Run a single-sample smoke test (Task 1, authors domain)
 
-# 2. (optional) Set required tokens based on the LLM Provided
+# 6. (optional) Set required tokens based on the LLM Provided
 
-# Optional step based on the LLM provider you would like to use
+# Optional step based on the LLM provider you would like to use (Based on the LLM provider, python libraries should be installed. Refer to pyproject.toml file for additional details)
+
 export OPENAI_API_KEY=sk-...
 
-python benchmark_runner.py --m3_capability_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
+python benchmark_runner.py --capability_id 1 --domain california_schools --max-samples-per-domain 1 --provider openai
 
 # Results land in output/task_1_<timestamp>/authors.json
 ```
@@ -197,7 +199,7 @@ To use the legacy config:
 
 ```bash
 python benchmark_runner.py --mcp-config benchmark/mcp_connection_config_legacy.yaml \
-    --m3_capability_id 2 --domain address --provider openai
+    --capability_id 2 --domain address --provider openai
 ```
 
 **Day-to-day after initial setup (either route):**
@@ -280,39 +282,39 @@ make start
 
 ```bash
 # Task 1 — Sel/Slot tools
-python benchmark_runner.py --m3_capability_id 1 --domain authors --max-samples-per-domain 1 --provider openai
+python benchmark_runner.py --capability_id 1 --domain authors --max-samples-per-domain 1 --provider openai
 
 # Task 2 — M3 REST SQL tools
-python benchmark_runner.py --m3_capability_id 2 --provider openai --domain address
-python benchmark_runner.py --m3_capability_id 2 --provider openai --domain airline
-python benchmark_runner.py --m3_capability_id 2     --provider openai          # all domains
+python benchmark_runner.py --capability_id 2 --provider openai --domain address
+python benchmark_runner.py --capability_id 2 --provider openai --domain airline
+python benchmark_runner.py --capability_id 2     --provider openai          # all domains
 
 # Task 3 — BPO + M3 REST tools
-python benchmark_runner.py --m3_capability_id 3 --domain airline --provider openai
+python benchmark_runner.py --capability_id 3 --domain airline --provider openai
 
 # Task 5 — ChromaDB retriever
-python benchmark_runner.py --m3_capability_id 5 --domain address --provider openai
+python benchmark_runner.py --capability_id 5 --domain address --provider openai
 ```
 
 **Common options:**
 
 ```bash
 # Limit samples (good for quick tests)
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --max-samples-per-domain 5
+python benchmark_runner.py --capability_id 2 --domain hockey --max-samples-per-domain 5
 
 # Choose provider and model
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --provider anthropic --model claude-sonnet-4-6
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --provider openai --model gpt-4o
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --provider ollama --model llama3.1:8b
+python benchmark_runner.py --capability_id 2 --domain hockey --provider anthropic --model claude-sonnet-4-6
+python benchmark_runner.py --capability_id 2 --domain hockey --provider openai --model gpt-4o
+python benchmark_runner.py --capability_id 2 --domain hockey --provider ollama --model llama3.1:8b
 
 # Run multiple tasks in parallel
-python benchmark_runner.py --m3_capability_id 2 5 --domain address --parallel
+python benchmark_runner.py --capability_id 2 5 --domain address --parallel
 
 # Just list available tools (no agent run)
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --list-tools
+python benchmark_runner.py --capability_id 2 --domain hockey --list-tools
 
 # Limit tools via embedding similarity (top-k)
-python benchmark_runner.py --m3_capability_id 2 --domain hockey --top-k-tools 10
+python benchmark_runner.py --capability_id 2 --domain hockey --top-k-tools 10
 ```
 
 Results are saved to `output/task_{id}_{timestamp}/{domain}.json`.

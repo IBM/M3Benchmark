@@ -121,11 +121,11 @@ Redirect stderr to a file to capture and filter them:
 
 ```bash
 # Capture MCP server logs separately from benchmark runner stdout
-python benchmark_runner.py --m3_capability_id 2 --domain hockey \
+python benchmark_runner.py --capability_id 2 --domain hockey \
     --provider openai 2>mcp.log
 
 # Or capture everything together (stdout + stderr)
-python benchmark_runner.py --m3_capability_id 2 --domain hockey \
+python benchmark_runner.py --capability_id 2 --domain hockey \
     --provider openai 2>&1 | tee full.log
 ```
 
