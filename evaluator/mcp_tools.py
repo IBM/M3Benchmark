@@ -94,8 +94,6 @@ def inject_mcp_responses(
             n = len(tool_calls)
             if (query_tool_present):
                 truncated_responses=turn_resps[:n]
-                # if len(turn_resps) < n:
-                #     seq["tool_response"] = turn_resps + ([None] * (n - len(turn_resps)))
                 if type == "gt":
                     for idx, tool in enumerate(tool_calls):
                         if "query_" not in tool["name"]:
@@ -105,7 +103,10 @@ def inject_mcp_responses(
                 elif type=="pred":
                     for idx, tool in enumerate(tool_calls):
                         if "query_" in tool["name"]:
-                            truncated_responses[idx] = [item["text"] for item in json.loads(truncated_responses[idx])["results"]] # Only text in chunks is retained
+                            try:
+                                truncated_responses[idx] = [item["text"] for item in json.loads(truncated_responses[idx])["results"]] # Only text in chunks is retained
+                            except:
+                                truncated_responses[idx] = [] # For incorrect tool calls
                     seq["tool_response"] = truncated_responses
             else:
                 if len(turn_resps) >= n:
