@@ -224,10 +224,10 @@ You should see **4 containers** listed:
 
 | Container | Purpose |
 |-----------|---------|
-| `capability_1_bi_apis_m3_environ` | Sel/Slot MCP server |
-| `capability_2_dashboard_apis_m3_environ` | M3 REST MCP server |
-| `capability_3_multihop_reasoning_m3_environ` | BPO MCP server + M3 REST API |
-| `capability_4_multiturn_m3_environ` | M3 REST API + ChromaDB Retriever |
+| `capability_1_bi_apis` | Sel/Slot MCP server |
+| `capability_2_dashboard_apis` | M3 REST MCP server |
+| `capability_3_multihop_reasoning` | BPO MCP server + M3 REST API |
+| `capability_4_multiturn` | M3 REST API + ChromaDB Retriever |
 
 ### Restarting a single container
 
@@ -243,18 +243,18 @@ make start-task3
 make start-task5
 
 # Or directly via docker compose (same effect)
-docker compose up -d capability_1_bi_apis_m3_environ
-docker compose up -d capability_4_multiturn_m3_environ
+docker compose up -d capability_1_bi_apis
+docker compose up -d capability_4_multiturn
 
 # Stop and remove a single container only
-docker compose rm -sf capability_1_bi_apis_m3_environ
+docker compose rm -sf capability_1_bi_apis
 
 # Check logs for a specific container
-docker logs capability_1_bi_apis_m3_environ --tail 50
-docker compose logs -f capability_1_bi_apis_m3_environ
+docker logs capability_1_bi_apis --tail 50
+docker compose logs -f capability_1_bi_apis
 ```
 
-> `capability_4_multiturn_m3_environ` (ChromaDB) is the most likely to OOM on startup. If it exits immediately, confirm Docker Desktop memory is set to at least 8 GB (see [Prerequisites](#prerequisites)).
+> `capability_4_multiturn` (ChromaDB) is the most likely to OOM on startup. If it exits immediately, confirm Docker Desktop memory is set to at least 8 GB (see [Prerequisites](#prerequisites)).
 
 ### Debugging containers
 
@@ -397,25 +397,25 @@ python -m pytest tests/e2e/test_benchmark_e2e.py::TestBenchmarkE2E::test_task5_a
 
 ```bash
 # Task 1 — Sel/Slot MCP server
-docker run -d --name capability_1_bi_apis_m3_environ \
+docker run -d --name capability_1_bi_apis \
     -v "$(pwd)/data/databases:/app/db:ro" \
     -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
     m3_environ
 
 # Task 2 — M3 REST MCP server
-docker run -d --name capability_2_dashboard_apis_m3_environ \
+docker run -d --name capability_2_dashboard_apis \
     -v "$(pwd)/data/databases:/app/db:ro" \
     -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
     m3_environ
 
 # Task 3 — BPO MCP server + M3 REST API
-docker run -d --name capability_3_multihop_reasoning_m3_environ \
+docker run -d --name capability_3_multihop_reasoning \
     -v "$(pwd)/data/databases:/app/db:ro" \
     -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
     m3_environ
 
 # Task 5 — ChromaDB Retriever (needs extra memory + retriever volumes)
-docker run -d --name capability_4_multiturn_m3_environ \
+docker run -d --name capability_4_multiturn \
     --memory=4g \
     -v "$(pwd)/data/databases:/app/db:ro" \
     -v "$(pwd)/apis/configs:/app/apis/configs:ro" \
@@ -427,7 +427,7 @@ docker run -d --name capability_4_multiturn_m3_environ \
 To stop and remove a single container:
 
 ```bash
-docker rm -f capability_2_dashboard_apis_m3_environ
+docker rm -f capability_2_dashboard_apis
 ```
 
 ---
@@ -495,10 +495,10 @@ make setup      # download → build → test → start → validate
 | `make release` | `build → test → tag → push` |
 | `make setup` | `download → build → test → start → validate` — full first-time setup |
 | `make start` | Start all benchmark containers |
-| `make start-task1` | Start `capability_1_bi_apis_m3_environ` only |
-| `make start-task2` | Start `capability_2_dashboard_apis_m3_environ` only |
-| `make start-task3` | Start `capability_3_multihop_reasoning_m3_environ` only |
-| `make start-task5` | Start `capability_4_multiturn_m3_environ` only |
+| `make start-task1` | Start `capability_1_bi_apis` only |
+| `make start-task2` | Start `capability_2_dashboard_apis` only |
+| `make start-task3` | Start `capability_3_multihop_reasoning` only |
+| `make start-task5` | Start `capability_4_multiturn` only |
 | `make stop` | Stop and remove all benchmark containers |
 | `make clean` | Stop containers and remove the local `m3_environ` Docker image |
 | `make e2e` | Run end-to-end benchmark tests (requires `HF_TOKEN` + `OPENAI_API_KEY`) |

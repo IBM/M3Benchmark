@@ -3,7 +3,7 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "enterprise-benchmark"
+name = "vakra-benchmark"
 version = "1.0"
 description = "Tool-Calling Agent Benchmark"
 readme = "README.md"
@@ -84,12 +84,12 @@ phoenix = [
 
 # All optional dependencies combined
 all = [
-    "enterprise-benchmark[rest]",
-    "enterprise-benchmark[agents]",
-    "enterprise-benchmark[mcp]",
-    "enterprise-benchmark[init]",
-    "enterprise-benchmark[legacy]",
-    "enterprise-benchmark[phoenix]",
+    "vakra-benchmark[rest]",
+    "vakra-benchmark[agents]",
+    "vakra-benchmark[mcp]",
+    "vakra-benchmark[init]",
+    "vakra-benchmark[legacy]",
+    "vakra-benchmark[phoenix]",
 ]
 
 # Development dependencies
