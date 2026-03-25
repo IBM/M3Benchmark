@@ -1166,9 +1166,10 @@
         return val === null || val === undefined ? '—' : Number(val).toFixed(2);
       }
 
-      function buildRow(entry, maxOverall) {
+      function buildRow(entry) {
         const s = entry.scores;
-        const barPct = maxOverall > 0 ? ((entry.overall / maxOverall) * 100).toFixed(1) : '0';
+        const overall = Number(entry.overall) || 0;
+        const barPct = Math.max(0, Math.min(overall, 100)).toFixed(1);
         const rank = String(entry.rank).padStart(2, '0');
         const tr = document.createElement('tr');
         tr.dataset.overall  = entry.overall;
@@ -1204,8 +1205,7 @@
             tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--muted)">No entries yet.</td></tr>';
             return;
           }
-          const maxOverall = Math.max(...rows.map(r => r.overall));
-          rows.forEach(entry => tbody.appendChild(buildRow(entry, maxOverall)));
+          rows.forEach(entry => tbody.appendChild(buildRow(entry)));
           // Re-run the sort to apply default sort state
           const table = document.getElementById('leaderboard-table');
           if (table) sortTable('overall', 'desc');
