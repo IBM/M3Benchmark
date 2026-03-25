@@ -44,6 +44,14 @@
     }
 
     a { color: inherit; text-decoration: none; }
+    .inline-link {
+      color: var(--blue);
+    }
+
+    .inline-link:hover {
+      color: var(--blue-2);
+    }
+
     code, .mono { font-family: "JetBrains Mono", monospace; }
 
     .topbar {
@@ -786,7 +794,7 @@
         <a href="#overview">Overview</a>
         <a href="https://huggingface.co/datasets/ibm-research/VAKRA" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">Dataset</a>
         <a href="#leaderboard">Leaderboard</a>
-        <a href="#submission">Submission</a>
+        <a href="#https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml">Submission</a>
         <a href="#resources">Blog</a>
       </nav>
 
@@ -802,7 +810,7 @@
         <a href="#leaderboard">Leaderboard</a>
         <a href="#capabilities">Core capabilities</a>        
         <a href="#resources">Get started</a>
-        <a href="#submission">Submission</a>        
+        <a href="#submission">Submission Guidelines</a>        
         <!-- <a href="#why">Benchmark Description</a> -->
         <a href="#evaluation">Evaluation & Scoring</a>
         <a href="https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.md" target="_blank">Contact Us</a>        
@@ -913,6 +921,24 @@
         </div>
       </section>
 
+      <section class="section" id="workflow">
+        <div class="section-header">
+          <div>
+            <div class="kicker">How it works</div>
+            <h2 class="section-title">Deterministic, executable, reproducible evaluation</h2>
+            <p class="section-desc">
+              VAKRA verifies full execution traces by replaying tool calls against persistent backends.
+            </p>
+          </div>
+        </div>
+        <div class="stats">
+          <div class="stat"><div class="value">8,000+</div><div class="label">Executable APIs</div></div>
+          <div class="stat"><div class="value">60+</div><div class="label">Enterprise-style domains</div></div>
+          <div class="stat"><div class="value">3–7</div><div class="label">Reasoning steps per task</div></div>
+          <div class="stat"><div class="value">Trace</div><div class="label">Trajectory-level verification</div></div>
+        </div>
+      </section>
+      
       <section class="section" id="capabilities">
         <div class="section-header">
           <div>
@@ -937,14 +963,14 @@
             <div class="kicker">Submission</div>
             <h2 class="section-title">Submit to the live leaderboard</h2>
             <p class="section-desc">
-              Ready to add your model to the public VAKRA leaderboard? Follow the submission flow below and use the GitHub template to send us your run details.
+              Ready to add your model to the public VAKRA leaderboard? Follow the submission flow below.
             </p>
           </div>
-          <div class="leaderboard-badges">
+          <!-- <div class="leaderboard-badges">
             <div class="badge">Public</div>
             <div class="badge">Reproducible</div>
             <div class="badge">Issue-based review</div>
-          </div>
+          </div> -->
         </div>
 
         <div class="submission-layout">
@@ -954,7 +980,7 @@
               <div>
                 <h3>Run the benchmark</h3>
                 <p>
-                  Evaluate your agent on the released VAKRA capabilities using the benchmark runner and keep the output artifacts, model name, agent setup, and score breakdowns you want listed publicly.
+                  Evaluate your agent on the released VAKRA capabilities using the benchmark runner and evaluator present in the <a class="inline-link" href="https://github.com/IBM/VAKRA" target="_blank">github repository</a>.
                 </p>
               </div>
             </div>
@@ -963,7 +989,7 @@
               <div>
                 <h3>Open the submission template</h3>
                 <p>
-                  Use the leaderboard submission issue template to share your model, agent description, code or system link, and capability-level results in the expected format.
+                  Use the leaderboard submission issue template to share your outputs, agent description, code or system link, and capability-level results in the expected format. keep the output artifacts, model name and agent setup you want listed publicly.
                 </p>
               </div>
             </div>
@@ -1103,7 +1129,7 @@
         <div class="section-header">
           <div>
             <div class="kicker">Evaluation</div>
-            <h2 class="section-title">Same underlying data, different interface abstractions</h2>
+            <h2 class="section-title">Deterministic, executable, reproducible evaluation</h2>
             <p class="section-desc">
                 VAKRA verifies full execution traces by replaying tool calls against persistent backends.
             </p>
@@ -1149,25 +1175,6 @@
           </div>
         </div> -->
       </section>
-
-      <section class="section" id="workflow">
-        <div class="section-header">
-          <div>
-            <div class="kicker">How it works</div>
-            <h2 class="section-title">Deterministic, executable, reproducible evaluation</h2>
-            <p class="section-desc">
-              VAKRA verifies full execution traces by replaying tool calls against persistent backends.
-            </p>
-          </div>
-        </div>
-        <div class="stats">
-          <div class="stat"><div class="value">8,000+</div><div class="label">Executable APIs</div></div>
-          <div class="stat"><div class="value">60+</div><div class="label">Enterprise-style domains</div></div>
-          <div class="stat"><div class="value">3–7</div><div class="label">Reasoning steps per task</div></div>
-          <div class="stat"><div class="value">Trace</div><div class="label">Trajectory-level verification</div></div>
-        </div>
-      </section>
-
 
       <div class="footer">
         VAKRA is built for reproducible evaluation of multi-hop, multi-source, multi-tool agents.
