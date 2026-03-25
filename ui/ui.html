@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>VAKRA — Multi-Hop, Multi-Source, Multi-Tool Agent Benchmark</title>
   <meta name="description" content="VAKRA is a public benchmark for evaluating enterprise AI agents across multi-hop, multi-source, and multi-tool reasoning in executable environments." />
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['\\(', '\\)']],
+        displayMath: [['\\[', '\\]']]
+      },
+      svg: {
+        fontCache: 'global'
+      }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
@@ -479,6 +491,64 @@
     .compare ul { margin: 0; padding-left: 18px; }
     .compare li { margin-bottom: 10px; }
 
+    .eval-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+      gap: 16px;
+      align-items: start;
+    }
+
+    .eval-grid .card {
+      min-height: 100%;
+    }
+
+    .eval-list {
+      margin: 0;
+      padding-left: 18px;
+    }
+
+    .eval-list li {
+      margin-bottom: 10px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .eval-code {
+      margin-top: 14px;
+      background: #0e2344;
+      color: #dfeaff;
+      border-radius: 16px;
+      padding: 16px;
+      font-size: 12px;
+      line-height: 1.6;
+      font-family: "JetBrains Mono", monospace;
+      overflow: auto;
+      white-space: pre-wrap;
+    }
+
+    .eval-code strong {
+      color: #ffffff;
+    }
+
+    .equation-figure {
+      margin: 14px 0 0;
+      padding: 14px;
+      border-radius: 16px;
+      background: #f6f9ff;
+      border: 1px solid var(--line);
+      overflow: auto;
+    }
+
+    .equation-figure .math-display {
+      min-width: 620px;
+      color: var(--text);
+      font-size: 14px;
+    }
+
+    .equation-figure mjx-container[jax="SVG"] {
+      margin: 0;
+    }
+
     .leaderboard-badges { display: flex; gap: 10px; flex-wrap: wrap; }
     .badge {
       display: inline-flex;
@@ -702,6 +772,7 @@
         position: relative;
         top: auto;
       }
+      .eval-grid { grid-template-columns: 1fr; }
       .bench-layout, .compare, .grid-4 { grid-template-columns: 1fr 1fr; }
       .stats { grid-template-columns: repeat(2, minmax(0,1fr)); }
     }
@@ -1168,49 +1239,70 @@
         <div class="section-header">
           <div>
             <div class="kicker">Evaluation</div>
-            <h2 class="section-title">Deterministic, executable, reproducible evaluation</h2>
+            <h2 class="section-title">Replay-based evaluation and scoring</h2>
             <p class="section-desc">
-                VAKRA verifies full execution traces by replaying tool calls against persistent backends.
+              The evaluator replays predicted tool trajectories against the live VAKRA MCP environment, injects fresh tool responses, and scores whether the final answer is correct and grounded in executed tool outputs.
             </p>
           </div>
+          <!-- <div class="leaderboard-badges">
+            <div class="badge">Last-turn scoring</div>
+            <div class="badge">MCP replay</div>
+          </div> -->
         </div>
 
-        <div class="compare">
+        <div class="eval-grid">
           <div class="card">
-            <div class="icon-badge">B</div>
-            <h3>Benchmark Scoring</h3>
-            <ul>
-              <li>Each capability is weighted equally for the overall score calculation of the benchmark.</li>
-              <li>Requires explicit multi-step planning over intermediate states.</li>
-              <li>Best for testing how agents construct reasoning chains from reusable primitives.</li>
+            <div class="icon-badge">01</div>
+            <h3>Scoring pipeline</h3>
+              <p>The current scorer evaluates the last turn for each dialogue. A waterfall judge is constructed using the following three judges :</p>            
+            <ul class="eval-list">
+              <li><strong>Policy check </strong> is only used for the multi-source with policy adherence capability. The output is programatically validated based on the policy per data sample.</li>                            
+              <li><strong>Exact-match tool-response check:</strong> looks for expected ground-truth tool responses in the predicted response set.</li>
+              <li><strong>Correctness check:</strong> if exact match fails, an LLM judge compares the predicted final answer to the ground-truth final answer.</li>
+              <li><strong>Groundedness check:</strong> acceptable answers are then checked against the executed tool outputs.</li>
+              <li><strong>Aggregation:</strong> turn scores are combined into a dialogue score using the default <code>mean</code> policy.</li>
             </ul>
           </div>
           <div class="card">
-            <div class="icon-badge">F</div>
-            <h3>Expanded function interfaces</h3>
-            <ul>
-              <li>Distinct tools materialize parameterized versions of more generic functions.</li>
-              <li>Reduces per-call complexity but increases tool selection difficulty.</li>
-              <li>Useful for evaluating retrieval over tool specs and operation choice under scale.</li>
+            <div class="icon-badge">02</div>
+            <h3>Aggregate Benchmark Score</h3>
+            <ul class="eval-list">
+              <li>Each of the four core capabilities are equally weighted to obtain the overall bechmark score.</li>
+              <li>For <strong>multi-source with policy adherence</strong> capability multi-source queries have twice the weightage of queries requiring only APIs or only retrievers to answer.</li>
             </ul>
-          </div>
-          <div class="card">
-            <div class="icon-badge">E</div>
-            <h3>Endpoint-style interfaces</h3>
-            <ul>
-              <li>Highly specific, query-aligned endpoints encapsulate most of the computation.</li>
-              <li>Shifts the challenge toward accurate query interpretation and endpoint selection.</li>
-              <li>Supports realistic API-only reasoning chains and task-oriented orchestration.</li>
-            </ul>
-          </div>
-          <div class="card" id="reasoning">
-            <div class="icon-badge">R</div>
-            <h3>Reasoning tasks</h3>
-            <ul>
-              <li><strong>Multi-hop reasoning:</strong> 3–7 step chains over endpoint-style APIs with entity disambiguation, parameter extraction, and identifier chaining.</li>
-              <li><strong>Multi-hop multi-source reasoning:</strong> structured APIs plus unstructured documents, including cross-source grounding and content integration.</li>
-              <li><strong>Tool-use policy adherence:</strong> query-dependent constraints on source selection and permissible tools.</li>
-            </ul>
+            <figure class="equation-figure">
+              <div class="math-display">
+\[
+\begin{aligned}
+\mathrm{Benchmark\ Score}
+&=
+\frac{1}{4}
+\Bigg(
+\frac{\#\ \mathrm{correct}_{\mathrm{api\_chaining}}}{\#\ \mathrm{total}_{\mathrm{api\_chaining}}}
+\\[8pt]
+&\qquad+
+\frac{\#\ \mathrm{correct}_{\mathrm{tool\_selection}}}{\#\ \mathrm{total}_{\mathrm{tool\_selection}}}
+\\[8pt]
+&\qquad+
+\frac{\#\ \mathrm{correct}_{\mathrm{multihop\_reasoning}}}{\#\ \mathrm{total}_{\mathrm{multihop\_reasoning}}}
+\\[8pt]
+&\qquad+
+\frac{
+\begin{aligned}
+\left(\#\ \mathrm{correct\ multi\text{-}source\ queries} \times 2\right) \\
++\left(\#\ \mathrm{correct\ API\ only\ or\ RAG\ only\ queries}\right)
+\end{aligned}
+}{
+\begin{aligned}
+\left(\#\ \mathrm{total\ multi\text{-}source\ queries} \times 2\right) \\
++\left(\#\ \mathrm{total\ API\ only\ or\ RAG\ only\ queries}\right)
+\end{aligned}
+}
+\Bigg)
+\end{aligned}
+\]
+              </div>
+            </figure>
           </div>
         </div>
       </section>
