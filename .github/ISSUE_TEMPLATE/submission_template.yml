@@ -1,7 +1,7 @@
-name: "Agent Submission"
-description: "Submit a new agent package (JSON files in ZIP format)"
-title: "[Agent Submission]: <agent-name>"
-labels: ["agent-submission"]
+name: "Agent Benchmark Submission"
+description: "Submit Benchmark Output files (JSON files in ZIP format)"
+title: "[Benchmark Output Submission]: <agent-name>"
+labels: ["benchmark-output-submission"]
 body:
   - type: input
     id: agent_name
@@ -21,34 +21,13 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: contact
-    attributes:
-      label: Maintainer Contact
-      description: Email or Slack/Discord handle
-      placeholder: e.g. john@company.com
-    validations:
-      required: true
 
   - type: input
-    id: model
+    id: models
     attributes:
-      label: Model Used
+      label: Model(s) Used
       description: Primary LLM(s) used by the agent
       placeholder: e.g. gpt-4.1 / llama-405b
-    validations:
-      required: true
-
-  - type: dropdown
-    id: agent_type
-    attributes:
-      label: Agent Type
-      options:
-        - Single-turn
-        - Multi-turn
-        - Multi-agent
-        - Tool-using
-        - Retrieval-Augmented (RAG)
     validations:
       required: true
 
@@ -69,9 +48,7 @@ body:
       description: Any additional structured metadata
       placeholder: |
         {
-          "framework": "LangGraph",
-          "tools": ["search", "calculator"],
-          "latency_ms": 1200
+          
         }
 
   - type: input
