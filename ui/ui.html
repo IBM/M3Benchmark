@@ -492,11 +492,11 @@
     table {
       border-collapse: collapse;
       width: 100%;
-      min-width: 840px;
+      min-width: 0;
     }
 
     th, td {
-      padding: 14px 16px;
+      padding: 14px 12px;
       border-bottom: 1px solid #ebf0f7;
       text-align: left;
       font-size: 14px;
@@ -508,6 +508,11 @@
       text-transform: uppercase;
       letter-spacing: 0.08em;
       background: #f8fbff;
+      line-height: 1.35;
+      white-space: normal;
+      word-break: keep-all;
+      overflow-wrap: anywhere;
+      text-align: center;
     }
 
     tbody tr:hover { background: #fafcff; }
@@ -516,13 +521,24 @@
     .sortable {
       cursor: pointer;
       user-select: none;
-      white-space: nowrap;
+      white-space: normal;
       transition: color 0.18s ease;
+    }
+    .leaderboard-table thead th.sortable {
+      text-align: center;
+    }
+    .leaderboard-table thead th.sortable .header-label {
+      display: block;
+      text-align: center;
     }
     .sortable:hover { color: var(--text); }
     .sort-indicator {
       font-size: 0.85em;
       opacity: 0.7;
+      margin-left: 0;
+      display: inline-block;
+    }
+    .sort-indicator:not(:empty) {
       margin-left: 6px;
     }
     .sortable.active .sort-indicator {
@@ -644,24 +660,40 @@
     }
 
     .leaderboard-table .col-rank {
-      width: 60px;
+      width: 54px;
     }
 
     .leaderboard-table .col-agent {
-      width: 150px;
+      width: 120px;
     }
 
     .leaderboard-table .col-model {
-      width: 150px;
+      width: 128px;
     }
 
     .leaderboard-table .col-metric {
-      width: calc((100% - 60px - 150px - 150px) / 6);
+      width: calc((100% - 54px - 120px - 128px) / 5);
+    }
+
+    .leaderboard-table thead th:nth-child(1),
+    .leaderboard-table thead th:nth-child(2),
+    .leaderboard-table thead th:nth-child(3) {
+      white-space: nowrap;
+      overflow-wrap: normal;
+      text-align: center;
+      vertical-align: middle;
+    }
+
+    .leaderboard-table tbody td:nth-child(1),
+    .leaderboard-table tbody td:nth-child(2),
+    .leaderboard-table tbody td:nth-child(3) {
+      text-align: center;
+      vertical-align: middle;
     }
 
     .model-cell {
-      min-width: 170px;
-      vertical-align: top;
+      min-width: 0;
+      vertical-align: middle;
     }
 
     .model-name {
@@ -677,7 +709,7 @@
     }
 
     .rank {
-      vertical-align: top;
+      vertical-align: middle;
       font-weight: 800;
       color: var(--blue);
     }
@@ -713,7 +745,7 @@
         </div>
         <div class="brand-copy">
           <div>VAKRA</div>
-          <small>eValuating Agentic Knowledge Reasoning Across multi-source dialogues</small>
+          <small>eValuating API and Knowledge Retrieval Agents using multi-hop, multi-source dialogues</small>
         </div>
       </a>
 
@@ -751,15 +783,14 @@
     <main class="content">
       <section class="hero" id="overview">
         <div class="hero-inner">
-          <div class="eyebrow">Public benchmark for enterprise AI agents</div>
+          <!-- <div class="eyebrow">Public benchmark for enterprise AI agents</div> -->
           <div class="hero-logo" aria-label="VAKRA logo">
             <div class="hero-logo-copy">
               <img class="hero-logo-image" src="/static/image.png" alt="VAKRA logo">
             </div>
           </div>
           <p>
-            Public benchmark for evaluating <strong>multi-hop, multi-source,
-            multi-tool AI agents</strong> in realistic enterprise workflows with executable APIs,
+            Evaluating AI agents with executable APIs,
             document retrieval, and policy-constrained interaction.
           </p>
           <div class="hero-actions">
@@ -824,20 +855,20 @@
                 <th>Agent</th>
                 <th>Model</th>
                 <th class="sortable" data-sort="overall">
-                  Overall <span class="sort-indicator"></span>
+                  <span class="header-label">Overall <span class="sort-indicator"></span></span>
                 </th>
                 <th class="sortable" data-sort="api_chaining">
-                  API chaining <span class="sort-indicator"></span>
+                  <span class="header-label">API chaining <span class="sort-indicator"></span></span>
                 </th>
                 <th class="sortable" data-sort="tool_selection">
-                  Tool selection <span class="sort-indicator"></span>
+                  <span class="header-label">Tool<br>selection<span class="sort-indicator"></span></span>
                 </th>
                 <th class="sortable" data-sort="multihop">
-                  Multihop <span class="sort-indicator"></span>
+                  <span class="header-label">Multihop Reasoning<span class="sort-indicator"></span></span>
                 </th>
                 <th class="sortable" data-sort="multiturn">
-                  Multiturn<br>Policy adherence
-                  <span class="sort-indicator"></span>
+                  <span class="header-label">MultiHop MultiSource<br>Policy adherence
+                  <span class="sort-indicator"></span></span>
                 </th>
               </tr>
             </thead>
@@ -1056,8 +1087,7 @@
             <div class="kicker">Evaluation</div>
             <h2 class="section-title">Same underlying data, different interface abstractions</h2>
             <p class="section-desc">
-              VAKRA supports multiple API interaction styles so evaluation can separate planning difficulty,
-              tool selection burden, and endpoint interpretation.
+                VAKRA verifies full execution traces by replaying tool calls against persistent backends.
             </p>
           </div>
         </div>
