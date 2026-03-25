@@ -473,6 +473,9 @@
 
     .leaderboard-badges { display: flex; gap: 10px; flex-wrap: wrap; }
     .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       padding: 8px 12px;
       border-radius: 999px;
       background: #eef4fb;
@@ -480,6 +483,36 @@
       color: var(--blue);
       font-size: 12px;
       font-weight: 800;
+      transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+    }
+
+    a.badge:hover {
+      background: #e3eefc;
+      border-color: #bad1ed;
+      color: var(--text);
+    }
+
+    .capability-figure {
+      margin: 0;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(244,249,255,0.92));
+      box-shadow: var(--shadow);
+    }
+
+    .capability-figure img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 18px;
+    }
+
+    .capability-figure figcaption {
+      margin-top: 12px;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
     }
 
     .table-wrap {
@@ -741,7 +774,7 @@
     <div class="topbar-inner">
       <a class="brand" href="#top">
         <div class="brand-mark">
-          <img src="/static/brand-mark.png" alt="VAKRA brand mark">
+          <img src="/static/brand-logo.png" alt="VAKRA brand mark">
         </div>
         <div class="brand-copy">
           <div>VAKRA</div>
@@ -767,11 +800,11 @@
       <nav class="toc">
         <a href="#overview">About</a>
         <a href="#leaderboard">Leaderboard</a>
-        <a href="#submission">Submission</a>
         <a href="#capabilities">Core capabilities</a>        
         <a href="#resources">Get started</a>
-        <a href="#why">Benchmark Description</a>
-        <a href="#api-styles">Evaluation</a>
+        <a href="#submission">Submission</a>        
+        <!-- <a href="#why">Benchmark Description</a> -->
+        <a href="#evaluation">Evaluation & Scoring</a>
         <a href="https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.md" target="_blank">Contact Us</a>        
         <!-- <a href="#reasoning">Reasoning tasks</a> -->
       </nav>
@@ -825,15 +858,15 @@
         <div class="section-header">
           <div>
             <div class="kicker">Leaderboard</div>
-            <h2 class="section-title">Agent Performance</h2>
-            <p class="section-desc">
-              Trace-level evaluation of agent performance across multi-hop, multi-source, and policy-constrained tasks.
-            </p>
+            <h2 class="section-title">Agent Evaluation Overview</h2>
+            <!-- <p class="section-desc">
+              We evaluate four increasingly difficult capabilities through trace-level evaluation of agent performance across multi-hop, multi-source, and policy-constrained tasks.
+            </p> -->
           </div>
           <div class="leaderboard-badges">
-            <div class="badge">Executable</div>
-            <div class="badge">Trace-level</div>
-            <div class="badge">Multi-source</div>
+            <a class="badge" href="#capabilities">Task Descriptions</a>
+            <a class="badge" href="#evaluation">Evaluation Metric</a>
+            <!-- <a class="badge" href="#capabilities">Multi-source</a> -->
           </div>
         </div>
 
@@ -884,33 +917,18 @@
         <div class="section-header">
           <div>
             <div class="kicker">Core benchmark capabilities</div>
-            <h2 class="section-title">Four increasingly difficult competencies</h2>
-            <p class="section-desc"> VAKRA is designed to test four increasingly difficult competencies that reflect enterprise reasoning behaviors.</p>
+            <h2 class="section-title">Four increasingly difficult capabilities</h2>
+            <p class="section-desc">We evaluates core agent capabilities—entity resolution, schema alignment, retrieval, tool selection, and policy adherence through the following tasks</p>
           </div>
         </div>
-        <div class="grid-4">
-          <div class="card">
-            <div class="icon-badge">01</div>
-            <h3>API Chaining</h3>
-            <p>Compose multi-step tool chains while carrying intermediate results across dependent calls.</p>
-          </div>
-          <div class="card">
-            <div class="icon-badge">02</div>
-            <h3>Tool Selection</h3>
-            <!-- <p>Agents choose the correct API from 100-200 candidates, based on natural-language instructions and API specifications.</p> -->
-            <p>Select the correct API from large candidate sets of 100-200 tools using natural-language tool descriptions and API specifications.</p>
-          </div>
-          <div class="card">
-            <div class="icon-badge">03</div>
-            <h3>Multihop</h3>
-            <p>Compose multi-hop API sequence through query decomposition.</p>
-          </div>
-          <div class="card">
-            <div class="icon-badge">04</div>
-            <h3>MultiTurn with Policy adherence</h3>
-            <p>Combine API outputs with document retrieval and reconcile differences in naming and format. Interpret natural-language constraints governing which tools or sources may be used.</p>
-          </div>
-        </div>
+        <figure class="capability-figure">
+          <img
+            src="/static/Core_benchmark_capabilities.png"
+            alt="VAKRA benchmark capabilities diagram showing API Chaining, Tool Selection, MultiHop Reasoning over structured APIs, and MultiHop MultiSource with Policy Adherence." />
+          <figcaption>
+            Capability overview spanning diverse API interaction styles and complex reasoning workflows.
+          </figcaption>
+        </figure>
       </section>
 
       <section class="section" id="submission">
@@ -1020,7 +1038,7 @@
         </div>
       </section>
 
-      <section class="section" id="why">
+      <!-- <section class="section" id="why">
         <div class="section-header">
           <div>
             <div class="kicker">Why VAKRA</div>
@@ -1079,9 +1097,9 @@
         </div>
         
         
-      </section>
+      </section> -->
 
-      <section class="section" id="api-styles">
+      <section class="section" id="evaluation">
         <div class="section-header">
           <div>
             <div class="kicker">Evaluation</div>
