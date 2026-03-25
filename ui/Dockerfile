@@ -7,7 +7,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends curl && rm -rf 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY brand-logo.png Core_benchmark_capabilities.png image.png brand-mark.png app.py data.py leaderboard_data.json ui.html ./
+COPY vakra-hero.svg brand-logo.png Core_benchmark_capabilities.png image.png app.py data.py leaderboard_data.json ui.html ./
 
 EXPOSE 7860
 HEALTHCHECK CMD curl --fail http://localhost:7860/ || exit 1

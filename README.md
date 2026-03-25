@@ -19,7 +19,7 @@ Rather than testing isolated skills, **VAKRA** measures compositional reasoning 
 
 <img width="2816" height="1536" alt="image" src="https://github.com/user-attachments/assets/d8ed707b-fbed-4157-a00d-092a9ff2a1ac" />
 
-<div style="display: flex; align-items: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
+<div style="display: flex; align-items: center; justify-content: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
   <div style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;">
     <a rel="noopener noreferrer" href="https://aiattribution.github.io/statements/AIA-EAI-Hin-R-?model=Gemini%203%20Flash-v1.0" data-cy="recommended-attribution-statement-text" target="_blank" style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;">VAKRA Overview (Image Attribution: AIA Entirely AI, Human-initiated, Reviewed, Gemini 3 Flash v1.0)</a>
   </div>
@@ -121,7 +121,7 @@ High-level test split statistics from the dataset card:
 | 1 | API Chaining | 54 | 2,077 |
 | 2 | Tool selection | 17 | 1,597 |
 | 3 | Multi-hop reasoning | 38 | 869 |
-| 4 | Multi-hop, multi-source reasoning with policies | 41 | 1,676 |
+| 4 | Multi-hop, multi-source reasoning with policies | 41 | 644 |
 
 ## Repository Layout
 
@@ -449,7 +449,7 @@ The diagram below shows the end-to-end flow — from setup through to leaderboar
 
 > **`MCP_DOMAIN`** must exactly match a domain name that exists under `data/test/capability_N_*/input/` (e.g. `hockey`, `card_games`, `airline`). The MCP server uses this value to scope its SQLite database and, for capability 4, its ChromaDB collection. Passing an unknown domain name will cause the server to fail silently or return empty results.
 
-<div style="display: flex; align-items: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
+<div style="display: flex; align-items: center; justify-content: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
   <div style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;">
     <a rel="noopener noreferrer" href="https://aiattribution.github.io/statements/AIA-EAI-Hin-R-?model=Gemini%203%20Flash-v1.0" data-cy="recommended-attribution-statement-text" target="_blank" style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;"> Benchmark Workflow (Image Attribution: AIA Entirely AI, Human-initiated, Reviewed, Gemini 3 Flash v1.0) </a>
   </div>
@@ -502,7 +502,7 @@ The diagram below shows the end-to-end flow — from setup through to leaderboar
 The benchmark runner communicates with containers exclusively over MCP stdio (via `docker exec`), never over a network socket. One Docker image (`benchmark_environ`) is built and run as four named containers — one per capability. Each container hosts long-lived FastAPI background services and an on-demand MCP server process started per benchmark call.
 <img width="2760" height="1504" alt="Gemini_Generated_Image_ygavx9ygavx9ygav" src="https://github.com/user-attachments/assets/f1bce426-4cbe-4940-a3a9-00027a582124" />
 
-<div style="display: flex; align-items: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
+<div style="display: flex; align-items: center; justify-content: center; white-space: nowrap; gap: 0.5rem; padding: 8px;">
   <div style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;">
     <a rel="noopener noreferrer" href="https://aiattribution.github.io/statements/AIA-EAI-Hin-R-?model=Gemini%203%20Flash-v1.0" data-cy="recommended-attribution-statement-text" target="_blank" style="font-family: IBM Plex Sans; font-weight: 400; font-size: 16px; line-height: 22px; letter-spacing: 0px;"> Architecture (Image Attribution: AIA Entirely AI, Human-initiated, Reviewed, Gemini 3 Flash v1.0) </a>
   

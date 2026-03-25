@@ -114,6 +114,7 @@
 
     .brand-copy {
       min-width: 0;
+      text-align: left;
     }
 
     .brand-copy div {
@@ -314,7 +315,7 @@
       color: rgba(255,255,255,0.88);
     }
 
-    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+    .hero-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: -22px; }
 
     .hero-inner {
       position: relative;
@@ -347,7 +348,7 @@
 
     .hero-logo-image {
       display: block;
-      width: min(520px, 68vw);
+      width: min(920px, 94vw);
       height: auto;
     }
 
@@ -931,17 +932,19 @@
           <!-- <div class="eyebrow">Public benchmark for enterprise AI agents</div> -->
           <div class="hero-logo" aria-label="VAKRA logo">
             <div class="hero-logo-copy">
-              <img class="hero-logo-image" src="/static/image.png" alt="VAKRA logo">
+              <img class="hero-logo-image" src="/static/vakra-hero.svg" alt="VAKRA logo">
             </div>
           </div>
-          <p>
+          <!-- <p>
             Evaluating AI agents with executable APIs,
             document retrieval, and policy-constrained interaction.
-          </p>
+          </p> -->
           <div class="hero-actions">
-            <a class="btn primary" href="https://huggingface.co/datasets/ibm-research/VAKRA" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">View dataset</a>
-            <a class="btn secondary" href="https://github.com/IBM/vakra" target="_blank">GitHub repo</a>
+            <a class="btn secondary" href="https://huggingface.co/datasets/ibm-research/VAKRA" target="_blank">View Dataset</a>
+            <!-- <a class="btn primary" href="https://huggingface.co/datasets/ibm-research/VAKRA" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">View dataset</a> -->
             <a class="btn secondary" href="https://www.ibm.com/new/announcements/introducing-vakra-benchmark">Blog</a>
+            <a class="btn primary" href="https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">Submit to Leaderboard</a>
+            <a class="btn secondary" href="https://github.com/IBM/vakra" target="_blank">GitHub repo</a>            
             <a class="btn secondary" href="#leaderboard">Leaderboard</a>          
           </div>
         </div>

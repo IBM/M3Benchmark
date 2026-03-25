@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="440" viewBox="0 0 1600 440" role="img" aria-labelledby="title desc">
+  <title id="title">VAKRA hero logo</title>
+  <desc id="desc">VAKRA logo with the subtitle eValuating API and Knowledge Retrieval Agents using multi-hop, multi-source dialogues.</desc>
+  <defs>
+    <linearGradient id="vakraGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#44c7ff"/>
+      <stop offset="55%" stop-color="#10c2c7"/>
+      <stop offset="100%" stop-color="#b9df55"/>
+    </linearGradient>
+    <filter id="softShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="10" stdDeviation="10" flood-color="#061a34" flood-opacity="0.26"/>
+    </filter>
+  </defs>
+
+  <image href="brand-mark.png" x="32" y="36" width="350" height="350" preserveAspectRatio="xMidYMid meet"/>
+
+  <g filter="url(#softShadow)">
+    <text x="800" y="195"
+      fill="url(#vakraGradient)"
+      font-family="Inter, Arial, sans-serif"
+      font-size="170"
+      font-weight="800"
+      letter-spacing="-6"
+      text-anchor="middle">VAKRA</text>
+  </g>
+
+  <g fill="#f4f7fb" font-family="Inter, Arial, sans-serif" text-anchor="middle">
+    <text x="800" y="265" font-size="35" font-weight="600">eValuating API and Knowledge Retrieval Agents</text>
+    <text x="800" y="312" font-size="35" font-weight="600">using multi-hop, multi-source dialogues</text>
+  </g>
+</svg>
