@@ -3,7 +3,7 @@
 
 Rather than testing isolated skills, **VAKRA** measures compositional reasoning across APIs and documents, using full execution traces to assess whether agents can reliably complete multi-step workflows, not just individual steps. **VAKRA** provides an executable environment where agents interact with over 8,000 locally hosted APIs backed by real databases spanning 62 domains, along with domain-aligned document collections.
 
-**Resources:** [Leaderboard](https://huggingface.co/spaces/ibm-research/vakra) · [Dataset](https://huggingface.co/datasets/ibm-research/VAKRA) · [Blog](https://www.ibm.com/new/announcements/introducing-vakra-benchmark)
+**Resources:** [Leaderboard](https://ibm-research-vakra.hf.space) · [Dataset](https://huggingface.co/datasets/ibm-research/VAKRA) · [Blog](https://www.ibm.com/new/announcements/introducing-vakra-benchmark)
 
 **Quick links:** [Requirements](#requirements) · [Quick Start](#quick-start) · [Exploring Available Tools](#exploring-available-tools) · [Running Your Agent](#running-your-own-agent) · [Submit to Leaderboard](#submitting-to-the-live-leaderboard)
 
@@ -385,7 +385,7 @@ Submission flow:
 
 Submission links:
 
-- Leaderboard: [https://huggingface.co/spaces/ibm-research/VAKRA](https://huggingface.co/spaces/ibm-research/VAKRA)
+- Leaderboard: [https://ibm-research-vakra.hf.space](https://ibm-research-vakra.hf.space)
 - Submission template: [https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml](https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml)
 - Repository: [https://github.com/IBM/vakra](https://github.com/IBM/vakra)
 
@@ -422,7 +422,7 @@ See [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) for full per-capability stack d
 ## Public Availability
 
 - Dataset: Hugging Face dataset release for VAKRA
-- Leaderboard: [https://huggingface.co/spaces/ibm-research/VAKRA](https://huggingface.co/spaces/ibm-research/VAKRA)
+- Leaderboard: [https://ibm-research-vakra.hf.space](https://ibm-research-vakra.hf.space)
 - Code and environment: this repository
 
 ## Reporting Issues
@@ -442,7 +442,7 @@ We especially acknowledge (in alphabetical order) Chulaka Gunasekara, Hamid Adeb
       title={VAKRA: A Benchmark for Evaluating Multi-Hop, Multi-Source Tool-Calling in AI Agents}, 
       author={Ankita Rajaram Naik*, Anupama Murthi*, Benjamin Elder*, Siyu Huo*, Praveen Venkateswaran, Danish Contractor},
       year={2026},
-      url={https://huggingface.co/spaces/ibm-research/VAKRA}, 
+      url={https://ibm-research-vakra.hf.space}, 
 }
 ```
 
