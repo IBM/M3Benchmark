@@ -69,7 +69,21 @@ High-level test split statistics from the dataset card:
 | 3 | Multi-hop reasoning | 38 | 869 |
 | 4 | Multi-turn, multi-source reasoning with policies | 41 | 1,676 |
 
+## Repository Layout
 
+enterprise-benchmark/
+├── agents/                  # Built-in agent components and wrappers
+├── benchmark/               # MCP client, configs, runner helpers
+├── docs/                    # Setup, architecture, runner, and debugging docs
+├── environment/             # API servers, retrievers, MCP tooling
+├── evaluator/               # Trajectory replay and scoring logic
+├── examples/                # Quick-start examples for tools and benchmark runs
+├── sample_data/             # Small example inputs/outputs
+├── tests/                   # Unit, integration, and e2e tests
+├── benchmark_runner.py      # Main benchmark entry point
+├── benchmark_setup.py       # Setup utility / CLI entry point
+├── setup.md                 # End-to-end setup guide
+└── docker-compose.yml       # Container orchestration for local benchmark services
 
 ## Requirements
 
