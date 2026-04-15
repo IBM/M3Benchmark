@@ -1016,8 +1016,8 @@
           <summary>Blog</summary>
           <div class="top-dropdown-menu">
             <a href="https://www.ibm.com/new/announcements/introducing-vakra-benchmark" target="_blank">Release</a>
-            <a href="https://huggingface.co/blog/ibm-research/vakra/" target="_blank">Dataset Description</a>            
-            <a href="https://huggingface.co/blog/ibm-research/vakra#evaluation-framework" target="_blank">Evaluation & Error Analysis</a>
+            <a href="https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis" target="_blank">Dataset Description</a>            
+            <a href="https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis#evaluation-framework" target="_blank">Evaluation & Error Analysis</a>
           </div>
         </details>
       </nav>
@@ -1048,7 +1048,7 @@
         <div class="sidebar-news-panel">
           <div class="sidebar-news-item">
             <span class="sidebar-news-date">Apr 16, 2026</span>
-            We released a detailed <a href="https://huggingface.co/blog/ibm-research/vakra/" target="_blank">Hugging Face blog </a> covering the dataset design, evaluation description, and stage-wise error analysis of model behavior on VAKRA.
+            We released a detailed <a href="https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis/" target="_blank">Hugging Face blog </a> covering the dataset design, evaluation description, and stage-wise error analysis of model behavior on VAKRA.
           </div>
           <div class="sidebar-news-item">
             <span class="sidebar-news-date">Mar 24, 2026</span>
@@ -1082,7 +1082,7 @@
           <div class="hero-actions">
             <a class="btn secondary" href="https://huggingface.co/datasets/ibm-research/VAKRA" target="_blank">View Dataset</a>
             <!-- <a class="btn primary" href="https://huggingface.co/datasets/ibm-research/VAKRA" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">View dataset</a> -->
-            <a class="btn secondary" href="https://huggingface.co/blog/ibm-research/vakra/">Blog</a>
+            <a class="btn secondary" href="https://huggingface.co/blog/ibm-research/vakra-benchmark-analysis/">Blog</a>
             <a class="btn primary" href="https://github.com/IBM/vakra/issues/new?template=leaderboard_submission.yml" onclick="event.preventDefault();var opened=window.open(this.href,'_blank','noopener,noreferrer');if(!opened){navigator.clipboard&&navigator.clipboard.writeText(this.href);alert('Could not open tab. URL copied to clipboard:\n'+this.href);}">Submit to Leaderboard</a>
             <a class="btn secondary" href="https://github.com/IBM/vakra" target="_blank">GitHub repo</a>            
             <a class="btn secondary" href="#leaderboard">Leaderboard</a>          
@@ -1118,11 +1118,11 @@
               We evaluate four increasingly difficult capabilities through trace-level evaluation of agent performance across multi-hop, multi-source, and policy-constrained tasks.
             </p> -->
           </div>
-          <div class="leaderboard-badges">
+          <!-- <div class="leaderboard-badges">
             <a class="badge" href="#capabilities">Task Descriptions</a>
             <a class="badge" href="#evaluation">Evaluation Metric</a>
-            <!-- <a class="badge" href="#capabilities">Multi-source</a> -->
-          </div>
+            <a class="badge" href="#capabilities">Multi-source</a>
+          </div> -->
         </div>
 
         <div class="table-wrap">
@@ -1203,7 +1203,7 @@
         </div>
         <figure class="capability-figure">
           <img
-            src="/static/core_benchmark_capabilities.png"
+            src="/static/vakra_capabilities_diagram.png"
             alt="VAKRA benchmark capabilities diagram showing API Chaining, Tool Selection, MultiHop Reasoning over structured APIs, and MultiHop MultiSource with Policy Adherence." />
           <figcaption>
             Capability overview spanning diverse API interaction styles and complex reasoning workflows.
