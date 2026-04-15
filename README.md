@@ -62,7 +62,7 @@ We have multi-turn dialogues represented as context-response-pairs wherein queri
 
 This represents the most challenging setting, mirroring decision workflows. Please find below example of all the four capabilities mentioned above.
 
-<img width="2816" height="1536" alt="Core benchmark capabilities" src="ui/Core_benchmark_capabilities.png" />
+<img width="2816" height="1536" alt="Core benchmark capabilities" src="ui/core_benchmark_capabilities.png" />
 
 ## Dataset Overview
 
