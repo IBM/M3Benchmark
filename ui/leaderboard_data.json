@@ -5,10 +5,10 @@
     "agent_url": "https://github.com/IBM/vakra",
     "date": "Mar 24, 2026",
     "scores": {
-      "api_chaining": 45.7,
+      "api_chaining": 40.2,
       "tool_selection": 50.46,
       "multihop": 29.40,
-      "multiturn": 14.35
+      "multiturn": 16.68
     }
   },
   {
@@ -17,10 +17,10 @@
     "agent_url": "https://github.com/IBM/vakra",
     "date": "Mar 19, 2026",
     "scores": {
-      "api_chaining": 36.03,
+      "api_chaining": 34.56,
       "tool_selection": 54.35,
       "multihop": 27.59,
-      "multiturn": 12.13
+      "multiturn": 13.18
     }
   },
   {
@@ -29,10 +29,10 @@
     "agent_url": "https://github.com/IBM/vakra",
     "date": "Mar 19, 2026",
     "scores": {
-      "api_chaining": 41.9,
+      "api_chaining": 34.0,
       "tool_selection": 49.5,
       "multihop": 30.08,
-      "multiturn": 15.98
+      "multiturn": 17.61
     }
   },
   {
@@ -41,22 +41,22 @@
     "agent_url": "https://github.com/IBM/vakra",
     "date": "Mar 19, 2026",
     "scores": {
-      "api_chaining": 42.7,
+      "api_chaining": 35.1,
       "tool_selection": 60.3,
       "multihop": 38.43,
-      "multiturn": 15.98
+      "multiturn": 18.43
     }
   },
   {
-    "model": "Granite-4.0-h-small",
+    "model": "Granite-4.0-h-small-32B",
     "agent": "ReAct (Prompt)",
     "agent_url": "https://github.com/IBM/vakra",
     "date": "Mar 19, 2026",
     "scores": {
-      "api_chaining": 31.0,
+      "api_chaining": 23.3,
       "tool_selection": 50.0,
       "multihop": 25.80,
-      "multiturn": 11.76
+      "multiturn": 15.05
     }
   }
 ]
