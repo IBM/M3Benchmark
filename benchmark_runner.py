@@ -316,7 +316,7 @@ async def run_benchmark_for_domain(
                 except Exception as e:
                     import traceback
                     result.status = "error"
-                    result.error = str(e)
+                    result.error = f"{type(e).__name__} "+str(e)
                     tlog(f"    Status: error | {type(e).__name__}: {str(e)[:200]}")
                     tlog(f"    Traceback: {traceback.format_exc()}")
 
