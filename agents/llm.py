@@ -24,7 +24,7 @@ class RITSChatModel(BaseChatModel):
     # Mapping from endpoint name (short) to payload model name (full)
     MODEL_NAME_MAPPING: Dict[str, str] = {
         # Open Source Models
-        "qwen3-5-397b-a17b-fp8": "qwen/qwen3.5-397B-A17B-FP8", 
+        "qwen3-5-397b-a17b-fp8": "Qwen/Qwen3.5-397B-A17B-FP8", 
         "mistral-large-3-675b-2512-fp4": "mistralai/Mistral-Large-3-675B-Instruct-2512-NVFP4",
         "glm-5-1": "",
         "moonshotai-kimi-k2-5":"moonshotai/Kimi-K2.5",
@@ -32,7 +32,6 @@ class RITSChatModel(BaseChatModel):
         # smaller models
         "llama-3-3-70b-instruct": "meta-llama/llama-3-3-70b-instruct",
         "qwen2-5-72b-instruct": "Qwen/Qwen2.5-72B-Instruct",
-
     }
 
     model_name: str
