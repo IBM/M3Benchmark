@@ -135,7 +135,7 @@ class RITSChatModel(BaseChatModel):
                 url,
                 headers=headers,
                 json=payload,
-                timeout=60.0
+                timeout=float(os.environ.get("RITS_REQUEST_TIMEOUT_SECONDS", "60"))
             )
             resp.raise_for_status()
             data = resp.json()

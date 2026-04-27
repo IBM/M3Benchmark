@@ -145,7 +145,7 @@ DEFAULT_MCP_CONFIG = str(
     Path(__file__).parent / "benchmark" / "mcp_connection_config.yaml"
 )
 # Timeout for agent execution (seconds)
-AGENT_TIMEOUT_SECONDS = 300
+AGENT_TIMEOUT_SECONDS = float(os.environ.get("AGENT_TIMEOUT_SECONDS", "300"))
 
 
 async def run_benchmark_for_domain(
