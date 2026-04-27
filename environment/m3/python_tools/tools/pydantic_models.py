@@ -3,6 +3,8 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union, Mapping, Literal
 from pydantic import BaseModel, ConfigDict, Field, RootModel, model_validator
 
+from environment.m3.python_tools.tools.dtype_utils import DTYPE_METADATA_KEY
+
 
 # retrieve_data
 class RetrieveDataInput(BaseModel):
@@ -565,6 +567,15 @@ class GetterInput(BaseModel):
         ...,
         description="Table data containing key_name to retrieve. Each key_name has an associated list of values."
     )
+
+    @model_validator(mode='before')
+    @classmethod
+    def strip_dtype_metadata(cls, values: Any) -> Any:
+        if isinstance(values, dict) and 'data' in values:
+            data = values['data']
+            if isinstance(data, dict) and DTYPE_METADATA_KEY in data:
+                values = {**values, 'data': {k: v for k, v in data.items() if k != DTYPE_METADATA_KEY}}
+        return values
 
 
 
