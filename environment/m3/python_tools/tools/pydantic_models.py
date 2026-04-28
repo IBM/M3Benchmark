@@ -3,9 +3,26 @@ from enum import Enum
 from typing import Any, Dict, List, Optional, Union, Mapping, Literal
 from pydantic import BaseModel, ConfigDict, Field, RootModel, model_validator
 
+from environment.m3.python_tools.tools.dtype_utils import DTYPE_METADATA_KEY
+
+
+class StripDtypeMetadataMixin(BaseModel):
+    """Strips _dtypes sidecar metadata from dict data fields before validation."""
+
+    @model_validator(mode='before')
+    @classmethod
+    def strip_dtype_metadata(cls, values: Any) -> Any:
+        if isinstance(values, dict):
+            cleaned = dict(values)
+            for key in ('data', 'data_1', 'data_2', 'truncate_array'):
+                if key in cleaned and isinstance(cleaned[key], dict) and DTYPE_METADATA_KEY in cleaned[key]:
+                    cleaned[key] = {k: v for k, v in cleaned[key].items() if k != DTYPE_METADATA_KEY}
+            return cleaned
+        return values
+
 
 # retrieve_data
-class RetrieveDataInput(BaseModel):
+class RetrieveDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="RetrieveDataInput",
         extra="forbid",
@@ -58,7 +75,7 @@ class FilterCondition(str, Enum):
     CONTAINS = "contains"
     LIKE = "like"
 
-class FilterDataInput(BaseModel):
+class FilterDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="FilterDataInput",
         extra="forbid",
@@ -112,7 +129,7 @@ class TransformOperation(str, Enum):
     ABS = "abs"
     DATETIME = "datetime"
 
-class TransformDataInput(BaseModel):
+class TransformDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="TransformDataInput",
         extra="forbid",
@@ -150,7 +167,7 @@ class TransformDataResult(BaseModel):
 
 
 # sort_data
-class SortDataInput(BaseModel):
+class SortDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="SortDataInput",
         extra="forbid",
@@ -214,7 +231,7 @@ class AggregationOperation(str, Enum):
     ARGMIN = "argmin"
     ARGMAX = "argmax"
 
-class AggregateDataInput(BaseModel):
+class AggregateDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="AggregateDataInput",
         extra="forbid",
@@ -240,22 +257,10 @@ class AggregateDataResult(RootModel[float | int]):
         },
     )
 
-class StdInput(BaseModel):
-    model_config = ConfigDict(
-        title="StdInput",
-        extra="forbid",
-        json_schema_extra={
-            "description": "Get the standard deviation of the values in a single key of the data object. ",
-        },
-    )
-    # Fields
-    data: Mapping[str, Union[List[Any], Dict[str, str]]] = Field(..., description="Data object to be aggregated. ")
-    key_name: str = Field("", description="The key on which the aggregation will be applied.")
-
 
 # concatenate_data
 
-class ConcatenateDataInput(BaseModel):
+class ConcatenateDataInput(StripDtypeMetadataMixin):
     model_config = ConfigDict(
         title="ConcatenateDataInput",
         extra="forbid",
@@ -317,7 +322,7 @@ class SelectDataEqualToInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'equal_to'.
     """
-    condition: Literal[FilterCondition.EQUAL_TO] = Field(
+    condition: Literal[FilterCondition.EQUAL_TO] = Field(  # type: ignore[override]
         default=FilterCondition.EQUAL_TO,
         description="Condition is pre-set to 'equal_to' for this specialized function.",
     )
@@ -328,7 +333,7 @@ class SelectDataNotEqualToInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'not_equal_to'.
     """
-    condition: Literal[FilterCondition.NOT_EQUAL_TO] = Field(
+    condition: Literal[FilterCondition.NOT_EQUAL_TO] = Field(  # type: ignore[override]
         default=FilterCondition.NOT_EQUAL_TO,
         description="Condition is pre-set to 'not_equal_to' for this specialized function.",
     )
@@ -339,7 +344,7 @@ class SelectDataGreaterThanInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'greater_than'.
     """
-    condition: Literal[FilterCondition.GREATER_THAN] = Field(
+    condition: Literal[FilterCondition.GREATER_THAN] = Field(  # type: ignore[override]
         default=FilterCondition.GREATER_THAN,
         description="Condition is pre-set to 'greater_than' for this specialized function.",
     )
@@ -350,7 +355,7 @@ class SelectDataLessThanInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'less_than'.
     """
-    condition: Literal[FilterCondition.LESS_THAN] = Field(
+    condition: Literal[FilterCondition.LESS_THAN] = Field(  # type: ignore[override]
         default=FilterCondition.LESS_THAN,
         description="Condition is pre-set to 'less_than' for this specialized function.",
     )
@@ -361,7 +366,7 @@ class SelectDataGreaterThanEqualToInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'greater_than_equal_to'.
     """
-    condition: Literal[FilterCondition.GREATER_THAN_EQUAL_TO] = Field(
+    condition: Literal[FilterCondition.GREATER_THAN_EQUAL_TO] = Field(  # type: ignore[override]
         default=FilterCondition.GREATER_THAN_EQUAL_TO,
         description="Condition is pre-set to 'greater_than_equal_to' for this specialized function.",
     )
@@ -372,7 +377,7 @@ class SelectDataLessThanEqualToInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'less_than_equal_to'.
     """
-    condition: Literal[FilterCondition.LESS_THAN_EQUAL_TO] = Field(
+    condition: Literal[FilterCondition.LESS_THAN_EQUAL_TO] = Field(  # type: ignore[override]
         default=FilterCondition.LESS_THAN_EQUAL_TO,
         description="Condition is pre-set to 'less_than_equal_to' for this specialized function.",
     )
@@ -383,7 +388,7 @@ class SelectDataContainsInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'contains'.
     """
-    condition: Literal[FilterCondition.CONTAINS] = Field(
+    condition: Literal[FilterCondition.CONTAINS] = Field(  # type: ignore[override]
         default=FilterCondition.CONTAINS,
         description="Condition is pre-set to 'contains' for this specialized function.",
     )
@@ -394,7 +399,7 @@ class SelectDataLikeInput(FilterDataInput):
 
     Equivalent to FilterDataInput with condition pre-set to 'like'.
     """
-    condition: Literal[FilterCondition.LIKE] = Field(
+    condition: Literal[FilterCondition.LIKE] = Field(  # type: ignore[override]
         default=FilterCondition.LIKE,
         description="Condition is pre-set to 'like' for this specialized function.",
     )
@@ -407,7 +412,7 @@ class SortDataAscendingInput(SortDataInput):
 
     Equivalent to SortDataInput with ascending pre-set to True.
     """
-    ascending: Literal[True] = Field(
+    ascending: Literal[True] = Field(  # type: ignore[override]
         default=True,
         description="Sort order is pre-set to ascending for this specialized function.",
     )
@@ -418,7 +423,7 @@ class SortDataDescendingInput(SortDataInput):
 
     Equivalent to SortDataInput with ascending pre-set to False.
     """
-    ascending: Literal[False] = Field(
+    ascending: Literal[False] = Field(  # type: ignore[override]
         default=False,
         description="Sort order is pre-set to descending for this specialized function.",
     )
@@ -431,11 +436,11 @@ class ComputeDataMinInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='min' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.MIN] = Field(
+    aggregation_operation: Literal[AggregationOperation.MIN] = Field(  # type: ignore[override]
         default=AggregationOperation.MIN,
         description="Aggregation operation is pre-set to 'min' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -446,11 +451,11 @@ class ComputeDataMaxInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='max' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.MAX] = Field(
+    aggregation_operation: Literal[AggregationOperation.MAX] = Field(  # type: ignore[override]
         default=AggregationOperation.MAX,
         description="Aggregation operation is pre-set to 'max' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -461,11 +466,11 @@ class ComputeDataSumInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='sum' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.SUM] = Field(
+    aggregation_operation: Literal[AggregationOperation.SUM] = Field(  # type: ignore[override]
         default=AggregationOperation.SUM,
         description="Aggregation operation is pre-set to 'sum' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -476,11 +481,11 @@ class ComputeDataMeanInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='mean' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.MEAN] = Field(
+    aggregation_operation: Literal[AggregationOperation.MEAN] = Field(  # type: ignore[override]
         default=AggregationOperation.MEAN,
         description="Aggregation operation is pre-set to 'mean' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -491,11 +496,11 @@ class ComputeDataCountInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='count' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.COUNT] = Field(
+    aggregation_operation: Literal[AggregationOperation.COUNT] = Field(  # type: ignore[override]
         default=AggregationOperation.COUNT,
         description="Aggregation operation is pre-set to 'count' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -506,11 +511,11 @@ class ComputeDataStdInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='std' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.STD] = Field(
+    aggregation_operation: Literal[AggregationOperation.STD] = Field(  # type: ignore[override]
         default=AggregationOperation.STD,
         description="Aggregation operation is pre-set to 'std' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -521,11 +526,11 @@ class ComputeDataArgminInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='argmin' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.ARGMIN] = Field(
+    aggregation_operation: Literal[AggregationOperation.ARGMIN] = Field(  # type: ignore[override]
         default=AggregationOperation.ARGMIN,
         description="Aggregation operation is pre-set to 'argmin' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
@@ -536,18 +541,18 @@ class ComputeDataArgmaxInput(AggregateDataInput):
 
     Equivalent to AggregateDataInput with aggregation_operation='argmax' and limit=-1.
     """
-    aggregation_operation: Literal[AggregationOperation.ARGMAX] = Field(
+    aggregation_operation: Literal[AggregationOperation.ARGMAX] = Field(  # type: ignore[override]
         default=AggregationOperation.ARGMAX,
         description="Aggregation operation is pre-set to 'argmax' for this specialized function.",
     )
-    limit: Literal[-1] = Field(
+    limit: Literal[-1] = Field(  # type: ignore[override]
         default=-1,
         description="Limit is pre-set to -1 (no limit) for this specialized function.",
     )
 
 
 # Generic Getter Models
-class GetterInput(BaseModel):
+class GetterInput(StripDtypeMetadataMixin):
     """Generic input model for dynamically created getter functions.
 
     Getter functions retrieve a specific column from the input table data.
@@ -565,7 +570,6 @@ class GetterInput(BaseModel):
         ...,
         description="Table data containing key_name to retrieve. Each key_name has an associated list of values."
     )
-
 
 
 class GetterResult(RootModel[List[Any]]):
@@ -587,7 +591,7 @@ class GetterResult(RootModel[List[Any]]):
 # ============================================================================
 
 # truncate
-class TruncateInput(BaseModel):
+class TruncateInput(StripDtypeMetadataMixin):
     """Input for truncate function.
 
     Returns the first n elements of a list-like object.
@@ -611,7 +615,6 @@ class TruncateInput(BaseModel):
     )
 
 
-
 class TruncateResult(BaseModel):
     """Output for truncate function.
 
@@ -628,9 +631,8 @@ class TruncateResult(BaseModel):
     data: Union[Mapping[str, List[Any]], List[Any]] = Field(..., description="Truncated data (table or list)")
 
 
-
 # transform_data_to_substring
-class TransformDataToSubstringInput(BaseModel):
+class TransformDataToSubstringInput(StripDtypeMetadataMixin):
     """Input for transform_data_to_substring function.
 
     Transform list of string values by taking substrings.
@@ -661,7 +663,6 @@ class TransformDataToSubstringInput(BaseModel):
     )
 
 
-
 class TransformDataToSubstringResult(BaseModel):
     """Output for transform_data_to_substring function.
 
@@ -678,9 +679,8 @@ class TransformDataToSubstringResult(BaseModel):
     data: Mapping[str, Union[List[Any], Dict[str, str]]] = Field(..., description="Table with transformed substring values")
 
 
-
 # transform_data_to_absolute_value
-class TransformDataToAbsoluteValueInput(BaseModel):
+class TransformDataToAbsoluteValueInput(StripDtypeMetadataMixin):
     """Input for transform_data_to_absolute_value function.
 
     Transform numeric values into their absolute value.
@@ -703,7 +703,6 @@ class TransformDataToAbsoluteValueInput(BaseModel):
     )
 
 
-
 class TransformDataToAbsoluteValueResult(BaseModel):
     """Output for transform_data_to_absolute_value function.
 
@@ -720,9 +719,8 @@ class TransformDataToAbsoluteValueResult(BaseModel):
     data: Mapping[str, Union[List[Any], Dict[str, str]]] = Field(..., description="Table with transformed absolute values")
 
 
-
 # transform_data_to_datetime_part
-class TransformDataToDatetimePartInput(BaseModel):
+class TransformDataToDatetimePartInput(StripDtypeMetadataMixin):
     """Input for transform_data_to_datetime_part function.
 
     Transform list of datetime strings into specified subpart.
@@ -749,7 +747,6 @@ class TransformDataToDatetimePartInput(BaseModel):
     )
 
 
-
 class TransformDataToDatetimePartResult(BaseModel):
     """Output for transform_data_to_datetime_part function.
 
@@ -764,7 +761,6 @@ class TransformDataToDatetimePartResult(BaseModel):
     )
 
     data: Mapping[str, Union[List[Any], Dict[str, str]]] = Field(..., description="Table with transformed datetime parts")
-
 
 
 # ============================================================================
