@@ -39,6 +39,7 @@ rag = [
 
 # LLM agent functionality
 agents = [
+    "deepagents",
     "langchain>=0.1.0",
     "langchain-openai>=0.0.5",
     "langgraph>=1.0.9",

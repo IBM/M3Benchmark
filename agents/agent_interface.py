@@ -30,7 +30,7 @@ import logging
 import re
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from typing import List, Union
+from typing import Any, List, Union
 
 from langchain_core.language_models.chat_models import BaseChatModel
 from langchain_core.messages import AIMessage, HumanMessage, SystemMessage, ToolMessage
@@ -43,6 +43,113 @@ from agents.llm import create_llm
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+
+def _stringify_message_content(content: Any) -> str:
+    """Normalize message content into plain text for benchmark logging."""
+    if content is None:
+        return ""
+    if isinstance(content, str):
+        return content
+    if isinstance(content, list):
+        chunks: list[str] = []
+        for item in content:
+            if isinstance(item, str):
+                chunks.append(item)
+            elif isinstance(item, dict):
+                if item.get("type") == "text" and "text" in item:
+                    chunks.append(str(item["text"]))
+                elif "content" in item:
+                    chunks.append(str(item["content"]))
+                else:
+                    chunks.append(json.dumps(item))
+            else:
+                chunks.append(str(item))
+        return "\n".join(chunk for chunk in chunks if chunk)
+    return str(content)
+
+
+def _extract_agent_response(
+    result: dict[str, Any],
+    all_tool_names: List[str],
+    active_tool_names: List[str],
+) -> "AgentResponse":
+    """Convert LangGraph/deep agent output state into an AgentResponse."""
+    response_messages: List[Message] = []
+    tool_calls: List[dict] = []
+    final_content = ""
+    trajectory: List[dict] = []
+    tool_call_args: dict[str, dict[str, Any]] = {}
+
+    if result and "messages" in result:
+        for msg in result["messages"]:
+            msg_class = msg.__class__.__name__
+            msg_content = _stringify_message_content(getattr(msg, "content", ""))
+
+            trajectory_entry = {
+                "type": msg_class,
+                "content": msg_content,
+            }
+
+            if msg_class == "HumanMessage":
+                response_messages.append(Message(role="user", content=msg_content))
+                trajectory.append(trajectory_entry)
+
+            elif msg_class == "AIMessage":
+                if msg_content:
+                    final_content = msg_content
+                reasoning = msg.additional_kwargs.get("reasoning")
+                response_messages.append(
+                    Message(role="assistant", content=msg_content or reasoning or "")
+                )
+
+                if hasattr(msg, "tool_calls") and msg.tool_calls:
+                    if reasoning:
+                        trajectory_entry["reasoning"] = reasoning
+                    trajectory_entry["tool_calls"] = []
+                    for tc in msg.tool_calls:
+                        tc_id = tc.get("id", "") or tc.get("tool_call_id", "")
+                        tool_call_args[tc_id] = {
+                            "name": tc.get("name", "unknown"),
+                            "args": tc.get("args", {}),
+                        }
+                        trajectory_entry["tool_calls"].append(
+                            {
+                                "id": tc_id,
+                                "name": tc.get("name", "unknown"),
+                                "args": tc.get("args", {}),
+                            }
+                        )
+                trajectory.append(trajectory_entry)
+
+            elif msg_class == "ToolMessage":
+                tool_call_id = getattr(msg, "tool_call_id", "")
+                tool_info = tool_call_args.get(tool_call_id, {})
+                tool_name = getattr(msg, "name", None) or tool_info.get("name", "unknown")
+                tool_calls.append(
+                    {
+                        "tool_name": tool_name,
+                        "arguments": tool_info.get("args", {}),
+                        "result": msg_content,
+                    }
+                )
+                trajectory_entry["tool_name"] = tool_name
+                trajectory_entry["tool_call_id"] = tool_call_id
+                trajectory_entry["result"] = msg_content
+                trajectory.append(trajectory_entry)
+
+            elif msg_class == "SystemMessage":
+                trajectory.append(trajectory_entry)
+
+    return AgentResponse(
+        content=final_content,
+        tool_calls=tool_calls,
+        messages=response_messages,
+        metadata={},
+        trajectory=trajectory,
+        all_tools=all_tool_names,
+        shortlisted_tools=active_tool_names,
+    )
 
 
 @dataclass
@@ -189,6 +296,14 @@ INITIAL DATA:
 - The initial dataset for this task is available as handle: "{self._initial_data_handle}"{initial_data_info}
 - Start by using this handle in your first tool call
         """
+
+    def _build_base_system_prompt(self) -> str:
+        """Build the default system prompt used outside handle-based tasks."""
+        return (
+            "You are a helpful assistant with access to tools. "
+            "Reason step by step, use tools only when they help, and stop calling "
+            "tools once you have enough information to answer accurately."
+        )
 
     def _messages_to_langchain(self, messages: List[Message]) -> list:
         """Convert Message objects to LangChain message objects."""
@@ -414,10 +529,127 @@ INITIAL DATA:
         self._initial_data_peek = None
 
 
+class DeepAgentHarness(LangGraphReActAgent):
+    """Deep Agents harness with a customized general-purpose subagent."""
+
+    def _build_agent(self, tools):
+        """Build a Deep Agents harness for the given tools."""
+        try:
+            from deepagents import create_deep_agent
+        except ImportError as exc:
+            raise ImportError(
+                "deepagents is required for the deep agent path. "
+                "Install it with: pip install deepagents"
+            ) from exc
+
+        tool_names = [t.name for t in tools]
+        logger.debug(
+            "_build_agent: building DeepAgentHarness with %d tools: %s",
+            len(tools),
+            tool_names,
+        )
+        system_prompt = (
+            self._build_system_message()
+            if self._initial_data_handle is not None
+            else self._build_base_system_prompt()
+        )
+        general_purpose_subagent = {
+            "name": "general-purpose",
+            "description": (
+                "General-purpose deep subagent for multi-step tool use and "
+                "context-isolated benchmark reasoning."
+            ),
+            "system_prompt": system_prompt,
+            "tools": tools,
+            "model": self._llm,
+        }
+        return create_deep_agent(
+            model=self._llm,
+            tools=tools,
+            system_prompt=system_prompt,
+            subagents=[general_purpose_subagent],
+        )
+
+    async def run(
+        self,
+        input: Union[str, List[Message]],
+        additional_instructions: str = None,
+    ) -> AgentResponse:
+        """Run the Deep Agents harness with benchmark-compatible logging."""
+        query_preview = input if isinstance(input, str) else next(
+            (m.content for m in reversed(input) if m.role == "user"),
+            "",
+        )
+        logger.debug(
+            "run: starting DeepAgentHarness run, query_preview=%.200s",
+            query_preview,
+        )
+
+        if self._shortlister:
+            if isinstance(input, str):
+                query = input
+            else:
+                query = next(
+                    (m.content for m in reversed(input) if m.role == "user"),
+                    "",
+                )
+            active_tools = self._shortlister.shortlist(query, self._tools)
+            logger.debug(
+                "run: deep agent shortlisted to %d tools: %s",
+                len(active_tools),
+                [t.name for t in active_tools],
+            )
+        else:
+            active_tools = self._tools
+            logger.debug(
+                "run: deep agent using all %d tools (shortlisting disabled)",
+                len(active_tools),
+            )
+
+        all_tool_names = [t.name for t in self._tools]
+        active_tool_names = [t.name for t in active_tools]
+
+        lc_messages = []
+        if isinstance(input, str):
+            lc_messages.append(HumanMessage(content=input))
+        else:
+            if additional_instructions and additional_instructions.strip():
+                lc_messages.append(
+                    self._build_policy_guidance(
+                        additional_instructions=additional_instructions
+                    )
+                )
+            lc_messages.extend(self._messages_to_langchain(input))
+
+        if self._initial_data_handle is not None:
+            has_system = any(
+                m.__class__.__name__ == "SystemMessage" for m in lc_messages
+            )
+            if not has_system:
+                logger.debug("run: injecting handle-system system message")
+                lc_messages = [
+                    SystemMessage(content=self._build_system_message())
+                ] + lc_messages
+
+        agent = self._build_agent(active_tools)
+        result = await agent.ainvoke({"messages": lc_messages})
+        extracted: AgentResponse = _extract_agent_response(
+            result,
+            all_tool_names,
+            active_tool_names,
+        )
+        logger.debug(
+            "run: DeepAgentHarness returning AgentResponse with %d tool calls",
+            len(extracted.tool_calls),
+        )
+        return extracted
+
+
 def create_agent(
     provider: str = "anthropic",
     model: str | None = None,
     tools: List[StructuredTool] | None = None,
+    agent_type: str = "react",
     **kwargs,
 ) -> AgentInterface:
     """
@@ -442,4 +674,6 @@ def create_agent(
 
     resolved_model = model or default_models.get(provider, "")
     llm = create_llm(provider=provider, model=resolved_model, **kwargs)
+    if agent_type == "deep":
+        return DeepAgentHarness(llm=llm, tools=tools)
     return LangGraphReActAgent(llm=llm, tools=tools)

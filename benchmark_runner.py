@@ -50,6 +50,10 @@ Usage:
 Output:
   Results saved to: output/capability_{id}_{timestamp}/<domain>.json
   e.g. output/capability_2_feb_18_11_21am/hockey.json
+
+Agent backends:
+  --agent-type react  -> existing LangGraph ReAct agent
+  --agent-type deep   -> LangChain Deep Agents harness with subagent delegation
 """
 import asyncio
 from contextlib import AsyncExitStack
@@ -111,6 +115,7 @@ logging.getLogger("ibm_watsonx_ai").setLevel(logging.WARNING)
 
 from agents.agent_interface import (
     AgentInterface,
+    DeepAgentHarness,
     LangGraphReActAgent,
 )
 from agents.llm import create_llm
@@ -157,6 +162,7 @@ async def run_benchmark_for_domain(
     max_samples: Optional[int] = None,
     top_k_tools: int = 0,
     max_iterations: Optional[int] = None,
+    agent_type: str = "react",
     tlog: CapabilityLogger = None,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a single domain - starts MCP server once."""
@@ -192,7 +198,14 @@ async def run_benchmark_for_domain(
             tools = await wrapper.get_tools()
             tlog(f"  Loaded {len(tools)} tools for domain '{domain}'")
 
-            agent = _get_agent(capability_id, llm, tools, top_k_tools, max_iterations)
+            agent = _get_agent(
+                capability_id,
+                llm,
+                tools,
+                top_k_tools,
+                max_iterations,
+                agent_type,
+            )
 
             get_data_tool = next(
                 (t for t in tools if t.name == "get_data"), None
@@ -336,13 +349,22 @@ async def run_benchmark_for_domain(
     return results
 
 
-def _get_agent(capability_id: int, llm, tools, top_k_tools: int = 0, max_iterations: Optional[int] = None) -> AgentInterface:
+def _get_agent(
+    capability_id: int,
+    llm,
+    tools,
+    top_k_tools: int = 0,
+    max_iterations: Optional[int] = None,
+    agent_type: str = "react",
+) -> AgentInterface:
     """Return the appropriate agent for the given capability_id."""
     kwargs = dict(llm=llm, tools=tools, top_k_tools=top_k_tools)
     if max_iterations is not None:
         kwargs["max_iterations"] = max_iterations
     if capability_id == 1:
         kwargs["initial_data_handle"] = "placeholder"
+    if agent_type == "deep":
+        return DeepAgentHarness(**kwargs)
     return LangGraphReActAgent(**kwargs)
 
 
@@ -356,6 +378,7 @@ async def run_capability(
     domains: Optional[List[str]] = None,
     top_k_tools: int = 0,
     max_iterations: Optional[int] = None,
+    agent_type: str = "react",
     restart: bool = False,
 ) -> List[BenchmarkResult]:
     """Run benchmark for a given capability_id, iterating over all domain files."""
@@ -374,6 +397,7 @@ async def run_capability(
     tlog = CapabilityLogger(capability_id, out_dir / "run.log")
 
     tlog(f"Capability ID: {capability_id}")
+    tlog(f"Agent type: {agent_type}")
     tlog(f"Mode: {cfg.mode}")
     if not cfg.command and cfg.mode == "stdio":
         tlog(f"Container name: {cfg.container_name}")
@@ -414,6 +438,7 @@ async def run_capability(
             max_samples=max_samples_per_domain,
             top_k_tools=top_k_tools,
             max_iterations=max_iterations,
+            agent_type=agent_type,
             tlog=tlog,
         )
         all_results.extend(domain_results)
@@ -497,6 +522,16 @@ def main():
         type=str,
         default=None,
         help="Model name (default: provider-specific default)"
+    )
+    parser.add_argument(
+        "--agent-type",
+        type=str,
+        default="react",
+        choices=["react", "deep"],
+        help=(
+            "Agent implementation to run: 'react' uses the existing LangGraph "
+            "ReAct agent, 'deep' uses the LangChain Deep Agents harness"
+        ),
     )
     parser.add_argument(
         "--top-k-tools",
@@ -587,6 +622,7 @@ def main():
             domains=args.domain,
             top_k_tools=args.top_k_tools,
             max_iterations=args.max_iterations,
+            agent_type=args.agent_type,
             restart=args.restart,
         )
 

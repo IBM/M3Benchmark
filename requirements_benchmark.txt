@@ -30,6 +30,7 @@ langchain>=0.3.0
 # ----------------------------------------------------------------------------
 # Required for ReAct agent implementation (create_react_agent)
 langgraph>=1.0.9
+deepagents
 
 # ----------------------------------------------------------------------------
 # LLM Provider Integrations
