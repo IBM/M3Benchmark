@@ -3,7 +3,7 @@ from __future__ import annotations
 import re
 import os
 import json
-import deepcopy
+from copy import deepcopy
 from prompt import GroundednessPrompt, CorrectnessPrompt
 from utils import JudgeInput, JudgeOutput
 from langchain_openai import ChatOpenAI
